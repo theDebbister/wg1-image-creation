@@ -35,7 +35,9 @@ image_length_px = int((image_length_cm * dpi) / inch)  # in pixels, for 26 cm it
 IMAGE_DIR = 'stimuli_images/'
 
 # TODO: make size of the image dependent on screen resolution
-SCREEN_RESOLUTION = (1800, 800)
+SCREEN_RESOLUTION_PX = (1800, 800)
+SCREEN_SIZE_CM = (50, 30)
+DIAGONALE_CM = 30
 
 """
 NOTE that the size 34 and 26 cm does not mean that this will be the displayed size of the image on the monitor,
@@ -90,6 +92,8 @@ def create_images():
 
                 # Draw the text on the image
                 font = ImageFont.truetype(font_type, font_size)
+
+                # make sure it works for different scripts
                 words = text.split()
                 line = ""
                 lines = []
@@ -128,4 +132,5 @@ def create_images():
 
 if __name__ == '__main__':
     create_images()
+
 

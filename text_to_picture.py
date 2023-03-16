@@ -58,7 +58,8 @@ def create_images():
 
     # TODO: make sure that we check whether this exists already and if yes, that we check it is empty if
     #  not I would create a warning or so
-    os.mkdir(IMAGE_DIR)
+    if not os.path.isdir(IMAGE_DIR):
+        os.mkdir(IMAGE_DIR)
 
     # Set a list where will be stored the names of the png files and their paths
     file_list = []

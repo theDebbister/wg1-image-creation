@@ -3,6 +3,7 @@ import re
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
+from tqdm import tqdm
 
 # Set the input table variables, can be hard coded in the final script; nan cells are later skipped, so we can use
 # the whole range of the table, I just do not know what will be the final size of the table
@@ -54,10 +55,8 @@ NOTE that the size 34 and 26 cm does not mean that this will be the displayed si
 
 def create_images():
     # Read the TSV file
-    df = pd.read_csv("data_for_exp_impl.csv", sep="\t")
+    initial_df = pd.read_csv('PopSci_MultiplEYE_EN_example_stimuli.csv', sep="\t")
 
-    # TODO: make sure that we check whether this exists already and if yes, that we check it is empty if
-    #  not I would create a warning or so
     if not os.path.isdir(IMAGE_DIR):
         os.mkdir(IMAGE_DIR)
 
@@ -65,25 +64,34 @@ def create_images():
     file_list = []
 
     # Loop through the rows and columns of the DataFrame
-    # TODO: use "for idx, row in pd.iterrows()" --> this way we only have one loop, you can access
-    #  the individual columns via row[column_name]
-    for row_index in range(row_range):
-        # We are trying to skip columns with id_names, etc. - which we do not need to present in the final experiment
-        for col_index in range(1, 7):
-            # Extract the text data from the current cell
-            text = str(df.iloc[row_index, col_index])
 
-            # Check whether there is a text
-            if text == "nan":
-                pass
-            else:
-                # Extract the name of the text file, item number and column name (page/question)
-                text_file_name = df.loc[row_index, 'stimulus_text_title']
+    stimulus_images = {}
 
-                text_file_name = re.sub(' ', '_', text_file_name).lower()
+    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc='Creating images'):
+        text_file_name = row['stimulus_text_title']
+        text_file_name = re.sub(' ', '_', text_file_name).lower()
+        text_id = row['stimulus_id']
 
-                text_id = df.loc[row_index, 'stimulus_id']
-                column_name = df.columns[col_index]
+        for col_index, column_name in enumerate(initial_df.columns):
+
+            if column_name.startswith('page') or column_name.startswith('question'):
+
+                new_col_name_path = column_name + '_img_path'
+                new_col_name_file = column_name + '_img_file'
+
+                if new_col_name_path not in stimulus_images:
+                    stimulus_images[new_col_name_path] = []
+
+                if new_col_name_file not in stimulus_images:
+                    stimulus_images[new_col_name_file] = []
+
+                if row[[column_name]].isnull().values.any():
+                    stimulus_images[new_col_name_path].append(pd.NA)
+                    stimulus_images[new_col_name_file].append(pd.NA)
+                    continue
+
+                # Extract the text data from the current cell
+                text = str(initial_df.iloc[row_index, col_index])
 
                 # Create a new image with a previously defined color background and size
                 final_image = Image.new('RGB', (image_width_px, image_length_px), color=background_color)
@@ -124,11 +132,14 @@ def create_images():
                 # store image names and paths
                 path = IMAGE_DIR + filename  # maybe we can
                 # set path in the beginning as an object
-                file_list.append([filename, path])
+                stimulus_images[new_col_name_path].append(path)
+                stimulus_images[new_col_name_file].append(filename)
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
-    df_final = pd.DataFrame(file_list, columns=['filename', 'path'])
-    df_final.to_csv('table_names.csv', sep=',', index=False)
+    image_df = pd.DataFrame(stimulus_images)
+    final_df = initial_df.join(image_df)
+
+    final_df.to_csv('PopSci_MultiplEYE_EN_example_stimuli_with_img_paths.csv', sep=',', index=False)
 
 
 if __name__ == '__main__':

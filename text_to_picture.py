@@ -14,7 +14,7 @@ column_range = 14
 font_size = 18
 font_type = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 text_color = (0, 0, 0)
-space_line = 2.0  # vertical spacing between lines; in units of font’s default line height proporton
+space_line = 3.0  # vertical spacing between lines; in units of font’s default line height proporton
 # Coordinates that are saying how far from the upper left corner of the image will be the text displayed, in pixels
 coordinate_x = 75  # in px
 coordinate_y = 100  # in px

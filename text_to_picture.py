@@ -1,6 +1,7 @@
 import os
 import re
 import math
+import string
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
@@ -15,7 +16,7 @@ column_range = 14
 font_size = 25
 font_type = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 text_color = (0, 0, 0)
-space_line = 3.0  # vertical spacing between lines; in units of font’s default line height proporton
+SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proporton
 
 # Set the picture variables
 background_color = "#E7E7E7"  # possibly also in rgb: (231, 230, 230)
@@ -58,14 +59,14 @@ min_margin_bottom_px = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_IN
 
 
 # Coordinates that are saying how far from the upper left corner of the image will be the text displayed, in pixels
-coordinate_x_px = min_margin_right_px
-coordinate_y_px = min_margin_top_px
+TOP_LEFT_CORNER_X_PX = min_margin_right_px
+TOP_LEFT_CORNER_Y_PX = min_margin_top_px
 
 
 def create_images():
 
     # Read the TSV file
-    initial_df = pd.read_csv('PopSci_MultiplEYE_EN_example_stimuli.csv', sep="\t")
+    initial_df = pd.read_csv('PopSci_MultiplEYE_EN_example_stimuli.csv', sep=",")
 
     if not os.path.isdir(IMAGE_DIR):
         os.mkdir(IMAGE_DIR)
@@ -76,11 +77,17 @@ def create_images():
     # Loop through the rows and columns of the DataFrame
 
     stimulus_images = {}
+    draw_aoi = False
 
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc='Creating images'):
         text_file_name = row['stimulus_text_title']
         text_file_name = re.sub(' ', '_', text_file_name).lower()
         text_id = row['stimulus_id']
+
+        aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
+        aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
+        aois = []
+        all_words = []
 
         for col_index, column_name in enumerate(initial_df.columns):
 
@@ -106,13 +113,14 @@ def create_images():
                     name_parts = column_name.split('_')
                     number_of_question = name_parts[-1]
 
+
                     # we need to extract answers and add them to strings
-                    answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_' + number_of_question + '_1_key']}] "
-                                   + initial_df.loc[row_index, 'answer_option_' + number_of_question + '_1'])
-                    answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_' + number_of_question + '_2_key']}] "
-                                   + initial_df.loc[row_index, 'answer_option_' + number_of_question + '_2'])
-                    answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_' + number_of_question + '_3_key']}] "
-                                   + initial_df.loc[row_index, 'answer_option_' + number_of_question + '_3'])
+                    answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
+                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
+                    answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
+                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2'])
+                    answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
+                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
 
                     text_question = str(initial_df.iloc[row_index, col_index])
                     answers = "\n\n".join([answer_1, answer_2, answer_3])
@@ -137,24 +145,22 @@ def create_images():
                     line = ""
                     lines = []
                     for word in words:
-                        text_width, text_height = draw.textsize(line + word, font=font)
+                        text_width, _ = draw.textsize(line + word, font=font)
                         # print(word,text_width, image_width_px-minimal_right_margin, image_width_px) #just for
                         # sanity check
-                        if text_width < (image_width_px - (
-                                min_margin_right_px * 2)):  # This is kind of weird, it sets the distance from the right
-                            # margin but it must be twice the size of the "minimal_right_margin", otherwise it does not
-                            # work, I have no idea why; however it displays unmultipled distance, it is probably some
-                            # logic flaw i do not see
+                        if text_width < (image_width_px - (min_margin_right_px + min_margin_left_px)):
                             line += word + " "
                         else:
                             lines.append(line.strip())
                             line = word + " "
+
                     lines.append(line.strip())
-                    coordinate_y_line = coordinate_y_px  # we need this variable to have the original values in the next
+                    top_left_corner_line = TOP_LEFT_CORNER_Y_PX  # we need this variable to have the original values in the next
                     # iteration, so we are creating a changing representation for the next iteration
                     for line in lines:
-                        draw.text((coordinate_x_px, coordinate_y_line), line, fill=text_color, font=font)
-                        coordinate_y_line += (text_height * space_line)
+                        text_width, text_height = draw.textsize(line, font=font)
+                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line), line, fill=text_color, font=font)
+                        top_left_corner_line += (text_height * SPACE_LINE)
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
@@ -180,7 +186,7 @@ def create_images():
                     # Draw the text on the image
                     font = ImageFont.truetype(font_type, font_size)
 
-                    # make sure it works for different scripts
+                    # make sure this works for different scripts!
                     words = text.split()
                     line = ""
                     lines = []
@@ -188,25 +194,56 @@ def create_images():
                         text_width, text_height = draw.textsize(line + word, font=font)
                         # print(word,text_width, image_width_px-minimal_right_margin, image_width_px) #just for
                         # sanity check
-                        if text_width < (image_width_px - (
-                                min_margin_right_px * 2)):  # This is kind of weird, it sets the distance from the right
-                            # margin but it must be twice the size of the "minimal_right_margin", otherwise it does not
-                            # work, I have no idea why; however it displays unmultipled distance, it is probably some
-                            # logic flaw i do not see
+                        if text_width < (image_width_px - (min_margin_right_px + min_margin_left_px)):
                             line += word + " "
                         else:
                             lines.append(line.strip())
                             line = word + " "
                     lines.append(line.strip())
-                    coordinate_y_line = coordinate_y_px  # we need this variable to have the original values in the next
+                    top_left_corner_y_line = TOP_LEFT_CORNER_Y_PX  # we need this variable to have the original values in the next
                     # iteration, so we are creating a changing representation for the next iteration
-                    for line in lines:
-                        draw.text((coordinate_x_px, coordinate_y_line), line, fill=text_color, font=font)
-                        coordinate_y_line += (text_height * space_line)
+                    for line_idx, line in enumerate(lines):
+                        text_width, text_height = draw.textsize(line, font=font)
+                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=text_color, font=font)
+
+                        # calculate aoi boxes for each letter
+                        top_left_corner_x_letter = TOP_LEFT_CORNER_X_PX
+                        letter_width = text_width / len(line)
+                        words = []
+                        word = ''
+
+                        for char_idx_in_line, letter in enumerate(line):
+                            if letter == ' ':
+                                words.extend([word for _ in range(len(word))] + [pd.NA])
+                                word = ''
+                            else:
+                                word += letter
+                            # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
+
+                            aoi_letter = [letter, top_left_corner_x_letter, top_left_corner_y_line, letter_width,
+                                            text_height, char_idx_in_line, line_idx, column_name]
+
+                            ### uncomment this if we want to draw the aoi boxes on the image ###
+                            # draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                            #                 top_left_corner_x_letter + letter_width,
+                            #                 top_left_corner_y_line + text_height),
+                            #                 outline='red', width=1)
+                            # draw_aoi = True
+                            ####################################################################
+                            # update top left corner x for next letter
+                            top_left_corner_x_letter += letter_width
+
+                            aois.append(aoi_letter)
+                        words.extend([word for _ in range(len(word))])
+
+                        all_words.extend(words)
+
+                        # update top left corner y for next line
+                        top_left_corner_y_line += (text_height * SPACE_LINE)
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
-                    filename = f"{text_file_name}_id{text_id}_{column_name}.png"
+                    filename = f"{text_file_name}_id{text_id}_{column_name}{'_aoi' if draw_aoi else ''}.png"
                     final_image.save(IMAGE_DIR + filename)
 
                     # store image names and paths
@@ -215,11 +252,17 @@ def create_images():
                     stimulus_images[new_col_name_path].append(path)
                     stimulus_images[new_col_name_file].append(filename)
 
+        aoi_df = pd.DataFrame(aois, columns=aoi_header)
+        aoi_df['word'] = all_words
+        aoi_df.to_csv(aoi_file_name, sep=',', index=False)
+
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
     final_df = initial_df.join(image_df)
 
-    final_df.to_csv('PopSci_MultiplEYE_EN_example_stimuli_with_img_paths.csv', sep=',', index=False)
+    final_df.to_csv(f'PopSci_MultiplEYE_EN_example_stimuli_with_img_paths{"_aoi" if draw_aoi else ""}.csv',
+                    sep=',',
+                    index=False)
 
 
 if __name__ == '__main__':

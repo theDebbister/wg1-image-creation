@@ -7,19 +7,13 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
-# Set the input table variables, can be hard coded in the final script; nan cells are later skipped, so we can use
-# the whole range of the table, I just do not know what will be the final size of the table
-row_range = 4
-column_range = 14
-
 # Set the font variables we want
-font_size = 25
 font_type = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 text_color = (0, 0, 0)
 SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proporton
 
 # Set the picture variables
-background_color = "#E7E7E7"  # possibly also in rgb: (231, 230, 230)
+background_color = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 
 # # Calculate size of the image from centimeters to pixels However we can start with pixel sizes and then calculate how
 # # big the picture will be, but this is the whole topic we probably need to discuss later
@@ -41,7 +35,7 @@ IMAGE_SIZE_CM = (34, 26)
 
 RESOLUTION = (1920, 1080)
 # IMAGE_SIZE_INCH = (13.3, 10.2) # my screen is too small, so I'm temporally using a different image size
-IMAGE_SIZE_INCH = (9.1, 6.5)
+IMAGE_SIZE_INCH = (9.1, 6.0)
 SCREEN_SIZE_INCH = (13.9, 7.5)
 
 image_width_px = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
@@ -62,6 +56,7 @@ min_margin_bottom_px = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_IN
 TOP_LEFT_CORNER_X_PX = min_margin_right_px
 TOP_LEFT_CORNER_Y_PX = min_margin_top_px
 
+font_size = 25
 
 def create_images():
 
@@ -78,6 +73,8 @@ def create_images():
 
     stimulus_images = {}
     draw_aoi = False
+
+    create_fixation_screen()
 
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc='Creating images'):
         text_file_name = row['stimulus_text_title']
@@ -218,10 +215,6 @@ def create_images():
                                 word = ''
                             else:
                                 word += letter
-                            # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
-
-                            aoi_letter = [letter, top_left_corner_x_letter, top_left_corner_y_line, letter_width,
-                                            text_height, char_idx_in_line, line_idx, column_name]
 
                             ### uncomment this if we want to draw the aoi boxes on the image ###
                             # draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
@@ -230,6 +223,21 @@ def create_images():
                             #                 outline='red', width=1)
                             # draw_aoi = True
                             ####################################################################
+
+                            # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
+
+                            # as the image is smaller than the actual screen we need to calculate
+                            aoi_letter = [
+                                letter,
+                                top_left_corner_x_letter + ((RESOLUTION[0] - image_width_px)  // 2),
+                                top_left_corner_y_line + ((RESOLUTION[1] - image_height_px)  // 2),
+                                letter_width,
+                                text_height,
+                                char_idx_in_line,
+                                line_idx,
+                                column_name
+                            ]
+
                             # update top left corner x for next letter
                             top_left_corner_x_letter += letter_width
 
@@ -264,6 +272,32 @@ def create_images():
                     sep=',',
                     index=False)
 
+
+def create_fixation_screen():
+    """
+    Creates a fixation screen with a black background and a white cross in the middle of the screen.
+    """
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new('RGB', (image_width_px, image_height_px), color=background_color)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # The fixation dot is positioned a bit left to the first char in the  middle of the line
+    r = 7
+    fix_x = TOP_LEFT_CORNER_X_PX - 0.1 * min_margin_left_px
+    fix_y = int(TOP_LEFT_CORNER_Y_PX - 0.5 * font_size)
+    draw.ellipse(
+        (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+        fill=None,
+        outline=text_color,
+        width=5
+    )
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"fixation_screen.png"
+    final_image.save(IMAGE_DIR + filename)
 
 if __name__ == '__main__':
     create_images()

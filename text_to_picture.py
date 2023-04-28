@@ -8,20 +8,20 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 # Set the font variables we want
-font_type = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-text_color = (0, 0, 0)
+FONT_TYPE = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+TEXT_COLOR = (0, 0, 0)
 SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proporton
 
 # Set the picture variables
-background_color = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
+BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 
 # # Calculate size of the image from centimeters to pixels However we can start with pixel sizes and then calculate how
 # # big the picture will be, but this is the whole topic we probably need to discuss later
 # dpi = 72  # variable, it can be changed; dots per inch; how many pixels are in one inch aka 2.54 cm; the value 72 is
 # # taken from the properties of one already created image from this script
 # inch_in_cm = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
-# image_width_px = int((image_width_cm * dpi) / inch_in_cm)  # in pixels, for 34 cm it is 963 px
-# image_height_px = int((image_height_cm * dpi) / inch_in_cm)  # in pixels, for 26 cm it is 737 px
+# IMAGE_WIDTH_PX= int((image_width_cm * dpi) / inch_in_cm)  # in pixels, for 34 cm it is 963 px
+# IMAGE_HEIGHT_PX = int((image_height_cm * dpi) / inch_in_cm)  # in pixels, for 26 cm it is 737 px
 
 # if we want to check the screen information we can use this
 # from screeninfo import get_monitors
@@ -38,23 +38,23 @@ RESOLUTION = (1920, 1080)
 IMAGE_SIZE_INCH = (9.1, 6.0)
 SCREEN_SIZE_INCH = (13.9, 7.5)
 
-image_width_px = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-image_height_px = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
+IMAGE_WIDTH_PX= int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
+IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
 # calculate the margins in inch, we set the margin fixed as fixed percentage of the image size
 HORIZONTAL_MARGIN_INCH = IMAGE_SIZE_INCH[0] * 0.1
 VERTICAL_MARGIN_INCH = IMAGE_SIZE_INCH[1] * 0.15
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
-min_margin_left_px = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-min_margin_right_px = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-min_margin_top_px = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
-min_margin_bottom_px = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
+MIN_MARGIN_LEFT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
+MIN_MARGIN_RIGHT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
+MIN_MARGIN_TOP_PX = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
+MIN_MARGIN_BOTTOM_PX = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
 
 # Coordinates that are saying how far from the upper left corner of the image will be the text displayed, in pixels
-TOP_LEFT_CORNER_X_PX = min_margin_right_px
-TOP_LEFT_CORNER_Y_PX = min_margin_top_px
+TOP_LEFT_CORNER_X_PX = MIN_MARGIN_RIGHT_PX
+TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 
 font_size = 25
 
@@ -126,13 +126,13 @@ def create_images():
                     text = text_question + "\n\n\n" + answers
 
                     # Create a new image with a previously defined color background and size
-                    final_image = Image.new('RGB', (image_width_px, image_height_px), color=background_color)
+                    final_image = Image.new('RGB', (image_width_px, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
 
                     # Draw the text on the image
-                    font = ImageFont.truetype(font_type, font_size)
+                    font = ImageFont.truetype(FONT_TYPE, font_size)
 
                     # make sure it works for different scripts we need to use re.split (otherwise we will lose "\n"
                     # separating lines between question and answers), but next part of the code is then not properly
@@ -145,7 +145,7 @@ def create_images():
                         text_width, _ = draw.textsize(line + word, font=font)
                         # print(word,text_width, image_width_px-minimal_right_margin, image_width_px) #just for
                         # sanity check
-                        if text_width < (image_width_px - (min_margin_right_px + min_margin_left_px)):
+                        if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                             line += word + " "
                         else:
                             lines.append(line.strip())
@@ -156,7 +156,7 @@ def create_images():
                     # iteration, so we are creating a changing representation for the next iteration
                     for line in lines:
                         text_width, text_height = draw.textsize(line, font=font)
-                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line), line, fill=text_color, font=font)
+                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line), line, fill=TEXT_COLOR, font=font)
                         top_left_corner_line += (text_height * SPACE_LINE)
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
@@ -175,13 +175,13 @@ def create_images():
                     text = str(initial_df.iloc[row_index, col_index])
 
                     # Create a new image with a previously defined color background and size
-                    final_image = Image.new('RGB', (image_width_px, image_height_px), color=background_color)
+                    final_image = Image.new('RGB', (image_width_px, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
 
                     # Draw the text on the image
-                    font = ImageFont.truetype(font_type, font_size)
+                    font = ImageFont.truetype(FONT_TYPE, font_size)
 
                     # make sure this works for different scripts!
                     words = text.split()
@@ -191,7 +191,7 @@ def create_images():
                         text_width, text_height = draw.textsize(line + word, font=font)
                         # print(word,text_width, image_width_px-minimal_right_margin, image_width_px) #just for
                         # sanity check
-                        if text_width < (image_width_px - (min_margin_right_px + min_margin_left_px)):
+                        if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                             line += word + " "
                         else:
                             lines.append(line.strip())
@@ -201,7 +201,7 @@ def create_images():
                     # iteration, so we are creating a changing representation for the next iteration
                     for line_idx, line in enumerate(lines):
                         text_width, text_height = draw.textsize(line, font=font)
-                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=text_color, font=font)
+                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
 
                         # calculate aoi boxes for each letter
                         top_left_corner_x_letter = TOP_LEFT_CORNER_X_PX
@@ -230,7 +230,7 @@ def create_images():
                             aoi_letter = [
                                 letter,
                                 top_left_corner_x_letter + ((RESOLUTION[0] - image_width_px)  // 2),
-                                top_left_corner_y_line + ((RESOLUTION[1] - image_height_px)  // 2),
+                                top_left_corner_y_line + ((RESOLUTION[1] - IMAGE_HEIGHT_PX)  // 2),
                                 letter_width,
                                 text_height,
                                 char_idx_in_line,
@@ -278,19 +278,19 @@ def create_fixation_screen():
     Creates a fixation screen with a black background and a white cross in the middle of the screen.
     """
     # Create a new image with a previously defined color background and size
-    final_image = Image.new('RGB', (image_width_px, image_height_px), color=background_color)
+    final_image = Image.new('RGB', (image_width_px, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
 
     # The fixation dot is positioned a bit left to the first char in the  middle of the line
     r = 7
-    fix_x = TOP_LEFT_CORNER_X_PX - 0.1 * min_margin_left_px
+    fix_x = TOP_LEFT_CORNER_X_PX - 0.1 * MIN_MARGIN_LEFT_PX
     fix_y = int(TOP_LEFT_CORNER_Y_PX - 0.5 * font_size)
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
-        outline=text_color,
+        outline=TEXT_COLOR,
         width=5
     )
 

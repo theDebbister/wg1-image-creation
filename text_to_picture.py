@@ -56,7 +56,7 @@ MIN_MARGIN_BOTTOM_PX = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_IN
 TOP_LEFT_CORNER_X_PX = MIN_MARGIN_RIGHT_PX
 TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 
-font_size = 25
+FONT_SIZE = 25
 
 def create_images():
 
@@ -132,7 +132,7 @@ def create_images():
                     draw = ImageDraw.Draw(final_image)
 
                     # Draw the text on the image
-                    font = ImageFont.truetype(FONT_TYPE, font_size)
+                    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
 
                     # make sure it works for different scripts we need to use re.split (otherwise we will lose "\n"
                     # separating lines between question and answers), but next part of the code is then not properly
@@ -181,7 +181,7 @@ def create_images():
                     draw = ImageDraw.Draw(final_image)
 
                     # Draw the text on the image
-                    font = ImageFont.truetype(FONT_TYPE, font_size)
+                    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
 
                     # make sure this works for different scripts!
                     words = text.split()
@@ -286,7 +286,7 @@ def create_fixation_screen():
     # The fixation dot is positioned a bit left to the first char in the  middle of the line
     r = 7
     fix_x = TOP_LEFT_CORNER_X_PX - 0.1 * MIN_MARGIN_LEFT_PX
-    fix_y = int(TOP_LEFT_CORNER_Y_PX - 0.5 * font_size)
+    fix_y = int(TOP_LEFT_CORNER_Y_PX - 0.5 * FONT_SIZE)
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,

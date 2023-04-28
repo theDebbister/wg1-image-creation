@@ -10,7 +10,7 @@ from tqdm import tqdm
 # Set the font variables we want
 FONT_TYPE = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 TEXT_COLOR = (0, 0, 0)
-SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proporton
+SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proportion
 
 # Set the picture variables
 BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
@@ -126,7 +126,7 @@ def create_images():
                     text = text_question + "\n\n\n" + answers
 
                     # Create a new image with a previously defined color background and size
-                    final_image = Image.new('RGB', (image_width_px, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+                    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
@@ -143,7 +143,7 @@ def create_images():
                     lines = []
                     for word in words:
                         text_width, _ = draw.textsize(line + word, font=font)
-                        # print(word,text_width, image_width_px-minimal_right_margin, image_width_px) #just for
+                        # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
                         # sanity check
                         if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                             line += word + " "
@@ -175,7 +175,7 @@ def create_images():
                     text = str(initial_df.iloc[row_index, col_index])
 
                     # Create a new image with a previously defined color background and size
-                    final_image = Image.new('RGB', (image_width_px, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+                    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
@@ -189,7 +189,7 @@ def create_images():
                     lines = []
                     for word in words:
                         text_width, text_height = draw.textsize(line + word, font=font)
-                        # print(word,text_width, image_width_px-minimal_right_margin, image_width_px) #just for
+                        # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
                         # sanity check
                         if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                             line += word + " "
@@ -229,7 +229,7 @@ def create_images():
                             # as the image is smaller than the actual screen we need to calculate
                             aoi_letter = [
                                 letter,
-                                top_left_corner_x_letter + ((RESOLUTION[0] - image_width_px)  // 2),
+                                top_left_corner_x_letter + ((RESOLUTION[0] - IMAGE_WIDTH_PX)  // 2),
                                 top_left_corner_y_line + ((RESOLUTION[1] - IMAGE_HEIGHT_PX)  // 2),
                                 letter_width,
                                 text_height,
@@ -278,7 +278,7 @@ def create_fixation_screen():
     Creates a fixation screen with a black background and a white cross in the middle of the screen.
     """
     # Create a new image with a previously defined color background and size
-    final_image = Image.new('RGB', (image_width_px, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)

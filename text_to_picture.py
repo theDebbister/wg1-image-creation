@@ -299,5 +299,129 @@ def create_fixation_screen():
     filename = f"fixation_screen.png"
     final_image.save(IMAGE_DIR + filename)
 
+def create_welcome_screen():
+    """
+    Creates a welcome screen with a white background, all the logos and a blue greeting in the middle of the screen.
+    """
+
+    # We have three different logos - load them and change the size if needed
+    cost_logo = Image.open("cost_logo.jpg")
+    cost_width, cost_height = cost_logo.size
+    cost_logo_new_size = (cost_width // 7, cost_height // 7)
+    cost_logo = cost_logo.resize(cost_logo_new_size)
+    eu_logo = Image.open("eu_fund_logo.png")
+    eu_width, eu_height = eu_logo.size
+    eu_logo_new_size = (eu_width // 7, eu_height // 7)
+    eu_logo = eu_logo.resize(eu_logo_new_size)
+    multipleye_logo = Image.open("logo_multipleye.png")
+
+    # Set the text
+    welcome_df = pd.read_csv('PopSci_MultiplEYE_EN_example_welcome.csv', sep=",")
+    welcome_text = welcome_df["welcome_text_1"][0]
+    our_blue = "#007baf"
+    our_red = "#b94128"
+    font_size = 38
+    font_type = "open-sans-bold.ttf"
+
+    # Create a new image with a white background and previously defined size
+    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color="#FFFFFF")
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Create coordinates for three different logos
+    multipleye_logo_x = (final_image.width - multipleye_logo.width) // 2
+    multipleye_logo_y = 10
+    multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
+    eu_logo_x = (final_image.width - eu_logo.width) // 6
+    eu_logo_y = (final_image.height - eu_logo.height) - 18
+    eu_logo_position = (eu_logo_x, eu_logo_y)
+    cost_logo_x = ((final_image.width - eu_logo.width) // 6)  + 580
+    cost_logo_y = final_image.height - cost_logo.height
+    cost_logo_position = (cost_logo_x, cost_logo_y)
+
+    # Paste the logos onto the final image at the calculated coordinates
+    final_image.paste(multipleye_logo, multipleye_logo_position, mask = multipleye_logo)
+    final_image.paste(eu_logo, eu_logo_position, mask = eu_logo)
+    final_image.paste(cost_logo, cost_logo_position)
+
+    # Paste the text onto the final image
+    font = ImageFont.truetype(font_type, font_size)
+    text_width, text_height = draw.textsize(welcome_text, font=font)
+    text_x = (IMAGE_WIDTH_PX - text_width) / 2
+    text_y = (IMAGE_HEIGHT_PX - text_height) / 2
+    draw.text((text_x, text_y), welcome_text, font=font, fill=our_blue)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"welcome_screen.png"
+    final_image.save(IMAGE_DIR + filename)
+
+def create_final_screen():
+    """
+    Creates a final screen with a white background, one logo and a blue messages in the middle of the screen.
+    """
+
+    # We have one multipleye logo - we can load other if needed
+    #cost_logo = Image.open("cost_logo.jpg")
+    #cost_width, cost_height = cost_logo.size
+    #cost_logo_new_size = (cost_width // 7, cost_height // 7)
+    #cost_logo = cost_logo.resize(cost_logo_new_size)
+    #eu_logo = Image.open("eu_fund_logo.png")
+    #eu_width, eu_height = eu_logo.size
+    #eu_logo_new_size = (eu_width // 7, eu_height // 7)
+    #eu_logo = eu_logo.resize(eu_logo_new_size)
+    multipleye_logo = Image.open("logo_multipleye.png")
+
+    # Set the text
+    final_df = pd.read_csv('PopSci_MultiplEYE_EN_example_welcome.csv', sep=",")
+    final_text_1 = final_df["final_text_1"][0]
+    final_text_2 = final_df["final_text_2"][0]
+    our_blue = "#007baf"
+    our_red = "#b94128"
+    font_size = 38
+    font_type = "open-sans-bold.ttf"
+
+    # Create a new image with a white background and previously defined size
+    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color="#FFFFFF")
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Create coordinates for three different logos
+    multipleye_logo_x = (final_image.width - multipleye_logo.width) // 2
+    multipleye_logo_y = 10
+    multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
+    #eu_logo_x = (final_image.width - eu_logo.width) // 6
+    #eu_logo_y = (final_image.height - eu_logo.height) - 18
+    #eu_logo_position = (eu_logo_x, eu_logo_y)
+    #cost_logo_x = ((final_image.width - eu_logo.width) // 6)  + 580
+    #cost_logo_y = final_image.height - cost_logo.height
+    #cost_logo_position = (cost_logo_x, cost_logo_y)
+
+    # Paste the logos onto the final image at the calculated coordinates
+    final_image.paste(multipleye_logo, multipleye_logo_position, mask = multipleye_logo)
+    #final_image.paste(eu_logo, eu_logo_position, mask = eu_logo)
+    #final_image.paste(cost_logo, cost_logo_position)
+
+    # Paste the texts onto the final image
+    font = ImageFont.truetype(font_type, font_size)
+    text_width_A, text_height_A = draw.textsize(final_text_1, font=font)
+    text_x_A = (IMAGE_WIDTH_PX - text_width_A) / 2
+    text_y_A = (IMAGE_HEIGHT_PX - text_height_A) / 2
+    draw.text((text_x_A, text_y_A), final_text_1, font=font, fill=our_blue)
+
+    text_width_B, text_height_B = draw.textsize(final_text_2, font=font)
+    text_x_B = (IMAGE_WIDTH_PX - text_width_B) / 2
+    text_y_B = (IMAGE_HEIGHT_PX + text_height_B + (text_height_A * 2)) / 2
+    draw.text((text_x_B, text_y_B), final_text_2, font=font, fill=our_red)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"final_screen.png"
+    final_image.save(IMAGE_DIR + filename)
+
 if __name__ == '__main__':
     create_images()
+    #create_welcome_screen()
+    #create_final_screen()

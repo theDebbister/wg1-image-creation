@@ -191,8 +191,15 @@ def create_images():
                         text_width, text_height = draw.textsize(line + word, font=font)
                         # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
                         # sanity check
+
                         if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
-                            line += word + " "
+                            if word.endswith('\\n'):
+                                line += word[:-2]
+                                lines.append(line.strip())
+                                line = " "
+                                continue
+                            else:
+                                line += word + " "
                         else:
                             lines.append(line.strip())
                             line = word + " "

@@ -1,7 +1,5 @@
 import os
 import re
-import math
-import string
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
@@ -19,7 +17,7 @@ background_color = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 # # big the picture will be, but this is the whole topic we probably need to discuss later
 # dpi = 72  # variable, it can be changed; dots per inch; how many pixels are in one inch aka 2.54 cm; the value 72 is
 # # taken from the properties of one already created image from this script
-# inch_in_cm = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
+inch_in_cm = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 # image_width_px = int((image_width_cm * dpi) / inch_in_cm)  # in pixels, for 34 cm it is 963 px
 # image_height_px = int((image_height_cm * dpi) / inch_in_cm)  # in pixels, for 26 cm it is 737 px
 
@@ -30,13 +28,17 @@ background_color = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 #     print(str(m))
 
 IMAGE_DIR = 'stimuli_images/'
+AOI_DIR = 'stimuli_aoi/'
 
 IMAGE_SIZE_CM = (34, 26)
 
-RESOLUTION = (1920, 1080)
-# IMAGE_SIZE_INCH = (13.3, 10.2) # my screen is too small, so I'm temporally using a different image size
-IMAGE_SIZE_INCH = (9.1, 6.0)
-SCREEN_SIZE_INCH = (13.9, 7.5)
+RESOLUTION = (1536, 864)
+
+IMAGE_SIZE_INCH = (13.3, 10.2) # my screen is too small, so I'm temporally using a different image size
+#IMAGE_SIZE_INCH = (9.1, 6.0)
+
+SCREEN_SIZE_CM = (55.5, 31.0)
+SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] / inch_in_cm, SCREEN_SIZE_CM[1] / inch_in_cm)
 
 image_width_px = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 image_height_px = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
@@ -56,15 +58,19 @@ min_margin_bottom_px = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_IN
 TOP_LEFT_CORNER_X_PX = min_margin_right_px
 TOP_LEFT_CORNER_Y_PX = min_margin_top_px
 
-font_size = 25
+font_size = 22
 
 def create_images():
 
     # Read the TSV file
-    initial_df = pd.read_csv('PopSci_MultiplEYE_EN_example_stimuli.csv', sep=",")
+    stimuli_file_name = 'multipleye-stimuli-en-test.csv'
+    initial_df = pd.read_csv(stimuli_file_name, sep=";")
 
     if not os.path.isdir(IMAGE_DIR):
         os.mkdir(IMAGE_DIR)
+
+    if not os.path.isdir(AOI_DIR):
+        os.mkdir(AOI_DIR)
 
     # Set a list where will be stored the names of the png files and their paths
     file_list = []
@@ -262,13 +268,13 @@ def create_images():
 
         aoi_df = pd.DataFrame(aois, columns=aoi_header)
         aoi_df['word'] = all_words
-        aoi_df.to_csv(aoi_file_name, sep=',', index=False)
+        aoi_df.to_csv(AOI_DIR + aoi_file_name, sep=',', index=False)
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
     final_df = initial_df.join(image_df)
 
-    final_df.to_csv(f'PopSci_MultiplEYE_EN_example_stimuli_with_img_paths{"_aoi" if draw_aoi else ""}.csv',
+    final_df.to_csv(f'{stimuli_file_name.strip(".csv")}_with_img_paths{"_aoi" if draw_aoi else ""}.csv',
                     sep=',',
                     index=False)
 

@@ -23,22 +23,23 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 # if we want to check the screen information we can use this
 from screeninfo import get_monitors
-
+#
 for m in get_monitors():
     print(str(m))
 
 LANGUAGE = 'de'
-OUTPUT_TOP_DIR = f'stimuli_DE/'
+OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 
-IMAGE_SIZE_CM = (36, 28)
+#IMAGE_SIZE_CM = (36, 28)
+IMAGE_SIZE_CM = (25, 19)
 
 RESOLUTION = (1920, 1080)
 
 IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM, IMAGE_SIZE_CM[1] / INCH_IN_CM)
 
-SCREEN_SIZE_CM = (52.1, 29.3)
+SCREEN_SIZE_CM = (34.4, 19.4)
 SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] / INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
 
 IMAGE_WIDTH_PX= int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
@@ -51,15 +52,15 @@ VERTICAL_MARGIN_INCH = IMAGE_SIZE_INCH[1] * 0.02
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
 MIN_MARGIN_LEFT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 MIN_MARGIN_RIGHT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-MIN_MARGIN_TOP_PX = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
-MIN_MARGIN_BOTTOM_PX = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
+MIN_MARGIN_TOP_PX = (RESOLUTION[1] // 41) * 2
+MIN_MARGIN_BOTTOM_PX = (RESOLUTION[1] // 41) * 2
 
 
 # Coordinates that are saying how far from the upper left corner of the image will be the text displayed, in pixels
 TOP_LEFT_CORNER_X_PX = MIN_MARGIN_RIGHT_PX
 TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 
-FONT_SIZE = RESOLUTION[1] // 42
+FONT_SIZE = RESOLUTION[1] // 41
 
 def create_images():
 
@@ -296,8 +297,8 @@ def create_fixation_screen():
 
     # The fixation dot is positioned a bit left to the first char in the  middle of the line
     r = 7
-    fix_x = TOP_LEFT_CORNER_X_PX - 0.1 * MIN_MARGIN_LEFT_PX
-    fix_y = int(TOP_LEFT_CORNER_Y_PX - 0.5 * FONT_SIZE)
+    fix_x = TOP_LEFT_CORNER_X_PX - 10
+    fix_y = int(TOP_LEFT_CORNER_Y_PX + FONT_SIZE // 2)
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,

@@ -1,14 +1,12 @@
 import os
 import re
-import math
-import string
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 # Set the font variables we want
-FONT_TYPE = "Cascadia.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+FONT_TYPE = "JetBrainsMono-Regular.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
 TEXT_COLOR = (0, 0, 0)
 SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proportion
 
@@ -17,38 +15,38 @@ BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 
 # # Calculate size of the image from centimeters to pixels However we can start with pixel sizes and then calculate how
 # # big the picture will be, but this is the whole topic we probably need to discuss later
-# dpi = 72  # variable, it can be changed; dots per inch; how many pixels are in one inch aka 2.54 cm; the value 72 is
+dpi = 300  # variable, it can be changed; dots per inch; how many pixels are in one inch aka 2.54 cm; the value 72 is
 # # taken from the properties of one already created image from this script
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 # IMAGE_WIDTH_PX= int((image_width_cm * dpi) / INCH_IN_CM)  # in pixels, for 34 cm it is 963 px
 # IMAGE_HEIGHT_PX = int((image_height_cm * dpi) / INCH_IN_CM)  # in pixels, for 26 cm it is 737 px
 
 # if we want to check the screen information we can use this
-# from screeninfo import get_monitors
-#
-# for m in get_monitors():
-#     print(str(m))
+from screeninfo import get_monitors
 
-OUTPUT_TOP_DIR = 'examples/'
+for m in get_monitors():
+    print(str(m))
+
+LANGUAGE = 'de'
+OUTPUT_TOP_DIR = f'stimuli_DE/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 
-IMAGE_SIZE_CM = (34, 26)
+IMAGE_SIZE_CM = (36, 28)
 
-RESOLUTION = (1536, 864)
+RESOLUTION = (1920, 1080)
 
-IMAGE_SIZE_INCH = (13.3, 10.2) # my screen is too small, so I'm temporally using a different image size
-#IMAGE_SIZE_INCH = (9.1, 6.0)
+IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM, IMAGE_SIZE_CM[1] / INCH_IN_CM)
 
-SCREEN_SIZE_CM = (55.5, 31.0)
+SCREEN_SIZE_CM = (52.1, 29.3)
 SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] / INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
 
 IMAGE_WIDTH_PX= int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
 # calculate the margins in inch, we set the margin fixed as fixed percentage of the image size
-HORIZONTAL_MARGIN_INCH = IMAGE_SIZE_INCH[0] * 0.1
-VERTICAL_MARGIN_INCH = IMAGE_SIZE_INCH[1] * 0.15
+HORIZONTAL_MARGIN_INCH = IMAGE_SIZE_INCH[0] * 0.03
+VERTICAL_MARGIN_INCH = IMAGE_SIZE_INCH[1] * 0.02
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
 MIN_MARGIN_LEFT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
@@ -61,13 +59,13 @@ MIN_MARGIN_BOTTOM_PX = int(VERTICAL_MARGIN_INCH * RESOLUTION[1] / SCREEN_SIZE_IN
 TOP_LEFT_CORNER_X_PX = MIN_MARGIN_RIGHT_PX
 TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 
-FONT_SIZE = 22
+FONT_SIZE = RESOLUTION[1] // 42
 
 def create_images():
 
     # Read the TSV file
-    stimuli_file_name = OUTPUT_TOP_DIR + 'PopSci_MultiplEYE_EN_example_stimuli.csv'
-    initial_df = pd.read_csv(stimuli_file_name, sep=",")
+    stimuli_file_name = OUTPUT_TOP_DIR + f'multipleye-stimuli-experiment-{LANGUAGE}.csv'
+    initial_df = pd.read_csv(stimuli_file_name, sep=",", encoding='utf8')
 
     if not os.path.isdir(IMAGE_DIR):
         os.mkdir(IMAGE_DIR)
@@ -188,78 +186,79 @@ def create_images():
                     font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
 
                     # make sure this works for different scripts!
-                    words = text.split()
-                    line = ""
-                    lines = []
-                    for word in words:
-                        text_width, text_height = draw.textsize(line + word, font=font)
-                        # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
-                        # sanity check
+                    paragraphs = text.split('\n')
 
-                        if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
-                            if word.endswith('\\n'):
-                                line += word[:-2]
-                                lines.append(line.strip())
-                                line = " "
-                                continue
-                            else:
-                                line += word + " "
-                        else:
-                            lines.append(line.strip())
-                            line = word + " "
-                    lines.append(line.strip())
                     top_left_corner_y_line = TOP_LEFT_CORNER_Y_PX  # we need this variable to have the original values in the next
-                    # iteration, so we are creating a changing representation for the next iteration
-                    for line_idx, line in enumerate(lines):
-                        text_width, text_height = draw.textsize(line, font=font)
-                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
+                    for paragraph in paragraphs:
+                        words = paragraph.split()
+                        line = ""
+                        lines = []
+                        for word in words:
+                            text_width, text_height = draw.textsize(line + word, font=font)
+                            # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
+                            # sanity check
 
-                        # calculate aoi boxes for each letter
-                        top_left_corner_x_letter = TOP_LEFT_CORNER_X_PX
-                        letter_width = text_width / len(line)
-                        words = []
-                        word = ''
-
-                        for char_idx_in_line, letter in enumerate(line):
-                            if letter == ' ':
-                                # add the word once for each char
-                                words.extend([word for _ in range(len(word))] + [pd.NA])
-                                word = ''
+                            if text_width < (IMAGE_WIDTH_PX- (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
+                                line += word.strip() + " "
                             else:
-                                word += letter
+                                lines.append(line.strip())
+                                line = word + " "
 
-                            ### uncomment this if we want to draw the aoi boxes on the image ###
-                            # draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
-                            #                 top_left_corner_x_letter + letter_width,
-                            #                 top_left_corner_y_line + text_height),
-                            #                 outline='red', width=1)
-                            # draw_aoi = True
-                            ####################################################################
+                        lines.append(line.strip())
 
-                            # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
+                        # iteration, so we are creating a changing representation for the next iteration
+                        for line_idx, line in enumerate(lines):
+                            if len(line) == 0:
+                                continue
+                            text_width, text_height = draw.textsize(line, font=font)
+                            draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
 
-                            # as the image is smaller than the actual screen we need to calculate
-                            aoi_letter = [
-                                letter,
-                                top_left_corner_x_letter + ((RESOLUTION[0] - IMAGE_WIDTH_PX)  // 2),
-                                top_left_corner_y_line + ((RESOLUTION[1] - IMAGE_HEIGHT_PX)  // 2),
-                                letter_width,
-                                text_height,
-                                char_idx_in_line,
-                                line_idx,
-                                column_name
-                            ]
+                            # calculate aoi boxes for each letter
+                            top_left_corner_x_letter = TOP_LEFT_CORNER_X_PX
+                            letter_width = text_width / len(line)
+                            words = []
+                            word = ''
 
-                            # update top left corner x for next letter
-                            top_left_corner_x_letter += letter_width
+                            for char_idx_in_line, letter in enumerate(line):
+                                if letter == ' ':
+                                    # add the word once for each char
+                                    words.extend([word for _ in range(len(word))] + [pd.NA])
+                                    word = ''
+                                else:
+                                    word += letter
 
-                            aois.append(aoi_letter)
-                        words.extend([word for _ in range(len(word))])
+                                ### uncomment this if we want to draw the aoi boxes on the image ###
+                                # draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                                #                 top_left_corner_x_letter + letter_width,
+                                #                 top_left_corner_y_line + text_height),
+                                #                 outline='red', width=1)
+                                # draw_aoi = True
+                                ####################################################################
 
-                        all_words.extend(words)
+                                # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
 
-                        # update top left corner y for next line
-                        top_left_corner_y_line += (text_height * SPACE_LINE)
+                                # as the image is smaller than the actual screen we need to calculate
+                                aoi_letter = [
+                                    letter,
+                                    top_left_corner_x_letter + ((RESOLUTION[0] - IMAGE_WIDTH_PX)  // 2),
+                                    top_left_corner_y_line + ((RESOLUTION[1] - IMAGE_HEIGHT_PX)  // 2),
+                                    letter_width,
+                                    text_height,
+                                    char_idx_in_line,
+                                    line_idx,
+                                    column_name
+                                ]
+
+                                # update top left corner x for next letter
+                                top_left_corner_x_letter += letter_width
+
+                                aois.append(aoi_letter)
+                            words.extend([word for _ in range(len(word))])
+
+                            all_words.extend(words)
+
+                            # update top left corner y for next line
+                            top_left_corner_y_line += (text_height * SPACE_LINE)
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
@@ -280,7 +279,7 @@ def create_images():
     image_df = pd.DataFrame(stimulus_images)
     final_df = initial_df.join(image_df)
 
-    final_df.to_csv(f'{stimuli_file_name.strip(".csv")}_with_img_paths{"_aoi" if draw_aoi else ""}.csv',
+    final_df.to_csv(f'{stimuli_file_name[:-4]}_with_img_paths{"_aoi" if draw_aoi else ""}.csv',
                     sep=',',
                     index=False)
 
@@ -435,5 +434,5 @@ def create_final_screen():
 
 if __name__ == '__main__':
     create_images()
-    # create_welcome_screen()
-    # create_final_screen()
+    create_welcome_screen()
+    create_final_screen()

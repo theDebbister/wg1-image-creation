@@ -19,9 +19,9 @@ BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 # # big the picture will be, but this is the whole topic we probably need to discuss later
 # dpi = 72  # variable, it can be changed; dots per inch; how many pixels are in one inch aka 2.54 cm; the value 72 is
 # # taken from the properties of one already created image from this script
-inch_in_cm = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
-# IMAGE_WIDTH_PX= int((image_width_cm * dpi) / inch_in_cm)  # in pixels, for 34 cm it is 963 px
-# IMAGE_HEIGHT_PX = int((image_height_cm * dpi) / inch_in_cm)  # in pixels, for 26 cm it is 737 px
+INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
+# IMAGE_WIDTH_PX= int((image_width_cm * dpi) / INCH_IN_CM)  # in pixels, for 34 cm it is 963 px
+# IMAGE_HEIGHT_PX = int((image_height_cm * dpi) / INCH_IN_CM)  # in pixels, for 26 cm it is 737 px
 
 # if we want to check the screen information we can use this
 # from screeninfo import get_monitors
@@ -29,8 +29,9 @@ inch_in_cm = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 # for m in get_monitors():
 #     print(str(m))
 
-IMAGE_DIR = 'stimuli_images/'
-AOI_DIR = 'stimuli_aoi/'
+OUTPUT_TOP_DIR = 'examples/'
+IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
+AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 
 IMAGE_SIZE_CM = (34, 26)
 
@@ -40,7 +41,7 @@ IMAGE_SIZE_INCH = (13.3, 10.2) # my screen is too small, so I'm temporally using
 #IMAGE_SIZE_INCH = (9.1, 6.0)
 
 SCREEN_SIZE_CM = (55.5, 31.0)
-SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] / inch_in_cm, SCREEN_SIZE_CM[1] / inch_in_cm)
+SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] / INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
 
 IMAGE_WIDTH_PX= int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
@@ -65,19 +66,14 @@ FONT_SIZE = 22
 def create_images():
 
     # Read the TSV file
-    stimuli_file_name = 'multipleye-stimuli-en-test.csv'
-    initial_df = pd.read_csv(stimuli_file_name, sep=";")
+    stimuli_file_name = OUTPUT_TOP_DIR + 'PopSci_MultiplEYE_EN_example_stimuli.csv'
+    initial_df = pd.read_csv(stimuli_file_name, sep=",")
 
     if not os.path.isdir(IMAGE_DIR):
         os.mkdir(IMAGE_DIR)
 
     if not os.path.isdir(AOI_DIR):
         os.mkdir(AOI_DIR)
-
-    # Set a list where will be stored the names of the png files and their paths
-    file_list = []
-
-    # Loop through the rows and columns of the DataFrame
 
     stimulus_images = {}
     draw_aoi = False
@@ -226,6 +222,7 @@ def create_images():
 
                         for char_idx_in_line, letter in enumerate(line):
                             if letter == ' ':
+                                # add the word once for each char
                                 words.extend([word for _ in range(len(word))] + [pd.NA])
                                 word = ''
                             else:
@@ -277,7 +274,7 @@ def create_images():
 
         aoi_df = pd.DataFrame(aois, columns=aoi_header)
         aoi_df['word'] = all_words
-        aoi_df.to_csv(AOI_DIR + aoi_file_name, sep='\n', index=False)
+        aoi_df.to_csv(AOI_DIR + aoi_file_name, sep='\t', index=False)
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
@@ -320,18 +317,18 @@ def create_welcome_screen():
     """
 
     # We have three different logos - load them and change the size if needed
-    cost_logo = Image.open("cost_logo.jpg")
+    cost_logo = Image.open("logo_imgs/cost_logo.jpg")
     cost_width, cost_height = cost_logo.size
     cost_logo_new_size = (cost_width // 7, cost_height // 7)
     cost_logo = cost_logo.resize(cost_logo_new_size)
-    eu_logo = Image.open("eu_fund_logo.png")
+    eu_logo = Image.open("logo_imgs/eu_fund_logo.png")
     eu_width, eu_height = eu_logo.size
     eu_logo_new_size = (eu_width // 7, eu_height // 7)
     eu_logo = eu_logo.resize(eu_logo_new_size)
-    multipleye_logo = Image.open("logo_multipleye.png")
+    multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    welcome_df = pd.read_csv('PopSci_MultiplEYE_EN_example_welcome.csv', sep=",")
+    welcome_df = pd.read_csv('examples/PopSci_MultiplEYE_EN_example_welcome.csv', sep=",")
     welcome_text = welcome_df["welcome_text_1"][0]
     our_blue = "#007baf"
     our_red = "#b94128"
@@ -370,7 +367,7 @@ def create_welcome_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"welcome_screen.png"
-    final_image.save(IMAGE_DIR + filename)
+    final_image.save(IMAGE_DIR  + filename)
 
 def create_final_screen():
     """
@@ -386,10 +383,10 @@ def create_final_screen():
     #eu_width, eu_height = eu_logo.size
     #eu_logo_new_size = (eu_width // 7, eu_height // 7)
     #eu_logo = eu_logo.resize(eu_logo_new_size)
-    multipleye_logo = Image.open("logo_multipleye.png")
+    multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    final_df = pd.read_csv('PopSci_MultiplEYE_EN_example_welcome.csv', sep=",")
+    final_df = pd.read_csv('examples/PopSci_MultiplEYE_EN_example_welcome.csv', sep=",")
     final_text_1 = final_df["final_text_1"][0]
     final_text_2 = final_df["final_text_2"][0]
     our_blue = "#007baf"
@@ -434,7 +431,7 @@ def create_final_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"final_screen.png"
-    final_image.save(IMAGE_DIR + filename)
+    final_image.save(IMAGE_DIR  + filename)
 
 if __name__ == '__main__':
     create_images()

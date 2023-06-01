@@ -13,13 +13,7 @@ SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default
 # Set the picture variables
 BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 
-# # Calculate size of the image from centimeters to pixels However we can start with pixel sizes and then calculate how
-# # big the picture will be, but this is the whole topic we probably need to discuss later
-dpi = 300  # variable, it can be changed; dots per inch; how many pixels are in one inch aka 2.54 cm; the value 72 is
-# # taken from the properties of one already created image from this script
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
-# IMAGE_WIDTH_PX= int((image_width_cm * dpi) / INCH_IN_CM)  # in pixels, for 34 cm it is 963 px
-# IMAGE_HEIGHT_PX = int((image_height_cm * dpi) / INCH_IN_CM)  # in pixels, for 26 cm it is 737 px
 
 # if we want to check the screen information we can use this
 from screeninfo import get_monitors
@@ -32,7 +26,7 @@ OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 
-#IMAGE_SIZE_CM = (36, 28)
+# IMAGE_SIZE_CM = (36, 28)
 IMAGE_SIZE_CM = (25, 19)
 
 RESOLUTION = (1920, 1080)
@@ -46,8 +40,8 @@ IMAGE_WIDTH_PX= int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
 # calculate the margins in inch, we set the margin fixed as fixed percentage of the image size
-HORIZONTAL_MARGIN_INCH = IMAGE_SIZE_INCH[0] * 0.03
-VERTICAL_MARGIN_INCH = IMAGE_SIZE_INCH[1] * 0.02
+HORIZONTAL_MARGIN_INCH = 0.25
+VERTICAL_MARGIN_INCH = 0.3
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
 MIN_MARGIN_LEFT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
@@ -297,8 +291,8 @@ def create_fixation_screen():
 
     # The fixation dot is positioned a bit left to the first char in the  middle of the line
     r = 7
-    fix_x = TOP_LEFT_CORNER_X_PX - 10
-    fix_y = int(TOP_LEFT_CORNER_Y_PX + FONT_SIZE // 2)
+    fix_x = 0.75 * MIN_MARGIN_LEFT_PX
+    fix_y = 1.25 * MIN_MARGIN_TOP_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
@@ -309,6 +303,21 @@ def create_fixation_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"fixation_screen.png"
+    final_image.save(IMAGE_DIR + filename)
+
+def create_empty_screen():
+    """
+    Creates an empty screen
+    """
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"empty_screen.png"
     final_image.save(IMAGE_DIR + filename)
 
 def create_welcome_screen():
@@ -434,6 +443,8 @@ def create_final_screen():
     final_image.save(IMAGE_DIR  + filename)
 
 if __name__ == '__main__':
-    create_images()
-    create_welcome_screen()
-    create_final_screen()
+    # create_images()
+    # create_welcome_screen()
+    # create_final_screen()
+    # create_empty_screen()
+    create_fixation_screen()

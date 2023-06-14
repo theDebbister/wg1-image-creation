@@ -1,5 +1,6 @@
 import os
 import re
+from pathlib import Path
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
@@ -16,15 +17,18 @@ BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 # if we want to check the screen information we can use this
-from screeninfo import get_monitors
-#
-for m in get_monitors():
-    print(str(m))
+# from screeninfo import get_monitors
+# #
+# for m in get_monitors():
+#     print(str(m))
 
 LANGUAGE = 'de'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
+# Set this to true fi you want to generate the images with AOI boxes
+AOI = False
 
 # IMAGE_SIZE_CM = (36, 28)
 IMAGE_SIZE_CM = (25, 19)
@@ -59,8 +63,8 @@ FONT_SIZE = RESOLUTION[1] // 41
 def create_images():
 
     # Read the TSV file
-    stimuli_file_name = OUTPUT_TOP_DIR + f'multipleye-stimuli-experiment-{LANGUAGE}.csv'
-    initial_df = pd.read_csv(stimuli_file_name, sep=",", encoding='utf8')
+    stimuli_file_name = OUTPUT_TOP_DIR + f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
+    initial_df = pd.read_excel(stimuli_file_name, nrows=12)
 
     if not os.path.isdir(IMAGE_DIR):
         os.mkdir(IMAGE_DIR)
@@ -76,7 +80,7 @@ def create_images():
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc='Creating images'):
         text_file_name = row['stimulus_text_title']
         text_file_name = re.sub(' ', '_', text_file_name).lower()
-        text_id = row['stimulus_id']
+        text_id = int(row['stimulus_id'])
 
         aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
         aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
@@ -158,7 +162,7 @@ def create_images():
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
-                    filename = f"{text_file_name}_id{text_id}_{column_name}.png"
+                    filename = f"{text_file_name}_id{text_id}_{column_name}_{LANGUAGE}.png"
                     final_image.save(IMAGE_DIR + filename)
 
                     # store image names and paths
@@ -222,13 +226,12 @@ def create_images():
                                 else:
                                     word += letter
 
-                                ### uncomment this if we want to draw the aoi boxes on the image ###
-                                # draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
-                                #                 top_left_corner_x_letter + letter_width,
-                                #                 top_left_corner_y_line + text_height),
-                                #                 outline='red', width=1)
-                                # draw_aoi = True
-                                ####################################################################
+                                if AOI:
+                                    draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                                                    top_left_corner_x_letter + letter_width,
+                                                    top_left_corner_y_line + text_height),
+                                                    outline='red', width=1)
+                                    draw_aoi = True
 
                                 # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
 
@@ -257,7 +260,7 @@ def create_images():
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
-                    filename = f"{text_file_name}_id{text_id}_{column_name}{'_aoi' if draw_aoi else ''}.png"
+                    filename = f"{text_file_name}_id{text_id}_{column_name}_{LANGUAGE}{'_aoi' if draw_aoi else ''}.png"
                     final_image.save(IMAGE_DIR + filename)
 
                     # store image names and paths
@@ -274,7 +277,13 @@ def create_images():
     image_df = pd.DataFrame(stimulus_images)
     final_df = initial_df.join(image_df)
 
-    final_df.to_csv(f'{stimuli_file_name[:-4]}_with_img_paths{"_aoi" if draw_aoi else ""}.csv',
+    stimuli_file_name_stem = Path(stimuli_file_name).stem
+
+    full_output_file_name = f'{stimuli_file_name_stem}_with_img_paths{"_aoi" if draw_aoi else ""}.csv'
+
+    full_path = os.path.join(OUTPUT_TOP_DIR, full_output_file_name)
+
+    final_df.to_csv(full_path,
                     sep=',',
                     index=False)
 
@@ -302,8 +311,8 @@ def create_fixation_screen():
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
-    filename = f"fixation_screen.png"
-    final_image.save(IMAGE_DIR + filename)
+    filename = f"fixation_screen_{LANGUAGE}.png"
+    final_image.save(OTHER_SCREENS_DIR + filename)
 
 def create_empty_screen():
     """
@@ -317,8 +326,8 @@ def create_empty_screen():
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
-    filename = f"empty_screen.png"
-    final_image.save(IMAGE_DIR + filename)
+    filename = f"empty_screen_{LANGUAGE}.png"
+    final_image.save(OTHER_SCREENS_DIR + filename)
 
 def create_welcome_screen():
     """
@@ -345,7 +354,7 @@ def create_welcome_screen():
     font_type = "open-sans-bold.ttf"
 
     # Create a new image with a white background and previously defined size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color="#FFFFFF")
+    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -375,8 +384,8 @@ def create_welcome_screen():
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
-    filename = f"welcome_screen.png"
-    final_image.save(IMAGE_DIR  + filename)
+    filename = f"welcome_screen_{LANGUAGE}.png"
+    final_image.save(OTHER_SCREENS_DIR  + filename)
 
 def create_final_screen():
     """
@@ -404,7 +413,7 @@ def create_final_screen():
     font_type = "open-sans-bold.ttf"
 
     # Create a new image with a white background and previously defined size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color="#FFFFFF")
+    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -439,12 +448,15 @@ def create_final_screen():
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
-    filename = f"final_screen.png"
-    final_image.save(IMAGE_DIR  + filename)
+    filename = f"final_screen_{LANGUAGE}.png"
+    final_image.save(OTHER_SCREENS_DIR  + filename)
 
 if __name__ == '__main__':
-    # create_images()
-    # create_welcome_screen()
-    # create_final_screen()
-    # create_empty_screen()
+    if not os.path.isdir(OTHER_SCREENS_DIR):
+        os.mkdir(OTHER_SCREENS_DIR)
+
+    create_images()
+    create_welcome_screen()
+    create_final_screen()
+    create_empty_screen()
     create_fixation_screen()

@@ -1,7 +1,0 @@
-,other_screen_id,other_screen_title,other_screen_text_1,other_screen_text_2,comment,other_screen_img_path,other_screen_img_file
-0,1.0,welcome_screen,Welcome to the Multipleye experiment.,,,,
-1,2.0,empty_screen,,,,,
-2,3.0,fixation_screen,,,,,
-3,4.0,break_screen,Press space to pause.,,,,
-4,5.0,final_screen,Thanks for your participation!,Goodbye!,,,
-break_screen,,,,,,stimuli_de/other_screens/break_screen_de.png,break_screen_de.png

@@ -30,7 +30,7 @@ IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 # Set this to true fi you want to generate the images with AOI boxes
-other_screens_file_path = OUTPUT_TOP_DIR + \
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
     f'multipleye-other-screens-{LANGUAGE}.csv'
 
 AOI = False
@@ -321,43 +321,45 @@ def create_images():
 
 def create_csv():
     # Check if auxiliary csv file exists
-    if os.path.exists(other_screens_file_path):
+    if os.path.exists(OTHER_SCREENS_FILE_PATH):
         pass
 
     # Create a csv file for the other screen
     else:
         other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1', 'other_screen_text_2',
-                                     'comment', 'other_screen_img_path', 'other_screen_img_file']
-        other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', '', '', ''],
-                              [2, 'empty_screen', '', '', '', '', ''],
-                              [3, 'fixation_screen', '', '', '', '', ''],
+                                     'comment']
+        other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', ''],
+                              [2, 'empty_screen', '', '', ''],
+                              [3, 'fixation_screen', '', '', ''],
                               [4, 'break_screen', 'Press space to pause.',
-                                  '', '', '', ''],
-                              [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', '', '', '']]
-        with open(other_screens_file_path, 'w', encoding='utf8', newline='') as f:
+                                  '', ''],
+                              [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', '']]
+        with open(OTHER_SCREENS_FILE_PATH, 'w', encoding='utf8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(other_screens_file_header)
             writer.writerows(other_screens_data)
 
 
-def save_to_csv(other_screen_name, other_screen_img_file, image):
+def save_to_csv(other_screen_id, other_screen_img_file, image):
     # Saving the image to the other screens directory first
     if not os.path.isdir(OTHER_SCREENS_DIR):
         os.mkdir(OTHER_SCREENS_DIR)
     image.save(OTHER_SCREENS_DIR + other_screen_img_file)
 
     # Add the two columns for the paths of other screens upon creation
-    other_screens_file_path = OUTPUT_TOP_DIR + \
-        f'multipleye-other-screens-{LANGUAGE}.csv'
-    df = pd.read_csv(other_screens_file_path)
+    copy = OTHER_SCREENS_FILE_PATH[:-4] + '_with_img_paths.csv'
 
-    if 'other_screen_img_path' and 'other_screen_img_file' not in df:
+    if os.path.exists(copy):
+        df = pd.read_csv(copy)
+    else:
+        df = pd.read_csv(OTHER_SCREENS_FILE_PATH)
         df['other_screen_img_path'] = ''
         df['other_screen_img_file'] = ''
-    df.at[other_screen_name,
+
+    df.at[other_screen_id-1,
           'other_screen_img_path'] = OTHER_SCREENS_DIR + other_screen_img_file
-    df.at[other_screen_name, 'other_screen_img_file'] = other_screen_img_file
-    df.to_csv(other_screens_file_path[:-4] + '_with_image_paths.csv')
+    df.at[other_screen_id-1, 'other_screen_img_file'] = other_screen_img_file
+    df.to_csv(copy, index=False)
 
 
 def create_fixation_screen():
@@ -387,7 +389,7 @@ def create_fixation_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"fixation_screen_{LANGUAGE}.png"
-    save_to_csv('fixation_screen', filename, final_image)
+    save_to_csv(3, filename, final_image)
 
 
 def create_empty_screen():
@@ -406,7 +408,7 @@ def create_empty_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"empty_screen_{LANGUAGE}.png"
-    save_to_csv('empty_screen', filename, final_image)
+    save_to_csv(2, filename, final_image)
 
 
 def create_welcome_screen():
@@ -427,7 +429,7 @@ def create_welcome_screen():
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    welcome_df = pd.read_csv(other_screens_file_path, sep=",")
+    welcome_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
     welcome_text = welcome_df["other_screen_text_1"][0]
     our_blue = "#007baf"
     our_red = "#b94128"
@@ -471,7 +473,7 @@ def create_welcome_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"welcome_screen_{LANGUAGE}.png"
-    save_to_csv('welcome_screen', filename, final_image)
+    save_to_csv(1, filename, final_image)
 
 
 def create_final_screen():
@@ -492,7 +494,7 @@ def create_final_screen():
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    final_df = pd.read_csv(other_screens_file_path, sep=",")
+    final_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
     final_text_1 = final_df["other_screen_text_1"][4]
     final_text_2 = final_df["other_screen_text_2"][4]
     our_blue = "#007baf"
@@ -526,12 +528,18 @@ def create_final_screen():
 
     # Paste the texts onto the final image
     font = ImageFont.truetype(font_type, font_size)
-    text_width_A, text_height_A = draw.textsize(final_text_1, font=font)
+    left, top, right, bottom = draw.multiline_textbbox(
+        (0, 0), final_text_1, font=font)
+    text_width_A, text_height_A = right - left, bottom - top
+    # text_width_A, text_height_A = draw.textsize(final_text_1, font=font)
     text_x_A = (IMAGE_WIDTH_PX - text_width_A) / 2
     text_y_A = (IMAGE_HEIGHT_PX - text_height_A) / 2
     draw.text((text_x_A, text_y_A), final_text_1, font=font, fill=our_blue)
 
-    text_width_B, text_height_B = draw.textsize(final_text_2, font=font)
+    left, top, right, bottom = draw.multiline_textbbox(
+        (0, 0), final_text_2, font=font)
+    text_width_B, text_height_B = right - left, bottom - top
+    # text_width_B, text_height_B = draw.textsize(final_text_2, font=font)
     text_x_B = (IMAGE_WIDTH_PX - text_width_B) / 2
     text_y_B = (IMAGE_HEIGHT_PX + text_height_B + (text_height_A * 2)) / 2
     draw.text((text_x_B, text_y_B), final_text_2, font=font, fill=our_red)
@@ -539,7 +547,7 @@ def create_final_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"final_screen_{LANGUAGE}.png"
-    save_to_csv('final_screen', filename, final_image)
+    save_to_csv(5, filename, final_image)
 
 
 def create_break_screen():
@@ -549,7 +557,7 @@ def create_break_screen():
     create_csv()
 
     # Set the text
-    break_df = pd.read_csv(other_screens_file_path, sep=",")
+    break_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
     break_text = break_df["other_screen_text_1"][3]
 
     # Create a new image with a previously defined color background and size
@@ -571,7 +579,7 @@ def create_break_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"break_screen_{LANGUAGE}.png"
-    save_to_csv('break_screen', filename, final_image)
+    save_to_csv(4, filename, final_image)
 
 
 if __name__ == '__main__':

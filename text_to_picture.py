@@ -9,9 +9,11 @@ from screeninfo import get_monitors
 from tqdm import tqdm
 
 # Set the font variables we want
-FONT_TYPE = "JetBrainsMono-Regular.ttf"  # or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+# or possibly a path like "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+FONT_TYPE = "JetBrainsMono-Regular.ttf"
 TEXT_COLOR = (0, 0, 0)
-SPACE_LINE = 3.0  # vertical spacing between lines; in units of font’s default line height proportion
+# vertical spacing between lines; in units of font’s default line height proportion
+SPACE_LINE = 3.0
 
 # Set the picture variables
 BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
@@ -28,16 +30,21 @@ IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 # Set this to true fi you want to generate the images with AOI boxes
+other_screens_file_path = OUTPUT_TOP_DIR + \
+    f'multipleye-other-screens-{LANGUAGE}.csv'
+
 AOI = False
 
 RESOLUTION = (1920, 1080)
 
 # IMAGE_SIZE_CM = (36, 28)
 IMAGE_SIZE_CM = (25, 19)
-IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM, IMAGE_SIZE_CM[1] / INCH_IN_CM)
+IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM,
+                   IMAGE_SIZE_CM[1] / INCH_IN_CM)
 
 SCREEN_SIZE_CM = (34.4, 19.4)
-SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] / INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
+SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] /
+                    INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
@@ -47,8 +54,10 @@ HORIZONTAL_MARGIN_INCH = 0.25
 VERTICAL_MARGIN_INCH = 0.3
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
-MIN_MARGIN_LEFT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-MIN_MARGIN_RIGHT_PX = int(HORIZONTAL_MARGIN_INCH * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
+MIN_MARGIN_LEFT_PX = int(HORIZONTAL_MARGIN_INCH *
+                         RESOLUTION[0] / SCREEN_SIZE_INCH[0])
+MIN_MARGIN_RIGHT_PX = int(HORIZONTAL_MARGIN_INCH *
+                          RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 MIN_MARGIN_TOP_PX = (RESOLUTION[1] // 41) * 2
 MIN_MARGIN_BOTTOM_PX = (RESOLUTION[1] // 41) * 2
 
@@ -61,7 +70,8 @@ FONT_SIZE = RESOLUTION[1] // 41
 
 def create_images():
     # Read the TSV file
-    stimuli_file_name = OUTPUT_TOP_DIR + f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
+    stimuli_file_name = OUTPUT_TOP_DIR + \
+        f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
     initial_df = pd.read_excel(stimuli_file_name, nrows=12)
 
     if not os.path.isdir(IMAGE_DIR):
@@ -81,7 +91,8 @@ def create_images():
         text_id = int(row['stimulus_id'])
 
         aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
-        aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
+        aoi_header = ['char', 'x', 'y', 'width', 'height',
+                      'char_idx_in_line', 'line_idx', 'page']
         aois = []
         all_words = []
 
@@ -124,7 +135,8 @@ def create_images():
                     text = text_question + "\n\n\n" + answers
 
                     # Create a new image with a previously defined color background and size
-                    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+                    final_image = Image.new(
+                        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
@@ -140,7 +152,8 @@ def create_images():
                     line = ""
                     lines = []
                     for word in words:
-                        left, top, right, bottom = draw.multiline_textbbox((0, 0), line + word, font=font)
+                        left, top, right, bottom = draw.multiline_textbbox(
+                            (0, 0), line + word, font=font)
                         text_width, text_height = right - left, bottom - top
                         # text_width, text_height = draw.textsize(line + word, font=font)
                         # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
@@ -152,13 +165,16 @@ def create_images():
                             line = word + " "
 
                     lines.append(line.strip())
-                    top_left_corner_line = TOP_LEFT_CORNER_Y_PX  # we need this variable to have the original values in the next
+                    # we need this variable to have the original values in the next
+                    top_left_corner_line = TOP_LEFT_CORNER_Y_PX
                     # iteration, so we are creating a changing representation for the next iteration
                     for line in lines:
-                        left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
+                        left, top, right, bottom = draw.multiline_textbbox(
+                            (0, 0), line, font=font)
                         text_width, text_height = right - left, bottom - top
                         # text_width, text_height = draw.textsize(line, font=font)
-                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line), line, fill=TEXT_COLOR, font=font)
+                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line),
+                                  line, fill=TEXT_COLOR, font=font)
                         top_left_corner_line += (text_height * SPACE_LINE)
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
@@ -177,7 +193,8 @@ def create_images():
                     text = str(initial_df.iloc[row_index, col_index])
 
                     # Create a new image with a previously defined color background and size
-                    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+                    final_image = Image.new(
+                        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
@@ -195,7 +212,8 @@ def create_images():
                         line = ""
                         lines = []
                         for word in words:
-                            left, top, right, bottom = draw.multiline_textbbox((0, 0), line + word, font=font)
+                            left, top, right, bottom = draw.multiline_textbbox(
+                                (0, 0), line + word, font=font)
                             text_width, text_height = right - left, bottom - top
                             # text_width, text_height = draw.textsize(line + word, font=font)
                             # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
@@ -213,10 +231,12 @@ def create_images():
                         for line_idx, line in enumerate(lines):
                             if len(line) == 0:
                                 continue
-                            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
+                            left, top, right, bottom = draw.multiline_textbbox(
+                                (0, 0), line, font=font)
                             text_width, text_height = right - left, bottom - top
                             # text_width, text_height = draw.textsize(line, font=font)
-                            draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
+                            draw.text(
+                                (TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
 
                             # calculate aoi boxes for each letter
                             top_left_corner_x_letter = TOP_LEFT_CORNER_X_PX
@@ -227,7 +247,8 @@ def create_images():
                             for char_idx_in_line, letter in enumerate(line):
                                 if letter == ' ':
                                     # add the word once for each char
-                                    words.extend([word for _ in range(len(word))] + [pd.NA])
+                                    words.extend(
+                                        [word for _ in range(len(word))] + [pd.NA])
                                     word = ''
                                 else:
                                     word += letter
@@ -236,7 +257,7 @@ def create_images():
                                     draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
                                                     top_left_corner_x_letter + letter_width,
                                                     top_left_corner_y_line + text_height),
-                                                    outline='red', width=1)
+                                                   outline='red', width=1)
                                     draw_aoi = True
 
                                 # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
@@ -244,8 +265,11 @@ def create_images():
                                 # as the image is smaller than the actual screen we need to calculate
                                 aoi_letter = [
                                     letter,
-                                    top_left_corner_x_letter + ((RESOLUTION[0] - IMAGE_WIDTH_PX) // 2),
-                                    top_left_corner_y_line + ((RESOLUTION[1] - IMAGE_HEIGHT_PX) // 2),
+                                    top_left_corner_x_letter +
+                                    ((RESOLUTION[0] - IMAGE_WIDTH_PX) // 2),
+                                    top_left_corner_y_line +
+                                    ((RESOLUTION[1] -
+                                      IMAGE_HEIGHT_PX) // 2),
                                     letter_width,
                                     text_height,
                                     char_idx_in_line,
@@ -262,7 +286,8 @@ def create_images():
                             all_words.extend(words)
 
                             # update top left corner y for next line
-                            top_left_corner_y_line += (text_height * SPACE_LINE)
+                            top_left_corner_y_line += (text_height *
+                                                       SPACE_LINE)
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
@@ -295,30 +320,55 @@ def create_images():
 
 
 def create_csv():
+    # Check if auxiliary csv file exists
+    if os.path.exists(other_screens_file_path):
+        pass
+
     # Create a csv file for the other screen
-    other_screen_file_path = OUTPUT_TOP_DIR + f'multipleye-other-screen-{LANGUAGE}.csv'
-    other_screen_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1', 'other_screen_text_2',
-                                'comment', 'other_screen_img_path', 'other_screen_img_file']
-    other_screen_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', '', '', ''],
-                         [2, 'empty_screen', '', '', '', '', ''],
-                         [3, 'fixation_screen', '', '', '', '', ''],
-                         [4, 'break_screen', 'Press space to pause.', '', '', '', ''],
-                         [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', '', '', '']]
+    else:
+        other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1', 'other_screen_text_2',
+                                     'comment', 'other_screen_img_path', 'other_screen_img_file']
+        other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', '', '', ''],
+                              [2, 'empty_screen', '', '', '', '', ''],
+                              [3, 'fixation_screen', '', '', '', '', ''],
+                              [4, 'break_screen', 'Press space to pause.',
+                                  '', '', '', ''],
+                              [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', '', '', '']]
+        with open(other_screens_file_path, 'w', encoding='utf8', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(other_screens_file_header)
+            writer.writerows(other_screens_data)
 
-    with open(other_screen_file_path, 'w', encoding='utf8', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(other_screen_file_header)
-        writer.writerows(other_screen_data)
 
-    print(os.path.exists(other_screen_file_path))
+def save_to_csv(other_screen_name, other_screen_img_file, image):
+    # Saving the image to the other screens directory first
+    if not os.path.isdir(OTHER_SCREENS_DIR):
+        os.mkdir(OTHER_SCREENS_DIR)
+    image.save(OTHER_SCREENS_DIR + other_screen_img_file)
+
+    # Add the two columns for the paths of other screens upon creation
+    other_screens_file_path = OUTPUT_TOP_DIR + \
+        f'multipleye-other-screens-{LANGUAGE}.csv'
+    df = pd.read_csv(other_screens_file_path)
+
+    if 'other_screen_img_path' and 'other_screen_img_file' not in df:
+        df['other_screen_img_path'] = ''
+        df['other_screen_img_file'] = ''
+    df.at[other_screen_name,
+          'other_screen_img_path'] = OTHER_SCREENS_DIR + other_screen_img_file
+    df.at[other_screen_name, 'other_screen_img_file'] = other_screen_img_file
+    df.to_csv(other_screens_file_path[:-4] + '_with_image_paths.csv')
 
 
 def create_fixation_screen():
     """
     Creates a fixation screen with a black background and a white cross in the middle of the screen.
     """
+    create_csv()
+
     # Create a new image with a previously defined color background and size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -337,17 +387,18 @@ def create_fixation_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"fixation_screen_{LANGUAGE}.png"
-    if not os.path.isdir(OTHER_SCREENS_DIR):
-        os.mkdir(OTHER_SCREENS_DIR)
-    final_image.save(OTHER_SCREENS_DIR + filename)
+    save_to_csv('fixation_screen', filename, final_image)
 
 
 def create_empty_screen():
     """
     Creates an empty screen
     """
+    create_csv()
+
     # Create a new image with a previously defined color background and size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -355,15 +406,14 @@ def create_empty_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"empty_screen_{LANGUAGE}.png"
-    if not os.path.isdir(OTHER_SCREENS_DIR):
-        os.mkdir(OTHER_SCREENS_DIR)
-    final_image.save(OTHER_SCREENS_DIR + filename)
+    save_to_csv('empty_screen', filename, final_image)
 
 
 def create_welcome_screen():
     """
     Creates a welcome screen with a white background, all the logos and a blue greeting in the middle of the screen.
     """
+    create_csv()
 
     # We have three different logos - load them and change the size if needed
     cost_logo = Image.open("logo_imgs/cost_logo.jpg")
@@ -376,13 +426,8 @@ def create_welcome_screen():
     eu_logo = eu_logo.resize(eu_logo_new_size)
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
-    # Check if auxiliary csv file exists
-    other_screen_path = OUTPUT_TOP_DIR + f'multipleye-other-screen-{LANGUAGE}.csv'
-    if not os.path.exists(other_screen_path):
-        create_csv()
-
     # Set the text
-    welcome_df = pd.read_csv(other_screen_path, sep=",")
+    welcome_df = pd.read_csv(other_screens_file_path, sep=",")
     welcome_text = welcome_df["other_screen_text_1"][0]
     our_blue = "#007baf"
     our_red = "#b94128"
@@ -390,7 +435,8 @@ def create_welcome_screen():
     font_type = "open-sans-bold.ttf"
 
     # Create a new image with a white background and previously defined size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -407,13 +453,15 @@ def create_welcome_screen():
     cost_logo_position = (cost_logo_x, cost_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates
-    final_image.paste(multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
+    final_image.paste(
+        multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
     final_image.paste(eu_logo, eu_logo_position, mask=eu_logo)
     final_image.paste(cost_logo, cost_logo_position)
 
     # Paste the text onto the final image
     font = ImageFont.truetype(font_type, font_size)
-    left, top, right, bottom = draw.multiline_textbbox((0, 0), welcome_text, font=font)
+    left, top, right, bottom = draw.multiline_textbbox(
+        (0, 0), welcome_text, font=font)
     text_width, text_height = right - left, bottom - top
     # text_width, text_height = draw.textsize(welcome_text, font=font)
     text_x = (IMAGE_WIDTH_PX - text_width) / 2
@@ -423,15 +471,14 @@ def create_welcome_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"welcome_screen_{LANGUAGE}.png"
-    if not os.path.isdir(OTHER_SCREENS_DIR):
-        os.mkdir(OTHER_SCREENS_DIR)
-    final_image.save(OTHER_SCREENS_DIR + filename)
+    save_to_csv('welcome_screen', filename, final_image)
 
 
 def create_final_screen():
     """
     Creates a final screen with a white background, one logo and a blue messages in the middle of the screen.
     """
+    create_csv()
 
     # We have one multipleye logo - we can load other if needed
     # cost_logo = Image.open("cost_logo.jpg")
@@ -444,13 +491,8 @@ def create_final_screen():
     # eu_logo = eu_logo.resize(eu_logo_new_size)
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
-    # Check if auxiliary csv file exists
-    other_screen_path = OUTPUT_TOP_DIR + f'multipleye-other-screen-{LANGUAGE}.csv'
-    if not os.path.exists(other_screen_path):
-        create_csv()
-
     # Set the text
-    final_df = pd.read_csv(other_screen_path, sep=",")
+    final_df = pd.read_csv(other_screens_file_path, sep=",")
     final_text_1 = final_df["other_screen_text_1"][4]
     final_text_2 = final_df["other_screen_text_2"][4]
     our_blue = "#007baf"
@@ -459,7 +501,8 @@ def create_final_screen():
     font_type = "open-sans-bold.ttf"
 
     # Create a new image with a white background and previously defined size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -476,7 +519,8 @@ def create_final_screen():
     # cost_logo_position = (cost_logo_x, cost_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates
-    final_image.paste(multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
+    final_image.paste(
+        multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
     # final_image.paste(eu_logo, eu_logo_position, mask = eu_logo)
     # final_image.paste(cost_logo, cost_logo_position)
 
@@ -495,26 +539,22 @@ def create_final_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"final_screen_{LANGUAGE}.png"
-    if not os.path.isdir(OTHER_SCREENS_DIR):
-        os.mkdir(OTHER_SCREENS_DIR)
-    final_image.save(OTHER_SCREENS_DIR + filename)
+    save_to_csv('final_screen', filename, final_image)
 
 
 def create_break_screen():
     """
     Creates a break screen with a white background, one hint message on the screen.
     """
-    # Check if auxiliary csv file exists
-    other_screen_path = OUTPUT_TOP_DIR + f'multipleye-other-screen-{LANGUAGE}.csv'
-    if not os.path.exists(other_screen_path):
-        create_csv()
+    create_csv()
 
     # Set the text
-    break_df = pd.read_csv(other_screen_path, sep=",")
+    break_df = pd.read_csv(other_screens_file_path, sep=",")
     break_text = break_df["other_screen_text_1"][3]
 
     # Create a new image with a previously defined color background and size
-    final_image = Image.new('RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
     # Create a drawing object
     draw = ImageDraw.Draw(final_image)
@@ -525,18 +565,17 @@ def create_break_screen():
     # text_width, text_height = right - left, bottom - top
     # text_width, text_height = draw.textsize(welcome_text, font=font)
 
-    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX), break_text, font=font, fill=TEXT_COLOR)
+    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
+              break_text, font=font, fill=TEXT_COLOR)
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"break_screen_{LANGUAGE}.png"
-    if not os.path.isdir(OTHER_SCREENS_DIR):
-        os.mkdir(OTHER_SCREENS_DIR)
-    final_image.save(OTHER_SCREENS_DIR + filename)
+    save_to_csv('break_screen', filename, final_image)
 
 
 if __name__ == '__main__':
-    create_images()
+    # create_images()
     create_welcome_screen()
     create_final_screen()
     create_empty_screen()

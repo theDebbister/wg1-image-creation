@@ -240,6 +240,7 @@ Temporary Items
 */stimuli_images/
 */stimuli_aoi/
 */other_screens/
+*/stimuli_aoi_images/
 
 .vscode/*
 !.vscode/settings.json

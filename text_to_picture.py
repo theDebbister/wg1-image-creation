@@ -28,12 +28,13 @@ LANGUAGE = 'de'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 # Set this to true fi you want to generate the images with AOI boxes
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
     f'multipleye-other-screens-{LANGUAGE}.csv'
 
-AOI = False
+AOI = True
 
 RESOLUTION = (1920, 1080)
 
@@ -79,6 +80,9 @@ def create_images():
 
     if not os.path.isdir(AOI_DIR):
         os.mkdir(AOI_DIR)
+
+    if not os.path.isdir(AOI_IMG_DIR):
+        os.mkdir(AOI_IMG_DIR)
 
     stimulus_images = {}
     draw_aoi = False
@@ -292,12 +296,12 @@ def create_images():
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
                     filename = f"{text_file_name}_id{text_id}_{column_name}_{LANGUAGE}{'_aoi' if draw_aoi else ''}.png"
-                    final_image.save(IMAGE_DIR + filename)
 
-                    # store image names and paths
-                    path = IMAGE_DIR + filename  # maybe we can
-                    # set path in the beginning as an object
-                    stimulus_images[new_col_name_path].append(path)
+                    img_path = AOI_IMG_DIR if draw_aoi else IMAGE_DIR
+                    img_path = os.path.join(img_path, filename)
+                    final_image.save(img_path)
+
+                    stimulus_images[new_col_name_path].append(img_path)
                     stimulus_images[new_col_name_file].append(filename)
 
         aoi_df = pd.DataFrame(aois, columns=aoi_header)
@@ -583,7 +587,7 @@ def create_break_screen():
 
 
 if __name__ == '__main__':
-    # create_images()
+    create_images()
     create_welcome_screen()
     create_final_screen()
     create_empty_screen()

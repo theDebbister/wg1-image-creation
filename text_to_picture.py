@@ -24,7 +24,7 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 for m in get_monitors():
     print(str(m))
 
-LANGUAGE = 'de'
+LANGUAGE = 'en'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
@@ -34,7 +34,7 @@ OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
     f'multipleye-other-screens-{LANGUAGE}.csv'
 
-AOI = True
+AOI = False
 
 RESOLUTION = (1920, 1080)
 
@@ -89,7 +89,7 @@ def create_images():
 
     create_fixation_screen()
 
-    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc='Creating images'):
+    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc=f'Creating {LANGUAGE} images'):
         text_file_name = row['stimulus_text_title']
         text_file_name = re.sub(' ', '_', text_file_name).lower()
         text_id = int(row['stimulus_id'])
@@ -368,7 +368,7 @@ def save_to_csv(other_screen_id, other_screen_img_file, image):
 
 def create_fixation_screen():
     """
-    Creates a fixation screen with a black background and a white cross in the middle of the screen.
+    Creates a fixation screen with a white background and a fixation dot in the top left corner.
     """
     create_csv()
 
@@ -397,9 +397,6 @@ def create_fixation_screen():
 
 
 def create_empty_screen():
-    """
-    Creates an empty screen
-    """
     create_csv()
 
     # Create a new image with a previously defined color background and size
@@ -587,7 +584,7 @@ def create_break_screen():
 
 
 if __name__ == '__main__':
-    create_images()
+    # create_images()
     create_welcome_screen()
     create_final_screen()
     create_empty_screen()

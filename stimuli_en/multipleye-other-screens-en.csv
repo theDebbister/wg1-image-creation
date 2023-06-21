@@ -1,0 +1,7 @@
+other_screen_id,other_screen_title,other_screen_text_1,other_screen_text_2,comment
+1,welcome_screen,Welcome to the MultiplEYE experiment,,
+2,empty_screen,,,
+3,fixation_screen,,,
+4,break_screen,"If you are ready to continue with the next text,
+please press space.",,
+5,final_screen,Thank you very much for participating in this experiment!,Good Bye!,

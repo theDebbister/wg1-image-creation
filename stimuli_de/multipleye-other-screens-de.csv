@@ -1,6 +1,7 @@
 other_screen_id,other_screen_title,other_screen_text_1,other_screen_text_2,comment
-1,welcome_screen,Welcome to the Multipleye experiment.,,
+1,welcome_screen,Herzlich Willkommen zum MultiplEYE Experiment,,
 2,empty_screen,,,
 3,fixation_screen,,,
-4,break_screen,Press space to pause.,,
-5,final_screen,Thanks for your participation!,Goodbye!,
+4,break_screen,"Wenn Sie bereit sind, mit dem nächsten Text weiterzumachen,
+drücken Sie bitte die Leertaste.",,
+5,final_screen,Vielen herzlichen Dank für Ihre Teilnahme!,Auf Wiedersehen!,

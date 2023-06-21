@@ -1,0 +1,6 @@
+id, name, path, image_name, text,
+1, empty_screen, ..., empty_screen.png, pd.NA,
+2, welcome_screen, .., welcome_screen.png, Welcome,
+3,
+4,
+5, break_screen

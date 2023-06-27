@@ -24,7 +24,7 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 for m in get_monitors():
     print(str(m))
 
-LANGUAGE = 'en'
+LANGUAGE = 'lt'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
@@ -32,7 +32,7 @@ AOI_IMG_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 # Set this to true fi you want to generate the images with AOI boxes
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
-    f'multipleye-other-screens-{LANGUAGE}.csv'
+                          f'multipleye-other-screens-{LANGUAGE}.csv'
 
 AOI = False
 
@@ -72,7 +72,7 @@ FONT_SIZE = RESOLUTION[1] // 41
 def create_images():
     # Read the TSV file
     stimuli_file_name = OUTPUT_TOP_DIR + \
-        f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
+                        f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
     initial_df = pd.read_excel(stimuli_file_name, nrows=12)
 
     if not os.path.isdir(IMAGE_DIR):
@@ -330,13 +330,14 @@ def create_csv():
 
     # Create a csv file for the other screen
     else:
-        other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1', 'other_screen_text_2',
+        other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1',
+                                     'other_screen_text_2',
                                      'comment']
         other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', ''],
                               [2, 'empty_screen', '', '', ''],
                               [3, 'fixation_screen', '', '', ''],
                               [4, 'break_screen', 'Press space to pause.',
-                                  '', ''],
+                               '', ''],
                               [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', '']]
         with open(OTHER_SCREENS_FILE_PATH, 'w', encoding='utf8', newline='') as f:
             writer = csv.writer(f)
@@ -360,9 +361,9 @@ def save_to_csv(other_screen_id, other_screen_img_file, image):
         df['other_screen_img_path'] = ''
         df['other_screen_img_file'] = ''
 
-    df.at[other_screen_id-1,
-          'other_screen_img_path'] = OTHER_SCREENS_DIR + other_screen_img_file
-    df.at[other_screen_id-1, 'other_screen_img_file'] = other_screen_img_file
+    df.at[other_screen_id - 1,
+    'other_screen_img_path'] = OTHER_SCREENS_DIR + other_screen_img_file
+    df.at[other_screen_id - 1, 'other_screen_img_file'] = other_screen_img_file
     df.to_csv(copy, index=False)
 
 
@@ -583,10 +584,14 @@ def create_break_screen():
     save_to_csv(4, filename, final_image)
 
 
+def create_other_screens():
+    pass
+
+
 if __name__ == '__main__':
-    # create_images()
-    create_welcome_screen()
-    create_final_screen()
-    create_empty_screen()
-    create_fixation_screen()
-    create_break_screen()
+    create_images()
+    # create_welcome_screen()
+    # create_final_screen()
+    # create_empty_screen()
+    # create_fixation_screen()
+    # create_break_screen()

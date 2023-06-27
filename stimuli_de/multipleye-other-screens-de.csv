@@ -1,7 +1,16 @@
-other_screen_id,other_screen_title,other_screen_text_1,other_screen_text_2,comment
-1,welcome_screen,Herzlich Willkommen zum MultiplEYE Experiment,,
-2,empty_screen,,,
-3,fixation_screen,,,
+other_screen_id,other_screen_title,other_screen_text_1,comment
+1,welcome_screen,Herzlich Willkommen zum MultiplEYE Experiment,
+2,empty_screen,,
+3,fixation_screen,,
 4,break_screen,"Wenn Sie bereit sind, mit dem nächsten Text weiterzumachen,
-drücken Sie bitte die Leertaste.",,
-5,final_screen,Vielen herzlichen Dank für Ihre Teilnahme!,Auf Wiedersehen!,
+drücken Sie bitte die Leertaste.",
+5,final_screen,Vielen herzlichen Dank für Ihre Teilnahme!
+
+Auf Wiedersehen!,
+6,instruction_screen,"In diesem Experiment werden Sie eine Reihe von Texten lesen.
+Jeder Text ist in Seiten aufgeteilt. Bitte lesen Sie die Text aufmerksam durch.
+Wenn sie fertig sind, schauen Sie an den rechten unteren Bildrand und drücken Sie die Leertaste.
+Dann erscheint die nächste Seite.
+Nach jedem Text werden Sie ein paar Fragen beantworten müssen.",
+7,practice_screen,"Es folgt jetzt ein Übungstext. Sie können so lange üben,
+wie Sie möchten und Fragen stellen.",

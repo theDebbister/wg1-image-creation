@@ -24,7 +24,7 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 for m in get_monitors():
     print(str(m))
 
-LANGUAGE = 'lt'
+LANGUAGE = 'en'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
@@ -328,17 +328,28 @@ def create_csv():
     if os.path.exists(OTHER_SCREENS_FILE_PATH):
         pass
 
-    # Create a csv file for the other screen
+    # Create a csv file for the other screens
     else:
         other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1',
-                                     'other_screen_text_2',
-                                     'comment']
+                                     'other_screen_text_2','comment', ]
         other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', ''],
                               [2, 'empty_screen', '', '', ''],
                               [3, 'fixation_screen', '', '', ''],
                               [4, 'break_screen', 'Press space to pause.',
                                '', ''],
-                              [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', '']]
+                              [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', ''],
+                              [6, 'instruction_screen', 'In this experiment you will read a series of texts. Each text '
+                                                        'is divided into a few pages. Please read the text carefully. '
+                                                        'When you are finished, look at the bottom right edge of the '
+                                                        'screen and press the space bar. Then the next page will appear. '
+                                                        'After each text you will have to answer a few questions.', '', ''],
+                              [7, 'practice_screen', 'Now an exercise text will follow. In practice you do not have to'
+                                                     ' hurry and you can ask questions.', '', ''],
+                              [8, 'transition_screen', 'This is the end of the practice part. Just to remind you: Read '
+                                                      'the text carefully. When you\'re done, look at the bottom right '
+                                                      'of the screen and press the space bar. Then the next page will '
+                                                      'appear. After each text, you will have to answer a few '
+                                                      'questions.', '', ''],]
         with open(OTHER_SCREENS_FILE_PATH, 'w', encoding='utf8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(other_screens_file_header)
@@ -587,11 +598,362 @@ def create_break_screen():
 def create_other_screens():
     pass
 
+def create_practice_images():
+    # Read the excel file
+    stimuli_file_name = OUTPUT_TOP_DIR + \
+                        f'multipleye-stimuli-practice-{LANGUAGE}.xlsx'
+    initial_df = pd.read_excel(stimuli_file_name, nrows=12)
+
+    if not os.path.isdir(IMAGE_DIR):
+        os.mkdir(IMAGE_DIR)
+
+    if not os.path.isdir(AOI_DIR):
+        os.mkdir(AOI_DIR)
+
+    if not os.path.isdir(AOI_IMG_DIR):
+        os.mkdir(AOI_IMG_DIR)
+
+    stimulus_images = {}
+    draw_aoi = False
+
+    create_fixation_screen()
+
+    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc=f'Creating {LANGUAGE} practice images'):
+        text_file_name = row['stimulus_text_title_practice']
+        text_file_name = re.sub(' ', '_', text_file_name).lower()
+        text_id = int(row['stimulus_id_practice'])
+
+        aoi_file_name = f'{text_file_name}_{text_id}_aoi_practice.csv'
+        aoi_header = ['char', 'x', 'y', 'width', 'height',
+                      'char_idx_in_line', 'line_idx', 'page']
+        aois = []
+        all_words = []
+
+        for col_index, column_name in enumerate(initial_df.columns):
+
+            if column_name.startswith('page') or column_name.startswith('question'):
+
+                new_col_name_path = column_name + '_img_path'
+                new_col_name_file = column_name + '_img_file'
+
+                if new_col_name_path not in stimulus_images:
+                    stimulus_images[new_col_name_path] = []
+
+                if new_col_name_file not in stimulus_images:
+                    stimulus_images[new_col_name_file] = []
+
+                if row[[column_name]].isnull().values.any():
+                    stimulus_images[new_col_name_path].append(pd.NA)
+                    stimulus_images[new_col_name_file].append(pd.NA)
+                    continue
+
+                # Extract the text data from the current cell, when it is question also add answers
+                if column_name.startswith('question'):
+                    # we need to extract order number of the question first
+                    name_parts = column_name.split('_')
+                    number_of_question = name_parts[-2]
+
+                    # we need to extract answers and add them to strings
+                    answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
+                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
+                    answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
+                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice'])
+                    answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
+                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
+
+                    text_question = str(initial_df.iloc[row_index, col_index])
+                    answers = "\n\n".join([answer_1, answer_2, answer_3])
+
+                    # creation of the final text - question with answers
+                    text = text_question + "\n\n\n" + answers
+
+                    # Create a new image with a previously defined color background and size
+                    final_image = Image.new(
+                        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+                    # Create a drawing object
+                    draw = ImageDraw.Draw(final_image)
+
+                    # Draw the text on the image
+                    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
+
+                    # make sure it works for different scripts we need to use re.split (otherwise we will lose "\n"
+                    # separating lines between question and answers), but next part of the code is then not properly
+                    # working for a sentences that are longer than one row, I do not know why, we need to address it
+                    # later
+                    words = re.split(r'(\n)', text)
+                    line = ""
+                    lines = []
+                    for word in words:
+                        left, top, right, bottom = draw.multiline_textbbox(
+                            (0, 0), line + word, font=font)
+                        text_width, text_height = right - left, bottom - top
+                        # text_width, text_height = draw.textsize(line + word, font=font)
+                        # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
+                        # sanity check
+                        if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
+                            line += word + " "
+                        else:
+                            lines.append(line.strip())
+                            line = word + " "
+
+                    lines.append(line.strip())
+                    # we need this variable to have the original values in the next
+                    top_left_corner_line = TOP_LEFT_CORNER_Y_PX
+                    # iteration, so we are creating a changing representation for the next iteration
+                    for line in lines:
+                        left, top, right, bottom = draw.multiline_textbbox(
+                            (0, 0), line, font=font)
+                        text_width, text_height = right - left, bottom - top
+                        # text_width, text_height = draw.textsize(line, font=font)
+                        draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line),
+                                  line, fill=TEXT_COLOR, font=font)
+                        top_left_corner_line += (text_height * SPACE_LINE)
+
+                    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+                    # best
+                    filename = f"{text_file_name}_id{text_id}_{column_name}_{LANGUAGE}_practice.png"
+                    final_image.save(IMAGE_DIR + filename)
+
+                    # store image names and paths
+                    path = IMAGE_DIR + filename  # maybe we can
+                    # set path in the beginning as an object
+                    stimulus_images[new_col_name_path].append(path)
+                    stimulus_images[new_col_name_file].append(filename)
+
+                # if it is not a question but a reading text
+                else:
+                    text = str(initial_df.iloc[row_index, col_index])
+
+                    # Create a new image with a previously defined color background and size
+                    final_image = Image.new(
+                        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+                    # Create a drawing object
+                    draw = ImageDraw.Draw(final_image)
+
+                    # Draw the text on the image
+                    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
+
+                    # make sure this works for different scripts!
+                    paragraphs = text.split('\n')
+
+                    # we need this variable to have the original values in the next
+                    top_left_corner_y_line = TOP_LEFT_CORNER_Y_PX
+                    for paragraph in paragraphs:
+                        words = paragraph.split()
+                        line = ""
+                        lines = []
+                        for word in words:
+                            left, top, right, bottom = draw.multiline_textbbox(
+                                (0, 0), line + word, font=font)
+                            text_width, text_height = right - left, bottom - top
+                            # text_width, text_height = draw.textsize(line + word, font=font)
+                            # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
+                            # sanity check
+
+                            if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
+                                line += word.strip() + " "
+                            else:
+                                lines.append(line.strip())
+                                line = word + " "
+
+                        lines.append(line.strip())
+
+                        # iteration, so we are creating a changing representation for the next iteration
+                        for line_idx, line in enumerate(lines):
+                            if len(line) == 0:
+                                continue
+                            left, top, right, bottom = draw.multiline_textbbox(
+                                (0, 0), line, font=font)
+                            text_width, text_height = right - left, bottom - top
+                            # text_width, text_height = draw.textsize(line, font=font)
+                            draw.text(
+                                (TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
+
+                            # calculate aoi boxes for each letter
+                            top_left_corner_x_letter = TOP_LEFT_CORNER_X_PX
+                            letter_width = text_width / len(line)
+                            words = []
+                            word = ''
+
+                            for char_idx_in_line, letter in enumerate(line):
+                                if letter == ' ':
+                                    # add the word once for each char
+                                    words.extend(
+                                        [word for _ in range(len(word))] + [pd.NA])
+                                    word = ''
+                                else:
+                                    word += letter
+
+                                if AOI:
+                                    draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                                                    top_left_corner_x_letter + letter_width,
+                                                    top_left_corner_y_line + text_height),
+                                                   outline='red', width=1)
+                                    draw_aoi = True
+
+                                # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
+
+                                # as the image is smaller than the actual screen we need to calculate
+                                aoi_letter = [
+                                    letter,
+                                    top_left_corner_x_letter +
+                                    ((RESOLUTION[0] - IMAGE_WIDTH_PX) // 2),
+                                    top_left_corner_y_line +
+                                    ((RESOLUTION[1] -
+                                      IMAGE_HEIGHT_PX) // 2),
+                                    letter_width,
+                                    text_height,
+                                    char_idx_in_line,
+                                    line_idx,
+                                    column_name
+                                ]
+
+                                # update top left corner x for next letter
+                                top_left_corner_x_letter += letter_width
+
+                                aois.append(aoi_letter)
+                            words.extend([word for _ in range(len(word))])
+
+                            all_words.extend(words)
+
+                            # update top left corner y for next line
+                            top_left_corner_y_line += (text_height *
+                                                       SPACE_LINE)
+
+                    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+                    # best
+                    filename = f"{text_file_name}_id{text_id}_{column_name}_{LANGUAGE}{'_aoi' if draw_aoi else ''}_practice.png"
+
+                    img_path = AOI_IMG_DIR if draw_aoi else IMAGE_DIR
+                    img_path = os.path.join(img_path, filename)
+                    final_image.save(img_path)
+
+                    stimulus_images[new_col_name_path].append(img_path)
+                    stimulus_images[new_col_name_file].append(filename)
+
+        aoi_df = pd.DataFrame(aois, columns=aoi_header)
+        aoi_df['word'] = all_words
+        aoi_df.to_csv(AOI_DIR + aoi_file_name, sep='\t', index=False)
+
+    # Create a new csv file with the names of the pictures in the first column and their paths in the second
+    image_df = pd.DataFrame(stimulus_images)
+    final_df = initial_df.join(image_df)
+
+    stimuli_file_name_stem = Path(stimuli_file_name).stem
+
+    full_output_file_name = f'{stimuli_file_name_stem}_with_img_paths{"_aoi" if draw_aoi else ""}_practoce.csv'
+
+    full_path = os.path.join(OUTPUT_TOP_DIR, full_output_file_name)
+
+    final_df.to_csv(full_path,
+                    sep=',',
+                    index=False)
+
+def create_practice_screen():
+    """
+    Creates a practice instrucion screen with a grey background
+    """
+    create_csv()
+
+    # Set the text
+    practice_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
+    practice_text = practice_df["other_screen_text_1"][6]
+
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Paste the text onto the break image
+    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
+    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
+    # text_width, text_height = right - left, bottom - top
+    # text_width, text_height = draw.textsize(welcome_text, font=font)
+
+    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
+              practice_text, font=font, fill=TEXT_COLOR)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"practice_screen_{LANGUAGE}.png"
+    save_to_csv(4, filename, final_image)
+
+def create_transition_screen():
+    """
+    Creates a transition screen with a grey background
+    """
+    create_csv()
+
+    # Set the text
+    transition_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
+    transition_text = transition_df["other_screen_text_1"][7]
+
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Paste the text onto the break image
+    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
+    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
+    # text_width, text_height = right - left, bottom - top
+    # text_width, text_height = draw.textsize(welcome_text, font=font)
+
+    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
+              transition_text, font=font, fill=TEXT_COLOR)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"transition_screen_{LANGUAGE}.png"
+    save_to_csv(4, filename, final_image)
+
+def create_instruction_screen():
+    """
+    Creates an instruction screen with a grey background
+    """
+    create_csv()
+
+    # Set the text
+    inst_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
+    inst_text = inst_df["other_screen_text_1"][5]
+
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Paste the text onto the break image
+    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
+    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
+    # text_width, text_height = right - left, bottom - top
+    # text_width, text_height = draw.textsize(welcome_text, font=font)
+
+    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
+              inst_text, font=font, fill=TEXT_COLOR)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"instrucion_screen_{LANGUAGE}.png"
+    save_to_csv(4, filename, final_image)
+
 
 if __name__ == '__main__':
-    create_images()
-    # create_welcome_screen()
-    # create_final_screen()
-    # create_empty_screen()
-    # create_fixation_screen()
-    # create_break_screen()
+     create_images()
+     #create_practice_images()
+     #create_csv()
+     #create_welcome_screen()
+     #create_final_screen()
+     #create_empty_screen()
+     #create_fixation_screen()
+     #create_break_screen()
+     #create_practice_screen()
+     #create_transition_screen()
+     #create_instruction_screen()

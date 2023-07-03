@@ -27,6 +27,7 @@ for m in get_monitors():
 LANGUAGE = 'en'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
+PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 AOI_IMG_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
@@ -843,7 +844,7 @@ def create_practice_images():
 
     stimuli_file_name_stem = Path(stimuli_file_name).stem
 
-    full_output_file_name = f'{stimuli_file_name_stem}_with_img_paths{"_aoi" if draw_aoi else ""}_practoce.csv'
+    full_output_file_name = f'{stimuli_file_name_stem}_with_img_paths{"_aoi" if draw_aoi else ""}_practice.csv'
 
     full_path = os.path.join(OUTPUT_TOP_DIR, full_output_file_name)
 
@@ -880,7 +881,8 @@ def create_practice_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"practice_screen_{LANGUAGE}.png"
-    save_to_csv(4, filename, final_image)
+    full_path = os.path.join(PRACTICE_IMAGE_DIR, filename)
+    save_to_csv(4, full_path, final_image)
 
 def create_transition_screen():
     """
@@ -911,7 +913,8 @@ def create_transition_screen():
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"transition_screen_{LANGUAGE}.png"
-    save_to_csv(4, filename, final_image)
+    full_path = os.path.join(OTHER_SCREENS_DIR, filename)
+    save_to_csv(4, full_path, final_image)
 
 def create_instruction_screen():
     """
@@ -946,8 +949,8 @@ def create_instruction_screen():
 
 
 if __name__ == '__main__':
-     create_images()
-     #create_practice_images()
+     #create_images()
+     create_practice_images()
      #create_csv()
      #create_welcome_screen()
      #create_final_screen()

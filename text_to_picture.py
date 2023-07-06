@@ -24,18 +24,18 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 for m in get_monitors():
     print(str(m))
 
-LANGUAGE = 'en'
+LANGUAGE = 'de'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
 AOI_IMG_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
-# Set this to true fi you want to generate the images with AOI boxes
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
-                          f'multipleye-other-screens-{LANGUAGE}.csv'
+    f'multipleye-other-screens-{LANGUAGE}.csv'
 
-AOI = False
+# Set this to true fi you want to generate the images with AOI boxes
+AOI = True
 
 RESOLUTION = (1920, 1080)
 
@@ -73,7 +73,7 @@ FONT_SIZE = RESOLUTION[1] // 41
 def create_images():
     # Read the TSV file
     stimuli_file_name = OUTPUT_TOP_DIR + \
-                        f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
+        f'multipleye-stimuli-experiment-{LANGUAGE}.xlsx'
     initial_df = pd.read_excel(stimuli_file_name, nrows=12)
 
     if not os.path.isdir(IMAGE_DIR):
@@ -170,9 +170,11 @@ def create_images():
                             line = word + " "
 
                     lines.append(line.strip())
+
                     # we need this variable to have the original values in the next
-                    top_left_corner_line = TOP_LEFT_CORNER_Y_PX
                     # iteration, so we are creating a changing representation for the next iteration
+                    top_left_corner_line = TOP_LEFT_CORNER_Y_PX
+
                     for line in lines:
                         left, top, right, bottom = draw.multiline_textbbox(
                             (0, 0), line, font=font)
@@ -212,6 +214,7 @@ def create_images():
 
                     # we need this variable to have the original values in the next
                     top_left_corner_y_line = TOP_LEFT_CORNER_Y_PX
+
                     for paragraph in paragraphs:
                         words = paragraph.split()
                         line = ""
@@ -221,16 +224,18 @@ def create_images():
                                 (0, 0), line + word, font=font)
                             text_width, text_height = right - left, bottom - top
                             # text_width, text_height = draw.textsize(line + word, font=font)
-                            # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
-                            # sanity check
+                            # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX)
+                            #just for sanity check
 
                             if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                                 line += word.strip() + " "
                             else:
                                 lines.append(line.strip())
+                                # lines.append("\n\n")
                                 line = word + " "
 
                         lines.append(line.strip())
+                        # lines.append("\n\n")
 
                         # iteration, so we are creating a changing representation for the next iteration
                         for line_idx, line in enumerate(lines):
@@ -293,6 +298,7 @@ def create_images():
                             # update top left corner y for next line
                             top_left_corner_y_line += (text_height *
                                                        SPACE_LINE)
+                            # top_left_corner_y_line += text_height
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
@@ -327,18 +333,19 @@ def create_images():
 def create_csv():
     # Check if auxiliary csv file exists
     if os.path.exists(OTHER_SCREENS_FILE_PATH):
-        pass
+        return
 
     # Create a csv file for the other screens
     else:
         other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1',
-                                     'other_screen_text_2','comment', ]
+                                     'other_screen_text_2', 'comment', ]
         other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', ''],
                               [2, 'empty_screen', '', '', ''],
                               [3, 'fixation_screen', '', '', ''],
                               [4, 'break_screen', 'Press space to pause.',
                                '', ''],
-                              [5, 'final_screen', 'Thanks for your participation!', 'Goodbye!', ''],
+                              [5, 'final_screen',
+                                  'Thanks for your participation!', 'Goodbye!', ''],
                               [6, 'instruction_screen', 'In this experiment you will read a series of texts. Each text '
                                                         'is divided into a few pages. Please read the text carefully. '
                                                         'When you are finished, look at the bottom right edge of the '
@@ -347,10 +354,10 @@ def create_csv():
                               [7, 'practice_screen', 'Now an exercise text will follow. In practice you do not have to'
                                                      ' hurry and you can ask questions.', '', ''],
                               [8, 'transition_screen', 'This is the end of the practice part. Just to remind you: Read '
-                                                      'the text carefully. When you\'re done, look at the bottom right '
-                                                      'of the screen and press the space bar. Then the next page will '
-                                                      'appear. After each text, you will have to answer a few '
-                                                      'questions.', '', ''],]
+                               'the text carefully. When you\'re done, look at the bottom right '
+                               'of the screen and press the space bar. Then the next page will '
+                               'appear. After each text, you will have to answer a few '
+                               'questions.', '', ''],]
         with open(OTHER_SCREENS_FILE_PATH, 'w', encoding='utf8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(other_screens_file_header)
@@ -374,7 +381,7 @@ def save_to_csv(other_screen_id, other_screen_img_file, image):
         df['other_screen_img_file'] = ''
 
     df.at[other_screen_id - 1,
-    'other_screen_img_path'] = OTHER_SCREENS_DIR + other_screen_img_file
+          'other_screen_img_path'] = OTHER_SCREENS_DIR + other_screen_img_file
     df.at[other_screen_id - 1, 'other_screen_img_file'] = other_screen_img_file
     df.to_csv(copy, index=False)
 
@@ -599,10 +606,11 @@ def create_break_screen():
 def create_other_screens():
     pass
 
+
 def create_practice_images():
     # Read the excel file
     stimuli_file_name = OUTPUT_TOP_DIR + \
-                        f'multipleye-stimuli-practice-{LANGUAGE}.xlsx'
+        f'multipleye-stimuli-practice-{LANGUAGE}.xlsx'
     initial_df = pd.read_excel(stimuli_file_name, nrows=12)
 
     if not os.path.isdir(IMAGE_DIR):
@@ -852,6 +860,7 @@ def create_practice_images():
                     sep=',',
                     index=False)
 
+
 def create_practice_screen():
     """
     Creates a practice instrucion screen with a grey background
@@ -884,6 +893,7 @@ def create_practice_screen():
     full_path = os.path.join(PRACTICE_IMAGE_DIR, filename)
     save_to_csv(4, full_path, final_image)
 
+
 def create_transition_screen():
     """
     Creates a transition screen with a grey background
@@ -915,6 +925,7 @@ def create_transition_screen():
     filename = f"transition_screen_{LANGUAGE}.png"
     full_path = os.path.join(OTHER_SCREENS_DIR, filename)
     save_to_csv(4, full_path, final_image)
+
 
 def create_instruction_screen():
     """
@@ -949,14 +960,14 @@ def create_instruction_screen():
 
 
 if __name__ == '__main__':
-     #create_images()
-     create_practice_images()
-     #create_csv()
-     #create_welcome_screen()
-     #create_final_screen()
-     #create_empty_screen()
-     #create_fixation_screen()
-     #create_break_screen()
-     #create_practice_screen()
-     #create_transition_screen()
-     #create_instruction_screen()
+    create_images()
+    # create_practice_images()
+    # create_csv()
+    # create_welcome_screen()
+    # create_final_screen()
+    # create_empty_screen()
+    # create_fixation_screen()
+    # create_break_screen()
+    # create_practice_screen()
+    # create_transition_screen()
+    # create_instruction_screen()

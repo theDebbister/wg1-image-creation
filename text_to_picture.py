@@ -24,7 +24,7 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 for m in get_monitors():
     print(str(m))
 
-LANGUAGE = 'de'
+LANGUAGE = 'en'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
@@ -35,16 +35,16 @@ OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
     f'multipleye-other-screens-{LANGUAGE}.csv'
 
 # Set this to true fi you want to generate the images with AOI boxes
-AOI = True
+AOI = False
 
-RESOLUTION = (1920, 1080)
+RESOLUTION = (1440, 900)
 
-# IMAGE_SIZE_CM = (36, 28)
-IMAGE_SIZE_CM = (25, 19)
+IMAGE_SIZE_CM = (36, 28)
+# IMAGE_SIZE_CM = (25, 18)
 IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM,
                    IMAGE_SIZE_CM[1] / INCH_IN_CM)
 
-SCREEN_SIZE_CM = (34.4, 19.4)
+SCREEN_SIZE_CM = (28.6, 17.9)
 SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] /
                     INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
 
@@ -134,7 +134,7 @@ def create_images():
                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
 
                     text_question = str(initial_df.iloc[row_index, col_index])
-                    answers = "\n\n".join([answer_1, answer_2, answer_3])
+                    answers = "\n\n\n".join([answer_1, answer_2, answer_3])
 
                     # creation of the final text - question with answers
                     text = text_question + "\n\n\n" + answers
@@ -153,7 +153,10 @@ def create_images():
                     # separating lines between question and answers), but next part of the code is then not properly
                     # working for a sentences that are longer than one row, I do not know why, we need to address it
                     # later
-                    words = re.split(r'(\n)', text)
+                    # words = re.split(r'(\n)', text)
+                    words = re.split(r' ', text)
+                    # print(words)
+
                     line = ""
                     lines = []
                     for word in words:
@@ -163,10 +166,12 @@ def create_images():
                         # text_width, text_height = draw.textsize(line + word, font=font)
                         # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
                         # sanity check
+
                         if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                             line += word + " "
                         else:
                             lines.append(line.strip())
+                            lines.append("\n\n")
                             line = word + " "
 
                     lines.append(line.strip())
@@ -176,13 +181,25 @@ def create_images():
                     top_left_corner_line = TOP_LEFT_CORNER_Y_PX
 
                     for line in lines:
+                        # print(line)
                         left, top, right, bottom = draw.multiline_textbbox(
                             (0, 0), line, font=font)
                         text_width, text_height = right - left, bottom - top
                         # text_width, text_height = draw.textsize(line, font=font)
                         draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line),
                                   line, fill=TEXT_COLOR, font=font)
-                        top_left_corner_line += (text_height * SPACE_LINE)
+                        # top_left_corner_line += (text_height * SPACE_LINE)
+                        top_left_corner_line += text_height
+
+                        r = 7
+                        fix_x = IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_LEFT_PX
+                        fix_y = IMAGE_HEIGHT_PX - 1.25 * MIN_MARGIN_TOP_PX
+                        draw.ellipse(
+                            (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+                            fill=None,
+                            outline=TEXT_COLOR,
+                            width=5
+                        )
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
@@ -225,17 +242,17 @@ def create_images():
                             text_width, text_height = right - left, bottom - top
                             # text_width, text_height = draw.textsize(line + word, font=font)
                             # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX)
-                            #just for sanity check
+                            # just for sanity check
 
                             if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                                 line += word.strip() + " "
                             else:
                                 lines.append(line.strip())
-                                # lines.append("\n\n")
+                                lines.append("\n\n")
                                 line = word + " "
 
                         lines.append(line.strip())
-                        # lines.append("\n\n")
+                        lines.append("\n\n")
 
                         # iteration, so we are creating a changing representation for the next iteration
                         for line_idx, line in enumerate(lines):
@@ -296,9 +313,9 @@ def create_images():
                             all_words.extend(words)
 
                             # update top left corner y for next line
-                            top_left_corner_y_line += (text_height *
-                                                       SPACE_LINE)
-                            # top_left_corner_y_line += text_height
+                            # top_left_corner_y_line += (text_height *
+                            #                            SPACE_LINE)
+                            top_left_corner_y_line += text_height
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best

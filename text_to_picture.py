@@ -134,6 +134,8 @@ def create_images():
                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
 
                     text_question = str(initial_df.iloc[row_index, col_index])
+                    text_question = text_question.split()
+                    text_question = ' '.join(text_question)
                     answers = "\n\n\n".join([answer_1, answer_2, answer_3])
 
                     # creation of the final text - question with answers
@@ -152,10 +154,9 @@ def create_images():
                     # make sure it works for different scripts we need to use re.split (otherwise we will lose "\n"
                     # separating lines between question and answers), but next part of the code is then not properly
                     # working for a sentences that are longer than one row, I do not know why, we need to address it
-                    # later
+                    # later <- addressed by splitting at white space only and preserved "\n"
                     # words = re.split(r'(\n)', text)
                     words = re.split(r' ', text)
-                    # print(words)
 
                     line = ""
                     lines = []
@@ -163,9 +164,6 @@ def create_images():
                         left, top, right, bottom = draw.multiline_textbbox(
                             (0, 0), line + word, font=font)
                         text_width, text_height = right - left, bottom - top
-                        # text_width, text_height = draw.textsize(line + word, font=font)
-                        # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX) #just for
-                        # sanity check
 
                         if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                             line += word + " "
@@ -181,14 +179,11 @@ def create_images():
                     top_left_corner_line = TOP_LEFT_CORNER_Y_PX
 
                     for line in lines:
-                        # print(line)
                         left, top, right, bottom = draw.multiline_textbbox(
                             (0, 0), line, font=font)
                         text_width, text_height = right - left, bottom - top
-                        # text_width, text_height = draw.textsize(line, font=font)
                         draw.text((TOP_LEFT_CORNER_X_PX, top_left_corner_line),
                                   line, fill=TEXT_COLOR, font=font)
-                        # top_left_corner_line += (text_height * SPACE_LINE)
                         top_left_corner_line += text_height
 
                         r = 7
@@ -207,8 +202,8 @@ def create_images():
                     final_image.save(IMAGE_DIR + filename)
 
                     # store image names and paths
-                    path = IMAGE_DIR + filename  # maybe we can
-                    # set path in the beginning as an object
+                    path = IMAGE_DIR + filename
+                    # maybe we can set path in the beginning as an object
                     stimulus_images[new_col_name_path].append(path)
                     stimulus_images[new_col_name_file].append(filename)
 
@@ -227,7 +222,7 @@ def create_images():
                     font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
 
                     # make sure this works for different scripts!
-                    paragraphs = text.split('\n')
+                    paragraphs = re.split(r'\n+', text.strip())
 
                     # we need this variable to have the original values in the next
                     top_left_corner_y_line = TOP_LEFT_CORNER_Y_PX
@@ -240,9 +235,6 @@ def create_images():
                             left, top, right, bottom = draw.multiline_textbbox(
                                 (0, 0), line + word, font=font)
                             text_width, text_height = right - left, bottom - top
-                            # text_width, text_height = draw.textsize(line + word, font=font)
-                            # print(word,text_width, IMAGE_WIDTH_PX-minimal_right_margin, IMAGE_WIDTH_PX)
-                            # just for sanity check
 
                             if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
                                 line += word.strip() + " "
@@ -254,14 +246,13 @@ def create_images():
                         lines.append(line.strip())
                         lines.append("\n\n")
 
-                        # iteration, so we are creating a changing representation for the next iteration
                         for line_idx, line in enumerate(lines):
                             if len(line) == 0:
                                 continue
                             left, top, right, bottom = draw.multiline_textbbox(
                                 (0, 0), line, font=font)
                             text_width, text_height = right - left, bottom - top
-                            # text_width, text_height = draw.textsize(line, font=font)
+                            
                             draw.text(
                                 (TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
 
@@ -272,6 +263,8 @@ def create_images():
                             word = ''
 
                             for char_idx_in_line, letter in enumerate(line):
+                                if line == "\n\n":
+                                    continue
                                 if letter == ' ':
                                     # add the word once for each char
                                     words.extend(
@@ -283,7 +276,7 @@ def create_images():
                                 if AOI:
                                     draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
                                                     top_left_corner_x_letter + letter_width,
-                                                    top_left_corner_y_line + text_height),
+                                                    top_left_corner_y_line + 26.25),
                                                    outline='red', width=1)
                                     draw_aoi = True
 
@@ -313,12 +306,8 @@ def create_images():
                             all_words.extend(words)
 
                             # update top left corner y for next line
-                            # top_left_corner_y_line += (text_height *
-                            #                            SPACE_LINE)
                             top_left_corner_y_line += text_height
 
-                    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-                    # best
                     filename = f"{text_file_name}_id{text_id}_{column_name}_{LANGUAGE}{'_aoi' if draw_aoi else ''}.png"
 
                     img_path = AOI_IMG_DIR if draw_aoi else IMAGE_DIR
@@ -330,7 +319,8 @@ def create_images():
 
         aoi_df = pd.DataFrame(aois, columns=aoi_header)
         aoi_df['word'] = all_words
-        aoi_df.to_csv(AOI_DIR + aoi_file_name, sep='\t', index=False)
+        # here changing sep back to ',' will prevent skipping an actual  ',' value
+        aoi_df.to_csv(AOI_DIR + aoi_file_name, sep=',', index=False, encoding='UTF-8')
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)

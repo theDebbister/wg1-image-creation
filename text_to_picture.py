@@ -379,27 +379,18 @@ def create_csv():
 
     # Create a csv file for the other screens
     else:
-        other_screens_file_header = ['other_screen_id', 'other_screen_title', 'other_screen_text_1',
-                                     'other_screen_text_2', 'comment', ]
-        other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', '', ''],
-                              [2, 'empty_screen', '', '', ''],
-                              [3, 'fixation_screen', '', '', ''],
+        other_screens_file_header = [
+            'other_screen_id', 'other_screen_title', 'other_screen_text', 'comment']
+        other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', ''],
+                              [2, 'empty_screen', '', ''],
+                              [3, 'fixation_screen', '', ''],
                               [4, 'break_screen', 'Press space to pause.',
-                               '', ''],
+                               ''],
                               [5, 'final_screen',
-                                  'Thanks for your participation!', 'Goodbye!', ''],
-                              [6, 'instruction_screen', 'In this experiment you will read a series of texts. Each text '
-                                                        'is divided into a few pages. Please read the text carefully. '
-                                                        'When you are finished, look at the bottom right edge of the '
-                                                        'screen and press the space bar. Then the next page will appear. '
-                                                        'After each text you will have to answer a few questions.', '', ''],
-                              [7, 'practice_screen', 'Now an exercise text will follow. In practice you do not have to'
-                                                     ' hurry and you can ask questions.', '', ''],
-                              [8, 'transition_screen', 'This is the end of the practice part. Just to remind you: Read '
-                               'the text carefully. When you\'re done, look at the bottom right '
-                               'of the screen and press the space bar. Then the next page will '
-                               'appear. After each text, you will have to answer a few '
-                               'questions.', '', ''],]
+                                  'Thanks for your participation!\nGoodbye!', ''],
+                              [6, 'instruction_screen', 'In this experiment you will read a series of texts. Each text is divided into a few pages. Please read the text carefully. When you are finished, look at the bottom right edge of the screen and press the space bar. Then the next page will appear. After each text you will have to answer a few questions.', ''],
+                              [7, 'practice_screen', 'Now an exercise text will follow. In practice you do not have to hurry and you can ask questions.', ''],
+                              [8, 'transition_screen', 'This is the end of the practice part. Just to remind you: Read the text carefully. When you\'re done, look at the bottom right of the screen and press the space bar. Then the next page will appear. After each text, you will have to answer a few questions.', ''],]
         with open(OTHER_SCREENS_FILE_PATH, 'w', encoding='utf8', newline='') as f:
             writer = csv.writer(f)
             writer.writerow(other_screens_file_header)
@@ -428,50 +419,54 @@ def save_to_csv(other_screen_id, other_screen_img_file, image):
     df.to_csv(copy, index=False)
 
 
-def create_fixation_screen():
-    """
-    Creates a fixation screen with a white background and a fixation dot in the top left corner.
-    """
-    create_csv()
+def draw_text(text, image):
+    draw = ImageDraw.Draw(image)
 
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
 
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
+    paragraphs = re.split(r'\n+', text.strip())
 
-    # The fixation dot is positioned a bit left to the first char in the middle of the line
-    r = 7
-    fix_x = 0.75 * MIN_MARGIN_LEFT_PX
-    fix_y = 1.25 * MIN_MARGIN_TOP_PX
-    draw.ellipse(
-        (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
-        fill=None,
-        outline=TEXT_COLOR,
-        width=5
-    )
+    top_left_corner_y_line = TOP_LEFT_CORNER_Y_PX
 
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"fixation_screen_{LANGUAGE}.png"
-    save_to_csv(3, filename, final_image)
+    for paragraph in paragraphs:
+        words = paragraph.split()
+        line = ""
+        lines = []
 
+        for word in words:
+            left, top, right, bottom = draw.multiline_textbbox(
+                (0, 0), line + word, font=font)
+            text_width = right - left
 
-def create_empty_screen():
-    create_csv()
+            if text_width < (IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)):
+                line += word.strip() + " "
+            else:
+                lines.append(line.strip())
+                lines.append("\n\n")
+                line = word + " "
 
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+        lines.append(line.strip())
+        lines.append("\n\n")
 
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"empty_screen_{LANGUAGE}.png"
-    save_to_csv(2, filename, final_image)
+        for line in lines:
+            if len(line) == 0:
+                continue
+            left, top, right, bottom = draw.multiline_textbbox(
+                (0, 0), line + word, font=font)
+            text_height = bottom - top
+            draw.text(
+                (TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=TEXT_COLOR, font=font)
+            top_left_corner_y_line += text_height
+        
+            # r = 7
+            # fix_x = IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_LEFT_PX
+            # fix_y = IMAGE_HEIGHT_PX - 1.25 * MIN_MARGIN_TOP_PX
+            # draw.ellipse(
+            #     (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+            #     fill=None,
+            #     outline=TEXT_COLOR,
+            #     width=5
+            # )
 
 
 def create_welcome_screen():
@@ -493,7 +488,7 @@ def create_welcome_screen():
 
     # Set the text
     welcome_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
-    welcome_text = welcome_df["other_screen_text_1"][0]
+    welcome_text = welcome_df["other_screen_text"][0]
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
@@ -539,6 +534,84 @@ def create_welcome_screen():
     save_to_csv(1, filename, final_image)
 
 
+def create_empty_screen():
+    create_csv()
+
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"empty_screen_{LANGUAGE}.png"
+    save_to_csv(2, filename, final_image)
+
+
+def create_fixation_screen():
+    """
+    Creates a fixation screen with a white background and a fixation dot in the top left corner.
+    """
+    create_csv()
+
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # The fixation dot is positioned a bit left to the first char in the middle of the line
+    r = 7
+    fix_x = 0.75 * MIN_MARGIN_LEFT_PX
+    fix_y = 1.25 * MIN_MARGIN_TOP_PX
+    draw.ellipse(
+        (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+        fill=None,
+        outline=TEXT_COLOR,
+        width=5
+    )
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"fixation_screen_{LANGUAGE}.png"
+    save_to_csv(3, filename, final_image)
+
+
+def create_break_screen():
+    """
+    Creates a break screen with a white background, one hint message on the screen.
+    """
+    create_csv()
+
+    # Set the text
+    break_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
+    break_text = break_df["other_screen_text"][3]
+
+    # Create a new image with a previously defined color background and size
+    final_image = Image.new(
+        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
+
+    # Create a drawing object
+    draw = ImageDraw.Draw(final_image)
+
+    # Paste the text onto the break image
+    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
+    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
+    # text_width, text_height = right - left, bottom - top
+    # text_width, text_height = draw.textsize(welcome_text, font=font)
+
+    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
+              break_text, font=font, fill=TEXT_COLOR)
+
+    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+    # best
+    filename = f"break_screen_{LANGUAGE}.png"
+    save_to_csv(4, filename, final_image)
+
+
 def create_final_screen():
     """
     Creates a final screen with a white background, one logo and a blue messages in the middle of the screen.
@@ -558,8 +631,9 @@ def create_final_screen():
 
     # Set the text
     final_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
-    final_text_1 = final_df["other_screen_text_1"][4]
-    final_text_2 = final_df["other_screen_text_2"][4]
+    final_text = final_df["other_screen_text"][4].split('\n')
+    final_text_1 = final_text[0]
+    final_text_2 = final_text[1]
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
@@ -613,36 +687,25 @@ def create_final_screen():
     save_to_csv(5, filename, final_image)
 
 
-def create_break_screen():
+def create_instruction_screen():
     """
-    Creates a break screen with a white background, one hint message on the screen.
+    Creates an instruction screen with a grey background
     """
     create_csv()
 
     # Set the text
-    break_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
-    break_text = break_df["other_screen_text_1"][3]
+    inst_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
+    inst_text = inst_df["other_screen_text"][5]
 
-    # Create a new image with a previously defined color background and size
     final_image = Image.new(
         'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
-    # Paste the text onto the break image
-    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
-    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
-    # text_width, text_height = right - left, bottom - top
-    # text_width, text_height = draw.textsize(welcome_text, font=font)
-
-    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
-              break_text, font=font, fill=TEXT_COLOR)
+    draw_text(inst_text, final_image)
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
-    filename = f"break_screen_{LANGUAGE}.png"
-    save_to_csv(4, filename, final_image)
+    filename = f"instrucion_screen_{LANGUAGE}.png"
+    save_to_csv(6, filename, final_image)
 
 
 def create_practice_screen():
@@ -653,29 +716,18 @@ def create_practice_screen():
 
     # Set the text
     practice_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
-    practice_text = practice_df["other_screen_text_1"][6]
+    practice_text = practice_df["other_screen_text"][6]
 
     # Create a new image with a previously defined color background and size
     final_image = Image.new(
         'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
-    # Paste the text onto the break image
-    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
-    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
-    # text_width, text_height = right - left, bottom - top
-    # text_width, text_height = draw.textsize(welcome_text, font=font)
-
-    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
-              practice_text, font=font, fill=TEXT_COLOR)
+    draw_text(practice_text, final_image)
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"practice_screen_{LANGUAGE}.png"
-    full_path = os.path.join(PRACTICE_IMAGE_DIR, filename)
-    save_to_csv(4, full_path, final_image)
+    save_to_csv(7, filename, final_image)
 
 
 def create_transition_screen():
@@ -686,72 +738,31 @@ def create_transition_screen():
 
     # Set the text
     transition_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
-    transition_text = transition_df["other_screen_text_1"][7]
+    transition_text = transition_df["other_screen_text"][7]
 
     # Create a new image with a previously defined color background and size
     final_image = Image.new(
         'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
 
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
-    # Paste the text onto the break image
-    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
-    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
-    # text_width, text_height = right - left, bottom - top
-    # text_width, text_height = draw.textsize(welcome_text, font=font)
-
-    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
-              transition_text, font=font, fill=TEXT_COLOR)
+    draw_text(transition_text, final_image)
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"transition_screen_{LANGUAGE}.png"
-    full_path = os.path.join(OTHER_SCREENS_DIR, filename)
-    save_to_csv(4, full_path, final_image)
+    save_to_csv(8, filename, final_image)
 
 
-def create_instruction_screen():
-    """
-    Creates an instruction screen with a grey background
-    """
-    create_csv()
 
-    # Set the text
-    inst_df = pd.read_csv(OTHER_SCREENS_FILE_PATH, sep=",")
-    inst_text = inst_df["other_screen_text_1"][5]
-
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (IMAGE_WIDTH_PX, IMAGE_HEIGHT_PX), color=BACKGROUND_COLOR)
-
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
-    # Paste the text onto the break image
-    font = ImageFont.truetype(FONT_TYPE, FONT_SIZE)
-    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
-    # text_width, text_height = right - left, bottom - top
-    # text_width, text_height = draw.textsize(welcome_text, font=font)
-
-    draw.text((TOP_LEFT_CORNER_X_PX, TOP_LEFT_CORNER_Y_PX),
-              inst_text, font=font, fill=TEXT_COLOR)
-
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"instrucion_screen_{LANGUAGE}.png"
-    save_to_csv(4, filename, final_image)
 
 
 if __name__ == '__main__':
     # create_images()
-    create_practice_images()
-    # create_csv()
+    # create_practice_images()
     # create_welcome_screen()
-    # create_final_screen()
     # create_empty_screen()
     # create_fixation_screen()
     # create_break_screen()
-    # create_practice_screen()
-    # create_transition_screen()
-    # create_instruction_screen()
+    # create_final_screen()
+    create_instruction_screen()
+    create_practice_screen()
+    create_transition_screen()

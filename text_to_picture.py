@@ -37,7 +37,7 @@ OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + \
     f'multipleye-other-screens-{LANGUAGE}.csv'
 
 # Set this to true fi you want to generate the images with AOI boxes
-AOI = False
+AOI = True
 
 RESOLUTION = (1440, 900)
 
@@ -126,12 +126,27 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_img_dir, practice=F
                     number_of_question = name_parts[-2] if practice else name_parts[-1]
 
                     # we need to extract answers and add them to strings
-                    answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key' + '_practice' if practice else '']}] "
-                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1' + '_practice' if practice else ''])
-                    answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key'+ '_practice' if practice else '']}] "
-                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2' + '_practice' if practice else ''])
-                    answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key'+ '_practice' if practice else '']}] "
-                                   + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3' + '_practice' if practice else ''])
+                    # answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key' + '_practice' if practice else '']}] "
+                    #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1' + '_practice' if practice else ''])
+                    # answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key' + '_practice' if practice else '']}] "
+                    #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2' + '_practice' if practice else ''])
+                    # answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key' + '_practice' if practice else '']}] "
+                    #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3' + '_practice' if practice else ''])
+                    if not practice:
+                        answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
+                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
+                        answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
+                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2' ])
+                        answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
+                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
+                    else:
+                        answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
+                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
+                        answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
+                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice' ])
+                        answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
+                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
+
 
                     text_question = str(initial_df.iloc[row_index, col_index])
                     text_question = text_question.split()
@@ -756,13 +771,13 @@ def create_transition_screen():
 
 
 if __name__ == '__main__':
-    # create_images()
-    # create_practice_images()
-    # create_welcome_screen()
-    # create_empty_screen()
-    # create_fixation_screen()
-    # create_break_screen()
-    # create_final_screen()
+    create_stimuli_images()
+    create_practice_images()
+    create_welcome_screen()
+    create_empty_screen()
+    create_fixation_screen()
+    create_break_screen()
+    create_final_screen()
     create_instruction_screen()
     create_practice_screen()
     create_transition_screen()

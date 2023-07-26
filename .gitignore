@@ -241,6 +241,9 @@ Temporary Items
 */stimuli_aoi/
 */other_screens/
 */stimuli_aoi_images/
+*/practice_aoi/
+*/practice_aoi_images/
+*/practice_images/
 
 .vscode/*
 !.vscode/settings.json

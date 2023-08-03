@@ -1,4 +1,5 @@
 FONT_TYPE = "JetBrainsMono-Regular.ttf"
+FONT_TYPE_BOLD = "JetBrainsMono-ExtraBold.ttf"
 TEXT_COLOR = (0, 0, 0)
 # vertical spacing between lines; in units of font’s default line height proportion
 SPACE_LINE = 3

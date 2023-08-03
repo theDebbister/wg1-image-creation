@@ -368,7 +368,7 @@ def save_to_csv(other_screen_id, other_screen_img_file, image):
     if os.path.exists(copy):
         df = pd.read_csv(copy)
     else:
-        df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
+        df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
         df['other_screen_img_path'] = ''
         df['other_screen_img_file'] = ''
 
@@ -379,10 +379,9 @@ def save_to_csv(other_screen_id, other_screen_img_file, image):
 
 
 def draw_text(text, image):
+
     draw = ImageDraw.Draw(image)
-
     font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
-
     paragraphs = re.split(r'\n+', text.strip())
 
     top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
@@ -401,20 +400,44 @@ def draw_text(text, image):
                 line += word.strip() + " "
             else:
                 lines.append(line.strip())
-                lines.append(image_config.SPACE_LINE * "\n")
+                lines.append("\n")
                 line = word + " "
 
         lines.append(line.strip())
-        lines.append(image_config.SPACE_LINE * "\n")
+        lines.append("\n")
 
         for line in lines:
             if len(line) == 0:
                 continue
+
+            words_in_line = line.split()
+            x_word = image_config.TOP_LEFT_CORNER_X_PX
+
             left, top, right, bottom = draw.multiline_textbbox(
-                (0, 0), line + word, font=font)
+                (0, 0), line + '  ', font=font)
             text_height = bottom - top
-            draw.text(
-                (image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=image_config.TEXT_COLOR, font=font)
+
+            stop_bold = False
+            for w in words_in_line:
+
+                if w.startswith('**'):
+                    font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, image_config.FONT_SIZE)
+                    w = w[2:]
+
+                if w.endswith('**'):
+                    stop_bold = True
+                    w = w[:-2]
+
+                left, top, right, bottom = draw.multiline_textbbox(
+                    (0, 0), w + ' ', font=font)
+                draw.text(
+                    (x_word, top_left_corner_y_line), w, fill=image_config.TEXT_COLOR, font=font)
+                x_word += right - left
+
+                if stop_bold:
+                    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
+                    stop_bold = False
+
             top_left_corner_y_line += text_height
 
             # r = 7
@@ -439,14 +462,16 @@ def create_welcome_screen():
     cost_width, cost_height = cost_logo.size
     cost_logo_new_size = (cost_width // 7, cost_height // 7)
     cost_logo = cost_logo.resize(cost_logo_new_size)
+
     eu_logo = Image.open("logo_imgs/eu_fund_logo.png")
     eu_width, eu_height = eu_logo.size
     eu_logo_new_size = (eu_width // 7, eu_height // 7)
     eu_logo = eu_logo.resize(eu_logo_new_size)
+
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    welcome_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
+    welcome_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
     welcome_text = welcome_df["other_screen_text"][0]
     our_blue = "#007baf"
     our_red = "#b94128"
@@ -500,9 +525,6 @@ def create_empty_screen():
     final_image = Image.new(
         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
 
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
     filename = f"empty_screen_{image_config.LANGUAGE}.png"
@@ -546,8 +568,8 @@ def create_break_screen():
     create_csv()
 
     # Set the text
-    break_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
-    break_text = break_df["other_screen_text"][3]
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
+    break_text = other_screen_df[other_screen_df["other_screen_title"] == "break_screen"]["other_screen_text"].values[0]
 
     # Create a new image with a previously defined color background and size
     final_image = Image.new(
@@ -589,10 +611,10 @@ def create_final_screen():
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    final_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
-    final_text = final_df["other_screen_text"][4].split('\n')
-    final_text_1 = final_text[0]
-    final_text_2 = final_text[1]
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
+    final_text = other_screen_df[other_screen_df["other_screen_title"] == "final_screen"]["other_screen_text"].values[0]
+    final_text = final_text.split('\n')
+
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
@@ -624,21 +646,20 @@ def create_final_screen():
 
     # Paste the texts onto the final image
     font = ImageFont.truetype(font_type, font_size)
-    left, top, right, bottom = draw.multiline_textbbox(
-        (0, 0), final_text_1, font=font)
-    text_width_A, text_height_A = right - left, bottom - top
-    # text_width_A, text_height_A = draw.textsize(final_text_1, font=font)
-    text_x_A = (image_config.IMAGE_WIDTH_PX - text_width_A) / 2
-    text_y_A = (image_config.IMAGE_HEIGHT_PX - text_height_A) / 2
-    draw.text((text_x_A, text_y_A), final_text_1, font=font, fill=our_blue)
+    text_y = 0
+    text_x = 0
+    for paragraph in final_text:
+        left, top, right, bottom = draw.multiline_textbbox(
+            (0, 0), paragraph, font=font)
+        text_width, text_height = right - left, bottom - top
+        if not text_x:
+            text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
+            text_y = (image_config.IMAGE_HEIGHT_PX - text_height) // 2
+        else:
+            text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
+            text_y += text_width
 
-    left, top, right, bottom = draw.multiline_textbbox(
-        (0, 0), final_text_2, font=font)
-    text_width_B, text_height_B = right - left, bottom - top
-    # text_width_B, text_height_B = draw.textsize(final_text_2, font=font)
-    text_x_B = (image_config.IMAGE_WIDTH_PX - text_width_B) / 2
-    text_y_B = (image_config.IMAGE_HEIGHT_PX + text_height_B + (text_height_A * 2)) / 2
-    draw.text((text_x_B, text_y_B), final_text_2, font=font, fill=our_red)
+        draw.text((text_x, text_y), paragraph, font=font, fill=our_blue)
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
@@ -653,8 +674,8 @@ def create_instruction_screen():
     create_csv()
 
     # Set the text
-    inst_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
-    inst_text = inst_df["other_screen_text"][5]
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
+    inst_text = other_screen_df[other_screen_df["other_screen_title"] == "instruction_screen"]["other_screen_text"].values[0]
 
     final_image = Image.new(
         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
@@ -663,7 +684,7 @@ def create_instruction_screen():
 
     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
     # best
-    filename = f"instrucion_screen_{image_config.LANGUAGE}.png"
+    filename = f"instruction_screen_{image_config.LANGUAGE}.png"
     save_to_csv(6, filename, final_image)
 
 
@@ -674,8 +695,8 @@ def create_practice_screen():
     create_csv()
 
     # Set the text
-    practice_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
-    practice_text = practice_df["other_screen_text"][6]
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
+    practice_text = other_screen_df[other_screen_df["other_screen_title"] == "practice_screen"]["other_screen_text"].values[0]
 
     # Create a new image with a previously defined color background and size
     final_image = Image.new(
@@ -696,8 +717,8 @@ def create_transition_screen():
     create_csv()
 
     # Set the text
-    transition_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=9)
-    transition_text = transition_df["other_screen_text"][7]
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
+    transition_text = other_screen_df[other_screen_df["other_screen_title"] == "transition_screen"]["other_screen_text"].values[0]
 
     # Create a new image with a previously defined color background and size
     final_image = Image.new(
@@ -712,8 +733,8 @@ def create_transition_screen():
 
 
 if __name__ == '__main__':
-    create_stimuli_images()
-    create_practice_images()
+    # create_stimuli_images()
+    # create_practice_images()
     create_welcome_screen()
     create_empty_screen()
     create_fixation_screen()

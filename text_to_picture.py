@@ -33,7 +33,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
     create_fixation_screen()
 
-    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df), desc=f'Creating {image_config.LANGUAGE} images'):
+    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df),
+                               desc=f'Creating {image_config.LANGUAGE} images'):
         text_file_name = row[f"stimulus_text_title{'_practice' if practice else ''}"]
         text_file_name = re.sub(' ', '_', text_file_name).lower()
         text_id = int(row[f"stimulus_id{'_practice' if practice else ''}"])
@@ -76,20 +77,25 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                     # answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key' + '_practice' if practice else '']}] "
                     #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3' + '_practice' if practice else ''])
                     if not practice:
-                        answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
-                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
-                        answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
-                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2' ])
-                        answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
-                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
+                        answer_1 = str(
+                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
+                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
+                        answer_2 = str(
+                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
+                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2'])
+                        answer_3 = str(
+                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
+                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
                     else:
-                        answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
-                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
-                        answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
-                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice' ])
-                        answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
-                                    + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
-
+                        answer_1 = str(
+                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
+                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
+                        answer_2 = str(
+                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
+                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice'])
+                        answer_3 = str(
+                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
+                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
 
                     text_question = str(initial_df.iloc[row_index, col_index])
                     text_question = text_question.split()
@@ -101,7 +107,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                     # Create a new image with a previously defined color background and size
                     final_image = Image.new(
-                        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+                        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                        color=image_config.BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
@@ -123,7 +130,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                             (0, 0), line + word, font=font)
                         text_width, text_height = right - left, bottom - top
 
-                        if text_width < (image_config.IMAGE_WIDTH_PX - (image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+                        if text_width < (image_config.IMAGE_WIDTH_PX - (
+                                image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
                             line += word + " "
                         else:
                             lines.append(line.strip())
@@ -172,7 +180,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                     # Create a new image with a previously defined color background and size
                     final_image = Image.new(
-                        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+                        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                        color=image_config.BACKGROUND_COLOR)
 
                     # Create a drawing object
                     draw = ImageDraw.Draw(final_image)
@@ -195,7 +204,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                                 (0, 0), line + word, font=font)
                             text_width, text_height = right - left, bottom - top
 
-                            if text_width < (image_config.IMAGE_WIDTH_PX - (image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+                            if text_width < (image_config.IMAGE_WIDTH_PX - (
+                                    image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
                                 line += word.strip() + " "
                             else:
                                 lines.append(line.strip())
@@ -213,7 +223,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                             text_width, text_height = right - left, bottom - top
 
                             draw.text(
-                                (image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line, fill=image_config.TEXT_COLOR, font=font)
+                                (image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line,
+                                fill=image_config.TEXT_COLOR, font=font)
 
                             # calculate aoi boxes for each letter
                             top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
@@ -271,8 +282,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                     # draw fixation point
                     r = 7
-                    fix_x = image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_LEFT_PX*1.5
-                    fix_y = image_config.IMAGE_HEIGHT_PX - image_config.MIN_MARGIN_TOP_PX*0.5
+                    fix_x = image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_LEFT_PX * 1.5
+                    fix_y = image_config.IMAGE_HEIGHT_PX - image_config.MIN_MARGIN_TOP_PX * 0.5
                     draw.ellipse(
                         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
                         fill=None,
@@ -313,7 +324,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
 def create_stimuli_images():
     stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
-        f'multipleye-stimuli-experiment-{image_config.LANGUAGE}.xlsx'
+                        f'multipleye-stimuli-experiment-{image_config.LANGUAGE}.xlsx'
     image_config.IMAGE_DIR = image_config.IMAGE_DIR
     image_config.AOI_DIR = image_config.AOI_DIR
     image_config.AOI_IMG_DIR = image_config.AOI_IMG_DIR
@@ -323,7 +334,7 @@ def create_stimuli_images():
 
 def create_practice_images():
     stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
-        f'multipleye-stimuli-practice-{image_config.LANGUAGE}.xlsx'
+                        f'multipleye-stimuli-practice-{image_config.LANGUAGE}.xlsx'
     image_config.IMAGE_DIR = image_config.PRACTICE_IMAGE_DIR
     image_config.AOI_DIR = image_config.PRACTICE_AOI_DIR
     image_config.AOI_IMG_DIR = image_config.PRACTICE_AOI_IMG_DIR
@@ -331,58 +342,13 @@ def create_practice_images():
                   image_config.AOI_IMG_DIR, practice=True)
 
 
-def create_csv():
-    # Check if auxiliary csv file exists
-    if os.path.exists(image_config.OTHER_SCREENS_FILE_PATH):
-        return
-
-    # Create a csv file for the other screens
-    else:
-        other_screens_file_header = [
-            'other_screen_id', 'other_screen_title', 'other_screen_text', 'comment']
-        other_screens_data = [[1, 'welcome_screen', 'Welcome to the Multipleye experiment.', ''],
-                              [2, 'empty_screen', '', ''],
-                              [3, 'fixation_screen', '', ''],
-                              [4, 'break_screen', 'Press space to pause.',
-                               ''],
-                              [5, 'final_screen',
-                                  'Thanks for your participation!\nGoodbye!', ''],
-                              [6, 'instruction_screen', 'In this experiment you will read a series of texts. Each text is divided into a few pages. Please read the text carefully. When you are finished, look at the bottom right edge of the screen and press the space bar. Then the next page will appear. After each text you will have to answer a few questions.', ''],
-                              [7, 'practice_screen', 'Now an exercise text will follow. In practice you do not have to hurry and you can ask questions.', ''],
-                              [8, 'transition_screen', 'This is the end of the practice part. Just to remind you: Read the text carefully. When you\'re done, look at the bottom right of the screen and press the space bar. Then the next page will appear. After each text, you will have to answer a few questions.', ''],]
-        with open(image_config.OTHER_SCREENS_FILE_PATH, 'w', encoding='utf8', newline='') as f:
-            writer = csv.writer(f)
-            writer.writerow(other_screens_file_header)
-            writer.writerows(other_screens_data)
-
-
-def save_to_csv(other_screen_id, other_screen_img_file, image):
-    # Saving the image to the other screens directory first
-    if not os.path.isdir(image_config.OTHER_SCREENS_DIR):
-        os.mkdir(image_config.OTHER_SCREENS_DIR)
-    image.save(image_config.OTHER_SCREENS_DIR + other_screen_img_file)
-
-    # Add the two columns for the paths of other screens upon creation
-    copy = image_config.OTHER_SCREENS_FILE_PATH[:-5] + '_with_img_paths.csv'
-
-    if os.path.exists(copy):
-        df = pd.read_csv(copy)
-    else:
-        df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-        df['other_screen_img_path'] = ''
-        df['other_screen_img_file'] = ''
-
-    df.at[other_screen_id - 1,
-          'other_screen_img_path'] = image_config.OTHER_SCREENS_DIR + other_screen_img_file
-    df.at[other_screen_id - 1, 'other_screen_img_file'] = other_screen_img_file
-    df.to_csv(copy, index=False)
-
-
 def draw_text(text, image):
-
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
-    paragraphs = re.split(r'\n+', text.strip())
+
+    # font size is a bit smaller for these texts
+    font_size = image_config.FONT_SIZE -2
+    font = ImageFont.truetype(image_config.FONT_TYPE, font_size)
+    paragraphs = re.split(r'\n', text.strip())
 
     top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
 
@@ -396,7 +362,8 @@ def draw_text(text, image):
                 (0, 0), line + word, font=font)
             text_width = right - left
 
-            if text_width < (image_config.IMAGE_WIDTH_PX - (image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+            if text_width < (
+                    image_config.IMAGE_WIDTH_PX - (image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
                 line += word.strip() + " "
             else:
                 lines.append(line.strip())
@@ -421,7 +388,7 @@ def draw_text(text, image):
             for w in words_in_line:
 
                 if w.startswith('**'):
-                    font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, image_config.FONT_SIZE)
+                    font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, font_size)
                     w = w[2:]
 
                 if w.endswith('**'):
@@ -435,7 +402,7 @@ def draw_text(text, image):
                 x_word += right - left
 
                 if stop_bold:
-                    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
+                    font = ImageFont.truetype(image_config.FONT_TYPE, font_size)
                     stop_bold = False
 
             top_left_corner_y_line += text_height
@@ -451,12 +418,10 @@ def draw_text(text, image):
             # )
 
 
-def create_welcome_screen():
+def create_welcome_screen(image: Image, text: str) -> None:
     """
     Creates a welcome screen with a white background, all the logos and a blue greeting in the middle of the screen.
     """
-    create_csv()
-
     # We have three different logos - load them and change the size if needed
     cost_logo = Image.open("logo_imgs/cost_logo.jpg")
     cost_width, cost_height = cost_logo.size
@@ -471,78 +436,48 @@ def create_welcome_screen():
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     # Set the text
-    welcome_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-    welcome_text = welcome_df["other_screen_text"][0]
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
     font_type = "open-sans-bold.ttf"
 
-    # Create a new image with a white background and previously defined size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-
     # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
+    draw = ImageDraw.Draw(image)
 
     # Create coordinates for three different logos
-    multipleye_logo_x = (final_image.width - multipleye_logo.width) // 2
+    multipleye_logo_x = (image.width - multipleye_logo.width) // 2
     multipleye_logo_y = 10
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
-    eu_logo_x = (final_image.width - eu_logo.width) // 6
-    eu_logo_y = (final_image.height - eu_logo.height) - 18
+    eu_logo_x = (image.width - eu_logo.width) // 6
+    eu_logo_y = (image.height - eu_logo.height) - 18
     eu_logo_position = (eu_logo_x, eu_logo_y)
-    cost_logo_x = ((final_image.width - eu_logo.width) // 6) + 580
-    cost_logo_y = final_image.height - cost_logo.height
+    cost_logo_x = ((image.width - eu_logo.width) // 6) + 580
+    cost_logo_y = image.height - cost_logo.height
     cost_logo_position = (cost_logo_x, cost_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates
-    final_image.paste(
+    image.paste(
         multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
-    final_image.paste(eu_logo, eu_logo_position, mask=eu_logo)
-    final_image.paste(cost_logo, cost_logo_position)
+    image.paste(eu_logo, eu_logo_position, mask=eu_logo)
+    image.paste(cost_logo, cost_logo_position)
 
     # Paste the text onto the final image
     font = ImageFont.truetype(font_type, font_size)
     left, top, right, bottom = draw.multiline_textbbox(
-        (0, 0), welcome_text, font=font)
+        (0, 0), text, font=font)
     text_width, text_height = right - left, bottom - top
     # text_width, text_height = draw.textsize(welcome_text, font=font)
     text_x = (image_config.IMAGE_WIDTH_PX - text_width) / 2
     text_y = (image_config.IMAGE_HEIGHT_PX - text_height) / 2
-    draw.text((text_x, text_y), welcome_text, font=font, fill=our_blue)
-
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"welcome_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(1, filename, final_image)
+    draw.text((text_x, text_y), text, font=font, fill=our_blue)
 
 
-def create_empty_screen():
-    create_csv()
-
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"empty_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(2, filename, final_image)
-
-
-def create_fixation_screen():
+def create_fixation_screen(image: Image):
     """
     Creates a fixation screen with a white background and a fixation dot in the top left corner.
     """
-    create_csv()
-
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-
     # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
+    draw = ImageDraw.Draw(image)
 
     # The fixation dot is positioned a bit left to the first char in the middle of the line
     r = 7
@@ -555,50 +490,11 @@ def create_fixation_screen():
         width=5
     )
 
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"fixation_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(3, filename, final_image)
 
-
-def create_break_screen():
-    """
-    Creates a break screen with a white background, one hint message on the screen.
-    """
-    create_csv()
-
-    # Set the text
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-    break_text = other_screen_df[other_screen_df["other_screen_title"] == "break_screen"]["other_screen_text"].values[0]
-
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-
-    # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
-
-    # Paste the text onto the break image
-    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
-    # left, top, right, bottom = draw.multiline_textbbox((0, 0), break_text, font=font)
-    # text_width, text_height = right - left, bottom - top
-    # text_width, text_height = draw.textsize(welcome_text, font=font)
-
-    draw.text((image_config.TOP_LEFT_CORNER_X_PX, image_config.TOP_LEFT_CORNER_Y_PX),
-              break_text, font=font, fill=image_config.TEXT_COLOR)
-
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"break_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(4, filename, final_image)
-
-
-def create_final_screen():
+def create_final_screen(image: Image, text: str):
     """
     Creates a final screen with a white background, one logo and a blue messages in the middle of the screen.
     """
-    create_csv()
-
     # We have one multipleye logo - we can load other if needed
     # cost_logo = Image.open("cost_logo.jpg")
     # cost_width, cost_height = cost_logo.size
@@ -610,25 +506,18 @@ def create_final_screen():
     # eu_logo = eu_logo.resize(eu_logo_new_size)
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
-    # Set the text
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-    final_text = other_screen_df[other_screen_df["other_screen_title"] == "final_screen"]["other_screen_text"].values[0]
-    final_text = final_text.split('\n')
+    final_text = text.split('\n')
 
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
     font_type = "open-sans-bold.ttf"
 
-    # Create a new image with a white background and previously defined size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-
     # Create a drawing object
-    draw = ImageDraw.Draw(final_image)
+    draw = ImageDraw.Draw(image)
 
     # Create coordinates for three different logos
-    multipleye_logo_x = (final_image.width - multipleye_logo.width) // 2
+    multipleye_logo_x = (image.width - multipleye_logo.width) // 2
     multipleye_logo_y = 10
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
     # eu_logo_x = (final_image.width - eu_logo.width) // 6
@@ -639,7 +528,7 @@ def create_final_screen():
     # cost_logo_position = (cost_logo_x, cost_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates
-    final_image.paste(
+    image.paste(
         multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
     # final_image.paste(eu_logo, eu_logo_position, mask = eu_logo)
     # final_image.paste(cost_logo, cost_logo_position)
@@ -661,85 +550,50 @@ def create_final_screen():
 
         draw.text((text_x, text_y), paragraph, font=font, fill=our_blue)
 
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"final_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(5, filename, final_image)
 
-
-def create_instruction_screen():
-    """
-    Creates an instruction screen with a grey background
-    """
-    create_csv()
-
-    # Set the text
+def create_other_screens():
     other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-    inst_text = other_screen_df[other_screen_df["other_screen_title"] == "instruction_screen"]["other_screen_text"].values[0]
 
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+    if not os.path.isdir(image_config.OTHER_SCREENS_DIR):
+        os.mkdir(image_config.OTHER_SCREENS_DIR)
 
-    draw_text(inst_text, final_image)
+    file_names = []
+    file_paths = []
 
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"instruction_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(6, filename, final_image)
+    for idx, row in other_screen_df.iterrows():
 
+        final_image = Image.new(
+            'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
 
-def create_practice_screen():
-    """
-    Creates a practice screen with a grey background
-    """
-    create_csv()
+        title = row["other_screen_title"]
+        text = row["other_screen_text"]
 
-    # Set the text
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-    practice_text = other_screen_df[other_screen_df["other_screen_title"] == "practice_screen"]["other_screen_text"].values[0]
+        if title == "welcome_screen":
+            create_welcome_screen(final_image, text)
 
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+        elif title == "fixation_screen":
+            create_fixation_screen(final_image)
 
-    draw_text(practice_text, final_image)
+        elif title == "final_screen":
+            create_final_screen(final_image, text)
 
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"practice_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(7, filename, final_image)
+        elif title != 'empty_screen':
+            draw_text(text, final_image)
 
+        file_name = f'{title}_{image_config.LANGUAGE}.png'
+        file_path = image_config.OTHER_SCREENS_DIR + file_name
+        file_names.append(file_name)
+        file_paths.append(file_path)
 
-def create_transition_screen():
-    """
-    Creates a transition screen with a grey background
-    """
-    create_csv()
+        final_image.save(image_config.OTHER_SCREENS_DIR + file_name)
 
-    # Set the text
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
-    transition_text = other_screen_df[other_screen_df["other_screen_title"] == "transition_screen"]["other_screen_text"].values[0]
+    other_screen_df['other_screen_img_name'] = file_names
+    other_screen_df['other_screen_img_path'] = file_paths
 
-    # Create a new image with a previously defined color background and size
-    final_image = Image.new(
-        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-
-    draw_text(transition_text, final_image)
-
-    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-    # best
-    filename = f"transition_screen_{image_config.LANGUAGE}.png"
-    save_to_csv(8, filename, final_image)
+    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5] + '_with_img_paths.csv', index=False)
 
 
 if __name__ == '__main__':
     # create_stimuli_images()
     # create_practice_images()
-    create_welcome_screen()
-    create_empty_screen()
-    create_fixation_screen()
-    create_break_screen()
-    create_final_screen()
-    create_instruction_screen()
-    create_practice_screen()
-    create_transition_screen()
+    create_other_screens()

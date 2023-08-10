@@ -1,3 +1,7 @@
+NUM_STIMULI = 12
+NUM_PRACTICE_STIMULI = 2
+NUM_OTHER_SCREENS = 9
+
 FONT_TYPE = "JetBrainsMono-Regular.ttf"
 FONT_TYPE_BOLD = "JetBrainsMono-ExtraBold.ttf"
 TEXT_COLOR = (0, 0, 0)
@@ -22,7 +26,7 @@ OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye-other-screens-{LANGUAGE}.xlsx'
 
 # Set this to true fi you want to generate the images with AOI boxes
-AOI = True
+AOI = False
 
 RESOLUTION = (1920, 1080)
 
@@ -30,7 +34,7 @@ IMAGE_SIZE_CM = (36, 28)
 IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM,
                    IMAGE_SIZE_CM[1] / INCH_IN_CM)
 
-SCREEN_SIZE_CM = (52.2, 29.3)
+SCREEN_SIZE_CM = (54.4, 30.3)
 SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] /
                     INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
 

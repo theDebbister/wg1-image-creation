@@ -1,1196 +1,1189 @@
 char,x,y,width,height,char_idx_in_line,line_idx,page,word
-F,-155.0,-212,13.0,21,0,0,page_1_practice,From
-r,-142.0,-212,13.0,21,1,0,page_1_practice,From
-o,-129.0,-212,13.0,21,2,0,page_1_practice,From
-m,-116.0,-212,13.0,21,3,0,page_1_practice,From
- ,-103.0,-212,13.0,21,4,0,page_1_practice,
-m,-90.0,-212,13.0,21,5,0,page_1_practice,my
-y,-77.0,-212,13.0,21,6,0,page_1_practice,my
- ,-64.0,-212,13.0,21,7,0,page_1_practice,
-h,-51.0,-212,13.0,21,8,0,page_1_practice,hotel
-o,-38.0,-212,13.0,21,9,0,page_1_practice,hotel
-t,-25.0,-212,13.0,21,10,0,page_1_practice,hotel
-e,-12.0,-212,13.0,21,11,0,page_1_practice,hotel
-l,1.0,-212,13.0,21,12,0,page_1_practice,hotel
- ,14.0,-212,13.0,21,13,0,page_1_practice,
-r,27.0,-212,13.0,21,14,0,page_1_practice,room
-o,40.0,-212,13.0,21,15,0,page_1_practice,room
-o,53.0,-212,13.0,21,16,0,page_1_practice,room
-m,66.0,-212,13.0,21,17,0,page_1_practice,room
- ,79.0,-212,13.0,21,18,0,page_1_practice,
-w,92.0,-212,13.0,21,19,0,page_1_practice,"window,"
-i,105.0,-212,13.0,21,20,0,page_1_practice,"window,"
-n,118.0,-212,13.0,21,21,0,page_1_practice,"window,"
-d,131.0,-212,13.0,21,22,0,page_1_practice,"window,"
-o,144.0,-212,13.0,21,23,0,page_1_practice,"window,"
-w,157.0,-212,13.0,21,24,0,page_1_practice,"window,"
-",",170.0,-212,13.0,21,25,0,page_1_practice,"window,"
- ,183.0,-212,13.0,21,26,0,page_1_practice,
-I,196.0,-212,13.0,21,27,0,page_1_practice,I
- ,209.0,-212,13.0,21,28,0,page_1_practice,
-s,222.0,-212,13.0,21,29,0,page_1_practice,see
-e,235.0,-212,13.0,21,30,0,page_1_practice,see
-e,248.0,-212,13.0,21,31,0,page_1_practice,see
- ,261.0,-212,13.0,21,32,0,page_1_practice,
-a,274.0,-212,13.0,21,33,0,page_1_practice,an
-n,287.0,-212,13.0,21,34,0,page_1_practice,an
- ,300.0,-212,13.0,21,35,0,page_1_practice,
-o,313.0,-212,13.0,21,36,0,page_1_practice,oversized
-v,326.0,-212,13.0,21,37,0,page_1_practice,oversized
-e,339.0,-212,13.0,21,38,0,page_1_practice,oversized
-r,352.0,-212,13.0,21,39,0,page_1_practice,oversized
-s,365.0,-212,13.0,21,40,0,page_1_practice,oversized
-i,378.0,-212,13.0,21,41,0,page_1_practice,oversized
-z,391.0,-212,13.0,21,42,0,page_1_practice,oversized
-e,404.0,-212,13.0,21,43,0,page_1_practice,oversized
-d,417.0,-212,13.0,21,44,0,page_1_practice,oversized
- ,430.0,-212,13.0,21,45,0,page_1_practice,
-b,443.0,-212,13.0,21,46,0,page_1_practice,billboard
-i,456.0,-212,13.0,21,47,0,page_1_practice,billboard
-l,469.0,-212,13.0,21,48,0,page_1_practice,billboard
-l,482.0,-212,13.0,21,49,0,page_1_practice,billboard
-b,495.0,-212,13.0,21,50,0,page_1_practice,billboard
-o,508.0,-212,13.0,21,51,0,page_1_practice,billboard
-a,521.0,-212,13.0,21,52,0,page_1_practice,billboard
-r,534.0,-212,13.0,21,53,0,page_1_practice,billboard
-d,547.0,-212,13.0,21,54,0,page_1_practice,billboard
- ,560.0,-212,13.0,21,55,0,page_1_practice,
-w,573.0,-212,13.0,21,56,0,page_1_practice,with
-i,586.0,-212,13.0,21,57,0,page_1_practice,with
-t,599.0,-212,13.0,21,58,0,page_1_practice,with
-h,612.0,-212,13.0,21,59,0,page_1_practice,with
- ,625.0,-212,13.0,21,60,0,page_1_practice,
-h,638.0,-212,13.0,21,61,0,page_1_practice,his
-i,651.0,-212,13.0,21,62,0,page_1_practice,his
-s,664.0,-212,13.0,21,63,0,page_1_practice,his
- ,677.0,-212,13.0,21,64,0,page_1_practice,
-f,690.0,-212,13.0,21,65,0,page_1_practice,face
-a,703.0,-212,13.0,21,66,0,page_1_practice,face
-c,716.0,-212,13.0,21,67,0,page_1_practice,face
-e,729.0,-212,13.0,21,68,0,page_1_practice,face
- ,742.0,-212,13.0,21,69,0,page_1_practice,
-o,755.0,-212,13.0,21,70,0,page_1_practice,on
-n,768.0,-212,13.0,21,71,0,page_1_practice,on
- ,781.0,-212,13.0,21,72,0,page_1_practice,
-i,794.0,-212,13.0,21,73,0,page_1_practice,it:
-t,807.0,-212,13.0,21,74,0,page_1_practice,it:
-:,820.0,-212,13.0,21,75,0,page_1_practice,it:
- ,833.0,-212,13.0,21,76,0,page_1_practice,
-J,846.0,-212,13.0,21,77,0,page_1_practice,"Jason,"
-a,859.0,-212,13.0,21,78,0,page_1_practice,"Jason,"
-s,872.0,-212,13.0,21,79,0,page_1_practice,"Jason,"
-o,885.0,-212,13.0,21,80,0,page_1_practice,"Jason,"
-n,898.0,-212,13.0,21,81,0,page_1_practice,"Jason,"
-",",911.0,-212,13.0,21,82,0,page_1_practice,"Jason,"
- ,924.0,-212,13.0,21,83,0,page_1_practice,
-t,937.0,-212,13.0,21,84,0,page_1_practice,the
-h,950.0,-212,13.0,21,85,0,page_1_practice,the
-e,963.0,-212,13.0,21,86,0,page_1_practice,the
- ,976.0,-212,13.0,21,87,0,page_1_practice,
-G,989.0,-212,13.0,21,88,0,page_1_practice,Great
-r,1002.0,-212,13.0,21,89,0,page_1_practice,Great
-e,1015.0,-212,13.0,21,90,0,page_1_practice,Great
-a,1028.0,-212,13.0,21,91,0,page_1_practice,Great
-t,1041.0,-212,13.0,21,92,0,page_1_practice,Great
- ,1054.0,-212,13.0,21,93,0,page_1_practice,
-M,1067.0,-212,13.0,21,94,0,page_1_practice,Magician.I
-a,1080.0,-212,13.0,21,95,0,page_1_practice,Magician.I
-g,1093.0,-212,13.0,21,96,0,page_1_practice,Magician.I
-i,1106.0,-212,13.0,21,97,0,page_1_practice,Magician.I
-c,1119.0,-212,13.0,21,98,0,page_1_practice,Magician.I
-i,1132.0,-212,13.0,21,99,0,page_1_practice,Magician.I
-a,1145.0,-212,13.0,21,100,0,page_1_practice,Magician.I
-n,1158.0,-212,13.0,21,101,0,page_1_practice,Magician.I
-.,1171.0,-212,13.0,21,102,0,page_1_practice,Magician.I
-I,1184.0,-212,13.0,21,103,0,page_1_practice,Magician.I
- ,1197.0,-212,13.0,21,104,0,page_1_practice,
-a,1210.0,-212,13.0,21,105,0,page_1_practice,absent-mindedly
-b,1223.0,-212,13.0,21,106,0,page_1_practice,absent-mindedly
-s,1236.0,-212,13.0,21,107,0,page_1_practice,absent-mindedly
-e,1249.0,-212,13.0,21,108,0,page_1_practice,absent-mindedly
-n,1262.0,-212,13.0,21,109,0,page_1_practice,absent-mindedly
-t,1275.0,-212,13.0,21,110,0,page_1_practice,absent-mindedly
--,1288.0,-212,13.0,21,111,0,page_1_practice,absent-mindedly
-m,1301.0,-212,13.0,21,112,0,page_1_practice,absent-mindedly
-i,1314.0,-212,13.0,21,113,0,page_1_practice,absent-mindedly
-n,1327.0,-212,13.0,21,114,0,page_1_practice,absent-mindedly
-d,1340.0,-212,13.0,21,115,0,page_1_practice,absent-mindedly
-e,1353.0,-212,13.0,21,116,0,page_1_practice,absent-mindedly
-d,1366.0,-212,13.0,21,117,0,page_1_practice,absent-mindedly
-l,1379.0,-212,13.0,21,118,0,page_1_practice,absent-mindedly
-y,1392.0,-212,13.0,21,119,0,page_1_practice,absent-mindedly
- ,1405.0,-212,13.0,21,120,0,page_1_practice,
-t,1418.0,-212,13.0,21,121,0,page_1_practice,turn
-u,1431.0,-212,13.0,21,122,0,page_1_practice,turn
-r,1444.0,-212,13.0,21,123,0,page_1_practice,turn
-n,1457.0,-212,13.0,21,124,0,page_1_practice,turn
- ,1470.0,-212,13.0,21,125,0,page_1_practice,
-t,1483.0,-212,13.0,21,126,0,page_1_practice,the
-h,1496.0,-212,13.0,21,127,0,page_1_practice,the
-e,1509.0,-212,13.0,21,128,0,page_1_practice,the
-p,-155.0,-139,13.0,21,0,2,page_1_practice,pages
-a,-142.0,-139,13.0,21,1,2,page_1_practice,pages
-g,-129.0,-139,13.0,21,2,2,page_1_practice,pages
-e,-116.0,-139,13.0,21,3,2,page_1_practice,pages
-s,-103.0,-139,13.0,21,4,2,page_1_practice,pages
- ,-90.0,-139,13.0,21,5,2,page_1_practice,
-o,-77.0,-139,13.0,21,6,2,page_1_practice,of
-f,-64.0,-139,13.0,21,7,2,page_1_practice,of
- ,-51.0,-139,13.0,21,8,2,page_1_practice,
-t,-38.0,-139,13.0,21,9,2,page_1_practice,the
-h,-25.0,-139,13.0,21,10,2,page_1_practice,the
-e,-12.0,-139,13.0,21,11,2,page_1_practice,the
- ,1.0,-139,13.0,21,12,2,page_1_practice,
-p,14.0,-139,13.0,21,13,2,page_1_practice,phone
-h,27.0,-139,13.0,21,14,2,page_1_practice,phone
-o,40.0,-139,13.0,21,15,2,page_1_practice,phone
-n,53.0,-139,13.0,21,16,2,page_1_practice,phone
-e,66.0,-139,13.0,21,17,2,page_1_practice,phone
- ,79.0,-139,13.0,21,18,2,page_1_practice,
-b,92.0,-139,13.0,21,19,2,page_1_practice,book
-o,105.0,-139,13.0,21,20,2,page_1_practice,book
-o,118.0,-139,13.0,21,21,2,page_1_practice,book
-k,131.0,-139,13.0,21,22,2,page_1_practice,book
- ,144.0,-139,13.0,21,23,2,page_1_practice,
-a,157.0,-139,13.0,21,24,2,page_1_practice,and
-n,170.0,-139,13.0,21,25,2,page_1_practice,and
-d,183.0,-139,13.0,21,26,2,page_1_practice,and
- ,196.0,-139,13.0,21,27,2,page_1_practice,
-c,209.0,-139,13.0,21,28,2,page_1_practice,come
-o,222.0,-139,13.0,21,29,2,page_1_practice,come
-m,235.0,-139,13.0,21,30,2,page_1_practice,come
-e,248.0,-139,13.0,21,31,2,page_1_practice,come
- ,261.0,-139,13.0,21,32,2,page_1_practice,
-a,274.0,-139,13.0,21,33,2,page_1_practice,across
-c,287.0,-139,13.0,21,34,2,page_1_practice,across
-r,300.0,-139,13.0,21,35,2,page_1_practice,across
-o,313.0,-139,13.0,21,36,2,page_1_practice,across
-s,326.0,-139,13.0,21,37,2,page_1_practice,across
-s,339.0,-139,13.0,21,38,2,page_1_practice,across
- ,352.0,-139,13.0,21,39,2,page_1_practice,
-a,365.0,-139,13.0,21,40,2,page_1_practice,a
- ,378.0,-139,13.0,21,41,2,page_1_practice,
-c,391.0,-139,13.0,21,42,2,page_1_practice,city
-i,404.0,-139,13.0,21,43,2,page_1_practice,city
-t,417.0,-139,13.0,21,44,2,page_1_practice,city
-y,430.0,-139,13.0,21,45,2,page_1_practice,city
- ,443.0,-139,13.0,21,46,2,page_1_practice,
-m,456.0,-139,13.0,21,47,2,page_1_practice,map.
-a,469.0,-139,13.0,21,48,2,page_1_practice,map.
-p,482.0,-139,13.0,21,49,2,page_1_practice,map.
-.,495.0,-139,13.0,21,50,2,page_1_practice,map.
- ,508.0,-139,13.0,21,51,2,page_1_practice,
-S,521.0,-139,13.0,21,52,2,page_1_practice,Sipping
-i,534.0,-139,13.0,21,53,2,page_1_practice,Sipping
-p,547.0,-139,13.0,21,54,2,page_1_practice,Sipping
-p,560.0,-139,13.0,21,55,2,page_1_practice,Sipping
-i,573.0,-139,13.0,21,56,2,page_1_practice,Sipping
-n,586.0,-139,13.0,21,57,2,page_1_practice,Sipping
-g,599.0,-139,13.0,21,58,2,page_1_practice,Sipping
- ,612.0,-139,13.0,21,59,2,page_1_practice,
-m,625.0,-139,13.0,21,60,2,page_1_practice,my
-y,638.0,-139,13.0,21,61,2,page_1_practice,my
- ,651.0,-139,13.0,21,62,2,page_1_practice,
-i,664.0,-139,13.0,21,63,2,page_1_practice,iced
-c,677.0,-139,13.0,21,64,2,page_1_practice,iced
-e,690.0,-139,13.0,21,65,2,page_1_practice,iced
-d,703.0,-139,13.0,21,66,2,page_1_practice,iced
- ,716.0,-139,13.0,21,67,2,page_1_practice,
-l,729.0,-139,13.0,21,68,2,page_1_practice,"latté,"
-a,742.0,-139,13.0,21,69,2,page_1_practice,"latté,"
-t,755.0,-139,13.0,21,70,2,page_1_practice,"latté,"
-t,768.0,-139,13.0,21,71,2,page_1_practice,"latté,"
-é,781.0,-139,13.0,21,72,2,page_1_practice,"latté,"
-",",794.0,-139,13.0,21,73,2,page_1_practice,"latté,"
- ,807.0,-139,13.0,21,74,2,page_1_practice,
-I,820.0,-139,13.0,21,75,2,page_1_practice,I
- ,833.0,-139,13.0,21,76,2,page_1_practice,
-r,846.0,-139,13.0,21,77,2,page_1_practice,run
-u,859.0,-139,13.0,21,78,2,page_1_practice,run
-n,872.0,-139,13.0,21,79,2,page_1_practice,run
- ,885.0,-139,13.0,21,80,2,page_1_practice,
-m,898.0,-139,13.0,21,81,2,page_1_practice,my
-y,911.0,-139,13.0,21,82,2,page_1_practice,my
- ,924.0,-139,13.0,21,83,2,page_1_practice,
-f,937.0,-139,13.0,21,84,2,page_1_practice,fingers
-i,950.0,-139,13.0,21,85,2,page_1_practice,fingers
-n,963.0,-139,13.0,21,86,2,page_1_practice,fingers
-g,976.0,-139,13.0,21,87,2,page_1_practice,fingers
-e,989.0,-139,13.0,21,88,2,page_1_practice,fingers
-r,1002.0,-139,13.0,21,89,2,page_1_practice,fingers
-s,1015.0,-139,13.0,21,90,2,page_1_practice,fingers
- ,1028.0,-139,13.0,21,91,2,page_1_practice,
-a,1041.0,-139,13.0,21,92,2,page_1_practice,along
-l,1054.0,-139,13.0,21,93,2,page_1_practice,along
-o,1067.0,-139,13.0,21,94,2,page_1_practice,along
-n,1080.0,-139,13.0,21,95,2,page_1_practice,along
-g,1093.0,-139,13.0,21,96,2,page_1_practice,along
- ,1106.0,-139,13.0,21,97,2,page_1_practice,
-t,1119.0,-139,13.0,21,98,2,page_1_practice,the
-h,1132.0,-139,13.0,21,99,2,page_1_practice,the
-e,1145.0,-139,13.0,21,100,2,page_1_practice,the
- ,1158.0,-139,13.0,21,101,2,page_1_practice,
-s,1171.0,-139,13.0,21,102,2,page_1_practice,streets
-t,1184.0,-139,13.0,21,103,2,page_1_practice,streets
-r,1197.0,-139,13.0,21,104,2,page_1_practice,streets
-e,1210.0,-139,13.0,21,105,2,page_1_practice,streets
-e,1223.0,-139,13.0,21,106,2,page_1_practice,streets
-t,1236.0,-139,13.0,21,107,2,page_1_practice,streets
-s,1249.0,-139,13.0,21,108,2,page_1_practice,streets
- ,1262.0,-139,13.0,21,109,2,page_1_practice,
-f,1275.0,-139,13.0,21,110,2,page_1_practice,from
-r,1288.0,-139,13.0,21,111,2,page_1_practice,from
-o,1301.0,-139,13.0,21,112,2,page_1_practice,from
-m,1314.0,-139,13.0,21,113,2,page_1_practice,from
- ,1327.0,-139,13.0,21,114,2,page_1_practice,
-t,1340.0,-139,13.0,21,115,2,page_1_practice,the
-h,1353.0,-139,13.0,21,116,2,page_1_practice,the
-e,1366.0,-139,13.0,21,117,2,page_1_practice,the
- ,1379.0,-139,13.0,21,118,2,page_1_practice,
-h,1392.0,-139,13.0,21,119,2,page_1_practice,hotel
-o,1405.0,-139,13.0,21,120,2,page_1_practice,hotel
-t,1418.0,-139,13.0,21,121,2,page_1_practice,hotel
-e,1431.0,-139,13.0,21,122,2,page_1_practice,hotel
-l,1444.0,-139,13.0,21,123,2,page_1_practice,hotel
- ,1457.0,-139,13.0,21,124,2,page_1_practice,
-t,1470.0,-139,13.0,21,125,2,page_1_practice,to
-o,1483.0,-139,13.0,21,126,2,page_1_practice,to
- ,1496.0,-139,13.0,21,127,2,page_1_practice,
-t,1509.0,-139,13.0,21,128,2,page_1_practice,the
-h,1522.0,-139,13.0,21,129,2,page_1_practice,the
-e,1535.0,-139,13.0,21,130,2,page_1_practice,the
-o,-155.0,-66,13.0,21,0,4,page_1_practice,opera
-p,-142.0,-66,13.0,21,1,4,page_1_practice,opera
-e,-129.0,-66,13.0,21,2,4,page_1_practice,opera
-r,-116.0,-66,13.0,21,3,4,page_1_practice,opera
-a,-103.0,-66,13.0,21,4,4,page_1_practice,opera
- ,-90.0,-66,13.0,21,5,4,page_1_practice,
-h,-77.0,-66,13.0,21,6,4,page_1_practice,hall.
-a,-64.0,-66,13.0,21,7,4,page_1_practice,hall.
-l,-51.0,-66,13.0,21,8,4,page_1_practice,hall.
-l,-38.0,-66,13.0,21,9,4,page_1_practice,hall.
-.,-25.0,-66,13.0,21,10,4,page_1_practice,hall.
- ,-12.0,-66,13.0,21,11,4,page_1_practice,
-N,1.0,-66,13.0,21,12,4,page_1_practice,Not
-o,14.0,-66,13.0,21,13,4,page_1_practice,Not
-t,27.0,-66,13.0,21,14,4,page_1_practice,Not
- ,40.0,-66,13.0,21,15,4,page_1_practice,
-m,53.0,-66,13.0,21,16,4,page_1_practice,more
-o,66.0,-66,13.0,21,17,4,page_1_practice,more
-r,79.0,-66,13.0,21,18,4,page_1_practice,more
-e,92.0,-66,13.0,21,19,4,page_1_practice,more
- ,105.0,-66,13.0,21,20,4,page_1_practice,
-t,118.0,-66,13.0,21,21,4,page_1_practice,than
-h,131.0,-66,13.0,21,22,4,page_1_practice,than
-a,144.0,-66,13.0,21,23,4,page_1_practice,than
-n,157.0,-66,13.0,21,24,4,page_1_practice,than
- ,170.0,-66,13.0,21,25,4,page_1_practice,
-a,183.0,-66,13.0,21,26,4,page_1_practice,a
- ,196.0,-66,13.0,21,27,4,page_1_practice,
-h,209.0,-66,13.0,21,28,4,page_1_practice,half-hour
-a,222.0,-66,13.0,21,29,4,page_1_practice,half-hour
-l,235.0,-66,13.0,21,30,4,page_1_practice,half-hour
-f,248.0,-66,13.0,21,31,4,page_1_practice,half-hour
--,261.0,-66,13.0,21,32,4,page_1_practice,half-hour
-h,274.0,-66,13.0,21,33,4,page_1_practice,half-hour
-o,287.0,-66,13.0,21,34,4,page_1_practice,half-hour
-u,300.0,-66,13.0,21,35,4,page_1_practice,half-hour
-r,313.0,-66,13.0,21,36,4,page_1_practice,half-hour
- ,326.0,-66,13.0,21,37,4,page_1_practice,
-w,339.0,-66,13.0,21,38,4,page_1_practice,walk.
-a,352.0,-66,13.0,21,39,4,page_1_practice,walk.
-l,365.0,-66,13.0,21,40,4,page_1_practice,walk.
-k,378.0,-66,13.0,21,41,4,page_1_practice,walk.
-.,391.0,-66,13.0,21,42,4,page_1_practice,walk.
- ,404.0,-66,13.0,21,43,4,page_1_practice,
-I,417.0,-66,13.0,21,44,4,page_1_practice,I
- ,430.0,-66,13.0,21,45,4,page_1_practice,
-g,443.0,-66,13.0,21,46,4,page_1_practice,glance
-l,456.0,-66,13.0,21,47,4,page_1_practice,glance
-a,469.0,-66,13.0,21,48,4,page_1_practice,glance
-n,482.0,-66,13.0,21,49,4,page_1_practice,glance
-c,495.0,-66,13.0,21,50,4,page_1_practice,glance
-e,508.0,-66,13.0,21,51,4,page_1_practice,glance
- ,521.0,-66,13.0,21,52,4,page_1_practice,
-a,534.0,-66,13.0,21,53,4,page_1_practice,at
-t,547.0,-66,13.0,21,54,4,page_1_practice,at
- ,560.0,-66,13.0,21,55,4,page_1_practice,
-t,573.0,-66,13.0,21,56,4,page_1_practice,the
-h,586.0,-66,13.0,21,57,4,page_1_practice,the
-e,599.0,-66,13.0,21,58,4,page_1_practice,the
- ,612.0,-66,13.0,21,59,4,page_1_practice,
-c,625.0,-66,13.0,21,60,4,page_1_practice,clock.
-l,638.0,-66,13.0,21,61,4,page_1_practice,clock.
-o,651.0,-66,13.0,21,62,4,page_1_practice,clock.
-c,664.0,-66,13.0,21,63,4,page_1_practice,clock.
-k,677.0,-66,13.0,21,64,4,page_1_practice,clock.
-.,690.0,-66,13.0,21,65,4,page_1_practice,clock.
- ,703.0,-66,13.0,21,66,4,page_1_practice,
-T,716.0,-66,13.0,21,67,4,page_1_practice,The
-h,729.0,-66,13.0,21,68,4,page_1_practice,The
-e,742.0,-66,13.0,21,69,4,page_1_practice,The
- ,755.0,-66,13.0,21,70,4,page_1_practice,
-s,768.0,-66,13.0,21,71,4,page_1_practice,show
-h,781.0,-66,13.0,21,72,4,page_1_practice,show
-o,794.0,-66,13.0,21,73,4,page_1_practice,show
-w,807.0,-66,13.0,21,74,4,page_1_practice,show
- ,820.0,-66,13.0,21,75,4,page_1_practice,
-s,833.0,-66,13.0,21,76,4,page_1_practice,starts
-t,846.0,-66,13.0,21,77,4,page_1_practice,starts
-a,859.0,-66,13.0,21,78,4,page_1_practice,starts
-r,872.0,-66,13.0,21,79,4,page_1_practice,starts
-t,885.0,-66,13.0,21,80,4,page_1_practice,starts
-s,898.0,-66,13.0,21,81,4,page_1_practice,starts
- ,911.0,-66,13.0,21,82,4,page_1_practice,
-i,924.0,-66,13.0,21,83,4,page_1_practice,in
-n,937.0,-66,13.0,21,84,4,page_1_practice,in
- ,950.0,-66,13.0,21,85,4,page_1_practice,
-o,963.0,-66,13.0,21,86,4,page_1_practice,one
-n,976.0,-66,13.0,21,87,4,page_1_practice,one
-e,989.0,-66,13.0,21,88,4,page_1_practice,one
- ,1002.0,-66,13.0,21,89,4,page_1_practice,
-h,1015.0,-66,13.0,21,90,4,page_1_practice,hour.
-o,1028.0,-66,13.0,21,91,4,page_1_practice,hour.
-u,1041.0,-66,13.0,21,92,4,page_1_practice,hour.
-r,1054.0,-66,13.0,21,93,4,page_1_practice,hour.
-.,1067.0,-66,13.0,21,94,4,page_1_practice,hour.
- ,1080.0,-66,13.0,21,95,4,page_1_practice,
-P,1093.0,-66,13.0,21,96,4,page_1_practice,Plenty
-l,1106.0,-66,13.0,21,97,4,page_1_practice,Plenty
-e,1119.0,-66,13.0,21,98,4,page_1_practice,Plenty
-n,1132.0,-66,13.0,21,99,4,page_1_practice,Plenty
-t,1145.0,-66,13.0,21,100,4,page_1_practice,Plenty
-y,1158.0,-66,13.0,21,101,4,page_1_practice,Plenty
- ,1171.0,-66,13.0,21,102,4,page_1_practice,
-o,1184.0,-66,13.0,21,103,4,page_1_practice,of
-f,1197.0,-66,13.0,21,104,4,page_1_practice,of
- ,1210.0,-66,13.0,21,105,4,page_1_practice,
-t,1223.0,-66,13.0,21,106,4,page_1_practice,time!
-i,1236.0,-66,13.0,21,107,4,page_1_practice,time!
-m,1249.0,-66,13.0,21,108,4,page_1_practice,time!
-e,1262.0,-66,13.0,21,109,4,page_1_practice,time!
-!,1275.0,-66,13.0,21,110,4,page_1_practice,time!
- ,1288.0,-66,13.0,21,111,4,page_1_practice,
-I,1301.0,-66,13.0,21,112,4,page_1_practice,I
- ,1314.0,-66,13.0,21,113,4,page_1_practice,
-g,1327.0,-66,13.0,21,114,4,page_1_practice,gulp
-u,1340.0,-66,13.0,21,115,4,page_1_practice,gulp
-l,1353.0,-66,13.0,21,116,4,page_1_practice,gulp
-p,1366.0,-66,13.0,21,117,4,page_1_practice,gulp
- ,1379.0,-66,13.0,21,118,4,page_1_practice,
-t,1392.0,-66,13.0,21,119,4,page_1_practice,the
-h,1405.0,-66,13.0,21,120,4,page_1_practice,the
-e,1418.0,-66,13.0,21,121,4,page_1_practice,the
- ,1431.0,-66,13.0,21,122,4,page_1_practice,
-l,1444.0,-66,13.0,21,123,4,page_1_practice,last
-a,1457.0,-66,13.0,21,124,4,page_1_practice,last
-s,1470.0,-66,13.0,21,125,4,page_1_practice,last
-t,1483.0,-66,13.0,21,126,4,page_1_practice,last
- ,1496.0,-66,13.0,21,127,4,page_1_practice,
-t,1509.0,-66,13.0,21,128,4,page_1_practice,three
-h,1522.0,-66,13.0,21,129,4,page_1_practice,three
-r,1535.0,-66,13.0,21,130,4,page_1_practice,three
-e,1548.0,-66,13.0,21,131,4,page_1_practice,three
-e,1561.0,-66,13.0,21,132,4,page_1_practice,three
-s,-155.0,7,13.0,21,0,6,page_1_practice,sips
-i,-142.0,7,13.0,21,1,6,page_1_practice,sips
-p,-129.0,7,13.0,21,2,6,page_1_practice,sips
-s,-116.0,7,13.0,21,3,6,page_1_practice,sips
- ,-103.0,7,13.0,21,4,6,page_1_practice,
-o,-90.0,7,13.0,21,5,6,page_1_practice,of
-f,-77.0,7,13.0,21,6,6,page_1_practice,of
- ,-64.0,7,13.0,21,7,6,page_1_practice,
-m,-51.0,7,13.0,21,8,6,page_1_practice,my
-y,-38.0,7,13.0,21,9,6,page_1_practice,my
- ,-25.0,7,13.0,21,10,6,page_1_practice,
-l,-12.0,7,13.0,21,11,6,page_1_practice,latté
-a,1.0,7,13.0,21,12,6,page_1_practice,latté
-t,14.0,7,13.0,21,13,6,page_1_practice,latté
-t,27.0,7,13.0,21,14,6,page_1_practice,latté
-é,40.0,7,13.0,21,15,6,page_1_practice,latté
- ,53.0,7,13.0,21,16,6,page_1_practice,
-a,66.0,7,13.0,21,17,6,page_1_practice,and
-n,79.0,7,13.0,21,18,6,page_1_practice,and
-d,92.0,7,13.0,21,19,6,page_1_practice,and
- ,105.0,7,13.0,21,20,6,page_1_practice,
-h,118.0,7,13.0,21,21,6,page_1_practice,hop
-o,131.0,7,13.0,21,22,6,page_1_practice,hop
-p,144.0,7,13.0,21,23,6,page_1_practice,hop
- ,157.0,7,13.0,21,24,6,page_1_practice,
-i,170.0,7,13.0,21,25,6,page_1_practice,in
-n,183.0,7,13.0,21,26,6,page_1_practice,in
- ,196.0,7,13.0,21,27,6,page_1_practice,
-t,209.0,7,13.0,21,28,6,page_1_practice,the
-h,222.0,7,13.0,21,29,6,page_1_practice,the
-e,235.0,7,13.0,21,30,6,page_1_practice,the
- ,248.0,7,13.0,21,31,6,page_1_practice,
-s,261.0,7,13.0,21,32,6,page_1_practice,shower.
-h,274.0,7,13.0,21,33,6,page_1_practice,shower.
-o,287.0,7,13.0,21,34,6,page_1_practice,shower.
-w,300.0,7,13.0,21,35,6,page_1_practice,shower.
-e,313.0,7,13.0,21,36,6,page_1_practice,shower.
-r,326.0,7,13.0,21,37,6,page_1_practice,shower.
-.,339.0,7,13.0,21,38,6,page_1_practice,shower.
- ,352.0,7,13.0,21,39,6,page_1_practice,
-S,365.0,7,13.0,21,40,6,page_1_practice,Soon
-o,378.0,7,13.0,21,41,6,page_1_practice,Soon
-o,391.0,7,13.0,21,42,6,page_1_practice,Soon
-n,404.0,7,13.0,21,43,6,page_1_practice,Soon
- ,417.0,7,13.0,21,44,6,page_1_practice,
-I,430.0,7,13.0,21,45,6,page_1_practice,I’m
-’,443.0,7,13.0,21,46,6,page_1_practice,I’m
-m,456.0,7,13.0,21,47,6,page_1_practice,I’m
- ,469.0,7,13.0,21,48,6,page_1_practice,
-o,482.0,7,13.0,21,49,6,page_1_practice,on
-n,495.0,7,13.0,21,50,6,page_1_practice,on
- ,508.0,7,13.0,21,51,6,page_1_practice,
-m,521.0,7,13.0,21,52,6,page_1_practice,my
-y,534.0,7,13.0,21,53,6,page_1_practice,my
- ,547.0,7,13.0,21,54,6,page_1_practice,
-w,560.0,7,13.0,21,55,6,page_1_practice,way
-a,573.0,7,13.0,21,56,6,page_1_practice,way
-y,586.0,7,13.0,21,57,6,page_1_practice,way
- ,599.0,7,13.0,21,58,6,page_1_practice,
-t,612.0,7,13.0,21,59,6,page_1_practice,to
-o,625.0,7,13.0,21,60,6,page_1_practice,to
- ,638.0,7,13.0,21,61,6,page_1_practice,
-t,651.0,7,13.0,21,62,6,page_1_practice,the
-h,664.0,7,13.0,21,63,6,page_1_practice,the
-e,677.0,7,13.0,21,64,6,page_1_practice,the
- ,690.0,7,13.0,21,65,6,page_1_practice,
-s,703.0,7,13.0,21,66,6,page_1_practice,"show,"
-h,716.0,7,13.0,21,67,6,page_1_practice,"show,"
-o,729.0,7,13.0,21,68,6,page_1_practice,"show,"
-w,742.0,7,13.0,21,69,6,page_1_practice,"show,"
-",",755.0,7,13.0,21,70,6,page_1_practice,"show,"
- ,768.0,7,13.0,21,71,6,page_1_practice,
-c,781.0,7,13.0,21,72,6,page_1_practice,carrying
-a,794.0,7,13.0,21,73,6,page_1_practice,carrying
-r,807.0,7,13.0,21,74,6,page_1_practice,carrying
-r,820.0,7,13.0,21,75,6,page_1_practice,carrying
-y,833.0,7,13.0,21,76,6,page_1_practice,carrying
-i,846.0,7,13.0,21,77,6,page_1_practice,carrying
-n,859.0,7,13.0,21,78,6,page_1_practice,carrying
-g,872.0,7,13.0,21,79,6,page_1_practice,carrying
- ,885.0,7,13.0,21,80,6,page_1_practice,
-a,898.0,7,13.0,21,81,6,page_1_practice,a
- ,911.0,7,13.0,21,82,6,page_1_practice,
-f,924.0,7,13.0,21,83,6,page_1_practice,fancy
-a,937.0,7,13.0,21,84,6,page_1_practice,fancy
-n,950.0,7,13.0,21,85,6,page_1_practice,fancy
-c,963.0,7,13.0,21,86,6,page_1_practice,fancy
-y,976.0,7,13.0,21,87,6,page_1_practice,fancy
- ,989.0,7,13.0,21,88,6,page_1_practice,
-b,1002.0,7,13.0,21,89,6,page_1_practice,black
-l,1015.0,7,13.0,21,90,6,page_1_practice,black
-a,1028.0,7,13.0,21,91,6,page_1_practice,black
-c,1041.0,7,13.0,21,92,6,page_1_practice,black
-k,1054.0,7,13.0,21,93,6,page_1_practice,black
- ,1067.0,7,13.0,21,94,6,page_1_practice,
-h,1080.0,7,13.0,21,95,6,page_1_practice,handbag
-a,1093.0,7,13.0,21,96,6,page_1_practice,handbag
-n,1106.0,7,13.0,21,97,6,page_1_practice,handbag
-d,1119.0,7,13.0,21,98,6,page_1_practice,handbag
-b,1132.0,7,13.0,21,99,6,page_1_practice,handbag
-a,1145.0,7,13.0,21,100,6,page_1_practice,handbag
-g,1158.0,7,13.0,21,101,6,page_1_practice,handbag
- ,1171.0,7,13.0,21,102,6,page_1_practice,
-a,1184.0,7,13.0,21,103,6,page_1_practice,and
-n,1197.0,7,13.0,21,104,6,page_1_practice,and
-d,1210.0,7,13.0,21,105,6,page_1_practice,and
- ,1223.0,7,13.0,21,106,6,page_1_practice,
-a,1236.0,7,13.0,21,107,6,page_1_practice,a
- ,1249.0,7,13.0,21,108,6,page_1_practice,
-g,1262.0,7,13.0,21,109,6,page_1_practice,genuine
-e,1275.0,7,13.0,21,110,6,page_1_practice,genuine
-n,1288.0,7,13.0,21,111,6,page_1_practice,genuine
-u,1301.0,7,13.0,21,112,6,page_1_practice,genuine
-i,1314.0,7,13.0,21,113,6,page_1_practice,genuine
-n,1327.0,7,13.0,21,114,6,page_1_practice,genuine
-e,1340.0,7,13.0,21,115,6,page_1_practice,genuine
- ,1353.0,7,13.0,21,116,6,page_1_practice,
-s,1366.0,7,13.0,21,117,6,page_1_practice,smile.
-m,1379.0,7,13.0,21,118,6,page_1_practice,smile.
-i,1392.0,7,13.0,21,119,6,page_1_practice,smile.
-l,1405.0,7,13.0,21,120,6,page_1_practice,smile.
-e,1418.0,7,13.0,21,121,6,page_1_practice,smile.
-.,1431.0,7,13.0,21,122,6,page_1_practice,smile.
- ,1444.0,7,13.0,21,123,6,page_1_practice,
-T,1457.0,7,13.0,21,124,6,page_1_practice,The
-h,1470.0,7,13.0,21,125,6,page_1_practice,The
-e,1483.0,7,13.0,21,126,6,page_1_practice,The
-b,-155.0,80,13.0,21,0,8,page_1_practice,billboard
-i,-142.0,80,13.0,21,1,8,page_1_practice,billboard
-l,-129.0,80,13.0,21,2,8,page_1_practice,billboard
-l,-116.0,80,13.0,21,3,8,page_1_practice,billboard
-b,-103.0,80,13.0,21,4,8,page_1_practice,billboard
-o,-90.0,80,13.0,21,5,8,page_1_practice,billboard
-a,-77.0,80,13.0,21,6,8,page_1_practice,billboard
-r,-64.0,80,13.0,21,7,8,page_1_practice,billboard
-d,-51.0,80,13.0,21,8,8,page_1_practice,billboard
- ,-38.0,80,13.0,21,9,8,page_1_practice,
-l,-25.0,80,13.0,21,10,8,page_1_practice,looks
-o,-12.0,80,13.0,21,11,8,page_1_practice,looks
-o,1.0,80,13.0,21,12,8,page_1_practice,looks
-k,14.0,80,13.0,21,13,8,page_1_practice,looks
-s,27.0,80,13.0,21,14,8,page_1_practice,looks
- ,40.0,80,13.0,21,15,8,page_1_practice,
-e,53.0,80,13.0,21,16,8,page_1_practice,even
-v,66.0,80,13.0,21,17,8,page_1_practice,even
-e,79.0,80,13.0,21,18,8,page_1_practice,even
-n,92.0,80,13.0,21,19,8,page_1_practice,even
- ,105.0,80,13.0,21,20,8,page_1_practice,
-m,118.0,80,13.0,21,21,8,page_1_practice,more
-o,131.0,80,13.0,21,22,8,page_1_practice,more
-r,144.0,80,13.0,21,23,8,page_1_practice,more
-e,157.0,80,13.0,21,24,8,page_1_practice,more
- ,170.0,80,13.0,21,25,8,page_1_practice,
-i,183.0,80,13.0,21,26,8,page_1_practice,impressive
-m,196.0,80,13.0,21,27,8,page_1_practice,impressive
-p,209.0,80,13.0,21,28,8,page_1_practice,impressive
-r,222.0,80,13.0,21,29,8,page_1_practice,impressive
-e,235.0,80,13.0,21,30,8,page_1_practice,impressive
-s,248.0,80,13.0,21,31,8,page_1_practice,impressive
-s,261.0,80,13.0,21,32,8,page_1_practice,impressive
-i,274.0,80,13.0,21,33,8,page_1_practice,impressive
-v,287.0,80,13.0,21,34,8,page_1_practice,impressive
-e,300.0,80,13.0,21,35,8,page_1_practice,impressive
- ,313.0,80,13.0,21,36,8,page_1_practice,
-f,326.0,80,13.0,21,37,8,page_1_practice,from
-r,339.0,80,13.0,21,38,8,page_1_practice,from
-o,352.0,80,13.0,21,39,8,page_1_practice,from
-m,365.0,80,13.0,21,40,8,page_1_practice,from
- ,378.0,80,13.0,21,41,8,page_1_practice,
-o,391.0,80,13.0,21,42,8,page_1_practice,outside.
-u,404.0,80,13.0,21,43,8,page_1_practice,outside.
-t,417.0,80,13.0,21,44,8,page_1_practice,outside.
-s,430.0,80,13.0,21,45,8,page_1_practice,outside.
-i,443.0,80,13.0,21,46,8,page_1_practice,outside.
-d,456.0,80,13.0,21,47,8,page_1_practice,outside.
-e,469.0,80,13.0,21,48,8,page_1_practice,outside.
-.,482.0,80,13.0,21,49,8,page_1_practice,outside.
- ,495.0,80,13.0,21,50,8,page_1_practice,
-T,508.0,80,13.0,21,51,8,page_1_practice,The
-h,521.0,80,13.0,21,52,8,page_1_practice,The
-e,534.0,80,13.0,21,53,8,page_1_practice,The
- ,547.0,80,13.0,21,54,8,page_1_practice,
-G,560.0,80,13.0,21,55,8,page_1_practice,Great
-r,573.0,80,13.0,21,56,8,page_1_practice,Great
-e,586.0,80,13.0,21,57,8,page_1_practice,Great
-a,599.0,80,13.0,21,58,8,page_1_practice,Great
-t,612.0,80,13.0,21,59,8,page_1_practice,Great
- ,625.0,80,13.0,21,60,8,page_1_practice,
-J,638.0,80,13.0,21,61,8,page_1_practice,Jason's
-a,651.0,80,13.0,21,62,8,page_1_practice,Jason's
-s,664.0,80,13.0,21,63,8,page_1_practice,Jason's
-o,677.0,80,13.0,21,64,8,page_1_practice,Jason's
-n,690.0,80,13.0,21,65,8,page_1_practice,Jason's
-',703.0,80,13.0,21,66,8,page_1_practice,Jason's
-s,716.0,80,13.0,21,67,8,page_1_practice,Jason's
- ,729.0,80,13.0,21,68,8,page_1_practice,
-e,742.0,80,13.0,21,69,8,page_1_practice,eyes
-y,755.0,80,13.0,21,70,8,page_1_practice,eyes
-e,768.0,80,13.0,21,71,8,page_1_practice,eyes
-s,781.0,80,13.0,21,72,8,page_1_practice,eyes
- ,794.0,80,13.0,21,73,8,page_1_practice,
-s,807.0,80,13.0,21,74,8,page_1_practice,seem
-e,820.0,80,13.0,21,75,8,page_1_practice,seem
-e,833.0,80,13.0,21,76,8,page_1_practice,seem
-m,846.0,80,13.0,21,77,8,page_1_practice,seem
- ,859.0,80,13.0,21,78,8,page_1_practice,
-t,872.0,80,13.0,21,79,8,page_1_practice,to
-o,885.0,80,13.0,21,80,8,page_1_practice,to
- ,898.0,80,13.0,21,81,8,page_1_practice,
-b,911.0,80,13.0,21,82,8,page_1_practice,be
-e,924.0,80,13.0,21,83,8,page_1_practice,be
- ,937.0,80,13.0,21,84,8,page_1_practice,
-g,950.0,80,13.0,21,85,8,page_1_practice,glancing
-l,963.0,80,13.0,21,86,8,page_1_practice,glancing
-a,976.0,80,13.0,21,87,8,page_1_practice,glancing
-n,989.0,80,13.0,21,88,8,page_1_practice,glancing
-c,1002.0,80,13.0,21,89,8,page_1_practice,glancing
-i,1015.0,80,13.0,21,90,8,page_1_practice,glancing
-n,1028.0,80,13.0,21,91,8,page_1_practice,glancing
-g,1041.0,80,13.0,21,92,8,page_1_practice,glancing
- ,1054.0,80,13.0,21,93,8,page_1_practice,
-t,1067.0,80,13.0,21,94,8,page_1_practice,through
-h,1080.0,80,13.0,21,95,8,page_1_practice,through
-r,1093.0,80,13.0,21,96,8,page_1_practice,through
-o,1106.0,80,13.0,21,97,8,page_1_practice,through
-u,1119.0,80,13.0,21,98,8,page_1_practice,through
-g,1132.0,80,13.0,21,99,8,page_1_practice,through
-h,1145.0,80,13.0,21,100,8,page_1_practice,through
- ,1158.0,80,13.0,21,101,8,page_1_practice,
-m,1171.0,80,13.0,21,102,8,page_1_practice,me.
-e,1184.0,80,13.0,21,103,8,page_1_practice,me.
-.,1197.0,80,13.0,21,104,8,page_1_practice,me.
-I,-155.0,-212,13.0,21,0,0,page_2_practice,I
- ,-142.0,-212,13.0,21,1,0,page_2_practice,
-s,-129.0,-212,13.0,21,2,0,page_2_practice,shiver
-h,-116.0,-212,13.0,21,3,0,page_2_practice,shiver
-i,-103.0,-212,13.0,21,4,0,page_2_practice,shiver
-v,-90.0,-212,13.0,21,5,0,page_2_practice,shiver
-e,-77.0,-212,13.0,21,6,0,page_2_practice,shiver
-r,-64.0,-212,13.0,21,7,0,page_2_practice,shiver
- ,-51.0,-212,13.0,21,8,0,page_2_practice,
-a,-38.0,-212,13.0,21,9,0,page_2_practice,and
-n,-25.0,-212,13.0,21,10,0,page_2_practice,and
-d,-12.0,-212,13.0,21,11,0,page_2_practice,and
- ,1.0,-212,13.0,21,12,0,page_2_practice,
-w,14.0,-212,13.0,21,13,0,page_2_practice,walk
-a,27.0,-212,13.0,21,14,0,page_2_practice,walk
-l,40.0,-212,13.0,21,15,0,page_2_practice,walk
-k,53.0,-212,13.0,21,16,0,page_2_practice,walk
- ,66.0,-212,13.0,21,17,0,page_2_practice,
-f,79.0,-212,13.0,21,18,0,page_2_practice,faster.
-a,92.0,-212,13.0,21,19,0,page_2_practice,faster.
-s,105.0,-212,13.0,21,20,0,page_2_practice,faster.
-t,118.0,-212,13.0,21,21,0,page_2_practice,faster.
-e,131.0,-212,13.0,21,22,0,page_2_practice,faster.
-r,144.0,-212,13.0,21,23,0,page_2_practice,faster.
-.,157.0,-212,13.0,21,24,0,page_2_practice,faster.
- ,170.0,-212,13.0,21,25,0,page_2_practice,
-I,183.0,-212,13.0,21,26,0,page_2_practice,I
- ,196.0,-212,13.0,21,27,0,page_2_practice,
-f,209.0,-212,13.0,21,28,0,page_2_practice,feel
-e,222.0,-212,13.0,21,29,0,page_2_practice,feel
-e,235.0,-212,13.0,21,30,0,page_2_practice,feel
-l,248.0,-212,13.0,21,31,0,page_2_practice,feel
- ,261.0,-212,13.0,21,32,0,page_2_practice,
-l,274.0,-212,13.0,21,33,0,page_2_practice,like
-i,287.0,-212,13.0,21,34,0,page_2_practice,like
-k,300.0,-212,13.0,21,35,0,page_2_practice,like
-e,313.0,-212,13.0,21,36,0,page_2_practice,like
- ,326.0,-212,13.0,21,37,0,page_2_practice,
-a,339.0,-212,13.0,21,38,0,page_2_practice,a
- ,352.0,-212,13.0,21,39,0,page_2_practice,
-c,365.0,-212,13.0,21,40,0,page_2_practice,child
-h,378.0,-212,13.0,21,41,0,page_2_practice,child
-i,391.0,-212,13.0,21,42,0,page_2_practice,child
-l,404.0,-212,13.0,21,43,0,page_2_practice,child
-d,417.0,-212,13.0,21,44,0,page_2_practice,child
- ,430.0,-212,13.0,21,45,0,page_2_practice,
-a,443.0,-212,13.0,21,46,0,page_2_practice,about
-b,456.0,-212,13.0,21,47,0,page_2_practice,about
-o,469.0,-212,13.0,21,48,0,page_2_practice,about
-u,482.0,-212,13.0,21,49,0,page_2_practice,about
-t,495.0,-212,13.0,21,50,0,page_2_practice,about
- ,508.0,-212,13.0,21,51,0,page_2_practice,
-t,521.0,-212,13.0,21,52,0,page_2_practice,to
-o,534.0,-212,13.0,21,53,0,page_2_practice,to
- ,547.0,-212,13.0,21,54,0,page_2_practice,
-o,560.0,-212,13.0,21,55,0,page_2_practice,open
-p,573.0,-212,13.0,21,56,0,page_2_practice,open
-e,586.0,-212,13.0,21,57,0,page_2_practice,open
-n,599.0,-212,13.0,21,58,0,page_2_practice,open
- ,612.0,-212,13.0,21,59,0,page_2_practice,
-h,625.0,-212,13.0,21,60,0,page_2_practice,her
-e,638.0,-212,13.0,21,61,0,page_2_practice,her
-r,651.0,-212,13.0,21,62,0,page_2_practice,her
- ,664.0,-212,13.0,21,63,0,page_2_practice,
-b,677.0,-212,13.0,21,64,0,page_2_practice,birthday
-i,690.0,-212,13.0,21,65,0,page_2_practice,birthday
-r,703.0,-212,13.0,21,66,0,page_2_practice,birthday
-t,716.0,-212,13.0,21,67,0,page_2_practice,birthday
-h,729.0,-212,13.0,21,68,0,page_2_practice,birthday
-d,742.0,-212,13.0,21,69,0,page_2_practice,birthday
-a,755.0,-212,13.0,21,70,0,page_2_practice,birthday
-y,768.0,-212,13.0,21,71,0,page_2_practice,birthday
- ,781.0,-212,13.0,21,72,0,page_2_practice,
-p,794.0,-212,13.0,21,73,0,page_2_practice,presents.
-r,807.0,-212,13.0,21,74,0,page_2_practice,presents.
-e,820.0,-212,13.0,21,75,0,page_2_practice,presents.
-s,833.0,-212,13.0,21,76,0,page_2_practice,presents.
-e,846.0,-212,13.0,21,77,0,page_2_practice,presents.
-n,859.0,-212,13.0,21,78,0,page_2_practice,presents.
-t,872.0,-212,13.0,21,79,0,page_2_practice,presents.
-s,885.0,-212,13.0,21,80,0,page_2_practice,presents.
-.,898.0,-212,13.0,21,81,0,page_2_practice,presents.
- ,911.0,-212,13.0,21,82,0,page_2_practice,
-T,924.0,-212,13.0,21,83,0,page_2_practice,The
-h,937.0,-212,13.0,21,84,0,page_2_practice,The
-e,950.0,-212,13.0,21,85,0,page_2_practice,The
- ,963.0,-212,13.0,21,86,0,page_2_practice,
-h,976.0,-212,13.0,21,87,0,page_2_practice,hall
-a,989.0,-212,13.0,21,88,0,page_2_practice,hall
-l,1002.0,-212,13.0,21,89,0,page_2_practice,hall
-l,1015.0,-212,13.0,21,90,0,page_2_practice,hall
- ,1028.0,-212,13.0,21,91,0,page_2_practice,
-i,1041.0,-212,13.0,21,92,0,page_2_practice,is
-s,1054.0,-212,13.0,21,93,0,page_2_practice,is
- ,1067.0,-212,13.0,21,94,0,page_2_practice,
-d,1080.0,-212,13.0,21,95,0,page_2_practice,dark
-a,1093.0,-212,13.0,21,96,0,page_2_practice,dark
-r,1106.0,-212,13.0,21,97,0,page_2_practice,dark
-k,1119.0,-212,13.0,21,98,0,page_2_practice,dark
- ,1132.0,-212,13.0,21,99,0,page_2_practice,
-w,1145.0,-212,13.0,21,100,0,page_2_practice,when
-h,1158.0,-212,13.0,21,101,0,page_2_practice,when
-e,1171.0,-212,13.0,21,102,0,page_2_practice,when
-n,1184.0,-212,13.0,21,103,0,page_2_practice,when
- ,1197.0,-212,13.0,21,104,0,page_2_practice,
-I,1210.0,-212,13.0,21,105,0,page_2_practice,I
- ,1223.0,-212,13.0,21,106,0,page_2_practice,
-c,1236.0,-212,13.0,21,107,0,page_2_practice,come
-o,1249.0,-212,13.0,21,108,0,page_2_practice,come
-m,1262.0,-212,13.0,21,109,0,page_2_practice,come
-e,1275.0,-212,13.0,21,110,0,page_2_practice,come
- ,1288.0,-212,13.0,21,111,0,page_2_practice,
-i,1301.0,-212,13.0,21,112,0,page_2_practice,in;
-n,1314.0,-212,13.0,21,113,0,page_2_practice,in;
-;,1327.0,-212,13.0,21,114,0,page_2_practice,in;
- ,1340.0,-212,13.0,21,115,0,page_2_practice,
-t,1353.0,-212,13.0,21,116,0,page_2_practice,the
-h,1366.0,-212,13.0,21,117,0,page_2_practice,the
-e,1379.0,-212,13.0,21,118,0,page_2_practice,the
- ,1392.0,-212,13.0,21,119,0,page_2_practice,
-s,1405.0,-212,13.0,21,120,0,page_2_practice,show
-h,1418.0,-212,13.0,21,121,0,page_2_practice,show
-o,1431.0,-212,13.0,21,122,0,page_2_practice,show
-w,1444.0,-212,13.0,21,123,0,page_2_practice,show
- ,1457.0,-212,13.0,21,124,0,page_2_practice,
-i,1470.0,-212,13.0,21,125,0,page_2_practice,is
-s,1483.0,-212,13.0,21,126,0,page_2_practice,is
- ,1496.0,-212,13.0,21,127,0,page_2_practice,
-a,1509.0,-212,13.0,21,128,0,page_2_practice,about
-b,1522.0,-212,13.0,21,129,0,page_2_practice,about
-o,1535.0,-212,13.0,21,130,0,page_2_practice,about
-u,1548.0,-212,13.0,21,131,0,page_2_practice,about
-t,1561.0,-212,13.0,21,132,0,page_2_practice,about
-t,-155.0,-139,13.0,21,0,2,page_2_practice,to
-o,-142.0,-139,13.0,21,1,2,page_2_practice,to
- ,-129.0,-139,13.0,21,2,2,page_2_practice,
-b,-116.0,-139,13.0,21,3,2,page_2_practice,begin.
-e,-103.0,-139,13.0,21,4,2,page_2_practice,begin.
-g,-90.0,-139,13.0,21,5,2,page_2_practice,begin.
-i,-77.0,-139,13.0,21,6,2,page_2_practice,begin.
-n,-64.0,-139,13.0,21,7,2,page_2_practice,begin.
-.,-51.0,-139,13.0,21,8,2,page_2_practice,begin.
- ,-38.0,-139,13.0,21,9,2,page_2_practice,
-I,-25.0,-139,13.0,21,10,2,page_2_practice,I
- ,-12.0,-139,13.0,21,11,2,page_2_practice,
-m,1.0,-139,13.0,21,12,2,page_2_practice,make
-a,14.0,-139,13.0,21,13,2,page_2_practice,make
-k,27.0,-139,13.0,21,14,2,page_2_practice,make
-e,40.0,-139,13.0,21,15,2,page_2_practice,make
- ,53.0,-139,13.0,21,16,2,page_2_practice,
-m,66.0,-139,13.0,21,17,2,page_2_practice,my
-y,79.0,-139,13.0,21,18,2,page_2_practice,my
- ,92.0,-139,13.0,21,19,2,page_2_practice,
-w,105.0,-139,13.0,21,20,2,page_2_practice,way
-a,118.0,-139,13.0,21,21,2,page_2_practice,way
-y,131.0,-139,13.0,21,22,2,page_2_practice,way
- ,144.0,-139,13.0,21,23,2,page_2_practice,
-b,157.0,-139,13.0,21,24,2,page_2_practice,backstage
-a,170.0,-139,13.0,21,25,2,page_2_practice,backstage
-c,183.0,-139,13.0,21,26,2,page_2_practice,backstage
-k,196.0,-139,13.0,21,27,2,page_2_practice,backstage
-s,209.0,-139,13.0,21,28,2,page_2_practice,backstage
-t,222.0,-139,13.0,21,29,2,page_2_practice,backstage
-a,235.0,-139,13.0,21,30,2,page_2_practice,backstage
-g,248.0,-139,13.0,21,31,2,page_2_practice,backstage
-e,261.0,-139,13.0,21,32,2,page_2_practice,backstage
- ,274.0,-139,13.0,21,33,2,page_2_practice,
-j,287.0,-139,13.0,21,34,2,page_2_practice,just
-u,300.0,-139,13.0,21,35,2,page_2_practice,just
-s,313.0,-139,13.0,21,36,2,page_2_practice,just
-t,326.0,-139,13.0,21,37,2,page_2_practice,just
- ,339.0,-139,13.0,21,38,2,page_2_practice,
-a,352.0,-139,13.0,21,39,2,page_2_practice,as
-s,365.0,-139,13.0,21,40,2,page_2_practice,as
- ,378.0,-139,13.0,21,41,2,page_2_practice,
-t,391.0,-139,13.0,21,42,2,page_2_practice,the
-h,404.0,-139,13.0,21,43,2,page_2_practice,the
-e,417.0,-139,13.0,21,44,2,page_2_practice,the
- ,430.0,-139,13.0,21,45,2,page_2_practice,
-g,443.0,-139,13.0,21,46,2,page_2_practice,great
-r,456.0,-139,13.0,21,47,2,page_2_practice,great
-e,469.0,-139,13.0,21,48,2,page_2_practice,great
-a,482.0,-139,13.0,21,49,2,page_2_practice,great
-t,495.0,-139,13.0,21,50,2,page_2_practice,great
- ,508.0,-139,13.0,21,51,2,page_2_practice,
-m,521.0,-139,13.0,21,52,2,page_2_practice,magician
-a,534.0,-139,13.0,21,53,2,page_2_practice,magician
-g,547.0,-139,13.0,21,54,2,page_2_practice,magician
-i,560.0,-139,13.0,21,55,2,page_2_practice,magician
-c,573.0,-139,13.0,21,56,2,page_2_practice,magician
-i,586.0,-139,13.0,21,57,2,page_2_practice,magician
-a,599.0,-139,13.0,21,58,2,page_2_practice,magician
-n,612.0,-139,13.0,21,59,2,page_2_practice,magician
- ,625.0,-139,13.0,21,60,2,page_2_practice,
-p,638.0,-139,13.0,21,61,2,page_2_practice,puts
-u,651.0,-139,13.0,21,62,2,page_2_practice,puts
-t,664.0,-139,13.0,21,63,2,page_2_practice,puts
-s,677.0,-139,13.0,21,64,2,page_2_practice,puts
- ,690.0,-139,13.0,21,65,2,page_2_practice,
-o,703.0,-139,13.0,21,66,2,page_2_practice,on
-n,716.0,-139,13.0,21,67,2,page_2_practice,on
- ,729.0,-139,13.0,21,68,2,page_2_practice,
-h,742.0,-139,13.0,21,69,2,page_2_practice,his
-i,755.0,-139,13.0,21,70,2,page_2_practice,his
-s,768.0,-139,13.0,21,71,2,page_2_practice,his
- ,781.0,-139,13.0,21,72,2,page_2_practice,
-t,794.0,-139,13.0,21,73,2,page_2_practice,top
-o,807.0,-139,13.0,21,74,2,page_2_practice,top
-p,820.0,-139,13.0,21,75,2,page_2_practice,top
- ,833.0,-139,13.0,21,76,2,page_2_practice,
-h,846.0,-139,13.0,21,77,2,page_2_practice,hat.
-a,859.0,-139,13.0,21,78,2,page_2_practice,hat.
-t,872.0,-139,13.0,21,79,2,page_2_practice,hat.
-.,885.0,-139,13.0,21,80,2,page_2_practice,hat.
- ,898.0,-139,13.0,21,81,2,page_2_practice,
-"""",911.0,-139,13.0,21,82,2,page_2_practice,"""Daddy,"
-D,924.0,-139,13.0,21,83,2,page_2_practice,"""Daddy,"
-a,937.0,-139,13.0,21,84,2,page_2_practice,"""Daddy,"
-d,950.0,-139,13.0,21,85,2,page_2_practice,"""Daddy,"
-d,963.0,-139,13.0,21,86,2,page_2_practice,"""Daddy,"
-y,976.0,-139,13.0,21,87,2,page_2_practice,"""Daddy,"
-",",989.0,-139,13.0,21,88,2,page_2_practice,"""Daddy,"
- ,1002.0,-139,13.0,21,89,2,page_2_practice,
-I,1015.0,-139,13.0,21,90,2,page_2_practice,I'm
-',1028.0,-139,13.0,21,91,2,page_2_practice,I'm
-m,1041.0,-139,13.0,21,92,2,page_2_practice,I'm
- ,1054.0,-139,13.0,21,93,2,page_2_practice,
-s,1067.0,-139,13.0,21,94,2,page_2_practice,so
-o,1080.0,-139,13.0,21,95,2,page_2_practice,so
- ,1093.0,-139,13.0,21,96,2,page_2_practice,
-g,1106.0,-139,13.0,21,97,2,page_2_practice,glad
-l,1119.0,-139,13.0,21,98,2,page_2_practice,glad
-a,1132.0,-139,13.0,21,99,2,page_2_practice,glad
-d,1145.0,-139,13.0,21,100,2,page_2_practice,glad
- ,1158.0,-139,13.0,21,101,2,page_2_practice,
-t,1171.0,-139,13.0,21,102,2,page_2_practice,to
-o,1184.0,-139,13.0,21,103,2,page_2_practice,to
- ,1197.0,-139,13.0,21,104,2,page_2_practice,
-s,1210.0,-139,13.0,21,105,2,page_2_practice,see
-e,1223.0,-139,13.0,21,106,2,page_2_practice,see
-e,1236.0,-139,13.0,21,107,2,page_2_practice,see
- ,1249.0,-139,13.0,21,108,2,page_2_practice,
-y,1262.0,-139,13.0,21,109,2,page_2_practice,"you,"""
-o,1275.0,-139,13.0,21,110,2,page_2_practice,"you,"""
-u,1288.0,-139,13.0,21,111,2,page_2_practice,"you,"""
-",",1301.0,-139,13.0,21,112,2,page_2_practice,"you,"""
-"""",1314.0,-139,13.0,21,113,2,page_2_practice,"you,"""
- ,1327.0,-139,13.0,21,114,2,page_2_practice,
-I,1340.0,-139,13.0,21,115,2,page_2_practice,I
- ,1353.0,-139,13.0,21,116,2,page_2_practice,
-s,1366.0,-139,13.0,21,117,2,page_2_practice,say
-a,1379.0,-139,13.0,21,118,2,page_2_practice,say
-y,1392.0,-139,13.0,21,119,2,page_2_practice,say
- ,1405.0,-139,13.0,21,120,2,page_2_practice,
-i,1418.0,-139,13.0,21,121,2,page_2_practice,in
-n,1431.0,-139,13.0,21,122,2,page_2_practice,in
- ,1444.0,-139,13.0,21,123,2,page_2_practice,
-a,1457.0,-139,13.0,21,124,2,page_2_practice,a
-h,-155.0,-66,13.0,21,0,4,page_2_practice,half-whisper.
-a,-142.0,-66,13.0,21,1,4,page_2_practice,half-whisper.
-l,-129.0,-66,13.0,21,2,4,page_2_practice,half-whisper.
-f,-116.0,-66,13.0,21,3,4,page_2_practice,half-whisper.
--,-103.0,-66,13.0,21,4,4,page_2_practice,half-whisper.
-w,-90.0,-66,13.0,21,5,4,page_2_practice,half-whisper.
-h,-77.0,-66,13.0,21,6,4,page_2_practice,half-whisper.
-i,-64.0,-66,13.0,21,7,4,page_2_practice,half-whisper.
-s,-51.0,-66,13.0,21,8,4,page_2_practice,half-whisper.
-p,-38.0,-66,13.0,21,9,4,page_2_practice,half-whisper.
-e,-25.0,-66,13.0,21,10,4,page_2_practice,half-whisper.
-r,-12.0,-66,13.0,21,11,4,page_2_practice,half-whisper.
-.,1.0,-66,13.0,21,12,4,page_2_practice,half-whisper.
- ,14.0,-66,13.0,21,13,4,page_2_practice,
-"""",27.0,-66,13.0,21,14,4,page_2_practice,"""I'm"
-I,40.0,-66,13.0,21,15,4,page_2_practice,"""I'm"
-',53.0,-66,13.0,21,16,4,page_2_practice,"""I'm"
-m,66.0,-66,13.0,21,17,4,page_2_practice,"""I'm"
- ,79.0,-66,13.0,21,18,4,page_2_practice,
-i,92.0,-66,13.0,21,19,4,page_2_practice,in
-n,105.0,-66,13.0,21,20,4,page_2_practice,in
- ,118.0,-66,13.0,21,21,4,page_2_practice,
-t,131.0,-66,13.0,21,22,4,page_2_practice,town
-o,144.0,-66,13.0,21,23,4,page_2_practice,town
-w,157.0,-66,13.0,21,24,4,page_2_practice,town
-n,170.0,-66,13.0,21,25,4,page_2_practice,town
- ,183.0,-66,13.0,21,26,4,page_2_practice,
-f,196.0,-66,13.0,21,27,4,page_2_practice,for
-o,209.0,-66,13.0,21,28,4,page_2_practice,for
-r,222.0,-66,13.0,21,29,4,page_2_practice,for
- ,235.0,-66,13.0,21,30,4,page_2_practice,
-t,248.0,-66,13.0,21,31,4,page_2_practice,the
-h,261.0,-66,13.0,21,32,4,page_2_practice,the
-e,274.0,-66,13.0,21,33,4,page_2_practice,the
- ,287.0,-66,13.0,21,34,4,page_2_practice,
-w,300.0,-66,13.0,21,35,4,page_2_practice,writer's
-r,313.0,-66,13.0,21,36,4,page_2_practice,writer's
-i,326.0,-66,13.0,21,37,4,page_2_practice,writer's
-t,339.0,-66,13.0,21,38,4,page_2_practice,writer's
-e,352.0,-66,13.0,21,39,4,page_2_practice,writer's
-r,365.0,-66,13.0,21,40,4,page_2_practice,writer's
-',378.0,-66,13.0,21,41,4,page_2_practice,writer's
-s,391.0,-66,13.0,21,42,4,page_2_practice,writer's
- ,404.0,-66,13.0,21,43,4,page_2_practice,
-w,417.0,-66,13.0,21,44,4,page_2_practice,"workshop,"
-o,430.0,-66,13.0,21,45,4,page_2_practice,"workshop,"
-r,443.0,-66,13.0,21,46,4,page_2_practice,"workshop,"
-k,456.0,-66,13.0,21,47,4,page_2_practice,"workshop,"
-s,469.0,-66,13.0,21,48,4,page_2_practice,"workshop,"
-h,482.0,-66,13.0,21,49,4,page_2_practice,"workshop,"
-o,495.0,-66,13.0,21,50,4,page_2_practice,"workshop,"
-p,508.0,-66,13.0,21,51,4,page_2_practice,"workshop,"
-",",521.0,-66,13.0,21,52,4,page_2_practice,"workshop,"
- ,534.0,-66,13.0,21,53,4,page_2_practice,
-b,547.0,-66,13.0,21,54,4,page_2_practice,but
-u,560.0,-66,13.0,21,55,4,page_2_practice,but
-t,573.0,-66,13.0,21,56,4,page_2_practice,but
- ,586.0,-66,13.0,21,57,4,page_2_practice,
-I,599.0,-66,13.0,21,58,4,page_2_practice,I
- ,612.0,-66,13.0,21,59,4,page_2_practice,
-j,625.0,-66,13.0,21,60,4,page_2_practice,just
-u,638.0,-66,13.0,21,61,4,page_2_practice,just
-s,651.0,-66,13.0,21,62,4,page_2_practice,just
-t,664.0,-66,13.0,21,63,4,page_2_practice,just
- ,677.0,-66,13.0,21,64,4,page_2_practice,
-c,690.0,-66,13.0,21,65,4,page_2_practice,couldn't
-o,703.0,-66,13.0,21,66,4,page_2_practice,couldn't
-u,716.0,-66,13.0,21,67,4,page_2_practice,couldn't
-l,729.0,-66,13.0,21,68,4,page_2_practice,couldn't
-d,742.0,-66,13.0,21,69,4,page_2_practice,couldn't
-n,755.0,-66,13.0,21,70,4,page_2_practice,couldn't
-',768.0,-66,13.0,21,71,4,page_2_practice,couldn't
-t,781.0,-66,13.0,21,72,4,page_2_practice,couldn't
- ,794.0,-66,13.0,21,73,4,page_2_practice,
-m,807.0,-66,13.0,21,74,4,page_2_practice,miss
-i,820.0,-66,13.0,21,75,4,page_2_practice,miss
-s,833.0,-66,13.0,21,76,4,page_2_practice,miss
-s,846.0,-66,13.0,21,77,4,page_2_practice,miss
- ,859.0,-66,13.0,21,78,4,page_2_practice,
-y,872.0,-66,13.0,21,79,4,page_2_practice,your
-o,885.0,-66,13.0,21,80,4,page_2_practice,your
-u,898.0,-66,13.0,21,81,4,page_2_practice,your
-r,911.0,-66,13.0,21,82,4,page_2_practice,your
- ,924.0,-66,13.0,21,83,4,page_2_practice,
-s,937.0,-66,13.0,21,84,4,page_2_practice,"show."""
-h,950.0,-66,13.0,21,85,4,page_2_practice,"show."""
-o,963.0,-66,13.0,21,86,4,page_2_practice,"show."""
-w,976.0,-66,13.0,21,87,4,page_2_practice,"show."""
-.,989.0,-66,13.0,21,88,4,page_2_practice,"show."""
-"""",1002.0,-66,13.0,21,89,4,page_2_practice,"show."""
- ,1015.0,-66,13.0,21,90,4,page_2_practice,
-I,1028.0,-66,13.0,21,91,4,page_2_practice,I
- ,1041.0,-66,13.0,21,92,4,page_2_practice,
-g,1054.0,-66,13.0,21,93,4,page_2_practice,give
-i,1067.0,-66,13.0,21,94,4,page_2_practice,give
-v,1080.0,-66,13.0,21,95,4,page_2_practice,give
-e,1093.0,-66,13.0,21,96,4,page_2_practice,give
- ,1106.0,-66,13.0,21,97,4,page_2_practice,
-h,1119.0,-66,13.0,21,98,4,page_2_practice,him
-i,1132.0,-66,13.0,21,99,4,page_2_practice,him
-m,1145.0,-66,13.0,21,100,4,page_2_practice,him
- ,1158.0,-66,13.0,21,101,4,page_2_practice,
-a,1171.0,-66,13.0,21,102,4,page_2_practice,a
- ,1184.0,-66,13.0,21,103,4,page_2_practice,
-q,1197.0,-66,13.0,21,104,4,page_2_practice,quick
-u,1210.0,-66,13.0,21,105,4,page_2_practice,quick
-i,1223.0,-66,13.0,21,106,4,page_2_practice,quick
-c,1236.0,-66,13.0,21,107,4,page_2_practice,quick
-k,1249.0,-66,13.0,21,108,4,page_2_practice,quick
- ,1262.0,-66,13.0,21,109,4,page_2_practice,
-h,1275.0,-66,13.0,21,110,4,page_2_practice,hug
-u,1288.0,-66,13.0,21,111,4,page_2_practice,hug
-g,1301.0,-66,13.0,21,112,4,page_2_practice,hug
- ,1314.0,-66,13.0,21,113,4,page_2_practice,
-a,1327.0,-66,13.0,21,114,4,page_2_practice,and
-n,1340.0,-66,13.0,21,115,4,page_2_practice,and
-d,1353.0,-66,13.0,21,116,4,page_2_practice,and
- ,1366.0,-66,13.0,21,117,4,page_2_practice,
-g,1379.0,-66,13.0,21,118,4,page_2_practice,go
-o,1392.0,-66,13.0,21,119,4,page_2_practice,go
- ,1405.0,-66,13.0,21,120,4,page_2_practice,
-b,1418.0,-66,13.0,21,121,4,page_2_practice,back
-a,1431.0,-66,13.0,21,122,4,page_2_practice,back
-c,1444.0,-66,13.0,21,123,4,page_2_practice,back
-k,1457.0,-66,13.0,21,124,4,page_2_practice,back
- ,1470.0,-66,13.0,21,125,4,page_2_practice,
-i,1483.0,-66,13.0,21,126,4,page_2_practice,into
-n,1496.0,-66,13.0,21,127,4,page_2_practice,into
-t,1509.0,-66,13.0,21,128,4,page_2_practice,into
-o,1522.0,-66,13.0,21,129,4,page_2_practice,into
- ,1535.0,-66,13.0,21,130,4,page_2_practice,
-t,1548.0,-66,13.0,21,131,4,page_2_practice,the
-h,1561.0,-66,13.0,21,132,4,page_2_practice,the
-e,1574.0,-66,13.0,21,133,4,page_2_practice,the
-s,-155.0,7,13.0,21,0,6,page_2_practice,seating
-e,-142.0,7,13.0,21,1,6,page_2_practice,seating
-a,-129.0,7,13.0,21,2,6,page_2_practice,seating
-t,-116.0,7,13.0,21,3,6,page_2_practice,seating
-i,-103.0,7,13.0,21,4,6,page_2_practice,seating
-n,-90.0,7,13.0,21,5,6,page_2_practice,seating
-g,-77.0,7,13.0,21,6,6,page_2_practice,seating
- ,-64.0,7,13.0,21,7,6,page_2_practice,
-a,-51.0,7,13.0,21,8,6,page_2_practice,"area,"
-r,-38.0,7,13.0,21,9,6,page_2_practice,"area,"
-e,-25.0,7,13.0,21,10,6,page_2_practice,"area,"
-a,-12.0,7,13.0,21,11,6,page_2_practice,"area,"
-",",1.0,7,13.0,21,12,6,page_2_practice,"area,"
- ,14.0,7,13.0,21,13,6,page_2_practice,
-l,27.0,7,13.0,21,14,6,page_2_practice,leaving
-e,40.0,7,13.0,21,15,6,page_2_practice,leaving
-a,53.0,7,13.0,21,16,6,page_2_practice,leaving
-v,66.0,7,13.0,21,17,6,page_2_practice,leaving
-i,79.0,7,13.0,21,18,6,page_2_practice,leaving
-n,92.0,7,13.0,21,19,6,page_2_practice,leaving
-g,105.0,7,13.0,21,20,6,page_2_practice,leaving
- ,118.0,7,13.0,21,21,6,page_2_practice,
-h,131.0,7,13.0,21,22,6,page_2_practice,him
-i,144.0,7,13.0,21,23,6,page_2_practice,him
-m,157.0,7,13.0,21,24,6,page_2_practice,him
- ,170.0,7,13.0,21,25,6,page_2_practice,
-w,183.0,7,13.0,21,26,6,page_2_practice,with
-i,196.0,7,13.0,21,27,6,page_2_practice,with
-t,209.0,7,13.0,21,28,6,page_2_practice,with
-h,222.0,7,13.0,21,29,6,page_2_practice,with
- ,235.0,7,13.0,21,30,6,page_2_practice,
-a,248.0,7,13.0,21,31,6,page_2_practice,a
- ,261.0,7,13.0,21,32,6,page_2_practice,
-s,274.0,7,13.0,21,33,6,page_2_practice,startled
-t,287.0,7,13.0,21,34,6,page_2_practice,startled
-a,300.0,7,13.0,21,35,6,page_2_practice,startled
-r,313.0,7,13.0,21,36,6,page_2_practice,startled
-t,326.0,7,13.0,21,37,6,page_2_practice,startled
-l,339.0,7,13.0,21,38,6,page_2_practice,startled
-e,352.0,7,13.0,21,39,6,page_2_practice,startled
-d,365.0,7,13.0,21,40,6,page_2_practice,startled
- ,378.0,7,13.0,21,41,6,page_2_practice,
-s,391.0,7,13.0,21,42,6,page_2_practice,smile.
-m,404.0,7,13.0,21,43,6,page_2_practice,smile.
-i,417.0,7,13.0,21,44,6,page_2_practice,smile.
-l,430.0,7,13.0,21,45,6,page_2_practice,smile.
-e,443.0,7,13.0,21,46,6,page_2_practice,smile.
-.,456.0,7,13.0,21,47,6,page_2_practice,smile.
- ,469.0,7,13.0,21,48,6,page_2_practice,
-I,482.0,7,13.0,21,49,6,page_2_practice,I
- ,495.0,7,13.0,21,50,6,page_2_practice,
-s,508.0,7,13.0,21,51,6,page_2_practice,settle
-e,521.0,7,13.0,21,52,6,page_2_practice,settle
-t,534.0,7,13.0,21,53,6,page_2_practice,settle
-t,547.0,7,13.0,21,54,6,page_2_practice,settle
-l,560.0,7,13.0,21,55,6,page_2_practice,settle
-e,573.0,7,13.0,21,56,6,page_2_practice,settle
- ,586.0,7,13.0,21,57,6,page_2_practice,
-d,599.0,7,13.0,21,58,6,page_2_practice,down
-o,612.0,7,13.0,21,59,6,page_2_practice,down
-w,625.0,7,13.0,21,60,6,page_2_practice,down
-n,638.0,7,13.0,21,61,6,page_2_practice,down
- ,651.0,7,13.0,21,62,6,page_2_practice,
-i,664.0,7,13.0,21,63,6,page_2_practice,in
-n,677.0,7,13.0,21,64,6,page_2_practice,in
- ,690.0,7,13.0,21,65,6,page_2_practice,
-t,703.0,7,13.0,21,66,6,page_2_practice,the
-h,716.0,7,13.0,21,67,6,page_2_practice,the
-e,729.0,7,13.0,21,68,6,page_2_practice,the
- ,742.0,7,13.0,21,69,6,page_2_practice,
-d,755.0,7,13.0,21,70,6,page_2_practice,"darkness,"
-a,768.0,7,13.0,21,71,6,page_2_practice,"darkness,"
-r,781.0,7,13.0,21,72,6,page_2_practice,"darkness,"
-k,794.0,7,13.0,21,73,6,page_2_practice,"darkness,"
-n,807.0,7,13.0,21,74,6,page_2_practice,"darkness,"
-e,820.0,7,13.0,21,75,6,page_2_practice,"darkness,"
-s,833.0,7,13.0,21,76,6,page_2_practice,"darkness,"
-s,846.0,7,13.0,21,77,6,page_2_practice,"darkness,"
-",",859.0,7,13.0,21,78,6,page_2_practice,"darkness,"
- ,872.0,7,13.0,21,79,6,page_2_practice,
-a,885.0,7,13.0,21,80,6,page_2_practice,and
-n,898.0,7,13.0,21,81,6,page_2_practice,and
-d,911.0,7,13.0,21,82,6,page_2_practice,and
- ,924.0,7,13.0,21,83,6,page_2_practice,
-t,937.0,7,13.0,21,84,6,page_2_practice,the
-h,950.0,7,13.0,21,85,6,page_2_practice,the
-e,963.0,7,13.0,21,86,6,page_2_practice,the
- ,976.0,7,13.0,21,87,6,page_2_practice,
-c,989.0,7,13.0,21,88,6,page_2_practice,curtains
-u,1002.0,7,13.0,21,89,6,page_2_practice,curtains
-r,1015.0,7,13.0,21,90,6,page_2_practice,curtains
-t,1028.0,7,13.0,21,91,6,page_2_practice,curtains
-a,1041.0,7,13.0,21,92,6,page_2_practice,curtains
-i,1054.0,7,13.0,21,93,6,page_2_practice,curtains
-n,1067.0,7,13.0,21,94,6,page_2_practice,curtains
-s,1080.0,7,13.0,21,95,6,page_2_practice,curtains
- ,1093.0,7,13.0,21,96,6,page_2_practice,
-o,1106.0,7,13.0,21,97,6,page_2_practice,open.
-p,1119.0,7,13.0,21,98,6,page_2_practice,open.
-e,1132.0,7,13.0,21,99,6,page_2_practice,open.
-n,1145.0,7,13.0,21,100,6,page_2_practice,open.
-.,1158.0,7,13.0,21,101,6,page_2_practice,open.
- ,1171.0,7,13.0,21,102,6,page_2_practice,
-M,1184.0,7,13.0,21,103,6,page_2_practice,"Magically,"
-a,1197.0,7,13.0,21,104,6,page_2_practice,"Magically,"
-g,1210.0,7,13.0,21,105,6,page_2_practice,"Magically,"
-i,1223.0,7,13.0,21,106,6,page_2_practice,"Magically,"
-c,1236.0,7,13.0,21,107,6,page_2_practice,"Magically,"
-a,1249.0,7,13.0,21,108,6,page_2_practice,"Magically,"
-l,1262.0,7,13.0,21,109,6,page_2_practice,"Magically,"
-l,1275.0,7,13.0,21,110,6,page_2_practice,"Magically,"
-y,1288.0,7,13.0,21,111,6,page_2_practice,"Magically,"
-",",1301.0,7,13.0,21,112,6,page_2_practice,"Magically,"
- ,1314.0,7,13.0,21,113,6,page_2_practice,
-t,1327.0,7,13.0,21,114,6,page_2_practice,that
-h,1340.0,7,13.0,21,115,6,page_2_practice,that
-a,1353.0,7,13.0,21,116,6,page_2_practice,that
-t,1366.0,7,13.0,21,117,6,page_2_practice,that
- ,1379.0,7,13.0,21,118,6,page_2_practice,
-s,1392.0,7,13.0,21,119,6,page_2_practice,show
-h,1405.0,7,13.0,21,120,6,page_2_practice,show
-o,1418.0,7,13.0,21,121,6,page_2_practice,show
-w,1431.0,7,13.0,21,122,6,page_2_practice,show
- ,1444.0,7,13.0,21,123,6,page_2_practice,
-r,1457.0,7,13.0,21,124,6,page_2_practice,remains
-e,1470.0,7,13.0,21,125,6,page_2_practice,remains
-m,1483.0,7,13.0,21,126,6,page_2_practice,remains
-a,1496.0,7,13.0,21,127,6,page_2_practice,remains
-i,1509.0,7,13.0,21,128,6,page_2_practice,remains
-n,1522.0,7,13.0,21,129,6,page_2_practice,remains
-s,1535.0,7,13.0,21,130,6,page_2_practice,remains
-t,-155.0,80,13.0,21,0,8,page_2_practice,the
-h,-142.0,80,13.0,21,1,8,page_2_practice,the
-e,-129.0,80,13.0,21,2,8,page_2_practice,the
- ,-116.0,80,13.0,21,3,8,page_2_practice,
-G,-103.0,80,13.0,21,4,8,page_2_practice,Great
-r,-90.0,80,13.0,21,5,8,page_2_practice,Great
-e,-77.0,80,13.0,21,6,8,page_2_practice,Great
-a,-64.0,80,13.0,21,7,8,page_2_practice,Great
-t,-51.0,80,13.0,21,8,8,page_2_practice,Great
- ,-38.0,80,13.0,21,9,8,page_2_practice,
-J,-25.0,80,13.0,21,10,8,page_2_practice,Jason's
-a,-12.0,80,13.0,21,11,8,page_2_practice,Jason's
-s,1.0,80,13.0,21,12,8,page_2_practice,Jason's
-o,14.0,80,13.0,21,13,8,page_2_practice,Jason's
-n,27.0,80,13.0,21,14,8,page_2_practice,Jason's
-',40.0,80,13.0,21,15,8,page_2_practice,Jason's
-s,53.0,80,13.0,21,16,8,page_2_practice,Jason's
- ,66.0,80,13.0,21,17,8,page_2_practice,
-b,79.0,80,13.0,21,18,8,page_2_practice,best
-e,92.0,80,13.0,21,19,8,page_2_practice,best
-s,105.0,80,13.0,21,20,8,page_2_practice,best
-t,118.0,80,13.0,21,21,8,page_2_practice,best
- ,131.0,80,13.0,21,22,8,page_2_practice,
-p,144.0,80,13.0,21,23,8,page_2_practice,performance
-e,157.0,80,13.0,21,24,8,page_2_practice,performance
-r,170.0,80,13.0,21,25,8,page_2_practice,performance
-f,183.0,80,13.0,21,26,8,page_2_practice,performance
-o,196.0,80,13.0,21,27,8,page_2_practice,performance
-r,209.0,80,13.0,21,28,8,page_2_practice,performance
-m,222.0,80,13.0,21,29,8,page_2_practice,performance
-a,235.0,80,13.0,21,30,8,page_2_practice,performance
-n,248.0,80,13.0,21,31,8,page_2_practice,performance
-c,261.0,80,13.0,21,32,8,page_2_practice,performance
-e,274.0,80,13.0,21,33,8,page_2_practice,performance
- ,287.0,80,13.0,21,34,8,page_2_practice,
-t,300.0,80,13.0,21,35,8,page_2_practice,to
-o,313.0,80,13.0,21,36,8,page_2_practice,to
- ,326.0,80,13.0,21,37,8,page_2_practice,
-t,339.0,80,13.0,21,38,8,page_2_practice,this
-h,352.0,80,13.0,21,39,8,page_2_practice,this
-i,365.0,80,13.0,21,40,8,page_2_practice,this
-s,378.0,80,13.0,21,41,8,page_2_practice,this
- ,391.0,80,13.0,21,42,8,page_2_practice,
-d,404.0,80,13.0,21,43,8,page_2_practice,day.
-a,417.0,80,13.0,21,44,8,page_2_practice,day.
-y,430.0,80,13.0,21,45,8,page_2_practice,day.
-.,443.0,80,13.0,21,46,8,page_2_practice,day.
+F,347.0,93,16.0,25,0,0,page_1_practice,From
+r,363.0,93,16.0,25,1,0,page_1_practice,From
+o,379.0,93,16.0,25,2,0,page_1_practice,From
+m,395.0,93,16.0,25,3,0,page_1_practice,From
+ ,411.0,93,16.0,25,4,0,page_1_practice,
+m,427.0,93,16.0,25,5,0,page_1_practice,my
+y,443.0,93,16.0,25,6,0,page_1_practice,my
+ ,459.0,93,16.0,25,7,0,page_1_practice,
+h,475.0,93,16.0,25,8,0,page_1_practice,hotel
+o,491.0,93,16.0,25,9,0,page_1_practice,hotel
+t,507.0,93,16.0,25,10,0,page_1_practice,hotel
+e,523.0,93,16.0,25,11,0,page_1_practice,hotel
+l,539.0,93,16.0,25,12,0,page_1_practice,hotel
+ ,555.0,93,16.0,25,13,0,page_1_practice,
+r,571.0,93,16.0,25,14,0,page_1_practice,room
+o,587.0,93,16.0,25,15,0,page_1_practice,room
+o,603.0,93,16.0,25,16,0,page_1_practice,room
+m,619.0,93,16.0,25,17,0,page_1_practice,room
+ ,635.0,93,16.0,25,18,0,page_1_practice,
+w,651.0,93,16.0,25,19,0,page_1_practice,"window,"
+i,667.0,93,16.0,25,20,0,page_1_practice,"window,"
+n,683.0,93,16.0,25,21,0,page_1_practice,"window,"
+d,699.0,93,16.0,25,22,0,page_1_practice,"window,"
+o,715.0,93,16.0,25,23,0,page_1_practice,"window,"
+w,731.0,93,16.0,25,24,0,page_1_practice,"window,"
+",",747.0,93,16.0,25,25,0,page_1_practice,"window,"
+ ,763.0,93,16.0,25,26,0,page_1_practice,
+I,779.0,93,16.0,25,27,0,page_1_practice,I
+ ,795.0,93,16.0,25,28,0,page_1_practice,
+s,811.0,93,16.0,25,29,0,page_1_practice,see
+e,827.0,93,16.0,25,30,0,page_1_practice,see
+e,843.0,93,16.0,25,31,0,page_1_practice,see
+ ,859.0,93,16.0,25,32,0,page_1_practice,
+a,875.0,93,16.0,25,33,0,page_1_practice,an
+n,891.0,93,16.0,25,34,0,page_1_practice,an
+ ,907.0,93,16.0,25,35,0,page_1_practice,
+o,923.0,93,16.0,25,36,0,page_1_practice,oversized
+v,939.0,93,16.0,25,37,0,page_1_practice,oversized
+e,955.0,93,16.0,25,38,0,page_1_practice,oversized
+r,971.0,93,16.0,25,39,0,page_1_practice,oversized
+s,987.0,93,16.0,25,40,0,page_1_practice,oversized
+i,1003.0,93,16.0,25,41,0,page_1_practice,oversized
+z,1019.0,93,16.0,25,42,0,page_1_practice,oversized
+e,1035.0,93,16.0,25,43,0,page_1_practice,oversized
+d,1051.0,93,16.0,25,44,0,page_1_practice,oversized
+ ,1067.0,93,16.0,25,45,0,page_1_practice,
+b,1083.0,93,16.0,25,46,0,page_1_practice,billboard
+i,1099.0,93,16.0,25,47,0,page_1_practice,billboard
+l,1115.0,93,16.0,25,48,0,page_1_practice,billboard
+l,1131.0,93,16.0,25,49,0,page_1_practice,billboard
+b,1147.0,93,16.0,25,50,0,page_1_practice,billboard
+o,1163.0,93,16.0,25,51,0,page_1_practice,billboard
+a,1179.0,93,16.0,25,52,0,page_1_practice,billboard
+r,1195.0,93,16.0,25,53,0,page_1_practice,billboard
+d,1211.0,93,16.0,25,54,0,page_1_practice,billboard
+ ,1227.0,93,16.0,25,55,0,page_1_practice,
+w,1243.0,93,16.0,25,56,0,page_1_practice,with
+i,1259.0,93,16.0,25,57,0,page_1_practice,with
+t,1275.0,93,16.0,25,58,0,page_1_practice,with
+h,1291.0,93,16.0,25,59,0,page_1_practice,with
+ ,1307.0,93,16.0,25,60,0,page_1_practice,
+h,1323.0,93,16.0,25,61,0,page_1_practice,his
+i,1339.0,93,16.0,25,62,0,page_1_practice,his
+s,1355.0,93,16.0,25,63,0,page_1_practice,his
+ ,1371.0,93,16.0,25,64,0,page_1_practice,
+f,1387.0,93,16.0,25,65,0,page_1_practice,face
+a,1403.0,93,16.0,25,66,0,page_1_practice,face
+c,1419.0,93,16.0,25,67,0,page_1_practice,face
+e,1435.0,93,16.0,25,68,0,page_1_practice,face
+ ,1451.0,93,16.0,25,69,0,page_1_practice,
+o,1467.0,93,16.0,25,70,0,page_1_practice,on
+n,1483.0,93,16.0,25,71,0,page_1_practice,on
+ ,1499.0,93,16.0,25,72,0,page_1_practice,
+i,1515.0,93,16.0,25,73,0,page_1_practice,it:
+t,1531.0,93,16.0,25,74,0,page_1_practice,it:
+:,1547.0,93,16.0,25,75,0,page_1_practice,it:
+J,347.0,211,16.0,25,0,2,page_1_practice,"Jason,"
+a,363.0,211,16.0,25,1,2,page_1_practice,"Jason,"
+s,379.0,211,16.0,25,2,2,page_1_practice,"Jason,"
+o,395.0,211,16.0,25,3,2,page_1_practice,"Jason,"
+n,411.0,211,16.0,25,4,2,page_1_practice,"Jason,"
+",",427.0,211,16.0,25,5,2,page_1_practice,"Jason,"
+ ,443.0,211,16.0,25,6,2,page_1_practice,
+t,459.0,211,16.0,25,7,2,page_1_practice,the
+h,475.0,211,16.0,25,8,2,page_1_practice,the
+e,491.0,211,16.0,25,9,2,page_1_practice,the
+ ,507.0,211,16.0,25,10,2,page_1_practice,
+G,523.0,211,16.0,25,11,2,page_1_practice,Great
+r,539.0,211,16.0,25,12,2,page_1_practice,Great
+e,555.0,211,16.0,25,13,2,page_1_practice,Great
+a,571.0,211,16.0,25,14,2,page_1_practice,Great
+t,587.0,211,16.0,25,15,2,page_1_practice,Great
+ ,603.0,211,16.0,25,16,2,page_1_practice,
+M,619.0,211,16.0,25,17,2,page_1_practice,Magician.I
+a,635.0,211,16.0,25,18,2,page_1_practice,Magician.I
+g,651.0,211,16.0,25,19,2,page_1_practice,Magician.I
+i,667.0,211,16.0,25,20,2,page_1_practice,Magician.I
+c,683.0,211,16.0,25,21,2,page_1_practice,Magician.I
+i,699.0,211,16.0,25,22,2,page_1_practice,Magician.I
+a,715.0,211,16.0,25,23,2,page_1_practice,Magician.I
+n,731.0,211,16.0,25,24,2,page_1_practice,Magician.I
+.,747.0,211,16.0,25,25,2,page_1_practice,Magician.I
+I,763.0,211,16.0,25,26,2,page_1_practice,Magician.I
+ ,779.0,211,16.0,25,27,2,page_1_practice,
+a,795.0,211,16.0,25,28,2,page_1_practice,absent-mindedly
+b,811.0,211,16.0,25,29,2,page_1_practice,absent-mindedly
+s,827.0,211,16.0,25,30,2,page_1_practice,absent-mindedly
+e,843.0,211,16.0,25,31,2,page_1_practice,absent-mindedly
+n,859.0,211,16.0,25,32,2,page_1_practice,absent-mindedly
+t,875.0,211,16.0,25,33,2,page_1_practice,absent-mindedly
+-,891.0,211,16.0,25,34,2,page_1_practice,absent-mindedly
+m,907.0,211,16.0,25,35,2,page_1_practice,absent-mindedly
+i,923.0,211,16.0,25,36,2,page_1_practice,absent-mindedly
+n,939.0,211,16.0,25,37,2,page_1_practice,absent-mindedly
+d,955.0,211,16.0,25,38,2,page_1_practice,absent-mindedly
+e,971.0,211,16.0,25,39,2,page_1_practice,absent-mindedly
+d,987.0,211,16.0,25,40,2,page_1_practice,absent-mindedly
+l,1003.0,211,16.0,25,41,2,page_1_practice,absent-mindedly
+y,1019.0,211,16.0,25,42,2,page_1_practice,absent-mindedly
+ ,1035.0,211,16.0,25,43,2,page_1_practice,
+t,1051.0,211,16.0,25,44,2,page_1_practice,turn
+u,1067.0,211,16.0,25,45,2,page_1_practice,turn
+r,1083.0,211,16.0,25,46,2,page_1_practice,turn
+n,1099.0,211,16.0,25,47,2,page_1_practice,turn
+ ,1115.0,211,16.0,25,48,2,page_1_practice,
+t,1131.0,211,16.0,25,49,2,page_1_practice,the
+h,1147.0,211,16.0,25,50,2,page_1_practice,the
+e,1163.0,211,16.0,25,51,2,page_1_practice,the
+ ,1179.0,211,16.0,25,52,2,page_1_practice,
+p,1195.0,211,16.0,25,53,2,page_1_practice,pages
+a,1211.0,211,16.0,25,54,2,page_1_practice,pages
+g,1227.0,211,16.0,25,55,2,page_1_practice,pages
+e,1243.0,211,16.0,25,56,2,page_1_practice,pages
+s,1259.0,211,16.0,25,57,2,page_1_practice,pages
+ ,1275.0,211,16.0,25,58,2,page_1_practice,
+o,1291.0,211,16.0,25,59,2,page_1_practice,of
+f,1307.0,211,16.0,25,60,2,page_1_practice,of
+ ,1323.0,211,16.0,25,61,2,page_1_practice,
+t,1339.0,211,16.0,25,62,2,page_1_practice,the
+h,1355.0,211,16.0,25,63,2,page_1_practice,the
+e,1371.0,211,16.0,25,64,2,page_1_practice,the
+ ,1387.0,211,16.0,25,65,2,page_1_practice,
+p,1403.0,211,16.0,25,66,2,page_1_practice,phone
+h,1419.0,211,16.0,25,67,2,page_1_practice,phone
+o,1435.0,211,16.0,25,68,2,page_1_practice,phone
+n,1451.0,211,16.0,25,69,2,page_1_practice,phone
+e,1467.0,211,16.0,25,70,2,page_1_practice,phone
+ ,1483.0,211,16.0,25,71,2,page_1_practice,
+b,1499.0,211,16.0,25,72,2,page_1_practice,book
+o,1515.0,211,16.0,25,73,2,page_1_practice,book
+o,1531.0,211,16.0,25,74,2,page_1_practice,book
+k,1547.0,211,16.0,25,75,2,page_1_practice,book
+a,347.0,329,16.0,26,0,4,page_1_practice,and
+n,363.0,329,16.0,26,1,4,page_1_practice,and
+d,379.0,329,16.0,26,2,4,page_1_practice,and
+ ,395.0,329,16.0,26,3,4,page_1_practice,
+c,411.0,329,16.0,26,4,4,page_1_practice,come
+o,427.0,329,16.0,26,5,4,page_1_practice,come
+m,443.0,329,16.0,26,6,4,page_1_practice,come
+e,459.0,329,16.0,26,7,4,page_1_practice,come
+ ,475.0,329,16.0,26,8,4,page_1_practice,
+a,491.0,329,16.0,26,9,4,page_1_practice,across
+c,507.0,329,16.0,26,10,4,page_1_practice,across
+r,523.0,329,16.0,26,11,4,page_1_practice,across
+o,539.0,329,16.0,26,12,4,page_1_practice,across
+s,555.0,329,16.0,26,13,4,page_1_practice,across
+s,571.0,329,16.0,26,14,4,page_1_practice,across
+ ,587.0,329,16.0,26,15,4,page_1_practice,
+a,603.0,329,16.0,26,16,4,page_1_practice,a
+ ,619.0,329,16.0,26,17,4,page_1_practice,
+c,635.0,329,16.0,26,18,4,page_1_practice,city
+i,651.0,329,16.0,26,19,4,page_1_practice,city
+t,667.0,329,16.0,26,20,4,page_1_practice,city
+y,683.0,329,16.0,26,21,4,page_1_practice,city
+ ,699.0,329,16.0,26,22,4,page_1_practice,
+m,715.0,329,16.0,26,23,4,page_1_practice,map.
+a,731.0,329,16.0,26,24,4,page_1_practice,map.
+p,747.0,329,16.0,26,25,4,page_1_practice,map.
+.,763.0,329,16.0,26,26,4,page_1_practice,map.
+ ,779.0,329,16.0,26,27,4,page_1_practice,
+S,795.0,329,16.0,26,28,4,page_1_practice,Sipping
+i,811.0,329,16.0,26,29,4,page_1_practice,Sipping
+p,827.0,329,16.0,26,30,4,page_1_practice,Sipping
+p,843.0,329,16.0,26,31,4,page_1_practice,Sipping
+i,859.0,329,16.0,26,32,4,page_1_practice,Sipping
+n,875.0,329,16.0,26,33,4,page_1_practice,Sipping
+g,891.0,329,16.0,26,34,4,page_1_practice,Sipping
+ ,907.0,329,16.0,26,35,4,page_1_practice,
+m,923.0,329,16.0,26,36,4,page_1_practice,my
+y,939.0,329,16.0,26,37,4,page_1_practice,my
+ ,955.0,329,16.0,26,38,4,page_1_practice,
+i,971.0,329,16.0,26,39,4,page_1_practice,iced
+c,987.0,329,16.0,26,40,4,page_1_practice,iced
+e,1003.0,329,16.0,26,41,4,page_1_practice,iced
+d,1019.0,329,16.0,26,42,4,page_1_practice,iced
+ ,1035.0,329,16.0,26,43,4,page_1_practice,
+l,1051.0,329,16.0,26,44,4,page_1_practice,"latté,"
+a,1067.0,329,16.0,26,45,4,page_1_practice,"latté,"
+t,1083.0,329,16.0,26,46,4,page_1_practice,"latté,"
+t,1099.0,329,16.0,26,47,4,page_1_practice,"latté,"
+é,1115.0,329,16.0,26,48,4,page_1_practice,"latté,"
+",",1131.0,329,16.0,26,49,4,page_1_practice,"latté,"
+ ,1147.0,329,16.0,26,50,4,page_1_practice,
+I,1163.0,329,16.0,26,51,4,page_1_practice,I
+ ,1179.0,329,16.0,26,52,4,page_1_practice,
+r,1195.0,329,16.0,26,53,4,page_1_practice,run
+u,1211.0,329,16.0,26,54,4,page_1_practice,run
+n,1227.0,329,16.0,26,55,4,page_1_practice,run
+ ,1243.0,329,16.0,26,56,4,page_1_practice,
+m,1259.0,329,16.0,26,57,4,page_1_practice,my
+y,1275.0,329,16.0,26,58,4,page_1_practice,my
+ ,1291.0,329,16.0,26,59,4,page_1_practice,
+f,1307.0,329,16.0,26,60,4,page_1_practice,fingers
+i,1323.0,329,16.0,26,61,4,page_1_practice,fingers
+n,1339.0,329,16.0,26,62,4,page_1_practice,fingers
+g,1355.0,329,16.0,26,63,4,page_1_practice,fingers
+e,1371.0,329,16.0,26,64,4,page_1_practice,fingers
+r,1387.0,329,16.0,26,65,4,page_1_practice,fingers
+s,1403.0,329,16.0,26,66,4,page_1_practice,fingers
+ ,1419.0,329,16.0,26,67,4,page_1_practice,
+a,1435.0,329,16.0,26,68,4,page_1_practice,along
+l,1451.0,329,16.0,26,69,4,page_1_practice,along
+o,1467.0,329,16.0,26,70,4,page_1_practice,along
+n,1483.0,329,16.0,26,71,4,page_1_practice,along
+g,1499.0,329,16.0,26,72,4,page_1_practice,along
+t,347.0,448,16.0,25,0,6,page_1_practice,the
+h,363.0,448,16.0,25,1,6,page_1_practice,the
+e,379.0,448,16.0,25,2,6,page_1_practice,the
+ ,395.0,448,16.0,25,3,6,page_1_practice,
+s,411.0,448,16.0,25,4,6,page_1_practice,streets
+t,427.0,448,16.0,25,5,6,page_1_practice,streets
+r,443.0,448,16.0,25,6,6,page_1_practice,streets
+e,459.0,448,16.0,25,7,6,page_1_practice,streets
+e,475.0,448,16.0,25,8,6,page_1_practice,streets
+t,491.0,448,16.0,25,9,6,page_1_practice,streets
+s,507.0,448,16.0,25,10,6,page_1_practice,streets
+ ,523.0,448,16.0,25,11,6,page_1_practice,
+f,539.0,448,16.0,25,12,6,page_1_practice,from
+r,555.0,448,16.0,25,13,6,page_1_practice,from
+o,571.0,448,16.0,25,14,6,page_1_practice,from
+m,587.0,448,16.0,25,15,6,page_1_practice,from
+ ,603.0,448,16.0,25,16,6,page_1_practice,
+t,619.0,448,16.0,25,17,6,page_1_practice,the
+h,635.0,448,16.0,25,18,6,page_1_practice,the
+e,651.0,448,16.0,25,19,6,page_1_practice,the
+ ,667.0,448,16.0,25,20,6,page_1_practice,
+h,683.0,448,16.0,25,21,6,page_1_practice,hotel
+o,699.0,448,16.0,25,22,6,page_1_practice,hotel
+t,715.0,448,16.0,25,23,6,page_1_practice,hotel
+e,731.0,448,16.0,25,24,6,page_1_practice,hotel
+l,747.0,448,16.0,25,25,6,page_1_practice,hotel
+ ,763.0,448,16.0,25,26,6,page_1_practice,
+t,779.0,448,16.0,25,27,6,page_1_practice,to
+o,795.0,448,16.0,25,28,6,page_1_practice,to
+ ,811.0,448,16.0,25,29,6,page_1_practice,
+t,827.0,448,16.0,25,30,6,page_1_practice,the
+h,843.0,448,16.0,25,31,6,page_1_practice,the
+e,859.0,448,16.0,25,32,6,page_1_practice,the
+ ,875.0,448,16.0,25,33,6,page_1_practice,
+o,891.0,448,16.0,25,34,6,page_1_practice,opera
+p,907.0,448,16.0,25,35,6,page_1_practice,opera
+e,923.0,448,16.0,25,36,6,page_1_practice,opera
+r,939.0,448,16.0,25,37,6,page_1_practice,opera
+a,955.0,448,16.0,25,38,6,page_1_practice,opera
+ ,971.0,448,16.0,25,39,6,page_1_practice,
+h,987.0,448,16.0,25,40,6,page_1_practice,hall.
+a,1003.0,448,16.0,25,41,6,page_1_practice,hall.
+l,1019.0,448,16.0,25,42,6,page_1_practice,hall.
+l,1035.0,448,16.0,25,43,6,page_1_practice,hall.
+.,1051.0,448,16.0,25,44,6,page_1_practice,hall.
+ ,1067.0,448,16.0,25,45,6,page_1_practice,
+N,1083.0,448,16.0,25,46,6,page_1_practice,Not
+o,1099.0,448,16.0,25,47,6,page_1_practice,Not
+t,1115.0,448,16.0,25,48,6,page_1_practice,Not
+ ,1131.0,448,16.0,25,49,6,page_1_practice,
+m,1147.0,448,16.0,25,50,6,page_1_practice,more
+o,1163.0,448,16.0,25,51,6,page_1_practice,more
+r,1179.0,448,16.0,25,52,6,page_1_practice,more
+e,1195.0,448,16.0,25,53,6,page_1_practice,more
+ ,1211.0,448,16.0,25,54,6,page_1_practice,
+t,1227.0,448,16.0,25,55,6,page_1_practice,than
+h,1243.0,448,16.0,25,56,6,page_1_practice,than
+a,1259.0,448,16.0,25,57,6,page_1_practice,than
+n,1275.0,448,16.0,25,58,6,page_1_practice,than
+ ,1291.0,448,16.0,25,59,6,page_1_practice,
+a,1307.0,448,16.0,25,60,6,page_1_practice,a
+ ,1323.0,448,16.0,25,61,6,page_1_practice,
+h,1339.0,448,16.0,25,62,6,page_1_practice,half-hour
+a,1355.0,448,16.0,25,63,6,page_1_practice,half-hour
+l,1371.0,448,16.0,25,64,6,page_1_practice,half-hour
+f,1387.0,448,16.0,25,65,6,page_1_practice,half-hour
+-,1403.0,448,16.0,25,66,6,page_1_practice,half-hour
+h,1419.0,448,16.0,25,67,6,page_1_practice,half-hour
+o,1435.0,448,16.0,25,68,6,page_1_practice,half-hour
+u,1451.0,448,16.0,25,69,6,page_1_practice,half-hour
+r,1467.0,448,16.0,25,70,6,page_1_practice,half-hour
+w,347.0,566,16.0,25,0,8,page_1_practice,walk.
+a,363.0,566,16.0,25,1,8,page_1_practice,walk.
+l,379.0,566,16.0,25,2,8,page_1_practice,walk.
+k,395.0,566,16.0,25,3,8,page_1_practice,walk.
+.,411.0,566,16.0,25,4,8,page_1_practice,walk.
+ ,427.0,566,16.0,25,5,8,page_1_practice,
+I,443.0,566,16.0,25,6,8,page_1_practice,I
+ ,459.0,566,16.0,25,7,8,page_1_practice,
+g,475.0,566,16.0,25,8,8,page_1_practice,glance
+l,491.0,566,16.0,25,9,8,page_1_practice,glance
+a,507.0,566,16.0,25,10,8,page_1_practice,glance
+n,523.0,566,16.0,25,11,8,page_1_practice,glance
+c,539.0,566,16.0,25,12,8,page_1_practice,glance
+e,555.0,566,16.0,25,13,8,page_1_practice,glance
+ ,571.0,566,16.0,25,14,8,page_1_practice,
+a,587.0,566,16.0,25,15,8,page_1_practice,at
+t,603.0,566,16.0,25,16,8,page_1_practice,at
+ ,619.0,566,16.0,25,17,8,page_1_practice,
+t,635.0,566,16.0,25,18,8,page_1_practice,the
+h,651.0,566,16.0,25,19,8,page_1_practice,the
+e,667.0,566,16.0,25,20,8,page_1_practice,the
+ ,683.0,566,16.0,25,21,8,page_1_practice,
+c,699.0,566,16.0,25,22,8,page_1_practice,clock.
+l,715.0,566,16.0,25,23,8,page_1_practice,clock.
+o,731.0,566,16.0,25,24,8,page_1_practice,clock.
+c,747.0,566,16.0,25,25,8,page_1_practice,clock.
+k,763.0,566,16.0,25,26,8,page_1_practice,clock.
+.,779.0,566,16.0,25,27,8,page_1_practice,clock.
+ ,795.0,566,16.0,25,28,8,page_1_practice,
+T,811.0,566,16.0,25,29,8,page_1_practice,The
+h,827.0,566,16.0,25,30,8,page_1_practice,The
+e,843.0,566,16.0,25,31,8,page_1_practice,The
+ ,859.0,566,16.0,25,32,8,page_1_practice,
+s,875.0,566,16.0,25,33,8,page_1_practice,show
+h,891.0,566,16.0,25,34,8,page_1_practice,show
+o,907.0,566,16.0,25,35,8,page_1_practice,show
+w,923.0,566,16.0,25,36,8,page_1_practice,show
+ ,939.0,566,16.0,25,37,8,page_1_practice,
+s,955.0,566,16.0,25,38,8,page_1_practice,starts
+t,971.0,566,16.0,25,39,8,page_1_practice,starts
+a,987.0,566,16.0,25,40,8,page_1_practice,starts
+r,1003.0,566,16.0,25,41,8,page_1_practice,starts
+t,1019.0,566,16.0,25,42,8,page_1_practice,starts
+s,1035.0,566,16.0,25,43,8,page_1_practice,starts
+ ,1051.0,566,16.0,25,44,8,page_1_practice,
+i,1067.0,566,16.0,25,45,8,page_1_practice,in
+n,1083.0,566,16.0,25,46,8,page_1_practice,in
+ ,1099.0,566,16.0,25,47,8,page_1_practice,
+o,1115.0,566,16.0,25,48,8,page_1_practice,one
+n,1131.0,566,16.0,25,49,8,page_1_practice,one
+e,1147.0,566,16.0,25,50,8,page_1_practice,one
+ ,1163.0,566,16.0,25,51,8,page_1_practice,
+h,1179.0,566,16.0,25,52,8,page_1_practice,hour.
+o,1195.0,566,16.0,25,53,8,page_1_practice,hour.
+u,1211.0,566,16.0,25,54,8,page_1_practice,hour.
+r,1227.0,566,16.0,25,55,8,page_1_practice,hour.
+.,1243.0,566,16.0,25,56,8,page_1_practice,hour.
+ ,1259.0,566,16.0,25,57,8,page_1_practice,
+P,1275.0,566,16.0,25,58,8,page_1_practice,Plenty
+l,1291.0,566,16.0,25,59,8,page_1_practice,Plenty
+e,1307.0,566,16.0,25,60,8,page_1_practice,Plenty
+n,1323.0,566,16.0,25,61,8,page_1_practice,Plenty
+t,1339.0,566,16.0,25,62,8,page_1_practice,Plenty
+y,1355.0,566,16.0,25,63,8,page_1_practice,Plenty
+ ,1371.0,566,16.0,25,64,8,page_1_practice,
+o,1387.0,566,16.0,25,65,8,page_1_practice,of
+f,1403.0,566,16.0,25,66,8,page_1_practice,of
+ ,1419.0,566,16.0,25,67,8,page_1_practice,
+t,1435.0,566,16.0,25,68,8,page_1_practice,time!
+i,1451.0,566,16.0,25,69,8,page_1_practice,time!
+m,1467.0,566,16.0,25,70,8,page_1_practice,time!
+e,1483.0,566,16.0,25,71,8,page_1_practice,time!
+!,1499.0,566,16.0,25,72,8,page_1_practice,time!
+ ,1515.0,566,16.0,25,73,8,page_1_practice,
+I,1531.0,566,16.0,25,74,8,page_1_practice,I
+g,347.0,684,16.0,26,0,10,page_1_practice,gulp
+u,363.0,684,16.0,26,1,10,page_1_practice,gulp
+l,379.0,684,16.0,26,2,10,page_1_practice,gulp
+p,395.0,684,16.0,26,3,10,page_1_practice,gulp
+ ,411.0,684,16.0,26,4,10,page_1_practice,
+t,427.0,684,16.0,26,5,10,page_1_practice,the
+h,443.0,684,16.0,26,6,10,page_1_practice,the
+e,459.0,684,16.0,26,7,10,page_1_practice,the
+ ,475.0,684,16.0,26,8,10,page_1_practice,
+l,491.0,684,16.0,26,9,10,page_1_practice,last
+a,507.0,684,16.0,26,10,10,page_1_practice,last
+s,523.0,684,16.0,26,11,10,page_1_practice,last
+t,539.0,684,16.0,26,12,10,page_1_practice,last
+ ,555.0,684,16.0,26,13,10,page_1_practice,
+t,571.0,684,16.0,26,14,10,page_1_practice,three
+h,587.0,684,16.0,26,15,10,page_1_practice,three
+r,603.0,684,16.0,26,16,10,page_1_practice,three
+e,619.0,684,16.0,26,17,10,page_1_practice,three
+e,635.0,684,16.0,26,18,10,page_1_practice,three
+ ,651.0,684,16.0,26,19,10,page_1_practice,
+s,667.0,684,16.0,26,20,10,page_1_practice,sips
+i,683.0,684,16.0,26,21,10,page_1_practice,sips
+p,699.0,684,16.0,26,22,10,page_1_practice,sips
+s,715.0,684,16.0,26,23,10,page_1_practice,sips
+ ,731.0,684,16.0,26,24,10,page_1_practice,
+o,747.0,684,16.0,26,25,10,page_1_practice,of
+f,763.0,684,16.0,26,26,10,page_1_practice,of
+ ,779.0,684,16.0,26,27,10,page_1_practice,
+m,795.0,684,16.0,26,28,10,page_1_practice,my
+y,811.0,684,16.0,26,29,10,page_1_practice,my
+ ,827.0,684,16.0,26,30,10,page_1_practice,
+l,843.0,684,16.0,26,31,10,page_1_practice,latté
+a,859.0,684,16.0,26,32,10,page_1_practice,latté
+t,875.0,684,16.0,26,33,10,page_1_practice,latté
+t,891.0,684,16.0,26,34,10,page_1_practice,latté
+é,907.0,684,16.0,26,35,10,page_1_practice,latté
+ ,923.0,684,16.0,26,36,10,page_1_practice,
+a,939.0,684,16.0,26,37,10,page_1_practice,and
+n,955.0,684,16.0,26,38,10,page_1_practice,and
+d,971.0,684,16.0,26,39,10,page_1_practice,and
+ ,987.0,684,16.0,26,40,10,page_1_practice,
+h,1003.0,684,16.0,26,41,10,page_1_practice,hop
+o,1019.0,684,16.0,26,42,10,page_1_practice,hop
+p,1035.0,684,16.0,26,43,10,page_1_practice,hop
+ ,1051.0,684,16.0,26,44,10,page_1_practice,
+i,1067.0,684,16.0,26,45,10,page_1_practice,in
+n,1083.0,684,16.0,26,46,10,page_1_practice,in
+ ,1099.0,684,16.0,26,47,10,page_1_practice,
+t,1115.0,684,16.0,26,48,10,page_1_practice,the
+h,1131.0,684,16.0,26,49,10,page_1_practice,the
+e,1147.0,684,16.0,26,50,10,page_1_practice,the
+ ,1163.0,684,16.0,26,51,10,page_1_practice,
+s,1179.0,684,16.0,26,52,10,page_1_practice,shower.
+h,1195.0,684,16.0,26,53,10,page_1_practice,shower.
+o,1211.0,684,16.0,26,54,10,page_1_practice,shower.
+w,1227.0,684,16.0,26,55,10,page_1_practice,shower.
+e,1243.0,684,16.0,26,56,10,page_1_practice,shower.
+r,1259.0,684,16.0,26,57,10,page_1_practice,shower.
+.,1275.0,684,16.0,26,58,10,page_1_practice,shower.
+ ,1291.0,684,16.0,26,59,10,page_1_practice,
+S,1307.0,684,16.0,26,60,10,page_1_practice,Soon
+o,1323.0,684,16.0,26,61,10,page_1_practice,Soon
+o,1339.0,684,16.0,26,62,10,page_1_practice,Soon
+n,1355.0,684,16.0,26,63,10,page_1_practice,Soon
+ ,1371.0,684,16.0,26,64,10,page_1_practice,
+I,1387.0,684,16.0,26,65,10,page_1_practice,I’m
+’,1403.0,684,16.0,26,66,10,page_1_practice,I’m
+m,1419.0,684,16.0,26,67,10,page_1_practice,I’m
+ ,1435.0,684,16.0,26,68,10,page_1_practice,
+o,1451.0,684,16.0,26,69,10,page_1_practice,on
+n,1467.0,684,16.0,26,70,10,page_1_practice,on
+ ,1483.0,684,16.0,26,71,10,page_1_practice,
+m,1499.0,684,16.0,26,72,10,page_1_practice,my
+y,1515.0,684,16.0,26,73,10,page_1_practice,my
+w,347.0,803,16.0,25,0,12,page_1_practice,way
+a,363.0,803,16.0,25,1,12,page_1_practice,way
+y,379.0,803,16.0,25,2,12,page_1_practice,way
+ ,395.0,803,16.0,25,3,12,page_1_practice,
+t,411.0,803,16.0,25,4,12,page_1_practice,to
+o,427.0,803,16.0,25,5,12,page_1_practice,to
+ ,443.0,803,16.0,25,6,12,page_1_practice,
+t,459.0,803,16.0,25,7,12,page_1_practice,the
+h,475.0,803,16.0,25,8,12,page_1_practice,the
+e,491.0,803,16.0,25,9,12,page_1_practice,the
+ ,507.0,803,16.0,25,10,12,page_1_practice,
+s,523.0,803,16.0,25,11,12,page_1_practice,"show,"
+h,539.0,803,16.0,25,12,12,page_1_practice,"show,"
+o,555.0,803,16.0,25,13,12,page_1_practice,"show,"
+w,571.0,803,16.0,25,14,12,page_1_practice,"show,"
+",",587.0,803,16.0,25,15,12,page_1_practice,"show,"
+ ,603.0,803,16.0,25,16,12,page_1_practice,
+c,619.0,803,16.0,25,17,12,page_1_practice,carrying
+a,635.0,803,16.0,25,18,12,page_1_practice,carrying
+r,651.0,803,16.0,25,19,12,page_1_practice,carrying
+r,667.0,803,16.0,25,20,12,page_1_practice,carrying
+y,683.0,803,16.0,25,21,12,page_1_practice,carrying
+i,699.0,803,16.0,25,22,12,page_1_practice,carrying
+n,715.0,803,16.0,25,23,12,page_1_practice,carrying
+g,731.0,803,16.0,25,24,12,page_1_practice,carrying
+ ,747.0,803,16.0,25,25,12,page_1_practice,
+a,763.0,803,16.0,25,26,12,page_1_practice,a
+ ,779.0,803,16.0,25,27,12,page_1_practice,
+f,795.0,803,16.0,25,28,12,page_1_practice,fancy
+a,811.0,803,16.0,25,29,12,page_1_practice,fancy
+n,827.0,803,16.0,25,30,12,page_1_practice,fancy
+c,843.0,803,16.0,25,31,12,page_1_practice,fancy
+y,859.0,803,16.0,25,32,12,page_1_practice,fancy
+ ,875.0,803,16.0,25,33,12,page_1_practice,
+b,891.0,803,16.0,25,34,12,page_1_practice,black
+l,907.0,803,16.0,25,35,12,page_1_practice,black
+a,923.0,803,16.0,25,36,12,page_1_practice,black
+c,939.0,803,16.0,25,37,12,page_1_practice,black
+k,955.0,803,16.0,25,38,12,page_1_practice,black
+ ,971.0,803,16.0,25,39,12,page_1_practice,
+h,987.0,803,16.0,25,40,12,page_1_practice,handbag
+a,1003.0,803,16.0,25,41,12,page_1_practice,handbag
+n,1019.0,803,16.0,25,42,12,page_1_practice,handbag
+d,1035.0,803,16.0,25,43,12,page_1_practice,handbag
+b,1051.0,803,16.0,25,44,12,page_1_practice,handbag
+a,1067.0,803,16.0,25,45,12,page_1_practice,handbag
+g,1083.0,803,16.0,25,46,12,page_1_practice,handbag
+ ,1099.0,803,16.0,25,47,12,page_1_practice,
+a,1115.0,803,16.0,25,48,12,page_1_practice,and
+n,1131.0,803,16.0,25,49,12,page_1_practice,and
+d,1147.0,803,16.0,25,50,12,page_1_practice,and
+ ,1163.0,803,16.0,25,51,12,page_1_practice,
+a,1179.0,803,16.0,25,52,12,page_1_practice,a
+ ,1195.0,803,16.0,25,53,12,page_1_practice,
+g,1211.0,803,16.0,25,54,12,page_1_practice,genuine
+e,1227.0,803,16.0,25,55,12,page_1_practice,genuine
+n,1243.0,803,16.0,25,56,12,page_1_practice,genuine
+u,1259.0,803,16.0,25,57,12,page_1_practice,genuine
+i,1275.0,803,16.0,25,58,12,page_1_practice,genuine
+n,1291.0,803,16.0,25,59,12,page_1_practice,genuine
+e,1307.0,803,16.0,25,60,12,page_1_practice,genuine
+ ,1323.0,803,16.0,25,61,12,page_1_practice,
+s,1339.0,803,16.0,25,62,12,page_1_practice,smile.
+m,1355.0,803,16.0,25,63,12,page_1_practice,smile.
+i,1371.0,803,16.0,25,64,12,page_1_practice,smile.
+l,1387.0,803,16.0,25,65,12,page_1_practice,smile.
+e,1403.0,803,16.0,25,66,12,page_1_practice,smile.
+.,1419.0,803,16.0,25,67,12,page_1_practice,smile.
+ ,1435.0,803,16.0,25,68,12,page_1_practice,
+T,1451.0,803,16.0,25,69,12,page_1_practice,The
+h,1467.0,803,16.0,25,70,12,page_1_practice,The
+e,1483.0,803,16.0,25,71,12,page_1_practice,The
+b,347.0,921,16.0,25,0,14,page_1_practice,billboard
+i,363.0,921,16.0,25,1,14,page_1_practice,billboard
+l,379.0,921,16.0,25,2,14,page_1_practice,billboard
+l,395.0,921,16.0,25,3,14,page_1_practice,billboard
+b,411.0,921,16.0,25,4,14,page_1_practice,billboard
+o,427.0,921,16.0,25,5,14,page_1_practice,billboard
+a,443.0,921,16.0,25,6,14,page_1_practice,billboard
+r,459.0,921,16.0,25,7,14,page_1_practice,billboard
+d,475.0,921,16.0,25,8,14,page_1_practice,billboard
+ ,491.0,921,16.0,25,9,14,page_1_practice,
+l,507.0,921,16.0,25,10,14,page_1_practice,looks
+o,523.0,921,16.0,25,11,14,page_1_practice,looks
+o,539.0,921,16.0,25,12,14,page_1_practice,looks
+k,555.0,921,16.0,25,13,14,page_1_practice,looks
+s,571.0,921,16.0,25,14,14,page_1_practice,looks
+ ,587.0,921,16.0,25,15,14,page_1_practice,
+e,603.0,921,16.0,25,16,14,page_1_practice,even
+v,619.0,921,16.0,25,17,14,page_1_practice,even
+e,635.0,921,16.0,25,18,14,page_1_practice,even
+n,651.0,921,16.0,25,19,14,page_1_practice,even
+ ,667.0,921,16.0,25,20,14,page_1_practice,
+m,683.0,921,16.0,25,21,14,page_1_practice,more
+o,699.0,921,16.0,25,22,14,page_1_practice,more
+r,715.0,921,16.0,25,23,14,page_1_practice,more
+e,731.0,921,16.0,25,24,14,page_1_practice,more
+ ,747.0,921,16.0,25,25,14,page_1_practice,
+i,763.0,921,16.0,25,26,14,page_1_practice,impressive
+m,779.0,921,16.0,25,27,14,page_1_practice,impressive
+p,795.0,921,16.0,25,28,14,page_1_practice,impressive
+r,811.0,921,16.0,25,29,14,page_1_practice,impressive
+e,827.0,921,16.0,25,30,14,page_1_practice,impressive
+s,843.0,921,16.0,25,31,14,page_1_practice,impressive
+s,859.0,921,16.0,25,32,14,page_1_practice,impressive
+i,875.0,921,16.0,25,33,14,page_1_practice,impressive
+v,891.0,921,16.0,25,34,14,page_1_practice,impressive
+e,907.0,921,16.0,25,35,14,page_1_practice,impressive
+ ,923.0,921,16.0,25,36,14,page_1_practice,
+f,939.0,921,16.0,25,37,14,page_1_practice,from
+r,955.0,921,16.0,25,38,14,page_1_practice,from
+o,971.0,921,16.0,25,39,14,page_1_practice,from
+m,987.0,921,16.0,25,40,14,page_1_practice,from
+ ,1003.0,921,16.0,25,41,14,page_1_practice,
+o,1019.0,921,16.0,25,42,14,page_1_practice,outside.
+u,1035.0,921,16.0,25,43,14,page_1_practice,outside.
+t,1051.0,921,16.0,25,44,14,page_1_practice,outside.
+s,1067.0,921,16.0,25,45,14,page_1_practice,outside.
+i,1083.0,921,16.0,25,46,14,page_1_practice,outside.
+d,1099.0,921,16.0,25,47,14,page_1_practice,outside.
+e,1115.0,921,16.0,25,48,14,page_1_practice,outside.
+.,1131.0,921,16.0,25,49,14,page_1_practice,outside.
+ ,1147.0,921,16.0,25,50,14,page_1_practice,
+T,1163.0,921,16.0,25,51,14,page_1_practice,The
+h,1179.0,921,16.0,25,52,14,page_1_practice,The
+e,1195.0,921,16.0,25,53,14,page_1_practice,The
+ ,1211.0,921,16.0,25,54,14,page_1_practice,
+G,1227.0,921,16.0,25,55,14,page_1_practice,Great
+r,1243.0,921,16.0,25,56,14,page_1_practice,Great
+e,1259.0,921,16.0,25,57,14,page_1_practice,Great
+a,1275.0,921,16.0,25,58,14,page_1_practice,Great
+t,1291.0,921,16.0,25,59,14,page_1_practice,Great
+ ,1307.0,921,16.0,25,60,14,page_1_practice,
+J,1323.0,921,16.0,25,61,14,page_1_practice,Jason's
+a,1339.0,921,16.0,25,62,14,page_1_practice,Jason's
+s,1355.0,921,16.0,25,63,14,page_1_practice,Jason's
+o,1371.0,921,16.0,25,64,14,page_1_practice,Jason's
+n,1387.0,921,16.0,25,65,14,page_1_practice,Jason's
+',1403.0,921,16.0,25,66,14,page_1_practice,Jason's
+s,1419.0,921,16.0,25,67,14,page_1_practice,Jason's
+ ,1435.0,921,16.0,25,68,14,page_1_practice,
+e,1451.0,921,16.0,25,69,14,page_1_practice,eyes
+y,1467.0,921,16.0,25,70,14,page_1_practice,eyes
+e,1483.0,921,16.0,25,71,14,page_1_practice,eyes
+s,1499.0,921,16.0,25,72,14,page_1_practice,eyes
+s,347.0,1039,16.0,25,0,16,page_1_practice,seem
+e,363.0,1039,16.0,25,1,16,page_1_practice,seem
+e,379.0,1039,16.0,25,2,16,page_1_practice,seem
+m,395.0,1039,16.0,25,3,16,page_1_practice,seem
+ ,411.0,1039,16.0,25,4,16,page_1_practice,
+t,427.0,1039,16.0,25,5,16,page_1_practice,to
+o,443.0,1039,16.0,25,6,16,page_1_practice,to
+ ,459.0,1039,16.0,25,7,16,page_1_practice,
+b,475.0,1039,16.0,25,8,16,page_1_practice,be
+e,491.0,1039,16.0,25,9,16,page_1_practice,be
+ ,507.0,1039,16.0,25,10,16,page_1_practice,
+g,523.0,1039,16.0,25,11,16,page_1_practice,glancing
+l,539.0,1039,16.0,25,12,16,page_1_practice,glancing
+a,555.0,1039,16.0,25,13,16,page_1_practice,glancing
+n,571.0,1039,16.0,25,14,16,page_1_practice,glancing
+c,587.0,1039,16.0,25,15,16,page_1_practice,glancing
+i,603.0,1039,16.0,25,16,16,page_1_practice,glancing
+n,619.0,1039,16.0,25,17,16,page_1_practice,glancing
+g,635.0,1039,16.0,25,18,16,page_1_practice,glancing
+ ,651.0,1039,16.0,25,19,16,page_1_practice,
+t,667.0,1039,16.0,25,20,16,page_1_practice,through
+h,683.0,1039,16.0,25,21,16,page_1_practice,through
+r,699.0,1039,16.0,25,22,16,page_1_practice,through
+o,715.0,1039,16.0,25,23,16,page_1_practice,through
+u,731.0,1039,16.0,25,24,16,page_1_practice,through
+g,747.0,1039,16.0,25,25,16,page_1_practice,through
+h,763.0,1039,16.0,25,26,16,page_1_practice,through
+ ,779.0,1039,16.0,25,27,16,page_1_practice,
+m,795.0,1039,16.0,25,28,16,page_1_practice,me.
+e,811.0,1039,16.0,25,29,16,page_1_practice,me.
+.,827.0,1039,16.0,25,30,16,page_1_practice,me.
+I,347.0,93,16.0,25,0,0,page_2_practice,I
+ ,363.0,93,16.0,25,1,0,page_2_practice,
+s,379.0,93,16.0,25,2,0,page_2_practice,shiver
+h,395.0,93,16.0,25,3,0,page_2_practice,shiver
+i,411.0,93,16.0,25,4,0,page_2_practice,shiver
+v,427.0,93,16.0,25,5,0,page_2_practice,shiver
+e,443.0,93,16.0,25,6,0,page_2_practice,shiver
+r,459.0,93,16.0,25,7,0,page_2_practice,shiver
+ ,475.0,93,16.0,25,8,0,page_2_practice,
+a,491.0,93,16.0,25,9,0,page_2_practice,and
+n,507.0,93,16.0,25,10,0,page_2_practice,and
+d,523.0,93,16.0,25,11,0,page_2_practice,and
+ ,539.0,93,16.0,25,12,0,page_2_practice,
+w,555.0,93,16.0,25,13,0,page_2_practice,walk
+a,571.0,93,16.0,25,14,0,page_2_practice,walk
+l,587.0,93,16.0,25,15,0,page_2_practice,walk
+k,603.0,93,16.0,25,16,0,page_2_practice,walk
+ ,619.0,93,16.0,25,17,0,page_2_practice,
+f,635.0,93,16.0,25,18,0,page_2_practice,faster.
+a,651.0,93,16.0,25,19,0,page_2_practice,faster.
+s,667.0,93,16.0,25,20,0,page_2_practice,faster.
+t,683.0,93,16.0,25,21,0,page_2_practice,faster.
+e,699.0,93,16.0,25,22,0,page_2_practice,faster.
+r,715.0,93,16.0,25,23,0,page_2_practice,faster.
+.,731.0,93,16.0,25,24,0,page_2_practice,faster.
+ ,747.0,93,16.0,25,25,0,page_2_practice,
+I,763.0,93,16.0,25,26,0,page_2_practice,I
+ ,779.0,93,16.0,25,27,0,page_2_practice,
+f,795.0,93,16.0,25,28,0,page_2_practice,feel
+e,811.0,93,16.0,25,29,0,page_2_practice,feel
+e,827.0,93,16.0,25,30,0,page_2_practice,feel
+l,843.0,93,16.0,25,31,0,page_2_practice,feel
+ ,859.0,93,16.0,25,32,0,page_2_practice,
+l,875.0,93,16.0,25,33,0,page_2_practice,like
+i,891.0,93,16.0,25,34,0,page_2_practice,like
+k,907.0,93,16.0,25,35,0,page_2_practice,like
+e,923.0,93,16.0,25,36,0,page_2_practice,like
+ ,939.0,93,16.0,25,37,0,page_2_practice,
+a,955.0,93,16.0,25,38,0,page_2_practice,a
+ ,971.0,93,16.0,25,39,0,page_2_practice,
+c,987.0,93,16.0,25,40,0,page_2_practice,child
+h,1003.0,93,16.0,25,41,0,page_2_practice,child
+i,1019.0,93,16.0,25,42,0,page_2_practice,child
+l,1035.0,93,16.0,25,43,0,page_2_practice,child
+d,1051.0,93,16.0,25,44,0,page_2_practice,child
+ ,1067.0,93,16.0,25,45,0,page_2_practice,
+a,1083.0,93,16.0,25,46,0,page_2_practice,about
+b,1099.0,93,16.0,25,47,0,page_2_practice,about
+o,1115.0,93,16.0,25,48,0,page_2_practice,about
+u,1131.0,93,16.0,25,49,0,page_2_practice,about
+t,1147.0,93,16.0,25,50,0,page_2_practice,about
+ ,1163.0,93,16.0,25,51,0,page_2_practice,
+t,1179.0,93,16.0,25,52,0,page_2_practice,to
+o,1195.0,93,16.0,25,53,0,page_2_practice,to
+ ,1211.0,93,16.0,25,54,0,page_2_practice,
+o,1227.0,93,16.0,25,55,0,page_2_practice,open
+p,1243.0,93,16.0,25,56,0,page_2_practice,open
+e,1259.0,93,16.0,25,57,0,page_2_practice,open
+n,1275.0,93,16.0,25,58,0,page_2_practice,open
+ ,1291.0,93,16.0,25,59,0,page_2_practice,
+h,1307.0,93,16.0,25,60,0,page_2_practice,her
+e,1323.0,93,16.0,25,61,0,page_2_practice,her
+r,1339.0,93,16.0,25,62,0,page_2_practice,her
+ ,1355.0,93,16.0,25,63,0,page_2_practice,
+b,1371.0,93,16.0,25,64,0,page_2_practice,birthday
+i,1387.0,93,16.0,25,65,0,page_2_practice,birthday
+r,1403.0,93,16.0,25,66,0,page_2_practice,birthday
+t,1419.0,93,16.0,25,67,0,page_2_practice,birthday
+h,1435.0,93,16.0,25,68,0,page_2_practice,birthday
+d,1451.0,93,16.0,25,69,0,page_2_practice,birthday
+a,1467.0,93,16.0,25,70,0,page_2_practice,birthday
+y,1483.0,93,16.0,25,71,0,page_2_practice,birthday
+p,347.0,211,16.0,25,0,2,page_2_practice,presents.
+r,363.0,211,16.0,25,1,2,page_2_practice,presents.
+e,379.0,211,16.0,25,2,2,page_2_practice,presents.
+s,395.0,211,16.0,25,3,2,page_2_practice,presents.
+e,411.0,211,16.0,25,4,2,page_2_practice,presents.
+n,427.0,211,16.0,25,5,2,page_2_practice,presents.
+t,443.0,211,16.0,25,6,2,page_2_practice,presents.
+s,459.0,211,16.0,25,7,2,page_2_practice,presents.
+.,475.0,211,16.0,25,8,2,page_2_practice,presents.
+ ,491.0,211,16.0,25,9,2,page_2_practice,
+T,507.0,211,16.0,25,10,2,page_2_practice,The
+h,523.0,211,16.0,25,11,2,page_2_practice,The
+e,539.0,211,16.0,25,12,2,page_2_practice,The
+ ,555.0,211,16.0,25,13,2,page_2_practice,
+h,571.0,211,16.0,25,14,2,page_2_practice,hall
+a,587.0,211,16.0,25,15,2,page_2_practice,hall
+l,603.0,211,16.0,25,16,2,page_2_practice,hall
+l,619.0,211,16.0,25,17,2,page_2_practice,hall
+ ,635.0,211,16.0,25,18,2,page_2_practice,
+i,651.0,211,16.0,25,19,2,page_2_practice,is
+s,667.0,211,16.0,25,20,2,page_2_practice,is
+ ,683.0,211,16.0,25,21,2,page_2_practice,
+d,699.0,211,16.0,25,22,2,page_2_practice,dark
+a,715.0,211,16.0,25,23,2,page_2_practice,dark
+r,731.0,211,16.0,25,24,2,page_2_practice,dark
+k,747.0,211,16.0,25,25,2,page_2_practice,dark
+ ,763.0,211,16.0,25,26,2,page_2_practice,
+w,779.0,211,16.0,25,27,2,page_2_practice,when
+h,795.0,211,16.0,25,28,2,page_2_practice,when
+e,811.0,211,16.0,25,29,2,page_2_practice,when
+n,827.0,211,16.0,25,30,2,page_2_practice,when
+ ,843.0,211,16.0,25,31,2,page_2_practice,
+I,859.0,211,16.0,25,32,2,page_2_practice,I
+ ,875.0,211,16.0,25,33,2,page_2_practice,
+c,891.0,211,16.0,25,34,2,page_2_practice,come
+o,907.0,211,16.0,25,35,2,page_2_practice,come
+m,923.0,211,16.0,25,36,2,page_2_practice,come
+e,939.0,211,16.0,25,37,2,page_2_practice,come
+ ,955.0,211,16.0,25,38,2,page_2_practice,
+i,971.0,211,16.0,25,39,2,page_2_practice,in;
+n,987.0,211,16.0,25,40,2,page_2_practice,in;
+;,1003.0,211,16.0,25,41,2,page_2_practice,in;
+ ,1019.0,211,16.0,25,42,2,page_2_practice,
+t,1035.0,211,16.0,25,43,2,page_2_practice,the
+h,1051.0,211,16.0,25,44,2,page_2_practice,the
+e,1067.0,211,16.0,25,45,2,page_2_practice,the
+ ,1083.0,211,16.0,25,46,2,page_2_practice,
+s,1099.0,211,16.0,25,47,2,page_2_practice,show
+h,1115.0,211,16.0,25,48,2,page_2_practice,show
+o,1131.0,211,16.0,25,49,2,page_2_practice,show
+w,1147.0,211,16.0,25,50,2,page_2_practice,show
+ ,1163.0,211,16.0,25,51,2,page_2_practice,
+i,1179.0,211,16.0,25,52,2,page_2_practice,is
+s,1195.0,211,16.0,25,53,2,page_2_practice,is
+ ,1211.0,211,16.0,25,54,2,page_2_practice,
+a,1227.0,211,16.0,25,55,2,page_2_practice,about
+b,1243.0,211,16.0,25,56,2,page_2_practice,about
+o,1259.0,211,16.0,25,57,2,page_2_practice,about
+u,1275.0,211,16.0,25,58,2,page_2_practice,about
+t,1291.0,211,16.0,25,59,2,page_2_practice,about
+ ,1307.0,211,16.0,25,60,2,page_2_practice,
+t,1323.0,211,16.0,25,61,2,page_2_practice,to
+o,1339.0,211,16.0,25,62,2,page_2_practice,to
+ ,1355.0,211,16.0,25,63,2,page_2_practice,
+b,1371.0,211,16.0,25,64,2,page_2_practice,begin.
+e,1387.0,211,16.0,25,65,2,page_2_practice,begin.
+g,1403.0,211,16.0,25,66,2,page_2_practice,begin.
+i,1419.0,211,16.0,25,67,2,page_2_practice,begin.
+n,1435.0,211,16.0,25,68,2,page_2_practice,begin.
+.,1451.0,211,16.0,25,69,2,page_2_practice,begin.
+ ,1467.0,211,16.0,25,70,2,page_2_practice,
+I,1483.0,211,16.0,25,71,2,page_2_practice,I
+m,347.0,329,16.0,25,0,4,page_2_practice,make
+a,363.0,329,16.0,25,1,4,page_2_practice,make
+k,379.0,329,16.0,25,2,4,page_2_practice,make
+e,395.0,329,16.0,25,3,4,page_2_practice,make
+ ,411.0,329,16.0,25,4,4,page_2_practice,
+m,427.0,329,16.0,25,5,4,page_2_practice,my
+y,443.0,329,16.0,25,6,4,page_2_practice,my
+ ,459.0,329,16.0,25,7,4,page_2_practice,
+w,475.0,329,16.0,25,8,4,page_2_practice,way
+a,491.0,329,16.0,25,9,4,page_2_practice,way
+y,507.0,329,16.0,25,10,4,page_2_practice,way
+ ,523.0,329,16.0,25,11,4,page_2_practice,
+b,539.0,329,16.0,25,12,4,page_2_practice,backstage
+a,555.0,329,16.0,25,13,4,page_2_practice,backstage
+c,571.0,329,16.0,25,14,4,page_2_practice,backstage
+k,587.0,329,16.0,25,15,4,page_2_practice,backstage
+s,603.0,329,16.0,25,16,4,page_2_practice,backstage
+t,619.0,329,16.0,25,17,4,page_2_practice,backstage
+a,635.0,329,16.0,25,18,4,page_2_practice,backstage
+g,651.0,329,16.0,25,19,4,page_2_practice,backstage
+e,667.0,329,16.0,25,20,4,page_2_practice,backstage
+ ,683.0,329,16.0,25,21,4,page_2_practice,
+j,699.0,329,16.0,25,22,4,page_2_practice,just
+u,715.0,329,16.0,25,23,4,page_2_practice,just
+s,731.0,329,16.0,25,24,4,page_2_practice,just
+t,747.0,329,16.0,25,25,4,page_2_practice,just
+ ,763.0,329,16.0,25,26,4,page_2_practice,
+a,779.0,329,16.0,25,27,4,page_2_practice,as
+s,795.0,329,16.0,25,28,4,page_2_practice,as
+ ,811.0,329,16.0,25,29,4,page_2_practice,
+t,827.0,329,16.0,25,30,4,page_2_practice,the
+h,843.0,329,16.0,25,31,4,page_2_practice,the
+e,859.0,329,16.0,25,32,4,page_2_practice,the
+ ,875.0,329,16.0,25,33,4,page_2_practice,
+g,891.0,329,16.0,25,34,4,page_2_practice,great
+r,907.0,329,16.0,25,35,4,page_2_practice,great
+e,923.0,329,16.0,25,36,4,page_2_practice,great
+a,939.0,329,16.0,25,37,4,page_2_practice,great
+t,955.0,329,16.0,25,38,4,page_2_practice,great
+ ,971.0,329,16.0,25,39,4,page_2_practice,
+m,987.0,329,16.0,25,40,4,page_2_practice,magician
+a,1003.0,329,16.0,25,41,4,page_2_practice,magician
+g,1019.0,329,16.0,25,42,4,page_2_practice,magician
+i,1035.0,329,16.0,25,43,4,page_2_practice,magician
+c,1051.0,329,16.0,25,44,4,page_2_practice,magician
+i,1067.0,329,16.0,25,45,4,page_2_practice,magician
+a,1083.0,329,16.0,25,46,4,page_2_practice,magician
+n,1099.0,329,16.0,25,47,4,page_2_practice,magician
+ ,1115.0,329,16.0,25,48,4,page_2_practice,
+p,1131.0,329,16.0,25,49,4,page_2_practice,puts
+u,1147.0,329,16.0,25,50,4,page_2_practice,puts
+t,1163.0,329,16.0,25,51,4,page_2_practice,puts
+s,1179.0,329,16.0,25,52,4,page_2_practice,puts
+ ,1195.0,329,16.0,25,53,4,page_2_practice,
+o,1211.0,329,16.0,25,54,4,page_2_practice,on
+n,1227.0,329,16.0,25,55,4,page_2_practice,on
+ ,1243.0,329,16.0,25,56,4,page_2_practice,
+h,1259.0,329,16.0,25,57,4,page_2_practice,his
+i,1275.0,329,16.0,25,58,4,page_2_practice,his
+s,1291.0,329,16.0,25,59,4,page_2_practice,his
+ ,1307.0,329,16.0,25,60,4,page_2_practice,
+t,1323.0,329,16.0,25,61,4,page_2_practice,top
+o,1339.0,329,16.0,25,62,4,page_2_practice,top
+p,1355.0,329,16.0,25,63,4,page_2_practice,top
+ ,1371.0,329,16.0,25,64,4,page_2_practice,
+h,1387.0,329,16.0,25,65,4,page_2_practice,hat.
+a,1403.0,329,16.0,25,66,4,page_2_practice,hat.
+t,1419.0,329,16.0,25,67,4,page_2_practice,hat.
+.,1435.0,329,16.0,25,68,4,page_2_practice,hat.
+"""",347.0,447,16.0,25,0,6,page_2_practice,"""Daddy,"
+D,363.0,447,16.0,25,1,6,page_2_practice,"""Daddy,"
+a,379.0,447,16.0,25,2,6,page_2_practice,"""Daddy,"
+d,395.0,447,16.0,25,3,6,page_2_practice,"""Daddy,"
+d,411.0,447,16.0,25,4,6,page_2_practice,"""Daddy,"
+y,427.0,447,16.0,25,5,6,page_2_practice,"""Daddy,"
+",",443.0,447,16.0,25,6,6,page_2_practice,"""Daddy,"
+ ,459.0,447,16.0,25,7,6,page_2_practice,
+I,475.0,447,16.0,25,8,6,page_2_practice,I'm
+',491.0,447,16.0,25,9,6,page_2_practice,I'm
+m,507.0,447,16.0,25,10,6,page_2_practice,I'm
+ ,523.0,447,16.0,25,11,6,page_2_practice,
+s,539.0,447,16.0,25,12,6,page_2_practice,so
+o,555.0,447,16.0,25,13,6,page_2_practice,so
+ ,571.0,447,16.0,25,14,6,page_2_practice,
+g,587.0,447,16.0,25,15,6,page_2_practice,glad
+l,603.0,447,16.0,25,16,6,page_2_practice,glad
+a,619.0,447,16.0,25,17,6,page_2_practice,glad
+d,635.0,447,16.0,25,18,6,page_2_practice,glad
+ ,651.0,447,16.0,25,19,6,page_2_practice,
+t,667.0,447,16.0,25,20,6,page_2_practice,to
+o,683.0,447,16.0,25,21,6,page_2_practice,to
+ ,699.0,447,16.0,25,22,6,page_2_practice,
+s,715.0,447,16.0,25,23,6,page_2_practice,see
+e,731.0,447,16.0,25,24,6,page_2_practice,see
+e,747.0,447,16.0,25,25,6,page_2_practice,see
+ ,763.0,447,16.0,25,26,6,page_2_practice,
+y,779.0,447,16.0,25,27,6,page_2_practice,"you,"""
+o,795.0,447,16.0,25,28,6,page_2_practice,"you,"""
+u,811.0,447,16.0,25,29,6,page_2_practice,"you,"""
+",",827.0,447,16.0,25,30,6,page_2_practice,"you,"""
+"""",843.0,447,16.0,25,31,6,page_2_practice,"you,"""
+ ,859.0,447,16.0,25,32,6,page_2_practice,
+I,875.0,447,16.0,25,33,6,page_2_practice,I
+ ,891.0,447,16.0,25,34,6,page_2_practice,
+s,907.0,447,16.0,25,35,6,page_2_practice,say
+a,923.0,447,16.0,25,36,6,page_2_practice,say
+y,939.0,447,16.0,25,37,6,page_2_practice,say
+ ,955.0,447,16.0,25,38,6,page_2_practice,
+i,971.0,447,16.0,25,39,6,page_2_practice,in
+n,987.0,447,16.0,25,40,6,page_2_practice,in
+ ,1003.0,447,16.0,25,41,6,page_2_practice,
+a,1019.0,447,16.0,25,42,6,page_2_practice,a
+ ,1035.0,447,16.0,25,43,6,page_2_practice,
+h,1051.0,447,16.0,25,44,6,page_2_practice,half-whisper.
+a,1067.0,447,16.0,25,45,6,page_2_practice,half-whisper.
+l,1083.0,447,16.0,25,46,6,page_2_practice,half-whisper.
+f,1099.0,447,16.0,25,47,6,page_2_practice,half-whisper.
+-,1115.0,447,16.0,25,48,6,page_2_practice,half-whisper.
+w,1131.0,447,16.0,25,49,6,page_2_practice,half-whisper.
+h,1147.0,447,16.0,25,50,6,page_2_practice,half-whisper.
+i,1163.0,447,16.0,25,51,6,page_2_practice,half-whisper.
+s,1179.0,447,16.0,25,52,6,page_2_practice,half-whisper.
+p,1195.0,447,16.0,25,53,6,page_2_practice,half-whisper.
+e,1211.0,447,16.0,25,54,6,page_2_practice,half-whisper.
+r,1227.0,447,16.0,25,55,6,page_2_practice,half-whisper.
+.,1243.0,447,16.0,25,56,6,page_2_practice,half-whisper.
+ ,1259.0,447,16.0,25,57,6,page_2_practice,
+"""",1275.0,447,16.0,25,58,6,page_2_practice,"""I'm"
+I,1291.0,447,16.0,25,59,6,page_2_practice,"""I'm"
+',1307.0,447,16.0,25,60,6,page_2_practice,"""I'm"
+m,1323.0,447,16.0,25,61,6,page_2_practice,"""I'm"
+ ,1339.0,447,16.0,25,62,6,page_2_practice,
+i,1355.0,447,16.0,25,63,6,page_2_practice,in
+n,1371.0,447,16.0,25,64,6,page_2_practice,in
+ ,1387.0,447,16.0,25,65,6,page_2_practice,
+t,1403.0,447,16.0,25,66,6,page_2_practice,town
+o,1419.0,447,16.0,25,67,6,page_2_practice,town
+w,1435.0,447,16.0,25,68,6,page_2_practice,town
+n,1451.0,447,16.0,25,69,6,page_2_practice,town
+ ,1467.0,447,16.0,25,70,6,page_2_practice,
+f,1483.0,447,16.0,25,71,6,page_2_practice,for
+o,1499.0,447,16.0,25,72,6,page_2_practice,for
+r,1515.0,447,16.0,25,73,6,page_2_practice,for
+t,347.0,565,16.0,25,0,8,page_2_practice,the
+h,363.0,565,16.0,25,1,8,page_2_practice,the
+e,379.0,565,16.0,25,2,8,page_2_practice,the
+ ,395.0,565,16.0,25,3,8,page_2_practice,
+w,411.0,565,16.0,25,4,8,page_2_practice,writer's
+r,427.0,565,16.0,25,5,8,page_2_practice,writer's
+i,443.0,565,16.0,25,6,8,page_2_practice,writer's
+t,459.0,565,16.0,25,7,8,page_2_practice,writer's
+e,475.0,565,16.0,25,8,8,page_2_practice,writer's
+r,491.0,565,16.0,25,9,8,page_2_practice,writer's
+',507.0,565,16.0,25,10,8,page_2_practice,writer's
+s,523.0,565,16.0,25,11,8,page_2_practice,writer's
+ ,539.0,565,16.0,25,12,8,page_2_practice,
+w,555.0,565,16.0,25,13,8,page_2_practice,"workshop,"
+o,571.0,565,16.0,25,14,8,page_2_practice,"workshop,"
+r,587.0,565,16.0,25,15,8,page_2_practice,"workshop,"
+k,603.0,565,16.0,25,16,8,page_2_practice,"workshop,"
+s,619.0,565,16.0,25,17,8,page_2_practice,"workshop,"
+h,635.0,565,16.0,25,18,8,page_2_practice,"workshop,"
+o,651.0,565,16.0,25,19,8,page_2_practice,"workshop,"
+p,667.0,565,16.0,25,20,8,page_2_practice,"workshop,"
+",",683.0,565,16.0,25,21,8,page_2_practice,"workshop,"
+ ,699.0,565,16.0,25,22,8,page_2_practice,
+b,715.0,565,16.0,25,23,8,page_2_practice,but
+u,731.0,565,16.0,25,24,8,page_2_practice,but
+t,747.0,565,16.0,25,25,8,page_2_practice,but
+ ,763.0,565,16.0,25,26,8,page_2_practice,
+I,779.0,565,16.0,25,27,8,page_2_practice,I
+ ,795.0,565,16.0,25,28,8,page_2_practice,
+j,811.0,565,16.0,25,29,8,page_2_practice,just
+u,827.0,565,16.0,25,30,8,page_2_practice,just
+s,843.0,565,16.0,25,31,8,page_2_practice,just
+t,859.0,565,16.0,25,32,8,page_2_practice,just
+ ,875.0,565,16.0,25,33,8,page_2_practice,
+c,891.0,565,16.0,25,34,8,page_2_practice,couldn't
+o,907.0,565,16.0,25,35,8,page_2_practice,couldn't
+u,923.0,565,16.0,25,36,8,page_2_practice,couldn't
+l,939.0,565,16.0,25,37,8,page_2_practice,couldn't
+d,955.0,565,16.0,25,38,8,page_2_practice,couldn't
+n,971.0,565,16.0,25,39,8,page_2_practice,couldn't
+',987.0,565,16.0,25,40,8,page_2_practice,couldn't
+t,1003.0,565,16.0,25,41,8,page_2_practice,couldn't
+ ,1019.0,565,16.0,25,42,8,page_2_practice,
+m,1035.0,565,16.0,25,43,8,page_2_practice,miss
+i,1051.0,565,16.0,25,44,8,page_2_practice,miss
+s,1067.0,565,16.0,25,45,8,page_2_practice,miss
+s,1083.0,565,16.0,25,46,8,page_2_practice,miss
+ ,1099.0,565,16.0,25,47,8,page_2_practice,
+y,1115.0,565,16.0,25,48,8,page_2_practice,your
+o,1131.0,565,16.0,25,49,8,page_2_practice,your
+u,1147.0,565,16.0,25,50,8,page_2_practice,your
+r,1163.0,565,16.0,25,51,8,page_2_practice,your
+ ,1179.0,565,16.0,25,52,8,page_2_practice,
+s,1195.0,565,16.0,25,53,8,page_2_practice,"show."""
+h,1211.0,565,16.0,25,54,8,page_2_practice,"show."""
+o,1227.0,565,16.0,25,55,8,page_2_practice,"show."""
+w,1243.0,565,16.0,25,56,8,page_2_practice,"show."""
+.,1259.0,565,16.0,25,57,8,page_2_practice,"show."""
+"""",1275.0,565,16.0,25,58,8,page_2_practice,"show."""
+ ,1291.0,565,16.0,25,59,8,page_2_practice,
+I,1307.0,565,16.0,25,60,8,page_2_practice,I
+ ,1323.0,565,16.0,25,61,8,page_2_practice,
+g,1339.0,565,16.0,25,62,8,page_2_practice,give
+i,1355.0,565,16.0,25,63,8,page_2_practice,give
+v,1371.0,565,16.0,25,64,8,page_2_practice,give
+e,1387.0,565,16.0,25,65,8,page_2_practice,give
+ ,1403.0,565,16.0,25,66,8,page_2_practice,
+h,1419.0,565,16.0,25,67,8,page_2_practice,him
+i,1435.0,565,16.0,25,68,8,page_2_practice,him
+m,1451.0,565,16.0,25,69,8,page_2_practice,him
+ ,1467.0,565,16.0,25,70,8,page_2_practice,
+a,1483.0,565,16.0,25,71,8,page_2_practice,a
+q,347.0,683,16.0,25,0,10,page_2_practice,quick
+u,363.0,683,16.0,25,1,10,page_2_practice,quick
+i,379.0,683,16.0,25,2,10,page_2_practice,quick
+c,395.0,683,16.0,25,3,10,page_2_practice,quick
+k,411.0,683,16.0,25,4,10,page_2_practice,quick
+ ,427.0,683,16.0,25,5,10,page_2_practice,
+h,443.0,683,16.0,25,6,10,page_2_practice,hug
+u,459.0,683,16.0,25,7,10,page_2_practice,hug
+g,475.0,683,16.0,25,8,10,page_2_practice,hug
+ ,491.0,683,16.0,25,9,10,page_2_practice,
+a,507.0,683,16.0,25,10,10,page_2_practice,and
+n,523.0,683,16.0,25,11,10,page_2_practice,and
+d,539.0,683,16.0,25,12,10,page_2_practice,and
+ ,555.0,683,16.0,25,13,10,page_2_practice,
+g,571.0,683,16.0,25,14,10,page_2_practice,go
+o,587.0,683,16.0,25,15,10,page_2_practice,go
+ ,603.0,683,16.0,25,16,10,page_2_practice,
+b,619.0,683,16.0,25,17,10,page_2_practice,back
+a,635.0,683,16.0,25,18,10,page_2_practice,back
+c,651.0,683,16.0,25,19,10,page_2_practice,back
+k,667.0,683,16.0,25,20,10,page_2_practice,back
+ ,683.0,683,16.0,25,21,10,page_2_practice,
+i,699.0,683,16.0,25,22,10,page_2_practice,into
+n,715.0,683,16.0,25,23,10,page_2_practice,into
+t,731.0,683,16.0,25,24,10,page_2_practice,into
+o,747.0,683,16.0,25,25,10,page_2_practice,into
+ ,763.0,683,16.0,25,26,10,page_2_practice,
+t,779.0,683,16.0,25,27,10,page_2_practice,the
+h,795.0,683,16.0,25,28,10,page_2_practice,the
+e,811.0,683,16.0,25,29,10,page_2_practice,the
+ ,827.0,683,16.0,25,30,10,page_2_practice,
+s,843.0,683,16.0,25,31,10,page_2_practice,seating
+e,859.0,683,16.0,25,32,10,page_2_practice,seating
+a,875.0,683,16.0,25,33,10,page_2_practice,seating
+t,891.0,683,16.0,25,34,10,page_2_practice,seating
+i,907.0,683,16.0,25,35,10,page_2_practice,seating
+n,923.0,683,16.0,25,36,10,page_2_practice,seating
+g,939.0,683,16.0,25,37,10,page_2_practice,seating
+ ,955.0,683,16.0,25,38,10,page_2_practice,
+a,971.0,683,16.0,25,39,10,page_2_practice,"area,"
+r,987.0,683,16.0,25,40,10,page_2_practice,"area,"
+e,1003.0,683,16.0,25,41,10,page_2_practice,"area,"
+a,1019.0,683,16.0,25,42,10,page_2_practice,"area,"
+",",1035.0,683,16.0,25,43,10,page_2_practice,"area,"
+ ,1051.0,683,16.0,25,44,10,page_2_practice,
+l,1067.0,683,16.0,25,45,10,page_2_practice,leaving
+e,1083.0,683,16.0,25,46,10,page_2_practice,leaving
+a,1099.0,683,16.0,25,47,10,page_2_practice,leaving
+v,1115.0,683,16.0,25,48,10,page_2_practice,leaving
+i,1131.0,683,16.0,25,49,10,page_2_practice,leaving
+n,1147.0,683,16.0,25,50,10,page_2_practice,leaving
+g,1163.0,683,16.0,25,51,10,page_2_practice,leaving
+ ,1179.0,683,16.0,25,52,10,page_2_practice,
+h,1195.0,683,16.0,25,53,10,page_2_practice,him
+i,1211.0,683,16.0,25,54,10,page_2_practice,him
+m,1227.0,683,16.0,25,55,10,page_2_practice,him
+ ,1243.0,683,16.0,25,56,10,page_2_practice,
+w,1259.0,683,16.0,25,57,10,page_2_practice,with
+i,1275.0,683,16.0,25,58,10,page_2_practice,with
+t,1291.0,683,16.0,25,59,10,page_2_practice,with
+h,1307.0,683,16.0,25,60,10,page_2_practice,with
+ ,1323.0,683,16.0,25,61,10,page_2_practice,
+a,1339.0,683,16.0,25,62,10,page_2_practice,a
+ ,1355.0,683,16.0,25,63,10,page_2_practice,
+s,1371.0,683,16.0,25,64,10,page_2_practice,startled
+t,1387.0,683,16.0,25,65,10,page_2_practice,startled
+a,1403.0,683,16.0,25,66,10,page_2_practice,startled
+r,1419.0,683,16.0,25,67,10,page_2_practice,startled
+t,1435.0,683,16.0,25,68,10,page_2_practice,startled
+l,1451.0,683,16.0,25,69,10,page_2_practice,startled
+e,1467.0,683,16.0,25,70,10,page_2_practice,startled
+d,1483.0,683,16.0,25,71,10,page_2_practice,startled
+s,347.0,801,16.0,25,0,12,page_2_practice,smile.
+m,363.0,801,16.0,25,1,12,page_2_practice,smile.
+i,379.0,801,16.0,25,2,12,page_2_practice,smile.
+l,395.0,801,16.0,25,3,12,page_2_practice,smile.
+e,411.0,801,16.0,25,4,12,page_2_practice,smile.
+.,427.0,801,16.0,25,5,12,page_2_practice,smile.
+ ,443.0,801,16.0,25,6,12,page_2_practice,
+I,459.0,801,16.0,25,7,12,page_2_practice,I
+ ,475.0,801,16.0,25,8,12,page_2_practice,
+s,491.0,801,16.0,25,9,12,page_2_practice,settle
+e,507.0,801,16.0,25,10,12,page_2_practice,settle
+t,523.0,801,16.0,25,11,12,page_2_practice,settle
+t,539.0,801,16.0,25,12,12,page_2_practice,settle
+l,555.0,801,16.0,25,13,12,page_2_practice,settle
+e,571.0,801,16.0,25,14,12,page_2_practice,settle
+ ,587.0,801,16.0,25,15,12,page_2_practice,
+d,603.0,801,16.0,25,16,12,page_2_practice,down
+o,619.0,801,16.0,25,17,12,page_2_practice,down
+w,635.0,801,16.0,25,18,12,page_2_practice,down
+n,651.0,801,16.0,25,19,12,page_2_practice,down
+ ,667.0,801,16.0,25,20,12,page_2_practice,
+i,683.0,801,16.0,25,21,12,page_2_practice,in
+n,699.0,801,16.0,25,22,12,page_2_practice,in
+ ,715.0,801,16.0,25,23,12,page_2_practice,
+t,731.0,801,16.0,25,24,12,page_2_practice,the
+h,747.0,801,16.0,25,25,12,page_2_practice,the
+e,763.0,801,16.0,25,26,12,page_2_practice,the
+ ,779.0,801,16.0,25,27,12,page_2_practice,
+d,795.0,801,16.0,25,28,12,page_2_practice,"darkness,"
+a,811.0,801,16.0,25,29,12,page_2_practice,"darkness,"
+r,827.0,801,16.0,25,30,12,page_2_practice,"darkness,"
+k,843.0,801,16.0,25,31,12,page_2_practice,"darkness,"
+n,859.0,801,16.0,25,32,12,page_2_practice,"darkness,"
+e,875.0,801,16.0,25,33,12,page_2_practice,"darkness,"
+s,891.0,801,16.0,25,34,12,page_2_practice,"darkness,"
+s,907.0,801,16.0,25,35,12,page_2_practice,"darkness,"
+",",923.0,801,16.0,25,36,12,page_2_practice,"darkness,"
+ ,939.0,801,16.0,25,37,12,page_2_practice,
+a,955.0,801,16.0,25,38,12,page_2_practice,and
+n,971.0,801,16.0,25,39,12,page_2_practice,and
+d,987.0,801,16.0,25,40,12,page_2_practice,and
+ ,1003.0,801,16.0,25,41,12,page_2_practice,
+t,1019.0,801,16.0,25,42,12,page_2_practice,the
+h,1035.0,801,16.0,25,43,12,page_2_practice,the
+e,1051.0,801,16.0,25,44,12,page_2_practice,the
+ ,1067.0,801,16.0,25,45,12,page_2_practice,
+c,1083.0,801,16.0,25,46,12,page_2_practice,curtains
+u,1099.0,801,16.0,25,47,12,page_2_practice,curtains
+r,1115.0,801,16.0,25,48,12,page_2_practice,curtains
+t,1131.0,801,16.0,25,49,12,page_2_practice,curtains
+a,1147.0,801,16.0,25,50,12,page_2_practice,curtains
+i,1163.0,801,16.0,25,51,12,page_2_practice,curtains
+n,1179.0,801,16.0,25,52,12,page_2_practice,curtains
+s,1195.0,801,16.0,25,53,12,page_2_practice,curtains
+ ,1211.0,801,16.0,25,54,12,page_2_practice,
+o,1227.0,801,16.0,25,55,12,page_2_practice,open.
+p,1243.0,801,16.0,25,56,12,page_2_practice,open.
+e,1259.0,801,16.0,25,57,12,page_2_practice,open.
+n,1275.0,801,16.0,25,58,12,page_2_practice,open.
+.,1291.0,801,16.0,25,59,12,page_2_practice,open.
+ ,1307.0,801,16.0,25,60,12,page_2_practice,
+M,1323.0,801,16.0,25,61,12,page_2_practice,"Magically,"
+a,1339.0,801,16.0,25,62,12,page_2_practice,"Magically,"
+g,1355.0,801,16.0,25,63,12,page_2_practice,"Magically,"
+i,1371.0,801,16.0,25,64,12,page_2_practice,"Magically,"
+c,1387.0,801,16.0,25,65,12,page_2_practice,"Magically,"
+a,1403.0,801,16.0,25,66,12,page_2_practice,"Magically,"
+l,1419.0,801,16.0,25,67,12,page_2_practice,"Magically,"
+l,1435.0,801,16.0,25,68,12,page_2_practice,"Magically,"
+y,1451.0,801,16.0,25,69,12,page_2_practice,"Magically,"
+",",1467.0,801,16.0,25,70,12,page_2_practice,"Magically,"
+ ,1483.0,801,16.0,25,71,12,page_2_practice,
+t,1499.0,801,16.0,25,72,12,page_2_practice,that
+h,1515.0,801,16.0,25,73,12,page_2_practice,that
+a,1531.0,801,16.0,25,74,12,page_2_practice,that
+t,1547.0,801,16.0,25,75,12,page_2_practice,that
+s,347.0,919,16.0,25,0,14,page_2_practice,show
+h,363.0,919,16.0,25,1,14,page_2_practice,show
+o,379.0,919,16.0,25,2,14,page_2_practice,show
+w,395.0,919,16.0,25,3,14,page_2_practice,show
+ ,411.0,919,16.0,25,4,14,page_2_practice,
+r,427.0,919,16.0,25,5,14,page_2_practice,remains
+e,443.0,919,16.0,25,6,14,page_2_practice,remains
+m,459.0,919,16.0,25,7,14,page_2_practice,remains
+a,475.0,919,16.0,25,8,14,page_2_practice,remains
+i,491.0,919,16.0,25,9,14,page_2_practice,remains
+n,507.0,919,16.0,25,10,14,page_2_practice,remains
+s,523.0,919,16.0,25,11,14,page_2_practice,remains
+ ,539.0,919,16.0,25,12,14,page_2_practice,
+t,555.0,919,16.0,25,13,14,page_2_practice,the
+h,571.0,919,16.0,25,14,14,page_2_practice,the
+e,587.0,919,16.0,25,15,14,page_2_practice,the
+ ,603.0,919,16.0,25,16,14,page_2_practice,
+G,619.0,919,16.0,25,17,14,page_2_practice,Great
+r,635.0,919,16.0,25,18,14,page_2_practice,Great
+e,651.0,919,16.0,25,19,14,page_2_practice,Great
+a,667.0,919,16.0,25,20,14,page_2_practice,Great
+t,683.0,919,16.0,25,21,14,page_2_practice,Great
+ ,699.0,919,16.0,25,22,14,page_2_practice,
+J,715.0,919,16.0,25,23,14,page_2_practice,Jason's
+a,731.0,919,16.0,25,24,14,page_2_practice,Jason's
+s,747.0,919,16.0,25,25,14,page_2_practice,Jason's
+o,763.0,919,16.0,25,26,14,page_2_practice,Jason's
+n,779.0,919,16.0,25,27,14,page_2_practice,Jason's
+',795.0,919,16.0,25,28,14,page_2_practice,Jason's
+s,811.0,919,16.0,25,29,14,page_2_practice,Jason's
+ ,827.0,919,16.0,25,30,14,page_2_practice,
+b,843.0,919,16.0,25,31,14,page_2_practice,best
+e,859.0,919,16.0,25,32,14,page_2_practice,best
+s,875.0,919,16.0,25,33,14,page_2_practice,best
+t,891.0,919,16.0,25,34,14,page_2_practice,best
+ ,907.0,919,16.0,25,35,14,page_2_practice,
+p,923.0,919,16.0,25,36,14,page_2_practice,performance
+e,939.0,919,16.0,25,37,14,page_2_practice,performance
+r,955.0,919,16.0,25,38,14,page_2_practice,performance
+f,971.0,919,16.0,25,39,14,page_2_practice,performance
+o,987.0,919,16.0,25,40,14,page_2_practice,performance
+r,1003.0,919,16.0,25,41,14,page_2_practice,performance
+m,1019.0,919,16.0,25,42,14,page_2_practice,performance
+a,1035.0,919,16.0,25,43,14,page_2_practice,performance
+n,1051.0,919,16.0,25,44,14,page_2_practice,performance
+c,1067.0,919,16.0,25,45,14,page_2_practice,performance
+e,1083.0,919,16.0,25,46,14,page_2_practice,performance
+ ,1099.0,919,16.0,25,47,14,page_2_practice,
+t,1115.0,919,16.0,25,48,14,page_2_practice,to
+o,1131.0,919,16.0,25,49,14,page_2_practice,to
+ ,1147.0,919,16.0,25,50,14,page_2_practice,
+t,1163.0,919,16.0,25,51,14,page_2_practice,this
+h,1179.0,919,16.0,25,52,14,page_2_practice,this
+i,1195.0,919,16.0,25,53,14,page_2_practice,this
+s,1211.0,919,16.0,25,54,14,page_2_practice,this
+ ,1227.0,919,16.0,25,55,14,page_2_practice,
+d,1243.0,919,16.0,25,56,14,page_2_practice,day.
+a,1259.0,919,16.0,25,57,14,page_2_practice,day.
+y,1275.0,919,16.0,25,58,14,page_2_practice,day.
+.,1291.0,919,16.0,25,59,14,page_2_practice,day.

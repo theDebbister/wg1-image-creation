@@ -17,7 +17,8 @@ for m in get_monitors():
 
 def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice=False):
     # Read the TSV file
-    initial_df = pd.read_excel(stimuli_file_name, nrows=12)
+    num = image_config.NUM_STIMULI if not practice else image_config.NUM_PRACTICE_STIMULI
+    initial_df = pd.read_excel(stimuli_file_name, nrows=num)
 
     if not os.path.isdir(image_dir):
         os.mkdir(image_dir)
@@ -30,8 +31,6 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
     stimulus_images = {}
     draw_aoi = False
-
-    create_fixation_screen()
 
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df),
                                desc=f'Creating {image_config.LANGUAGE} images'):
@@ -552,7 +551,7 @@ def create_final_screen(image: Image, text: str):
 
 
 def create_other_screens():
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=10)
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=image_config.NUM_OTHER_SCREENS)
 
     if not os.path.isdir(image_config.OTHER_SCREENS_DIR):
         os.mkdir(image_config.OTHER_SCREENS_DIR)
@@ -560,7 +559,9 @@ def create_other_screens():
     file_names = []
     file_paths = []
 
-    for idx, row in other_screen_df.iterrows():
+    for idx, row in tqdm(other_screen_df.iterrows(),
+                         desc=f'Creating other screens {image_config.LANGUAGE}:',
+                         total=len(other_screen_df)):
 
         final_image = Image.new(
             'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
@@ -594,6 +595,6 @@ def create_other_screens():
 
 
 if __name__ == '__main__':
-    # create_stimuli_images()
-    # create_practice_images()
+    create_stimuli_images()
+    create_practice_images()
     create_other_screens()

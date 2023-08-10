@@ -1,964 +1,958 @@
 char,x,y,width,height,char_idx_in_line,line_idx,page,word
-I,-155.0,-212,13.0,17,0,0,page_1_practice,Introduction
-n,-142.0,-212,13.0,17,1,0,page_1_practice,Introduction
-t,-129.0,-212,13.0,17,2,0,page_1_practice,Introduction
-r,-116.0,-212,13.0,17,3,0,page_1_practice,Introduction
-o,-103.0,-212,13.0,17,4,0,page_1_practice,Introduction
-d,-90.0,-212,13.0,17,5,0,page_1_practice,Introduction
-u,-77.0,-212,13.0,17,6,0,page_1_practice,Introduction
-c,-64.0,-212,13.0,17,7,0,page_1_practice,Introduction
-t,-51.0,-212,13.0,17,8,0,page_1_practice,Introduction
-i,-38.0,-212,13.0,17,9,0,page_1_practice,Introduction
-o,-25.0,-212,13.0,17,10,0,page_1_practice,Introduction
-n,-12.0,-212,13.0,17,11,0,page_1_practice,Introduction
-E,-155.0,-143,13.0,22,0,0,page_1_practice,Endgaget
-n,-142.0,-143,13.0,22,1,0,page_1_practice,Endgaget
-d,-129.0,-143,13.0,22,2,0,page_1_practice,Endgaget
-g,-116.0,-143,13.0,22,3,0,page_1_practice,Endgaget
-a,-103.0,-143,13.0,22,4,0,page_1_practice,Endgaget
-g,-90.0,-143,13.0,22,5,0,page_1_practice,Endgaget
-e,-77.0,-143,13.0,22,6,0,page_1_practice,Endgaget
-t,-64.0,-143,13.0,22,7,0,page_1_practice,Endgaget
- ,-51.0,-143,13.0,22,8,0,page_1_practice,
-b,-38.0,-143,13.0,22,9,0,page_1_practice,blog
-l,-25.0,-143,13.0,22,10,0,page_1_practice,blog
-o,-12.0,-143,13.0,22,11,0,page_1_practice,blog
-g,1.0,-143,13.0,22,12,0,page_1_practice,blog
- ,14.0,-143,13.0,22,13,0,page_1_practice,
--,27.0,-143,13.0,22,14,0,page_1_practice,-
- ,40.0,-143,13.0,22,15,0,page_1_practice,
-d,53.0,-143,13.0,22,16,0,page_1_practice,descritpion
-e,66.0,-143,13.0,22,17,0,page_1_practice,descritpion
-s,79.0,-143,13.0,22,18,0,page_1_practice,descritpion
-c,92.0,-143,13.0,22,19,0,page_1_practice,descritpion
-r,105.0,-143,13.0,22,20,0,page_1_practice,descritpion
-i,118.0,-143,13.0,22,21,0,page_1_practice,descritpion
-t,131.0,-143,13.0,22,22,0,page_1_practice,descritpion
-p,144.0,-143,13.0,22,23,0,page_1_practice,descritpion
-i,157.0,-143,13.0,22,24,0,page_1_practice,descritpion
-o,170.0,-143,13.0,22,25,0,page_1_practice,descritpion
-n,183.0,-143,13.0,22,26,0,page_1_practice,descritpion
- ,196.0,-143,13.0,22,27,0,page_1_practice,
-f,209.0,-143,13.0,22,28,0,page_1_practice,from
-r,222.0,-143,13.0,22,29,0,page_1_practice,from
-o,235.0,-143,13.0,22,30,0,page_1_practice,from
-m,248.0,-143,13.0,22,31,0,page_1_practice,from
- ,261.0,-143,13.0,22,32,0,page_1_practice,
-h,274.0,-143,13.0,22,33,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-t,287.0,-143,13.0,22,34,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-t,300.0,-143,13.0,22,35,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-p,313.0,-143,13.0,22,36,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-s,326.0,-143,13.0,22,37,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-:,339.0,-143,13.0,22,38,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-/,352.0,-143,13.0,22,39,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-/,365.0,-143,13.0,22,40,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-w,378.0,-143,13.0,22,41,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-w,391.0,-143,13.0,22,42,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-w,404.0,-143,13.0,22,43,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-.,417.0,-143,13.0,22,44,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-h,430.0,-143,13.0,22,45,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-o,443.0,-143,13.0,22,46,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-s,456.0,-143,13.0,22,47,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-t,469.0,-143,13.0,22,48,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-i,482.0,-143,13.0,22,49,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-n,495.0,-143,13.0,22,50,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-g,508.0,-143,13.0,22,51,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-e,521.0,-143,13.0,22,52,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-r,534.0,-143,13.0,22,53,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-.,547.0,-143,13.0,22,54,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-c,560.0,-143,13.0,22,55,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-o,573.0,-143,13.0,22,56,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-m,586.0,-143,13.0,22,57,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-/,599.0,-143,13.0,22,58,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-t,612.0,-143,13.0,22,59,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-u,625.0,-143,13.0,22,60,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-t,638.0,-143,13.0,22,61,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-o,651.0,-143,13.0,22,62,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-r,664.0,-143,13.0,22,63,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-i,677.0,-143,13.0,22,64,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-a,690.0,-143,13.0,22,65,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-l,703.0,-143,13.0,22,66,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-s,716.0,-143,13.0,22,67,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-/,729.0,-143,13.0,22,68,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-b,742.0,-143,13.0,22,69,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-l,755.0,-143,13.0,22,70,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-o,768.0,-143,13.0,22,71,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-g,781.0,-143,13.0,22,72,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
--,794.0,-143,13.0,22,73,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-e,807.0,-143,13.0,22,74,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-x,820.0,-143,13.0,22,75,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-a,833.0,-143,13.0,22,76,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-m,846.0,-143,13.0,22,77,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-p,859.0,-143,13.0,22,78,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-l,872.0,-143,13.0,22,79,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-e,885.0,-143,13.0,22,80,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-s,898.0,-143,13.0,22,81,0,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
-M,-155.0,-69,13.0,21,0,0,page_1_practice,Main
-a,-142.0,-69,13.0,21,1,0,page_1_practice,Main
-i,-129.0,-69,13.0,21,2,0,page_1_practice,Main
-n,-116.0,-69,13.0,21,3,0,page_1_practice,Main
- ,-103.0,-69,13.0,21,4,0,page_1_practice,
-t,-90.0,-69,13.0,21,5,0,page_1_practice,topics:
-o,-77.0,-69,13.0,21,6,0,page_1_practice,topics:
-p,-64.0,-69,13.0,21,7,0,page_1_practice,topics:
-i,-51.0,-69,13.0,21,8,0,page_1_practice,topics:
-c,-38.0,-69,13.0,21,9,0,page_1_practice,topics:
-s,-25.0,-69,13.0,21,10,0,page_1_practice,topics:
-:,-12.0,-69,13.0,21,11,0,page_1_practice,topics:
- ,1.0,-69,13.0,21,12,0,page_1_practice,
-t,14.0,-69,13.0,21,13,0,page_1_practice,"technology,"
-e,27.0,-69,13.0,21,14,0,page_1_practice,"technology,"
-c,40.0,-69,13.0,21,15,0,page_1_practice,"technology,"
-h,53.0,-69,13.0,21,16,0,page_1_practice,"technology,"
-n,66.0,-69,13.0,21,17,0,page_1_practice,"technology,"
-o,79.0,-69,13.0,21,18,0,page_1_practice,"technology,"
-l,92.0,-69,13.0,21,19,0,page_1_practice,"technology,"
-o,105.0,-69,13.0,21,20,0,page_1_practice,"technology,"
-g,118.0,-69,13.0,21,21,0,page_1_practice,"technology,"
-y,131.0,-69,13.0,21,22,0,page_1_practice,"technology,"
-",",144.0,-69,13.0,21,23,0,page_1_practice,"technology,"
- ,157.0,-69,13.0,21,24,0,page_1_practice,
-g,170.0,-69,13.0,21,25,0,page_1_practice,"gadgets,"
-a,183.0,-69,13.0,21,26,0,page_1_practice,"gadgets,"
-d,196.0,-69,13.0,21,27,0,page_1_practice,"gadgets,"
-g,209.0,-69,13.0,21,28,0,page_1_practice,"gadgets,"
-e,222.0,-69,13.0,21,29,0,page_1_practice,"gadgets,"
-t,235.0,-69,13.0,21,30,0,page_1_practice,"gadgets,"
-s,248.0,-69,13.0,21,31,0,page_1_practice,"gadgets,"
-",",261.0,-69,13.0,21,32,0,page_1_practice,"gadgets,"
- ,274.0,-69,13.0,21,33,0,page_1_practice,
-c,287.0,-69,13.0,21,34,0,page_1_practice,consumer
-o,300.0,-69,13.0,21,35,0,page_1_practice,consumer
-n,313.0,-69,13.0,21,36,0,page_1_practice,consumer
-s,326.0,-69,13.0,21,37,0,page_1_practice,consumer
-u,339.0,-69,13.0,21,38,0,page_1_practice,consumer
-m,352.0,-69,13.0,21,39,0,page_1_practice,consumer
-e,365.0,-69,13.0,21,40,0,page_1_practice,consumer
-r,378.0,-69,13.0,21,41,0,page_1_practice,consumer
- ,391.0,-69,13.0,21,42,0,page_1_practice,
-e,404.0,-69,13.0,21,43,0,page_1_practice,electronics
-l,417.0,-69,13.0,21,44,0,page_1_practice,electronics
-e,430.0,-69,13.0,21,45,0,page_1_practice,electronics
-c,443.0,-69,13.0,21,46,0,page_1_practice,electronics
-t,456.0,-69,13.0,21,47,0,page_1_practice,electronics
-r,469.0,-69,13.0,21,48,0,page_1_practice,electronics
-o,482.0,-69,13.0,21,49,0,page_1_practice,electronics
-n,495.0,-69,13.0,21,50,0,page_1_practice,electronics
-i,508.0,-69,13.0,21,51,0,page_1_practice,electronics
-c,521.0,-69,13.0,21,52,0,page_1_practice,electronics
-s,534.0,-69,13.0,21,53,0,page_1_practice,electronics
-C,-155.0,4,13.0,21,0,0,page_1_practice,Created
-r,-142.0,4,13.0,21,1,0,page_1_practice,Created
-e,-129.0,4,13.0,21,2,0,page_1_practice,Created
-a,-116.0,4,13.0,21,3,0,page_1_practice,Created
-t,-103.0,4,13.0,21,4,0,page_1_practice,Created
-e,-90.0,4,13.0,21,5,0,page_1_practice,Created
-d,-77.0,4,13.0,21,6,0,page_1_practice,Created
- ,-64.0,4,13.0,21,7,0,page_1_practice,
-o,-51.0,4,13.0,21,8,0,page_1_practice,on:
-n,-38.0,4,13.0,21,9,0,page_1_practice,on:
-:,-25.0,4,13.0,21,10,0,page_1_practice,on:
- ,-12.0,4,13.0,21,11,0,page_1_practice,
-p,1.0,4,13.0,21,12,0,page_1_practice,proprietary
-r,14.0,4,13.0,21,13,0,page_1_practice,proprietary
-o,27.0,4,13.0,21,14,0,page_1_practice,proprietary
-p,40.0,4,13.0,21,15,0,page_1_practice,proprietary
-r,53.0,4,13.0,21,16,0,page_1_practice,proprietary
-i,66.0,4,13.0,21,17,0,page_1_practice,proprietary
-e,79.0,4,13.0,21,18,0,page_1_practice,proprietary
-t,92.0,4,13.0,21,19,0,page_1_practice,proprietary
-a,105.0,4,13.0,21,20,0,page_1_practice,proprietary
-r,118.0,4,13.0,21,21,0,page_1_practice,proprietary
-y,131.0,4,13.0,21,22,0,page_1_practice,proprietary
- ,144.0,4,13.0,21,23,0,page_1_practice,
-A,157.0,4,13.0,21,24,0,page_1_practice,AOL
-O,170.0,4,13.0,21,25,0,page_1_practice,AOL
-L,183.0,4,13.0,21,26,0,page_1_practice,AOL
- ,196.0,4,13.0,21,27,0,page_1_practice,
-C,209.0,4,13.0,21,28,0,page_1_practice,CMS
-M,222.0,4,13.0,21,29,0,page_1_practice,CMS
-S,235.0,4,13.0,21,30,0,page_1_practice,CMS
-L,-155.0,77,13.0,21,0,0,page_1_practice,Launched
-a,-142.0,77,13.0,21,1,0,page_1_practice,Launched
-u,-129.0,77,13.0,21,2,0,page_1_practice,Launched
-n,-116.0,77,13.0,21,3,0,page_1_practice,Launched
-c,-103.0,77,13.0,21,4,0,page_1_practice,Launched
-h,-90.0,77,13.0,21,5,0,page_1_practice,Launched
-e,-77.0,77,13.0,21,6,0,page_1_practice,Launched
-d,-64.0,77,13.0,21,7,0,page_1_practice,Launched
- ,-51.0,77,13.0,21,8,0,page_1_practice,
-b,-38.0,77,13.0,21,9,0,page_1_practice,by
-y,-25.0,77,13.0,21,10,0,page_1_practice,by
- ,-12.0,77,13.0,21,11,0,page_1_practice,
-P,1.0,77,13.0,21,12,0,page_1_practice,Peter
-e,14.0,77,13.0,21,13,0,page_1_practice,Peter
-t,27.0,77,13.0,21,14,0,page_1_practice,Peter
-e,40.0,77,13.0,21,15,0,page_1_practice,Peter
-r,53.0,77,13.0,21,16,0,page_1_practice,Peter
- ,66.0,77,13.0,21,17,0,page_1_practice,
-R,79.0,77,13.0,21,18,0,page_1_practice,"Rojas,"
-o,92.0,77,13.0,21,19,0,page_1_practice,"Rojas,"
-j,105.0,77,13.0,21,20,0,page_1_practice,"Rojas,"
-a,118.0,77,13.0,21,21,0,page_1_practice,"Rojas,"
-s,131.0,77,13.0,21,22,0,page_1_practice,"Rojas,"
-",",144.0,77,13.0,21,23,0,page_1_practice,"Rojas,"
- ,157.0,77,13.0,21,24,0,page_1_practice,
-E,170.0,77,13.0,21,25,0,page_1_practice,Engadget
-n,183.0,77,13.0,21,26,0,page_1_practice,Engadget
-g,196.0,77,13.0,21,27,0,page_1_practice,Engadget
-a,209.0,77,13.0,21,28,0,page_1_practice,Engadget
-d,222.0,77,13.0,21,29,0,page_1_practice,Engadget
-g,235.0,77,13.0,21,30,0,page_1_practice,Engadget
-e,248.0,77,13.0,21,31,0,page_1_practice,Engadget
-t,261.0,77,13.0,21,32,0,page_1_practice,Engadget
- ,274.0,77,13.0,21,33,0,page_1_practice,
-i,287.0,77,13.0,21,34,0,page_1_practice,is
-s,300.0,77,13.0,21,35,0,page_1_practice,is
- ,313.0,77,13.0,21,36,0,page_1_practice,
-a,326.0,77,13.0,21,37,0,page_1_practice,a
- ,339.0,77,13.0,21,38,0,page_1_practice,
-t,352.0,77,13.0,21,39,0,page_1_practice,technology
-e,365.0,77,13.0,21,40,0,page_1_practice,technology
-c,378.0,77,13.0,21,41,0,page_1_practice,technology
-h,391.0,77,13.0,21,42,0,page_1_practice,technology
-n,404.0,77,13.0,21,43,0,page_1_practice,technology
-o,417.0,77,13.0,21,44,0,page_1_practice,technology
-l,430.0,77,13.0,21,45,0,page_1_practice,technology
-o,443.0,77,13.0,21,46,0,page_1_practice,technology
-g,456.0,77,13.0,21,47,0,page_1_practice,technology
-y,469.0,77,13.0,21,48,0,page_1_practice,technology
- ,482.0,77,13.0,21,49,0,page_1_practice,
-b,495.0,77,13.0,21,50,0,page_1_practice,blog
-l,508.0,77,13.0,21,51,0,page_1_practice,blog
-o,521.0,77,13.0,21,52,0,page_1_practice,blog
-g,534.0,77,13.0,21,53,0,page_1_practice,blog
- ,547.0,77,13.0,21,54,0,page_1_practice,
-p,560.0,77,13.0,21,55,0,page_1_practice,providing
-r,573.0,77,13.0,21,56,0,page_1_practice,providing
-o,586.0,77,13.0,21,57,0,page_1_practice,providing
-v,599.0,77,13.0,21,58,0,page_1_practice,providing
-i,612.0,77,13.0,21,59,0,page_1_practice,providing
-d,625.0,77,13.0,21,60,0,page_1_practice,providing
-i,638.0,77,13.0,21,61,0,page_1_practice,providing
-n,651.0,77,13.0,21,62,0,page_1_practice,providing
-g,664.0,77,13.0,21,63,0,page_1_practice,providing
- ,677.0,77,13.0,21,64,0,page_1_practice,
-r,690.0,77,13.0,21,65,0,page_1_practice,reviews
-e,703.0,77,13.0,21,66,0,page_1_practice,reviews
-v,716.0,77,13.0,21,67,0,page_1_practice,reviews
-i,729.0,77,13.0,21,68,0,page_1_practice,reviews
-e,742.0,77,13.0,21,69,0,page_1_practice,reviews
-w,755.0,77,13.0,21,70,0,page_1_practice,reviews
-s,768.0,77,13.0,21,71,0,page_1_practice,reviews
- ,781.0,77,13.0,21,72,0,page_1_practice,
-o,794.0,77,13.0,21,73,0,page_1_practice,of
-f,807.0,77,13.0,21,74,0,page_1_practice,of
- ,820.0,77,13.0,21,75,0,page_1_practice,
-g,833.0,77,13.0,21,76,0,page_1_practice,gadgets
-a,846.0,77,13.0,21,77,0,page_1_practice,gadgets
-d,859.0,77,13.0,21,78,0,page_1_practice,gadgets
-g,872.0,77,13.0,21,79,0,page_1_practice,gadgets
-e,885.0,77,13.0,21,80,0,page_1_practice,gadgets
-t,898.0,77,13.0,21,81,0,page_1_practice,gadgets
-s,911.0,77,13.0,21,82,0,page_1_practice,gadgets
- ,924.0,77,13.0,21,83,0,page_1_practice,
-a,937.0,77,13.0,21,84,0,page_1_practice,and
-n,950.0,77,13.0,21,85,0,page_1_practice,and
-d,963.0,77,13.0,21,86,0,page_1_practice,and
- ,976.0,77,13.0,21,87,0,page_1_practice,
-c,989.0,77,13.0,21,88,0,page_1_practice,consumer
-o,1002.0,77,13.0,21,89,0,page_1_practice,consumer
-n,1015.0,77,13.0,21,90,0,page_1_practice,consumer
-s,1028.0,77,13.0,21,91,0,page_1_practice,consumer
-u,1041.0,77,13.0,21,92,0,page_1_practice,consumer
-m,1054.0,77,13.0,21,93,0,page_1_practice,consumer
-e,1067.0,77,13.0,21,94,0,page_1_practice,consumer
-r,1080.0,77,13.0,21,95,0,page_1_practice,consumer
- ,1093.0,77,13.0,21,96,0,page_1_practice,
-e,1106.0,77,13.0,21,97,0,page_1_practice,electronics
-l,1119.0,77,13.0,21,98,0,page_1_practice,electronics
-e,1132.0,77,13.0,21,99,0,page_1_practice,electronics
-c,1145.0,77,13.0,21,100,0,page_1_practice,electronics
-t,1158.0,77,13.0,21,101,0,page_1_practice,electronics
-r,1171.0,77,13.0,21,102,0,page_1_practice,electronics
-o,1184.0,77,13.0,21,103,0,page_1_practice,electronics
-n,1197.0,77,13.0,21,104,0,page_1_practice,electronics
-i,1210.0,77,13.0,21,105,0,page_1_practice,electronics
-c,1223.0,77,13.0,21,106,0,page_1_practice,electronics
-s,1236.0,77,13.0,21,107,0,page_1_practice,electronics
- ,1249.0,77,13.0,21,108,0,page_1_practice,
-a,1262.0,77,13.0,21,109,0,page_1_practice,as
-s,1275.0,77,13.0,21,110,0,page_1_practice,as
- ,1288.0,77,13.0,21,111,0,page_1_practice,
-w,1301.0,77,13.0,21,112,0,page_1_practice,well
-e,1314.0,77,13.0,21,113,0,page_1_practice,well
-l,1327.0,77,13.0,21,114,0,page_1_practice,well
-l,1340.0,77,13.0,21,115,0,page_1_practice,well
- ,1353.0,77,13.0,21,116,0,page_1_practice,
-a,1366.0,77,13.0,21,117,0,page_1_practice,as
-s,1379.0,77,13.0,21,118,0,page_1_practice,as
- ,1392.0,77,13.0,21,119,0,page_1_practice,
-t,1405.0,77,13.0,21,120,0,page_1_practice,the
-h,1418.0,77,13.0,21,121,0,page_1_practice,the
-e,1431.0,77,13.0,21,122,0,page_1_practice,the
- ,1444.0,77,13.0,21,123,0,page_1_practice,
-l,1457.0,77,13.0,21,124,0,page_1_practice,latest
-a,1470.0,77,13.0,21,125,0,page_1_practice,latest
-t,1483.0,77,13.0,21,126,0,page_1_practice,latest
-e,1496.0,77,13.0,21,127,0,page_1_practice,latest
-s,1509.0,77,13.0,21,128,0,page_1_practice,latest
-t,1522.0,77,13.0,21,129,0,page_1_practice,latest
-n,-155.0,150,13.0,17,0,2,page_1_practice,news
-e,-142.0,150,13.0,17,1,2,page_1_practice,news
-w,-129.0,150,13.0,17,2,2,page_1_practice,news
-s,-116.0,150,13.0,17,3,2,page_1_practice,news
- ,-103.0,150,13.0,17,4,2,page_1_practice,
-i,-90.0,150,13.0,17,5,2,page_1_practice,in
-n,-77.0,150,13.0,17,6,2,page_1_practice,in
- ,-64.0,150,13.0,17,7,2,page_1_practice,
-t,-51.0,150,13.0,17,8,2,page_1_practice,the
-h,-38.0,150,13.0,17,9,2,page_1_practice,the
-e,-25.0,150,13.0,17,10,2,page_1_practice,the
- ,-12.0,150,13.0,17,11,2,page_1_practice,
-t,1.0,150,13.0,17,12,2,page_1_practice,tech
-e,14.0,150,13.0,17,13,2,page_1_practice,tech
-c,27.0,150,13.0,17,14,2,page_1_practice,tech
-h,40.0,150,13.0,17,15,2,page_1_practice,tech
- ,53.0,150,13.0,17,16,2,page_1_practice,
-w,66.0,150,13.0,17,17,2,page_1_practice,world.
-o,79.0,150,13.0,17,18,2,page_1_practice,world.
-r,92.0,150,13.0,17,19,2,page_1_practice,world.
-l,105.0,150,13.0,17,20,2,page_1_practice,world.
-d,118.0,150,13.0,17,21,2,page_1_practice,world.
-.,131.0,150,13.0,17,22,2,page_1_practice,world.
-I,-155.0,219,13.0,21,0,0,page_1_practice,It
-t,-142.0,219,13.0,21,1,0,page_1_practice,It
- ,-129.0,219,13.0,21,2,0,page_1_practice,
-a,-116.0,219,13.0,21,3,0,page_1_practice,also
-l,-103.0,219,13.0,21,4,0,page_1_practice,also
-s,-90.0,219,13.0,21,5,0,page_1_practice,also
-o,-77.0,219,13.0,21,6,0,page_1_practice,also
- ,-64.0,219,13.0,21,7,0,page_1_practice,
-s,-51.0,219,13.0,21,8,0,page_1_practice,showcases
-h,-38.0,219,13.0,21,9,0,page_1_practice,showcases
-o,-25.0,219,13.0,21,10,0,page_1_practice,showcases
-w,-12.0,219,13.0,21,11,0,page_1_practice,showcases
-c,1.0,219,13.0,21,12,0,page_1_practice,showcases
-a,14.0,219,13.0,21,13,0,page_1_practice,showcases
-s,27.0,219,13.0,21,14,0,page_1_practice,showcases
-e,40.0,219,13.0,21,15,0,page_1_practice,showcases
-s,53.0,219,13.0,21,16,0,page_1_practice,showcases
- ,66.0,219,13.0,21,17,0,page_1_practice,
-t,79.0,219,13.0,21,18,0,page_1_practice,the
-h,92.0,219,13.0,21,19,0,page_1_practice,the
-e,105.0,219,13.0,21,20,0,page_1_practice,the
- ,118.0,219,13.0,21,21,0,page_1_practice,
-b,131.0,219,13.0,21,22,0,page_1_practice,best
-e,144.0,219,13.0,21,23,0,page_1_practice,best
-s,157.0,219,13.0,21,24,0,page_1_practice,best
-t,170.0,219,13.0,21,25,0,page_1_practice,best
- ,183.0,219,13.0,21,26,0,page_1_practice,
-t,196.0,219,13.0,21,27,0,page_1_practice,tech
-e,209.0,219,13.0,21,28,0,page_1_practice,tech
-c,222.0,219,13.0,21,29,0,page_1_practice,tech
-h,235.0,219,13.0,21,30,0,page_1_practice,tech
- ,248.0,219,13.0,21,31,0,page_1_practice,
-d,261.0,219,13.0,21,32,0,page_1_practice,"deals,"
-e,274.0,219,13.0,21,33,0,page_1_practice,"deals,"
-a,287.0,219,13.0,21,34,0,page_1_practice,"deals,"
-l,300.0,219,13.0,21,35,0,page_1_practice,"deals,"
-s,313.0,219,13.0,21,36,0,page_1_practice,"deals,"
-",",326.0,219,13.0,21,37,0,page_1_practice,"deals,"
- ,339.0,219,13.0,21,38,0,page_1_practice,
-h,352.0,219,13.0,21,39,0,page_1_practice,helping
-e,365.0,219,13.0,21,40,0,page_1_practice,helping
-l,378.0,219,13.0,21,41,0,page_1_practice,helping
-p,391.0,219,13.0,21,42,0,page_1_practice,helping
-i,404.0,219,13.0,21,43,0,page_1_practice,helping
-n,417.0,219,13.0,21,44,0,page_1_practice,helping
-g,430.0,219,13.0,21,45,0,page_1_practice,helping
- ,443.0,219,13.0,21,46,0,page_1_practice,
-p,456.0,219,13.0,21,47,0,page_1_practice,people
-e,469.0,219,13.0,21,48,0,page_1_practice,people
-o,482.0,219,13.0,21,49,0,page_1_practice,people
-p,495.0,219,13.0,21,50,0,page_1_practice,people
-l,508.0,219,13.0,21,51,0,page_1_practice,people
-e,521.0,219,13.0,21,52,0,page_1_practice,people
- ,534.0,219,13.0,21,53,0,page_1_practice,
-m,547.0,219,13.0,21,54,0,page_1_practice,make
-a,560.0,219,13.0,21,55,0,page_1_practice,make
-k,573.0,219,13.0,21,56,0,page_1_practice,make
-e,586.0,219,13.0,21,57,0,page_1_practice,make
- ,599.0,219,13.0,21,58,0,page_1_practice,
-t,612.0,219,13.0,21,59,0,page_1_practice,the
-h,625.0,219,13.0,21,60,0,page_1_practice,the
-e,638.0,219,13.0,21,61,0,page_1_practice,the
- ,651.0,219,13.0,21,62,0,page_1_practice,
-b,664.0,219,13.0,21,63,0,page_1_practice,best
-e,677.0,219,13.0,21,64,0,page_1_practice,best
-s,690.0,219,13.0,21,65,0,page_1_practice,best
-t,703.0,219,13.0,21,66,0,page_1_practice,best
- ,716.0,219,13.0,21,67,0,page_1_practice,
-g,729.0,219,13.0,21,68,0,page_1_practice,gadget
-a,742.0,219,13.0,21,69,0,page_1_practice,gadget
-d,755.0,219,13.0,21,70,0,page_1_practice,gadget
-g,768.0,219,13.0,21,71,0,page_1_practice,gadget
-e,781.0,219,13.0,21,72,0,page_1_practice,gadget
-t,794.0,219,13.0,21,73,0,page_1_practice,gadget
- ,807.0,219,13.0,21,74,0,page_1_practice,
-p,820.0,219,13.0,21,75,0,page_1_practice,purchases
-u,833.0,219,13.0,21,76,0,page_1_practice,purchases
-r,846.0,219,13.0,21,77,0,page_1_practice,purchases
-c,859.0,219,13.0,21,78,0,page_1_practice,purchases
-h,872.0,219,13.0,21,79,0,page_1_practice,purchases
-a,885.0,219,13.0,21,80,0,page_1_practice,purchases
-s,898.0,219,13.0,21,81,0,page_1_practice,purchases
-e,911.0,219,13.0,21,82,0,page_1_practice,purchases
-s,924.0,219,13.0,21,83,0,page_1_practice,purchases
- ,937.0,219,13.0,21,84,0,page_1_practice,
-a,950.0,219,13.0,21,85,0,page_1_practice,according
-c,963.0,219,13.0,21,86,0,page_1_practice,according
-c,976.0,219,13.0,21,87,0,page_1_practice,according
-o,989.0,219,13.0,21,88,0,page_1_practice,according
-r,1002.0,219,13.0,21,89,0,page_1_practice,according
-d,1015.0,219,13.0,21,90,0,page_1_practice,according
-i,1028.0,219,13.0,21,91,0,page_1_practice,according
-n,1041.0,219,13.0,21,92,0,page_1_practice,according
-g,1054.0,219,13.0,21,93,0,page_1_practice,according
- ,1067.0,219,13.0,21,94,0,page_1_practice,
-t,1080.0,219,13.0,21,95,0,page_1_practice,to
-o,1093.0,219,13.0,21,96,0,page_1_practice,to
- ,1106.0,219,13.0,21,97,0,page_1_practice,
-t,1119.0,219,13.0,21,98,0,page_1_practice,their
-h,1132.0,219,13.0,21,99,0,page_1_practice,their
-e,1145.0,219,13.0,21,100,0,page_1_practice,their
-i,1158.0,219,13.0,21,101,0,page_1_practice,their
-r,1171.0,219,13.0,21,102,0,page_1_practice,their
- ,1184.0,219,13.0,21,103,0,page_1_practice,
-n,1197.0,219,13.0,21,104,0,page_1_practice,needs.
-e,1210.0,219,13.0,21,105,0,page_1_practice,needs.
-e,1223.0,219,13.0,21,106,0,page_1_practice,needs.
-d,1236.0,219,13.0,21,107,0,page_1_practice,needs.
-s,1249.0,219,13.0,21,108,0,page_1_practice,needs.
-.,1262.0,219,13.0,21,109,0,page_1_practice,needs.
-W,-155.0,-212,13.0,21,0,0,page_2_practice,What
-h,-142.0,-212,13.0,21,1,0,page_2_practice,What
-a,-129.0,-212,13.0,21,2,0,page_2_practice,What
-t,-116.0,-212,13.0,21,3,0,page_2_practice,What
- ,-103.0,-212,13.0,21,4,0,page_2_practice,
-C,-90.0,-212,13.0,21,5,0,page_2_practice,Can
-a,-77.0,-212,13.0,21,6,0,page_2_practice,Can
-n,-64.0,-212,13.0,21,7,0,page_2_practice,Can
- ,-51.0,-212,13.0,21,8,0,page_2_practice,
-W,-38.0,-212,13.0,21,9,0,page_2_practice,We
-e,-25.0,-212,13.0,21,10,0,page_2_practice,We
- ,-12.0,-212,13.0,21,11,0,page_2_practice,
-L,1.0,-212,13.0,21,12,0,page_2_practice,Learn
-e,14.0,-212,13.0,21,13,0,page_2_practice,Learn
-a,27.0,-212,13.0,21,14,0,page_2_practice,Learn
-r,40.0,-212,13.0,21,15,0,page_2_practice,Learn
-n,53.0,-212,13.0,21,16,0,page_2_practice,Learn
- ,66.0,-212,13.0,21,17,0,page_2_practice,
-F,79.0,-212,13.0,21,18,0,page_2_practice,From
-r,92.0,-212,13.0,21,19,0,page_2_practice,From
-o,105.0,-212,13.0,21,20,0,page_2_practice,From
-m,118.0,-212,13.0,21,21,0,page_2_practice,From
- ,131.0,-212,13.0,21,22,0,page_2_practice,
-T,144.0,-212,13.0,21,23,0,page_2_practice,This
-h,157.0,-212,13.0,21,24,0,page_2_practice,This
-i,170.0,-212,13.0,21,25,0,page_2_practice,This
-s,183.0,-212,13.0,21,26,0,page_2_practice,This
- ,196.0,-212,13.0,21,27,0,page_2_practice,
-B,209.0,-212,13.0,21,28,0,page_2_practice,Blog
-l,222.0,-212,13.0,21,29,0,page_2_practice,Blog
-o,235.0,-212,13.0,21,30,0,page_2_practice,Blog
-g,248.0,-212,13.0,21,31,0,page_2_practice,Blog
-T,-155.0,-139,13.0,21,0,0,page_2_practice,The
-h,-142.0,-139,13.0,21,1,0,page_2_practice,The
-e,-129.0,-139,13.0,21,2,0,page_2_practice,The
- ,-116.0,-139,13.0,21,3,0,page_2_practice,
-b,-103.0,-139,13.0,21,4,0,page_2_practice,blog’s
-l,-90.0,-139,13.0,21,5,0,page_2_practice,blog’s
-o,-77.0,-139,13.0,21,6,0,page_2_practice,blog’s
-g,-64.0,-139,13.0,21,7,0,page_2_practice,blog’s
-’,-51.0,-139,13.0,21,8,0,page_2_practice,blog’s
-s,-38.0,-139,13.0,21,9,0,page_2_practice,blog’s
- ,-25.0,-139,13.0,21,10,0,page_2_practice,
-s,-12.0,-139,13.0,21,11,0,page_2_practice,simple
-i,1.0,-139,13.0,21,12,0,page_2_practice,simple
-m,14.0,-139,13.0,21,13,0,page_2_practice,simple
-p,27.0,-139,13.0,21,14,0,page_2_practice,simple
-l,40.0,-139,13.0,21,15,0,page_2_practice,simple
-e,53.0,-139,13.0,21,16,0,page_2_practice,simple
- ,66.0,-139,13.0,21,17,0,page_2_practice,
-b,79.0,-139,13.0,21,18,0,page_2_practice,black-and-white
-l,92.0,-139,13.0,21,19,0,page_2_practice,black-and-white
-a,105.0,-139,13.0,21,20,0,page_2_practice,black-and-white
-c,118.0,-139,13.0,21,21,0,page_2_practice,black-and-white
-k,131.0,-139,13.0,21,22,0,page_2_practice,black-and-white
--,144.0,-139,13.0,21,23,0,page_2_practice,black-and-white
-a,157.0,-139,13.0,21,24,0,page_2_practice,black-and-white
-n,170.0,-139,13.0,21,25,0,page_2_practice,black-and-white
-d,183.0,-139,13.0,21,26,0,page_2_practice,black-and-white
--,196.0,-139,13.0,21,27,0,page_2_practice,black-and-white
-w,209.0,-139,13.0,21,28,0,page_2_practice,black-and-white
-h,222.0,-139,13.0,21,29,0,page_2_practice,black-and-white
-i,235.0,-139,13.0,21,30,0,page_2_practice,black-and-white
-t,248.0,-139,13.0,21,31,0,page_2_practice,black-and-white
-e,261.0,-139,13.0,21,32,0,page_2_practice,black-and-white
- ,274.0,-139,13.0,21,33,0,page_2_practice,
-t,287.0,-139,13.0,21,34,0,page_2_practice,theme
-h,300.0,-139,13.0,21,35,0,page_2_practice,theme
-e,313.0,-139,13.0,21,36,0,page_2_practice,theme
-m,326.0,-139,13.0,21,37,0,page_2_practice,theme
-e,339.0,-139,13.0,21,38,0,page_2_practice,theme
- ,352.0,-139,13.0,21,39,0,page_2_practice,
-g,365.0,-139,13.0,21,40,0,page_2_practice,gives
-i,378.0,-139,13.0,21,41,0,page_2_practice,gives
-v,391.0,-139,13.0,21,42,0,page_2_practice,gives
-e,404.0,-139,13.0,21,43,0,page_2_practice,gives
-s,417.0,-139,13.0,21,44,0,page_2_practice,gives
- ,430.0,-139,13.0,21,45,0,page_2_practice,
-i,443.0,-139,13.0,21,46,0,page_2_practice,it
-t,456.0,-139,13.0,21,47,0,page_2_practice,it
- ,469.0,-139,13.0,21,48,0,page_2_practice,
-a,482.0,-139,13.0,21,49,0,page_2_practice,a
- ,495.0,-139,13.0,21,50,0,page_2_practice,
-s,508.0,-139,13.0,21,51,0,page_2_practice,sleek
-l,521.0,-139,13.0,21,52,0,page_2_practice,sleek
-e,534.0,-139,13.0,21,53,0,page_2_practice,sleek
-e,547.0,-139,13.0,21,54,0,page_2_practice,sleek
-k,560.0,-139,13.0,21,55,0,page_2_practice,sleek
- ,573.0,-139,13.0,21,56,0,page_2_practice,
-l,586.0,-139,13.0,21,57,0,page_2_practice,look
-o,599.0,-139,13.0,21,58,0,page_2_practice,look
-o,612.0,-139,13.0,21,59,0,page_2_practice,look
-k,625.0,-139,13.0,21,60,0,page_2_practice,look
- ,638.0,-139,13.0,21,61,0,page_2_practice,
-f,651.0,-139,13.0,21,62,0,page_2_practice,fitting
-i,664.0,-139,13.0,21,63,0,page_2_practice,fitting
-t,677.0,-139,13.0,21,64,0,page_2_practice,fitting
-t,690.0,-139,13.0,21,65,0,page_2_practice,fitting
-i,703.0,-139,13.0,21,66,0,page_2_practice,fitting
-n,716.0,-139,13.0,21,67,0,page_2_practice,fitting
-g,729.0,-139,13.0,21,68,0,page_2_practice,fitting
- ,742.0,-139,13.0,21,69,0,page_2_practice,
-f,755.0,-139,13.0,21,70,0,page_2_practice,for
-o,768.0,-139,13.0,21,71,0,page_2_practice,for
-r,781.0,-139,13.0,21,72,0,page_2_practice,for
- ,794.0,-139,13.0,21,73,0,page_2_practice,
-a,807.0,-139,13.0,21,74,0,page_2_practice,a
- ,820.0,-139,13.0,21,75,0,page_2_practice,
-t,833.0,-139,13.0,21,76,0,page_2_practice,technology
-e,846.0,-139,13.0,21,77,0,page_2_practice,technology
-c,859.0,-139,13.0,21,78,0,page_2_practice,technology
-h,872.0,-139,13.0,21,79,0,page_2_practice,technology
-n,885.0,-139,13.0,21,80,0,page_2_practice,technology
-o,898.0,-139,13.0,21,81,0,page_2_practice,technology
-l,911.0,-139,13.0,21,82,0,page_2_practice,technology
-o,924.0,-139,13.0,21,83,0,page_2_practice,technology
-g,937.0,-139,13.0,21,84,0,page_2_practice,technology
-y,950.0,-139,13.0,21,85,0,page_2_practice,technology
- ,963.0,-139,13.0,21,86,0,page_2_practice,
-b,976.0,-139,13.0,21,87,0,page_2_practice,blog.
-l,989.0,-139,13.0,21,88,0,page_2_practice,blog.
-o,1002.0,-139,13.0,21,89,0,page_2_practice,blog.
-g,1015.0,-139,13.0,21,90,0,page_2_practice,blog.
-.,1028.0,-139,13.0,21,91,0,page_2_practice,blog.
- ,1041.0,-139,13.0,21,92,0,page_2_practice,
-U,1054.0,-139,13.0,21,93,0,page_2_practice,Upon
-p,1067.0,-139,13.0,21,94,0,page_2_practice,Upon
-o,1080.0,-139,13.0,21,95,0,page_2_practice,Upon
-n,1093.0,-139,13.0,21,96,0,page_2_practice,Upon
- ,1106.0,-139,13.0,21,97,0,page_2_practice,
-a,1119.0,-139,13.0,21,98,0,page_2_practice,accessing
-c,1132.0,-139,13.0,21,99,0,page_2_practice,accessing
-c,1145.0,-139,13.0,21,100,0,page_2_practice,accessing
-e,1158.0,-139,13.0,21,101,0,page_2_practice,accessing
-s,1171.0,-139,13.0,21,102,0,page_2_practice,accessing
-s,1184.0,-139,13.0,21,103,0,page_2_practice,accessing
-i,1197.0,-139,13.0,21,104,0,page_2_practice,accessing
-n,1210.0,-139,13.0,21,105,0,page_2_practice,accessing
-g,1223.0,-139,13.0,21,106,0,page_2_practice,accessing
- ,1236.0,-139,13.0,21,107,0,page_2_practice,
-t,1249.0,-139,13.0,21,108,0,page_2_practice,the
-h,1262.0,-139,13.0,21,109,0,page_2_practice,the
-e,1275.0,-139,13.0,21,110,0,page_2_practice,the
- ,1288.0,-139,13.0,21,111,0,page_2_practice,
-w,1301.0,-139,13.0,21,112,0,page_2_practice,"website,"
-e,1314.0,-139,13.0,21,113,0,page_2_practice,"website,"
-b,1327.0,-139,13.0,21,114,0,page_2_practice,"website,"
-s,1340.0,-139,13.0,21,115,0,page_2_practice,"website,"
-i,1353.0,-139,13.0,21,116,0,page_2_practice,"website,"
-t,1366.0,-139,13.0,21,117,0,page_2_practice,"website,"
-e,1379.0,-139,13.0,21,118,0,page_2_practice,"website,"
-",",1392.0,-139,13.0,21,119,0,page_2_practice,"website,"
- ,1405.0,-139,13.0,21,120,0,page_2_practice,
-v,1418.0,-139,13.0,21,121,0,page_2_practice,visitors’
-i,1431.0,-139,13.0,21,122,0,page_2_practice,visitors’
-s,1444.0,-139,13.0,21,123,0,page_2_practice,visitors’
-i,1457.0,-139,13.0,21,124,0,page_2_practice,visitors’
-t,1470.0,-139,13.0,21,125,0,page_2_practice,visitors’
-o,1483.0,-139,13.0,21,126,0,page_2_practice,visitors’
-r,1496.0,-139,13.0,21,127,0,page_2_practice,visitors’
-s,1509.0,-139,13.0,21,128,0,page_2_practice,visitors’
-’,1522.0,-139,13.0,21,129,0,page_2_practice,visitors’
-e,-155.0,-66,13.0,21,0,2,page_2_practice,eyes
-y,-142.0,-66,13.0,21,1,2,page_2_practice,eyes
-e,-129.0,-66,13.0,21,2,2,page_2_practice,eyes
-s,-116.0,-66,13.0,21,3,2,page_2_practice,eyes
- ,-103.0,-66,13.0,21,4,2,page_2_practice,
-a,-90.0,-66,13.0,21,5,2,page_2_practice,are
-r,-77.0,-66,13.0,21,6,2,page_2_practice,are
-e,-64.0,-66,13.0,21,7,2,page_2_practice,are
- ,-51.0,-66,13.0,21,8,2,page_2_practice,
-i,-38.0,-66,13.0,21,9,2,page_2_practice,immediately
-m,-25.0,-66,13.0,21,10,2,page_2_practice,immediately
-m,-12.0,-66,13.0,21,11,2,page_2_practice,immediately
-e,1.0,-66,13.0,21,12,2,page_2_practice,immediately
-d,14.0,-66,13.0,21,13,2,page_2_practice,immediately
-i,27.0,-66,13.0,21,14,2,page_2_practice,immediately
-a,40.0,-66,13.0,21,15,2,page_2_practice,immediately
-t,53.0,-66,13.0,21,16,2,page_2_practice,immediately
-e,66.0,-66,13.0,21,17,2,page_2_practice,immediately
-l,79.0,-66,13.0,21,18,2,page_2_practice,immediately
-y,92.0,-66,13.0,21,19,2,page_2_practice,immediately
- ,105.0,-66,13.0,21,20,2,page_2_practice,
-d,118.0,-66,13.0,21,21,2,page_2_practice,drawn
-r,131.0,-66,13.0,21,22,2,page_2_practice,drawn
-a,144.0,-66,13.0,21,23,2,page_2_practice,drawn
-w,157.0,-66,13.0,21,24,2,page_2_practice,drawn
-n,170.0,-66,13.0,21,25,2,page_2_practice,drawn
- ,183.0,-66,13.0,21,26,2,page_2_practice,
-t,196.0,-66,13.0,21,27,2,page_2_practice,to
-o,209.0,-66,13.0,21,28,2,page_2_practice,to
- ,222.0,-66,13.0,21,29,2,page_2_practice,
-t,235.0,-66,13.0,21,30,2,page_2_practice,the
-h,248.0,-66,13.0,21,31,2,page_2_practice,the
-e,261.0,-66,13.0,21,32,2,page_2_practice,the
- ,274.0,-66,13.0,21,33,2,page_2_practice,
-c,287.0,-66,13.0,21,34,2,page_2_practice,collage
-o,300.0,-66,13.0,21,35,2,page_2_practice,collage
-l,313.0,-66,13.0,21,36,2,page_2_practice,collage
-l,326.0,-66,13.0,21,37,2,page_2_practice,collage
-a,339.0,-66,13.0,21,38,2,page_2_practice,collage
-g,352.0,-66,13.0,21,39,2,page_2_practice,collage
-e,365.0,-66,13.0,21,40,2,page_2_practice,collage
- ,378.0,-66,13.0,21,41,2,page_2_practice,
-o,391.0,-66,13.0,21,42,2,page_2_practice,of
-f,404.0,-66,13.0,21,43,2,page_2_practice,of
- ,417.0,-66,13.0,21,44,2,page_2_practice,
-p,430.0,-66,13.0,21,45,2,page_2_practice,photos
-h,443.0,-66,13.0,21,46,2,page_2_practice,photos
-o,456.0,-66,13.0,21,47,2,page_2_practice,photos
-t,469.0,-66,13.0,21,48,2,page_2_practice,photos
-o,482.0,-66,13.0,21,49,2,page_2_practice,photos
-s,495.0,-66,13.0,21,50,2,page_2_practice,photos
- ,508.0,-66,13.0,21,51,2,page_2_practice,
-a,521.0,-66,13.0,21,52,2,page_2_practice,and
-n,534.0,-66,13.0,21,53,2,page_2_practice,and
-d,547.0,-66,13.0,21,54,2,page_2_practice,and
- ,560.0,-66,13.0,21,55,2,page_2_practice,
-h,573.0,-66,13.0,21,56,2,page_2_practice,headlines
-e,586.0,-66,13.0,21,57,2,page_2_practice,headlines
-a,599.0,-66,13.0,21,58,2,page_2_practice,headlines
-d,612.0,-66,13.0,21,59,2,page_2_practice,headlines
-l,625.0,-66,13.0,21,60,2,page_2_practice,headlines
-i,638.0,-66,13.0,21,61,2,page_2_practice,headlines
-n,651.0,-66,13.0,21,62,2,page_2_practice,headlines
-e,664.0,-66,13.0,21,63,2,page_2_practice,headlines
-s,677.0,-66,13.0,21,64,2,page_2_practice,headlines
- ,690.0,-66,13.0,21,65,2,page_2_practice,
-o,703.0,-66,13.0,21,66,2,page_2_practice,of
-f,716.0,-66,13.0,21,67,2,page_2_practice,of
- ,729.0,-66,13.0,21,68,2,page_2_practice,
-t,742.0,-66,13.0,21,69,2,page_2_practice,their
-h,755.0,-66,13.0,21,70,2,page_2_practice,their
-e,768.0,-66,13.0,21,71,2,page_2_practice,their
-i,781.0,-66,13.0,21,72,2,page_2_practice,their
-r,794.0,-66,13.0,21,73,2,page_2_practice,their
- ,807.0,-66,13.0,21,74,2,page_2_practice,
-m,820.0,-66,13.0,21,75,2,page_2_practice,most
-o,833.0,-66,13.0,21,76,2,page_2_practice,most
-s,846.0,-66,13.0,21,77,2,page_2_practice,most
-t,859.0,-66,13.0,21,78,2,page_2_practice,most
- ,872.0,-66,13.0,21,79,2,page_2_practice,
-r,885.0,-66,13.0,21,80,2,page_2_practice,recent
-e,898.0,-66,13.0,21,81,2,page_2_practice,recent
-c,911.0,-66,13.0,21,82,2,page_2_practice,recent
-e,924.0,-66,13.0,21,83,2,page_2_practice,recent
-n,937.0,-66,13.0,21,84,2,page_2_practice,recent
-t,950.0,-66,13.0,21,85,2,page_2_practice,recent
- ,963.0,-66,13.0,21,86,2,page_2_practice,
-a,976.0,-66,13.0,21,87,2,page_2_practice,and
-n,989.0,-66,13.0,21,88,2,page_2_practice,and
-d,1002.0,-66,13.0,21,89,2,page_2_practice,and
- ,1015.0,-66,13.0,21,90,2,page_2_practice,
-p,1028.0,-66,13.0,21,91,2,page_2_practice,popular
-o,1041.0,-66,13.0,21,92,2,page_2_practice,popular
-p,1054.0,-66,13.0,21,93,2,page_2_practice,popular
-u,1067.0,-66,13.0,21,94,2,page_2_practice,popular
-l,1080.0,-66,13.0,21,95,2,page_2_practice,popular
-a,1093.0,-66,13.0,21,96,2,page_2_practice,popular
-r,1106.0,-66,13.0,21,97,2,page_2_practice,popular
- ,1119.0,-66,13.0,21,98,2,page_2_practice,
-a,1132.0,-66,13.0,21,99,2,page_2_practice,articles.
-r,1145.0,-66,13.0,21,100,2,page_2_practice,articles.
-t,1158.0,-66,13.0,21,101,2,page_2_practice,articles.
-i,1171.0,-66,13.0,21,102,2,page_2_practice,articles.
-c,1184.0,-66,13.0,21,103,2,page_2_practice,articles.
-l,1197.0,-66,13.0,21,104,2,page_2_practice,articles.
-e,1210.0,-66,13.0,21,105,2,page_2_practice,articles.
-s,1223.0,-66,13.0,21,106,2,page_2_practice,articles.
-.,1236.0,-66,13.0,21,107,2,page_2_practice,articles.
- ,1249.0,-66,13.0,21,108,2,page_2_practice,
-F,1262.0,-66,13.0,21,109,2,page_2_practice,Further
-u,1275.0,-66,13.0,21,110,2,page_2_practice,Further
-r,1288.0,-66,13.0,21,111,2,page_2_practice,Further
-t,1301.0,-66,13.0,21,112,2,page_2_practice,Further
-h,1314.0,-66,13.0,21,113,2,page_2_practice,Further
-e,1327.0,-66,13.0,21,114,2,page_2_practice,Further
-r,1340.0,-66,13.0,21,115,2,page_2_practice,Further
- ,1353.0,-66,13.0,21,116,2,page_2_practice,
-d,1366.0,-66,13.0,21,117,2,page_2_practice,down
-o,1379.0,-66,13.0,21,118,2,page_2_practice,down
-w,1392.0,-66,13.0,21,119,2,page_2_practice,down
-n,1405.0,-66,13.0,21,120,2,page_2_practice,down
- ,1418.0,-66,13.0,21,121,2,page_2_practice,
-t,1431.0,-66,13.0,21,122,2,page_2_practice,the
-h,1444.0,-66,13.0,21,123,2,page_2_practice,the
-e,1457.0,-66,13.0,21,124,2,page_2_practice,the
- ,1470.0,-66,13.0,21,125,2,page_2_practice,
-p,1483.0,-66,13.0,21,126,2,page_2_practice,"page,"
-a,1496.0,-66,13.0,21,127,2,page_2_practice,"page,"
-g,1509.0,-66,13.0,21,128,2,page_2_practice,"page,"
-e,1522.0,-66,13.0,21,129,2,page_2_practice,"page,"
-",",1535.0,-66,13.0,21,130,2,page_2_practice,"page,"
-m,-155.0,7,13.0,21,0,4,page_2_practice,more
-o,-142.0,7,13.0,21,1,4,page_2_practice,more
-r,-129.0,7,13.0,21,2,4,page_2_practice,more
-e,-116.0,7,13.0,21,3,4,page_2_practice,more
- ,-103.0,7,13.0,21,4,4,page_2_practice,
-a,-90.0,7,13.0,21,5,4,page_2_practice,article
-r,-77.0,7,13.0,21,6,4,page_2_practice,article
-t,-64.0,7,13.0,21,7,4,page_2_practice,article
-i,-51.0,7,13.0,21,8,4,page_2_practice,article
-c,-38.0,7,13.0,21,9,4,page_2_practice,article
-l,-25.0,7,13.0,21,10,4,page_2_practice,article
-e,-12.0,7,13.0,21,11,4,page_2_practice,article
- ,1.0,7,13.0,21,12,4,page_2_practice,
-h,14.0,7,13.0,21,13,4,page_2_practice,headlines
-e,27.0,7,13.0,21,14,4,page_2_practice,headlines
-a,40.0,7,13.0,21,15,4,page_2_practice,headlines
-d,53.0,7,13.0,21,16,4,page_2_practice,headlines
-l,66.0,7,13.0,21,17,4,page_2_practice,headlines
-i,79.0,7,13.0,21,18,4,page_2_practice,headlines
-n,92.0,7,13.0,21,19,4,page_2_practice,headlines
-e,105.0,7,13.0,21,20,4,page_2_practice,headlines
-s,118.0,7,13.0,21,21,4,page_2_practice,headlines
- ,131.0,7,13.0,21,22,4,page_2_practice,
-a,144.0,7,13.0,21,23,4,page_2_practice,are
-r,157.0,7,13.0,21,24,4,page_2_practice,are
-e,170.0,7,13.0,21,25,4,page_2_practice,are
- ,183.0,7,13.0,21,26,4,page_2_practice,
-s,196.0,7,13.0,21,27,4,page_2_practice,sorted
-o,209.0,7,13.0,21,28,4,page_2_practice,sorted
-r,222.0,7,13.0,21,29,4,page_2_practice,sorted
-t,235.0,7,13.0,21,30,4,page_2_practice,sorted
-e,248.0,7,13.0,21,31,4,page_2_practice,sorted
-d,261.0,7,13.0,21,32,4,page_2_practice,sorted
- ,274.0,7,13.0,21,33,4,page_2_practice,
-b,287.0,7,13.0,21,34,4,page_2_practice,by
-y,300.0,7,13.0,21,35,4,page_2_practice,by
- ,313.0,7,13.0,21,36,4,page_2_practice,
-t,326.0,7,13.0,21,37,4,page_2_practice,the
-h,339.0,7,13.0,21,38,4,page_2_practice,the
-e,352.0,7,13.0,21,39,4,page_2_practice,the
- ,365.0,7,13.0,21,40,4,page_2_practice,
-m,378.0,7,13.0,21,41,4,page_2_practice,most
-o,391.0,7,13.0,21,42,4,page_2_practice,most
-s,404.0,7,13.0,21,43,4,page_2_practice,most
-t,417.0,7,13.0,21,44,4,page_2_practice,most
- ,430.0,7,13.0,21,45,4,page_2_practice,
-r,443.0,7,13.0,21,46,4,page_2_practice,recent
-e,456.0,7,13.0,21,47,4,page_2_practice,recent
-c,469.0,7,13.0,21,48,4,page_2_practice,recent
-e,482.0,7,13.0,21,49,4,page_2_practice,recent
-n,495.0,7,13.0,21,50,4,page_2_practice,recent
-t,508.0,7,13.0,21,51,4,page_2_practice,recent
- ,521.0,7,13.0,21,52,4,page_2_practice,
-t,534.0,7,13.0,21,53,4,page_2_practice,to
-o,547.0,7,13.0,21,54,4,page_2_practice,to
- ,560.0,7,13.0,21,55,4,page_2_practice,
-t,573.0,7,13.0,21,56,4,page_2_practice,the
-h,586.0,7,13.0,21,57,4,page_2_practice,the
-e,599.0,7,13.0,21,58,4,page_2_practice,the
- ,612.0,7,13.0,21,59,4,page_2_practice,
-o,625.0,7,13.0,21,60,4,page_2_practice,oldest
-l,638.0,7,13.0,21,61,4,page_2_practice,oldest
-d,651.0,7,13.0,21,62,4,page_2_practice,oldest
-e,664.0,7,13.0,21,63,4,page_2_practice,oldest
-s,677.0,7,13.0,21,64,4,page_2_practice,oldest
-t,690.0,7,13.0,21,65,4,page_2_practice,oldest
- ,703.0,7,13.0,21,66,4,page_2_practice,
-a,716.0,7,13.0,21,67,4,page_2_practice,and
-n,729.0,7,13.0,21,68,4,page_2_practice,and
-d,742.0,7,13.0,21,69,4,page_2_practice,and
- ,755.0,7,13.0,21,70,4,page_2_practice,
-a,768.0,7,13.0,21,71,4,page_2_practice,accompanied
-c,781.0,7,13.0,21,72,4,page_2_practice,accompanied
-c,794.0,7,13.0,21,73,4,page_2_practice,accompanied
-o,807.0,7,13.0,21,74,4,page_2_practice,accompanied
-m,820.0,7,13.0,21,75,4,page_2_practice,accompanied
-p,833.0,7,13.0,21,76,4,page_2_practice,accompanied
-a,846.0,7,13.0,21,77,4,page_2_practice,accompanied
-n,859.0,7,13.0,21,78,4,page_2_practice,accompanied
-i,872.0,7,13.0,21,79,4,page_2_practice,accompanied
-e,885.0,7,13.0,21,80,4,page_2_practice,accompanied
-d,898.0,7,13.0,21,81,4,page_2_practice,accompanied
- ,911.0,7,13.0,21,82,4,page_2_practice,
-b,924.0,7,13.0,21,83,4,page_2_practice,by
-y,937.0,7,13.0,21,84,4,page_2_practice,by
- ,950.0,7,13.0,21,85,4,page_2_practice,
-a,963.0,7,13.0,21,86,4,page_2_practice,a
- ,976.0,7,13.0,21,87,4,page_2_practice,
-p,989.0,7,13.0,21,88,4,page_2_practice,picture
-i,1002.0,7,13.0,21,89,4,page_2_practice,picture
-c,1015.0,7,13.0,21,90,4,page_2_practice,picture
-t,1028.0,7,13.0,21,91,4,page_2_practice,picture
-u,1041.0,7,13.0,21,92,4,page_2_practice,picture
-r,1054.0,7,13.0,21,93,4,page_2_practice,picture
-e,1067.0,7,13.0,21,94,4,page_2_practice,picture
- ,1080.0,7,13.0,21,95,4,page_2_practice,
-a,1093.0,7,13.0,21,96,4,page_2_practice,and
-n,1106.0,7,13.0,21,97,4,page_2_practice,and
-d,1119.0,7,13.0,21,98,4,page_2_practice,and
- ,1132.0,7,13.0,21,99,4,page_2_practice,
-s,1145.0,7,13.0,21,100,4,page_2_practice,sentence
-e,1158.0,7,13.0,21,101,4,page_2_practice,sentence
-n,1171.0,7,13.0,21,102,4,page_2_practice,sentence
-t,1184.0,7,13.0,21,103,4,page_2_practice,sentence
-e,1197.0,7,13.0,21,104,4,page_2_practice,sentence
-n,1210.0,7,13.0,21,105,4,page_2_practice,sentence
-c,1223.0,7,13.0,21,106,4,page_2_practice,sentence
-e,1236.0,7,13.0,21,107,4,page_2_practice,sentence
- ,1249.0,7,13.0,21,108,4,page_2_practice,
-s,1262.0,7,13.0,21,109,4,page_2_practice,summarizing
-u,1275.0,7,13.0,21,110,4,page_2_practice,summarizing
-m,1288.0,7,13.0,21,111,4,page_2_practice,summarizing
-m,1301.0,7,13.0,21,112,4,page_2_practice,summarizing
-a,1314.0,7,13.0,21,113,4,page_2_practice,summarizing
-r,1327.0,7,13.0,21,114,4,page_2_practice,summarizing
-i,1340.0,7,13.0,21,115,4,page_2_practice,summarizing
-z,1353.0,7,13.0,21,116,4,page_2_practice,summarizing
-i,1366.0,7,13.0,21,117,4,page_2_practice,summarizing
-n,1379.0,7,13.0,21,118,4,page_2_practice,summarizing
-g,1392.0,7,13.0,21,119,4,page_2_practice,summarizing
- ,1405.0,7,13.0,21,120,4,page_2_practice,
-t,1418.0,7,13.0,21,121,4,page_2_practice,the
-h,1431.0,7,13.0,21,122,4,page_2_practice,the
-e,1444.0,7,13.0,21,123,4,page_2_practice,the
- ,1457.0,7,13.0,21,124,4,page_2_practice,
-a,1470.0,7,13.0,21,125,4,page_2_practice,article’s
-r,1483.0,7,13.0,21,126,4,page_2_practice,article’s
-t,1496.0,7,13.0,21,127,4,page_2_practice,article’s
-i,1509.0,7,13.0,21,128,4,page_2_practice,article’s
-c,1522.0,7,13.0,21,129,4,page_2_practice,article’s
-l,1535.0,7,13.0,21,130,4,page_2_practice,article’s
-e,1548.0,7,13.0,21,131,4,page_2_practice,article’s
-’,1561.0,7,13.0,21,132,4,page_2_practice,article’s
-s,1574.0,7,13.0,21,133,4,page_2_practice,article’s
-c,-155.0,80,13.0,21,0,6,page_2_practice,content.
-o,-142.0,80,13.0,21,1,6,page_2_practice,content.
-n,-129.0,80,13.0,21,2,6,page_2_practice,content.
-t,-116.0,80,13.0,21,3,6,page_2_practice,content.
-e,-103.0,80,13.0,21,4,6,page_2_practice,content.
-n,-90.0,80,13.0,21,5,6,page_2_practice,content.
-t,-77.0,80,13.0,21,6,6,page_2_practice,content.
-.,-64.0,80,13.0,21,7,6,page_2_practice,content.
- ,-51.0,80,13.0,21,8,6,page_2_practice,
-T,-38.0,80,13.0,21,9,6,page_2_practice,This
-h,-25.0,80,13.0,21,10,6,page_2_practice,This
-i,-12.0,80,13.0,21,11,6,page_2_practice,This
-s,1.0,80,13.0,21,12,6,page_2_practice,This
- ,14.0,80,13.0,21,13,6,page_2_practice,
-l,27.0,80,13.0,21,14,6,page_2_practice,lets
-e,40.0,80,13.0,21,15,6,page_2_practice,lets
-t,53.0,80,13.0,21,16,6,page_2_practice,lets
-s,66.0,80,13.0,21,17,6,page_2_practice,lets
- ,79.0,80,13.0,21,18,6,page_2_practice,
-v,92.0,80,13.0,21,19,6,page_2_practice,visitors
-i,105.0,80,13.0,21,20,6,page_2_practice,visitors
-s,118.0,80,13.0,21,21,6,page_2_practice,visitors
-i,131.0,80,13.0,21,22,6,page_2_practice,visitors
-t,144.0,80,13.0,21,23,6,page_2_practice,visitors
-o,157.0,80,13.0,21,24,6,page_2_practice,visitors
-r,170.0,80,13.0,21,25,6,page_2_practice,visitors
-s,183.0,80,13.0,21,26,6,page_2_practice,visitors
- ,196.0,80,13.0,21,27,6,page_2_practice,
-k,209.0,80,13.0,21,28,6,page_2_practice,know
-n,222.0,80,13.0,21,29,6,page_2_practice,know
-o,235.0,80,13.0,21,30,6,page_2_practice,know
-w,248.0,80,13.0,21,31,6,page_2_practice,know
- ,261.0,80,13.0,21,32,6,page_2_practice,
-t,274.0,80,13.0,21,33,6,page_2_practice,that
-h,287.0,80,13.0,21,34,6,page_2_practice,that
-a,300.0,80,13.0,21,35,6,page_2_practice,that
-t,313.0,80,13.0,21,36,6,page_2_practice,that
- ,326.0,80,13.0,21,37,6,page_2_practice,
-t,339.0,80,13.0,21,38,6,page_2_practice,the
-h,352.0,80,13.0,21,39,6,page_2_practice,the
-e,365.0,80,13.0,21,40,6,page_2_practice,the
- ,378.0,80,13.0,21,41,6,page_2_practice,
-b,391.0,80,13.0,21,42,6,page_2_practice,blog
-l,404.0,80,13.0,21,43,6,page_2_practice,blog
-o,417.0,80,13.0,21,44,6,page_2_practice,blog
-g,430.0,80,13.0,21,45,6,page_2_practice,blog
- ,443.0,80,13.0,21,46,6,page_2_practice,
-i,456.0,80,13.0,21,47,6,page_2_practice,is
-s,469.0,80,13.0,21,48,6,page_2_practice,is
- ,482.0,80,13.0,21,49,6,page_2_practice,
-r,495.0,80,13.0,21,50,6,page_2_practice,regularly
-e,508.0,80,13.0,21,51,6,page_2_practice,regularly
-g,521.0,80,13.0,21,52,6,page_2_practice,regularly
-u,534.0,80,13.0,21,53,6,page_2_practice,regularly
-l,547.0,80,13.0,21,54,6,page_2_practice,regularly
-a,560.0,80,13.0,21,55,6,page_2_practice,regularly
-r,573.0,80,13.0,21,56,6,page_2_practice,regularly
-l,586.0,80,13.0,21,57,6,page_2_practice,regularly
-y,599.0,80,13.0,21,58,6,page_2_practice,regularly
- ,612.0,80,13.0,21,59,6,page_2_practice,
-u,625.0,80,13.0,21,60,6,page_2_practice,updated
-p,638.0,80,13.0,21,61,6,page_2_practice,updated
-d,651.0,80,13.0,21,62,6,page_2_practice,updated
-a,664.0,80,13.0,21,63,6,page_2_practice,updated
-t,677.0,80,13.0,21,64,6,page_2_practice,updated
-e,690.0,80,13.0,21,65,6,page_2_practice,updated
-d,703.0,80,13.0,21,66,6,page_2_practice,updated
- ,716.0,80,13.0,21,67,6,page_2_practice,
-w,729.0,80,13.0,21,68,6,page_2_practice,with
-i,742.0,80,13.0,21,69,6,page_2_practice,with
-t,755.0,80,13.0,21,70,6,page_2_practice,with
-h,768.0,80,13.0,21,71,6,page_2_practice,with
- ,781.0,80,13.0,21,72,6,page_2_practice,
-a,794.0,80,13.0,21,73,6,page_2_practice,a
- ,807.0,80,13.0,21,74,6,page_2_practice,
-v,820.0,80,13.0,21,75,6,page_2_practice,variety
-a,833.0,80,13.0,21,76,6,page_2_practice,variety
-r,846.0,80,13.0,21,77,6,page_2_practice,variety
-i,859.0,80,13.0,21,78,6,page_2_practice,variety
-e,872.0,80,13.0,21,79,6,page_2_practice,variety
-t,885.0,80,13.0,21,80,6,page_2_practice,variety
-y,898.0,80,13.0,21,81,6,page_2_practice,variety
- ,911.0,80,13.0,21,82,6,page_2_practice,
-o,924.0,80,13.0,21,83,6,page_2_practice,of
-f,937.0,80,13.0,21,84,6,page_2_practice,of
- ,950.0,80,13.0,21,85,6,page_2_practice,
-c,963.0,80,13.0,21,86,6,page_2_practice,content.
-o,976.0,80,13.0,21,87,6,page_2_practice,content.
-n,989.0,80,13.0,21,88,6,page_2_practice,content.
-t,1002.0,80,13.0,21,89,6,page_2_practice,content.
-e,1015.0,80,13.0,21,90,6,page_2_practice,content.
-n,1028.0,80,13.0,21,91,6,page_2_practice,content.
-t,1041.0,80,13.0,21,92,6,page_2_practice,content.
-.,1054.0,80,13.0,21,93,6,page_2_practice,content.
+I,347.0,93,16.0,20,0,0,page_1_practice,Introduction
+n,363.0,93,16.0,20,1,0,page_1_practice,Introduction
+t,379.0,93,16.0,20,2,0,page_1_practice,Introduction
+r,395.0,93,16.0,20,3,0,page_1_practice,Introduction
+o,411.0,93,16.0,20,4,0,page_1_practice,Introduction
+d,427.0,93,16.0,20,5,0,page_1_practice,Introduction
+u,443.0,93,16.0,20,6,0,page_1_practice,Introduction
+c,459.0,93,16.0,20,7,0,page_1_practice,Introduction
+t,475.0,93,16.0,20,8,0,page_1_practice,Introduction
+i,491.0,93,16.0,20,9,0,page_1_practice,Introduction
+o,507.0,93,16.0,20,10,0,page_1_practice,Introduction
+n,523.0,93,16.0,20,11,0,page_1_practice,Introduction
+E,347.0,206,16.0,25,0,0,page_1_practice,Endgaget
+n,363.0,206,16.0,25,1,0,page_1_practice,Endgaget
+d,379.0,206,16.0,25,2,0,page_1_practice,Endgaget
+g,395.0,206,16.0,25,3,0,page_1_practice,Endgaget
+a,411.0,206,16.0,25,4,0,page_1_practice,Endgaget
+g,427.0,206,16.0,25,5,0,page_1_practice,Endgaget
+e,443.0,206,16.0,25,6,0,page_1_practice,Endgaget
+t,459.0,206,16.0,25,7,0,page_1_practice,Endgaget
+ ,475.0,206,16.0,25,8,0,page_1_practice,
+b,491.0,206,16.0,25,9,0,page_1_practice,blog
+l,507.0,206,16.0,25,10,0,page_1_practice,blog
+o,523.0,206,16.0,25,11,0,page_1_practice,blog
+g,539.0,206,16.0,25,12,0,page_1_practice,blog
+ ,555.0,206,16.0,25,13,0,page_1_practice,
+-,571.0,206,16.0,25,14,0,page_1_practice,-
+ ,587.0,206,16.0,25,15,0,page_1_practice,
+d,603.0,206,16.0,25,16,0,page_1_practice,descritpion
+e,619.0,206,16.0,25,17,0,page_1_practice,descritpion
+s,635.0,206,16.0,25,18,0,page_1_practice,descritpion
+c,651.0,206,16.0,25,19,0,page_1_practice,descritpion
+r,667.0,206,16.0,25,20,0,page_1_practice,descritpion
+i,683.0,206,16.0,25,21,0,page_1_practice,descritpion
+t,699.0,206,16.0,25,22,0,page_1_practice,descritpion
+p,715.0,206,16.0,25,23,0,page_1_practice,descritpion
+i,731.0,206,16.0,25,24,0,page_1_practice,descritpion
+o,747.0,206,16.0,25,25,0,page_1_practice,descritpion
+n,763.0,206,16.0,25,26,0,page_1_practice,descritpion
+ ,779.0,206,16.0,25,27,0,page_1_practice,
+f,795.0,206,16.0,25,28,0,page_1_practice,from
+r,811.0,206,16.0,25,29,0,page_1_practice,from
+o,827.0,206,16.0,25,30,0,page_1_practice,from
+m,843.0,206,16.0,25,31,0,page_1_practice,from
+h,347.0,324,16.0,27,0,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+t,363.0,324,16.0,27,1,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+t,379.0,324,16.0,27,2,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+p,395.0,324,16.0,27,3,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+s,411.0,324,16.0,27,4,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+:,427.0,324,16.0,27,5,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+/,443.0,324,16.0,27,6,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+/,459.0,324,16.0,27,7,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+w,475.0,324,16.0,27,8,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+w,491.0,324,16.0,27,9,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+w,507.0,324,16.0,27,10,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+.,523.0,324,16.0,27,11,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+h,539.0,324,16.0,27,12,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+o,555.0,324,16.0,27,13,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+s,571.0,324,16.0,27,14,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+t,587.0,324,16.0,27,15,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+i,603.0,324,16.0,27,16,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+n,619.0,324,16.0,27,17,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+g,635.0,324,16.0,27,18,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+e,651.0,324,16.0,27,19,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+r,667.0,324,16.0,27,20,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+.,683.0,324,16.0,27,21,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+c,699.0,324,16.0,27,22,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+o,715.0,324,16.0,27,23,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+m,731.0,324,16.0,27,24,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+/,747.0,324,16.0,27,25,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+t,763.0,324,16.0,27,26,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+u,779.0,324,16.0,27,27,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+t,795.0,324,16.0,27,28,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+o,811.0,324,16.0,27,29,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+r,827.0,324,16.0,27,30,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+i,843.0,324,16.0,27,31,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+a,859.0,324,16.0,27,32,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+l,875.0,324,16.0,27,33,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+s,891.0,324,16.0,27,34,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+/,907.0,324,16.0,27,35,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+b,923.0,324,16.0,27,36,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+l,939.0,324,16.0,27,37,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+o,955.0,324,16.0,27,38,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+g,971.0,324,16.0,27,39,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+-,987.0,324,16.0,27,40,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+e,1003.0,324,16.0,27,41,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+x,1019.0,324,16.0,27,42,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+a,1035.0,324,16.0,27,43,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+m,1051.0,324,16.0,27,44,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+p,1067.0,324,16.0,27,45,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+l,1083.0,324,16.0,27,46,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+e,1099.0,324,16.0,27,47,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+s,1115.0,324,16.0,27,48,2,page_1_practice,https://www.hostinger.com/tutorials/blog-examples
+M,347.0,444,16.0,25,0,0,page_1_practice,Main
+a,363.0,444,16.0,25,1,0,page_1_practice,Main
+i,379.0,444,16.0,25,2,0,page_1_practice,Main
+n,395.0,444,16.0,25,3,0,page_1_practice,Main
+ ,411.0,444,16.0,25,4,0,page_1_practice,
+t,427.0,444,16.0,25,5,0,page_1_practice,topics:
+o,443.0,444,16.0,25,6,0,page_1_practice,topics:
+p,459.0,444,16.0,25,7,0,page_1_practice,topics:
+i,475.0,444,16.0,25,8,0,page_1_practice,topics:
+c,491.0,444,16.0,25,9,0,page_1_practice,topics:
+s,507.0,444,16.0,25,10,0,page_1_practice,topics:
+:,523.0,444,16.0,25,11,0,page_1_practice,topics:
+ ,539.0,444,16.0,25,12,0,page_1_practice,
+t,555.0,444,16.0,25,13,0,page_1_practice,"technology,"
+e,571.0,444,16.0,25,14,0,page_1_practice,"technology,"
+c,587.0,444,16.0,25,15,0,page_1_practice,"technology,"
+h,603.0,444,16.0,25,16,0,page_1_practice,"technology,"
+n,619.0,444,16.0,25,17,0,page_1_practice,"technology,"
+o,635.0,444,16.0,25,18,0,page_1_practice,"technology,"
+l,651.0,444,16.0,25,19,0,page_1_practice,"technology,"
+o,667.0,444,16.0,25,20,0,page_1_practice,"technology,"
+g,683.0,444,16.0,25,21,0,page_1_practice,"technology,"
+y,699.0,444,16.0,25,22,0,page_1_practice,"technology,"
+",",715.0,444,16.0,25,23,0,page_1_practice,"technology,"
+ ,731.0,444,16.0,25,24,0,page_1_practice,
+g,747.0,444,16.0,25,25,0,page_1_practice,"gadgets,"
+a,763.0,444,16.0,25,26,0,page_1_practice,"gadgets,"
+d,779.0,444,16.0,25,27,0,page_1_practice,"gadgets,"
+g,795.0,444,16.0,25,28,0,page_1_practice,"gadgets,"
+e,811.0,444,16.0,25,29,0,page_1_practice,"gadgets,"
+t,827.0,444,16.0,25,30,0,page_1_practice,"gadgets,"
+s,843.0,444,16.0,25,31,0,page_1_practice,"gadgets,"
+",",859.0,444,16.0,25,32,0,page_1_practice,"gadgets,"
+ ,875.0,444,16.0,25,33,0,page_1_practice,
+c,891.0,444,16.0,25,34,0,page_1_practice,consumer
+o,907.0,444,16.0,25,35,0,page_1_practice,consumer
+n,923.0,444,16.0,25,36,0,page_1_practice,consumer
+s,939.0,444,16.0,25,37,0,page_1_practice,consumer
+u,955.0,444,16.0,25,38,0,page_1_practice,consumer
+m,971.0,444,16.0,25,39,0,page_1_practice,consumer
+e,987.0,444,16.0,25,40,0,page_1_practice,consumer
+r,1003.0,444,16.0,25,41,0,page_1_practice,consumer
+ ,1019.0,444,16.0,25,42,0,page_1_practice,
+e,1035.0,444,16.0,25,43,0,page_1_practice,electronics
+l,1051.0,444,16.0,25,44,0,page_1_practice,electronics
+e,1067.0,444,16.0,25,45,0,page_1_practice,electronics
+c,1083.0,444,16.0,25,46,0,page_1_practice,electronics
+t,1099.0,444,16.0,25,47,0,page_1_practice,electronics
+r,1115.0,444,16.0,25,48,0,page_1_practice,electronics
+o,1131.0,444,16.0,25,49,0,page_1_practice,electronics
+n,1147.0,444,16.0,25,50,0,page_1_practice,electronics
+i,1163.0,444,16.0,25,51,0,page_1_practice,electronics
+c,1179.0,444,16.0,25,52,0,page_1_practice,electronics
+s,1195.0,444,16.0,25,53,0,page_1_practice,electronics
+C,347.0,562,16.0,25,0,0,page_1_practice,Created
+r,363.0,562,16.0,25,1,0,page_1_practice,Created
+e,379.0,562,16.0,25,2,0,page_1_practice,Created
+a,395.0,562,16.0,25,3,0,page_1_practice,Created
+t,411.0,562,16.0,25,4,0,page_1_practice,Created
+e,427.0,562,16.0,25,5,0,page_1_practice,Created
+d,443.0,562,16.0,25,6,0,page_1_practice,Created
+ ,459.0,562,16.0,25,7,0,page_1_practice,
+o,475.0,562,16.0,25,8,0,page_1_practice,on:
+n,491.0,562,16.0,25,9,0,page_1_practice,on:
+:,507.0,562,16.0,25,10,0,page_1_practice,on:
+ ,523.0,562,16.0,25,11,0,page_1_practice,
+p,539.0,562,16.0,25,12,0,page_1_practice,proprietary
+r,555.0,562,16.0,25,13,0,page_1_practice,proprietary
+o,571.0,562,16.0,25,14,0,page_1_practice,proprietary
+p,587.0,562,16.0,25,15,0,page_1_practice,proprietary
+r,603.0,562,16.0,25,16,0,page_1_practice,proprietary
+i,619.0,562,16.0,25,17,0,page_1_practice,proprietary
+e,635.0,562,16.0,25,18,0,page_1_practice,proprietary
+t,651.0,562,16.0,25,19,0,page_1_practice,proprietary
+a,667.0,562,16.0,25,20,0,page_1_practice,proprietary
+r,683.0,562,16.0,25,21,0,page_1_practice,proprietary
+y,699.0,562,16.0,25,22,0,page_1_practice,proprietary
+ ,715.0,562,16.0,25,23,0,page_1_practice,
+A,731.0,562,16.0,25,24,0,page_1_practice,AOL
+O,747.0,562,16.0,25,25,0,page_1_practice,AOL
+L,763.0,562,16.0,25,26,0,page_1_practice,AOL
+ ,779.0,562,16.0,25,27,0,page_1_practice,
+C,795.0,562,16.0,25,28,0,page_1_practice,CMS
+M,811.0,562,16.0,25,29,0,page_1_practice,CMS
+S,827.0,562,16.0,25,30,0,page_1_practice,CMS
+L,347.0,680,16.0,25,0,0,page_1_practice,Launched
+a,363.0,680,16.0,25,1,0,page_1_practice,Launched
+u,379.0,680,16.0,25,2,0,page_1_practice,Launched
+n,395.0,680,16.0,25,3,0,page_1_practice,Launched
+c,411.0,680,16.0,25,4,0,page_1_practice,Launched
+h,427.0,680,16.0,25,5,0,page_1_practice,Launched
+e,443.0,680,16.0,25,6,0,page_1_practice,Launched
+d,459.0,680,16.0,25,7,0,page_1_practice,Launched
+ ,475.0,680,16.0,25,8,0,page_1_practice,
+b,491.0,680,16.0,25,9,0,page_1_practice,by
+y,507.0,680,16.0,25,10,0,page_1_practice,by
+ ,523.0,680,16.0,25,11,0,page_1_practice,
+P,539.0,680,16.0,25,12,0,page_1_practice,Peter
+e,555.0,680,16.0,25,13,0,page_1_practice,Peter
+t,571.0,680,16.0,25,14,0,page_1_practice,Peter
+e,587.0,680,16.0,25,15,0,page_1_practice,Peter
+r,603.0,680,16.0,25,16,0,page_1_practice,Peter
+ ,619.0,680,16.0,25,17,0,page_1_practice,
+R,635.0,680,16.0,25,18,0,page_1_practice,"Rojas,"
+o,651.0,680,16.0,25,19,0,page_1_practice,"Rojas,"
+j,667.0,680,16.0,25,20,0,page_1_practice,"Rojas,"
+a,683.0,680,16.0,25,21,0,page_1_practice,"Rojas,"
+s,699.0,680,16.0,25,22,0,page_1_practice,"Rojas,"
+",",715.0,680,16.0,25,23,0,page_1_practice,"Rojas,"
+ ,731.0,680,16.0,25,24,0,page_1_practice,
+E,747.0,680,16.0,25,25,0,page_1_practice,Engadget
+n,763.0,680,16.0,25,26,0,page_1_practice,Engadget
+g,779.0,680,16.0,25,27,0,page_1_practice,Engadget
+a,795.0,680,16.0,25,28,0,page_1_practice,Engadget
+d,811.0,680,16.0,25,29,0,page_1_practice,Engadget
+g,827.0,680,16.0,25,30,0,page_1_practice,Engadget
+e,843.0,680,16.0,25,31,0,page_1_practice,Engadget
+t,859.0,680,16.0,25,32,0,page_1_practice,Engadget
+ ,875.0,680,16.0,25,33,0,page_1_practice,
+i,891.0,680,16.0,25,34,0,page_1_practice,is
+s,907.0,680,16.0,25,35,0,page_1_practice,is
+ ,923.0,680,16.0,25,36,0,page_1_practice,
+a,939.0,680,16.0,25,37,0,page_1_practice,a
+ ,955.0,680,16.0,25,38,0,page_1_practice,
+t,971.0,680,16.0,25,39,0,page_1_practice,technology
+e,987.0,680,16.0,25,40,0,page_1_practice,technology
+c,1003.0,680,16.0,25,41,0,page_1_practice,technology
+h,1019.0,680,16.0,25,42,0,page_1_practice,technology
+n,1035.0,680,16.0,25,43,0,page_1_practice,technology
+o,1051.0,680,16.0,25,44,0,page_1_practice,technology
+l,1067.0,680,16.0,25,45,0,page_1_practice,technology
+o,1083.0,680,16.0,25,46,0,page_1_practice,technology
+g,1099.0,680,16.0,25,47,0,page_1_practice,technology
+y,1115.0,680,16.0,25,48,0,page_1_practice,technology
+ ,1131.0,680,16.0,25,49,0,page_1_practice,
+b,1147.0,680,16.0,25,50,0,page_1_practice,blog
+l,1163.0,680,16.0,25,51,0,page_1_practice,blog
+o,1179.0,680,16.0,25,52,0,page_1_practice,blog
+g,1195.0,680,16.0,25,53,0,page_1_practice,blog
+ ,1211.0,680,16.0,25,54,0,page_1_practice,
+p,1227.0,680,16.0,25,55,0,page_1_practice,providing
+r,1243.0,680,16.0,25,56,0,page_1_practice,providing
+o,1259.0,680,16.0,25,57,0,page_1_practice,providing
+v,1275.0,680,16.0,25,58,0,page_1_practice,providing
+i,1291.0,680,16.0,25,59,0,page_1_practice,providing
+d,1307.0,680,16.0,25,60,0,page_1_practice,providing
+i,1323.0,680,16.0,25,61,0,page_1_practice,providing
+n,1339.0,680,16.0,25,62,0,page_1_practice,providing
+g,1355.0,680,16.0,25,63,0,page_1_practice,providing
+ ,1371.0,680,16.0,25,64,0,page_1_practice,
+r,1387.0,680,16.0,25,65,0,page_1_practice,reviews
+e,1403.0,680,16.0,25,66,0,page_1_practice,reviews
+v,1419.0,680,16.0,25,67,0,page_1_practice,reviews
+i,1435.0,680,16.0,25,68,0,page_1_practice,reviews
+e,1451.0,680,16.0,25,69,0,page_1_practice,reviews
+w,1467.0,680,16.0,25,70,0,page_1_practice,reviews
+s,1483.0,680,16.0,25,71,0,page_1_practice,reviews
+ ,1499.0,680,16.0,25,72,0,page_1_practice,
+o,1515.0,680,16.0,25,73,0,page_1_practice,of
+f,1531.0,680,16.0,25,74,0,page_1_practice,of
+g,347.0,798,16.0,25,0,2,page_1_practice,gadgets
+a,363.0,798,16.0,25,1,2,page_1_practice,gadgets
+d,379.0,798,16.0,25,2,2,page_1_practice,gadgets
+g,395.0,798,16.0,25,3,2,page_1_practice,gadgets
+e,411.0,798,16.0,25,4,2,page_1_practice,gadgets
+t,427.0,798,16.0,25,5,2,page_1_practice,gadgets
+s,443.0,798,16.0,25,6,2,page_1_practice,gadgets
+ ,459.0,798,16.0,25,7,2,page_1_practice,
+a,475.0,798,16.0,25,8,2,page_1_practice,and
+n,491.0,798,16.0,25,9,2,page_1_practice,and
+d,507.0,798,16.0,25,10,2,page_1_practice,and
+ ,523.0,798,16.0,25,11,2,page_1_practice,
+c,539.0,798,16.0,25,12,2,page_1_practice,consumer
+o,555.0,798,16.0,25,13,2,page_1_practice,consumer
+n,571.0,798,16.0,25,14,2,page_1_practice,consumer
+s,587.0,798,16.0,25,15,2,page_1_practice,consumer
+u,603.0,798,16.0,25,16,2,page_1_practice,consumer
+m,619.0,798,16.0,25,17,2,page_1_practice,consumer
+e,635.0,798,16.0,25,18,2,page_1_practice,consumer
+r,651.0,798,16.0,25,19,2,page_1_practice,consumer
+ ,667.0,798,16.0,25,20,2,page_1_practice,
+e,683.0,798,16.0,25,21,2,page_1_practice,electronics
+l,699.0,798,16.0,25,22,2,page_1_practice,electronics
+e,715.0,798,16.0,25,23,2,page_1_practice,electronics
+c,731.0,798,16.0,25,24,2,page_1_practice,electronics
+t,747.0,798,16.0,25,25,2,page_1_practice,electronics
+r,763.0,798,16.0,25,26,2,page_1_practice,electronics
+o,779.0,798,16.0,25,27,2,page_1_practice,electronics
+n,795.0,798,16.0,25,28,2,page_1_practice,electronics
+i,811.0,798,16.0,25,29,2,page_1_practice,electronics
+c,827.0,798,16.0,25,30,2,page_1_practice,electronics
+s,843.0,798,16.0,25,31,2,page_1_practice,electronics
+ ,859.0,798,16.0,25,32,2,page_1_practice,
+a,875.0,798,16.0,25,33,2,page_1_practice,as
+s,891.0,798,16.0,25,34,2,page_1_practice,as
+ ,907.0,798,16.0,25,35,2,page_1_practice,
+w,923.0,798,16.0,25,36,2,page_1_practice,well
+e,939.0,798,16.0,25,37,2,page_1_practice,well
+l,955.0,798,16.0,25,38,2,page_1_practice,well
+l,971.0,798,16.0,25,39,2,page_1_practice,well
+ ,987.0,798,16.0,25,40,2,page_1_practice,
+a,1003.0,798,16.0,25,41,2,page_1_practice,as
+s,1019.0,798,16.0,25,42,2,page_1_practice,as
+ ,1035.0,798,16.0,25,43,2,page_1_practice,
+t,1051.0,798,16.0,25,44,2,page_1_practice,the
+h,1067.0,798,16.0,25,45,2,page_1_practice,the
+e,1083.0,798,16.0,25,46,2,page_1_practice,the
+ ,1099.0,798,16.0,25,47,2,page_1_practice,
+l,1115.0,798,16.0,25,48,2,page_1_practice,latest
+a,1131.0,798,16.0,25,49,2,page_1_practice,latest
+t,1147.0,798,16.0,25,50,2,page_1_practice,latest
+e,1163.0,798,16.0,25,51,2,page_1_practice,latest
+s,1179.0,798,16.0,25,52,2,page_1_practice,latest
+t,1195.0,798,16.0,25,53,2,page_1_practice,latest
+ ,1211.0,798,16.0,25,54,2,page_1_practice,
+n,1227.0,798,16.0,25,55,2,page_1_practice,news
+e,1243.0,798,16.0,25,56,2,page_1_practice,news
+w,1259.0,798,16.0,25,57,2,page_1_practice,news
+s,1275.0,798,16.0,25,58,2,page_1_practice,news
+ ,1291.0,798,16.0,25,59,2,page_1_practice,
+i,1307.0,798,16.0,25,60,2,page_1_practice,in
+n,1323.0,798,16.0,25,61,2,page_1_practice,in
+ ,1339.0,798,16.0,25,62,2,page_1_practice,
+t,1355.0,798,16.0,25,63,2,page_1_practice,the
+h,1371.0,798,16.0,25,64,2,page_1_practice,the
+e,1387.0,798,16.0,25,65,2,page_1_practice,the
+ ,1403.0,798,16.0,25,66,2,page_1_practice,
+t,1419.0,798,16.0,25,67,2,page_1_practice,tech
+e,1435.0,798,16.0,25,68,2,page_1_practice,tech
+c,1451.0,798,16.0,25,69,2,page_1_practice,tech
+h,1467.0,798,16.0,25,70,2,page_1_practice,tech
+w,347.0,916,16.0,20,0,4,page_1_practice,world.
+o,363.0,916,16.0,20,1,4,page_1_practice,world.
+r,379.0,916,16.0,20,2,4,page_1_practice,world.
+l,395.0,916,16.0,20,3,4,page_1_practice,world.
+d,411.0,916,16.0,20,4,4,page_1_practice,world.
+.,427.0,916,16.0,20,5,4,page_1_practice,world.
+I,347.0,1029,16.0,25,0,0,page_1_practice,It
+t,363.0,1029,16.0,25,1,0,page_1_practice,It
+ ,379.0,1029,16.0,25,2,0,page_1_practice,
+a,395.0,1029,16.0,25,3,0,page_1_practice,also
+l,411.0,1029,16.0,25,4,0,page_1_practice,also
+s,427.0,1029,16.0,25,5,0,page_1_practice,also
+o,443.0,1029,16.0,25,6,0,page_1_practice,also
+ ,459.0,1029,16.0,25,7,0,page_1_practice,
+s,475.0,1029,16.0,25,8,0,page_1_practice,showcases
+h,491.0,1029,16.0,25,9,0,page_1_practice,showcases
+o,507.0,1029,16.0,25,10,0,page_1_practice,showcases
+w,523.0,1029,16.0,25,11,0,page_1_practice,showcases
+c,539.0,1029,16.0,25,12,0,page_1_practice,showcases
+a,555.0,1029,16.0,25,13,0,page_1_practice,showcases
+s,571.0,1029,16.0,25,14,0,page_1_practice,showcases
+e,587.0,1029,16.0,25,15,0,page_1_practice,showcases
+s,603.0,1029,16.0,25,16,0,page_1_practice,showcases
+ ,619.0,1029,16.0,25,17,0,page_1_practice,
+t,635.0,1029,16.0,25,18,0,page_1_practice,the
+h,651.0,1029,16.0,25,19,0,page_1_practice,the
+e,667.0,1029,16.0,25,20,0,page_1_practice,the
+ ,683.0,1029,16.0,25,21,0,page_1_practice,
+b,699.0,1029,16.0,25,22,0,page_1_practice,best
+e,715.0,1029,16.0,25,23,0,page_1_practice,best
+s,731.0,1029,16.0,25,24,0,page_1_practice,best
+t,747.0,1029,16.0,25,25,0,page_1_practice,best
+ ,763.0,1029,16.0,25,26,0,page_1_practice,
+t,779.0,1029,16.0,25,27,0,page_1_practice,tech
+e,795.0,1029,16.0,25,28,0,page_1_practice,tech
+c,811.0,1029,16.0,25,29,0,page_1_practice,tech
+h,827.0,1029,16.0,25,30,0,page_1_practice,tech
+ ,843.0,1029,16.0,25,31,0,page_1_practice,
+d,859.0,1029,16.0,25,32,0,page_1_practice,"deals,"
+e,875.0,1029,16.0,25,33,0,page_1_practice,"deals,"
+a,891.0,1029,16.0,25,34,0,page_1_practice,"deals,"
+l,907.0,1029,16.0,25,35,0,page_1_practice,"deals,"
+s,923.0,1029,16.0,25,36,0,page_1_practice,"deals,"
+",",939.0,1029,16.0,25,37,0,page_1_practice,"deals,"
+ ,955.0,1029,16.0,25,38,0,page_1_practice,
+h,971.0,1029,16.0,25,39,0,page_1_practice,helping
+e,987.0,1029,16.0,25,40,0,page_1_practice,helping
+l,1003.0,1029,16.0,25,41,0,page_1_practice,helping
+p,1019.0,1029,16.0,25,42,0,page_1_practice,helping
+i,1035.0,1029,16.0,25,43,0,page_1_practice,helping
+n,1051.0,1029,16.0,25,44,0,page_1_practice,helping
+g,1067.0,1029,16.0,25,45,0,page_1_practice,helping
+ ,1083.0,1029,16.0,25,46,0,page_1_practice,
+p,1099.0,1029,16.0,25,47,0,page_1_practice,people
+e,1115.0,1029,16.0,25,48,0,page_1_practice,people
+o,1131.0,1029,16.0,25,49,0,page_1_practice,people
+p,1147.0,1029,16.0,25,50,0,page_1_practice,people
+l,1163.0,1029,16.0,25,51,0,page_1_practice,people
+e,1179.0,1029,16.0,25,52,0,page_1_practice,people
+ ,1195.0,1029,16.0,25,53,0,page_1_practice,
+m,1211.0,1029,16.0,25,54,0,page_1_practice,make
+a,1227.0,1029,16.0,25,55,0,page_1_practice,make
+k,1243.0,1029,16.0,25,56,0,page_1_practice,make
+e,1259.0,1029,16.0,25,57,0,page_1_practice,make
+ ,1275.0,1029,16.0,25,58,0,page_1_practice,
+t,1291.0,1029,16.0,25,59,0,page_1_practice,the
+h,1307.0,1029,16.0,25,60,0,page_1_practice,the
+e,1323.0,1029,16.0,25,61,0,page_1_practice,the
+ ,1339.0,1029,16.0,25,62,0,page_1_practice,
+b,1355.0,1029,16.0,25,63,0,page_1_practice,best
+e,1371.0,1029,16.0,25,64,0,page_1_practice,best
+s,1387.0,1029,16.0,25,65,0,page_1_practice,best
+t,1403.0,1029,16.0,25,66,0,page_1_practice,best
+ ,1419.0,1029,16.0,25,67,0,page_1_practice,
+g,1435.0,1029,16.0,25,68,0,page_1_practice,gadget
+a,1451.0,1029,16.0,25,69,0,page_1_practice,gadget
+d,1467.0,1029,16.0,25,70,0,page_1_practice,gadget
+g,1483.0,1029,16.0,25,71,0,page_1_practice,gadget
+e,1499.0,1029,16.0,25,72,0,page_1_practice,gadget
+t,1515.0,1029,16.0,25,73,0,page_1_practice,gadget
+p,347.0,1147,16.0,25,0,2,page_1_practice,purchases
+u,363.0,1147,16.0,25,1,2,page_1_practice,purchases
+r,379.0,1147,16.0,25,2,2,page_1_practice,purchases
+c,395.0,1147,16.0,25,3,2,page_1_practice,purchases
+h,411.0,1147,16.0,25,4,2,page_1_practice,purchases
+a,427.0,1147,16.0,25,5,2,page_1_practice,purchases
+s,443.0,1147,16.0,25,6,2,page_1_practice,purchases
+e,459.0,1147,16.0,25,7,2,page_1_practice,purchases
+s,475.0,1147,16.0,25,8,2,page_1_practice,purchases
+ ,491.0,1147,16.0,25,9,2,page_1_practice,
+a,507.0,1147,16.0,25,10,2,page_1_practice,according
+c,523.0,1147,16.0,25,11,2,page_1_practice,according
+c,539.0,1147,16.0,25,12,2,page_1_practice,according
+o,555.0,1147,16.0,25,13,2,page_1_practice,according
+r,571.0,1147,16.0,25,14,2,page_1_practice,according
+d,587.0,1147,16.0,25,15,2,page_1_practice,according
+i,603.0,1147,16.0,25,16,2,page_1_practice,according
+n,619.0,1147,16.0,25,17,2,page_1_practice,according
+g,635.0,1147,16.0,25,18,2,page_1_practice,according
+ ,651.0,1147,16.0,25,19,2,page_1_practice,
+t,667.0,1147,16.0,25,20,2,page_1_practice,to
+o,683.0,1147,16.0,25,21,2,page_1_practice,to
+ ,699.0,1147,16.0,25,22,2,page_1_practice,
+t,715.0,1147,16.0,25,23,2,page_1_practice,their
+h,731.0,1147,16.0,25,24,2,page_1_practice,their
+e,747.0,1147,16.0,25,25,2,page_1_practice,their
+i,763.0,1147,16.0,25,26,2,page_1_practice,their
+r,779.0,1147,16.0,25,27,2,page_1_practice,their
+ ,795.0,1147,16.0,25,28,2,page_1_practice,
+n,811.0,1147,16.0,25,29,2,page_1_practice,needs.
+e,827.0,1147,16.0,25,30,2,page_1_practice,needs.
+e,843.0,1147,16.0,25,31,2,page_1_practice,needs.
+d,859.0,1147,16.0,25,32,2,page_1_practice,needs.
+s,875.0,1147,16.0,25,33,2,page_1_practice,needs.
+.,891.0,1147,16.0,25,34,2,page_1_practice,needs.
+W,347.0,93,16.0,25,0,0,page_2_practice,What
+h,363.0,93,16.0,25,1,0,page_2_practice,What
+a,379.0,93,16.0,25,2,0,page_2_practice,What
+t,395.0,93,16.0,25,3,0,page_2_practice,What
+ ,411.0,93,16.0,25,4,0,page_2_practice,
+C,427.0,93,16.0,25,5,0,page_2_practice,Can
+a,443.0,93,16.0,25,6,0,page_2_practice,Can
+n,459.0,93,16.0,25,7,0,page_2_practice,Can
+ ,475.0,93,16.0,25,8,0,page_2_practice,
+W,491.0,93,16.0,25,9,0,page_2_practice,We
+e,507.0,93,16.0,25,10,0,page_2_practice,We
+ ,523.0,93,16.0,25,11,0,page_2_practice,
+L,539.0,93,16.0,25,12,0,page_2_practice,Learn
+e,555.0,93,16.0,25,13,0,page_2_practice,Learn
+a,571.0,93,16.0,25,14,0,page_2_practice,Learn
+r,587.0,93,16.0,25,15,0,page_2_practice,Learn
+n,603.0,93,16.0,25,16,0,page_2_practice,Learn
+ ,619.0,93,16.0,25,17,0,page_2_practice,
+F,635.0,93,16.0,25,18,0,page_2_practice,From
+r,651.0,93,16.0,25,19,0,page_2_practice,From
+o,667.0,93,16.0,25,20,0,page_2_practice,From
+m,683.0,93,16.0,25,21,0,page_2_practice,From
+ ,699.0,93,16.0,25,22,0,page_2_practice,
+T,715.0,93,16.0,25,23,0,page_2_practice,This
+h,731.0,93,16.0,25,24,0,page_2_practice,This
+i,747.0,93,16.0,25,25,0,page_2_practice,This
+s,763.0,93,16.0,25,26,0,page_2_practice,This
+ ,779.0,93,16.0,25,27,0,page_2_practice,
+B,795.0,93,16.0,25,28,0,page_2_practice,Blog
+l,811.0,93,16.0,25,29,0,page_2_practice,Blog
+o,827.0,93,16.0,25,30,0,page_2_practice,Blog
+g,843.0,93,16.0,25,31,0,page_2_practice,Blog
+T,347.0,211,16.0,25,0,0,page_2_practice,The
+h,363.0,211,16.0,25,1,0,page_2_practice,The
+e,379.0,211,16.0,25,2,0,page_2_practice,The
+ ,395.0,211,16.0,25,3,0,page_2_practice,
+b,411.0,211,16.0,25,4,0,page_2_practice,blog’s
+l,427.0,211,16.0,25,5,0,page_2_practice,blog’s
+o,443.0,211,16.0,25,6,0,page_2_practice,blog’s
+g,459.0,211,16.0,25,7,0,page_2_practice,blog’s
+’,475.0,211,16.0,25,8,0,page_2_practice,blog’s
+s,491.0,211,16.0,25,9,0,page_2_practice,blog’s
+ ,507.0,211,16.0,25,10,0,page_2_practice,
+s,523.0,211,16.0,25,11,0,page_2_practice,simple
+i,539.0,211,16.0,25,12,0,page_2_practice,simple
+m,555.0,211,16.0,25,13,0,page_2_practice,simple
+p,571.0,211,16.0,25,14,0,page_2_practice,simple
+l,587.0,211,16.0,25,15,0,page_2_practice,simple
+e,603.0,211,16.0,25,16,0,page_2_practice,simple
+ ,619.0,211,16.0,25,17,0,page_2_practice,
+b,635.0,211,16.0,25,18,0,page_2_practice,black-and-white
+l,651.0,211,16.0,25,19,0,page_2_practice,black-and-white
+a,667.0,211,16.0,25,20,0,page_2_practice,black-and-white
+c,683.0,211,16.0,25,21,0,page_2_practice,black-and-white
+k,699.0,211,16.0,25,22,0,page_2_practice,black-and-white
+-,715.0,211,16.0,25,23,0,page_2_practice,black-and-white
+a,731.0,211,16.0,25,24,0,page_2_practice,black-and-white
+n,747.0,211,16.0,25,25,0,page_2_practice,black-and-white
+d,763.0,211,16.0,25,26,0,page_2_practice,black-and-white
+-,779.0,211,16.0,25,27,0,page_2_practice,black-and-white
+w,795.0,211,16.0,25,28,0,page_2_practice,black-and-white
+h,811.0,211,16.0,25,29,0,page_2_practice,black-and-white
+i,827.0,211,16.0,25,30,0,page_2_practice,black-and-white
+t,843.0,211,16.0,25,31,0,page_2_practice,black-and-white
+e,859.0,211,16.0,25,32,0,page_2_practice,black-and-white
+ ,875.0,211,16.0,25,33,0,page_2_practice,
+t,891.0,211,16.0,25,34,0,page_2_practice,theme
+h,907.0,211,16.0,25,35,0,page_2_practice,theme
+e,923.0,211,16.0,25,36,0,page_2_practice,theme
+m,939.0,211,16.0,25,37,0,page_2_practice,theme
+e,955.0,211,16.0,25,38,0,page_2_practice,theme
+ ,971.0,211,16.0,25,39,0,page_2_practice,
+g,987.0,211,16.0,25,40,0,page_2_practice,gives
+i,1003.0,211,16.0,25,41,0,page_2_practice,gives
+v,1019.0,211,16.0,25,42,0,page_2_practice,gives
+e,1035.0,211,16.0,25,43,0,page_2_practice,gives
+s,1051.0,211,16.0,25,44,0,page_2_practice,gives
+ ,1067.0,211,16.0,25,45,0,page_2_practice,
+i,1083.0,211,16.0,25,46,0,page_2_practice,it
+t,1099.0,211,16.0,25,47,0,page_2_practice,it
+ ,1115.0,211,16.0,25,48,0,page_2_practice,
+a,1131.0,211,16.0,25,49,0,page_2_practice,a
+ ,1147.0,211,16.0,25,50,0,page_2_practice,
+s,1163.0,211,16.0,25,51,0,page_2_practice,sleek
+l,1179.0,211,16.0,25,52,0,page_2_practice,sleek
+e,1195.0,211,16.0,25,53,0,page_2_practice,sleek
+e,1211.0,211,16.0,25,54,0,page_2_practice,sleek
+k,1227.0,211,16.0,25,55,0,page_2_practice,sleek
+ ,1243.0,211,16.0,25,56,0,page_2_practice,
+l,1259.0,211,16.0,25,57,0,page_2_practice,look
+o,1275.0,211,16.0,25,58,0,page_2_practice,look
+o,1291.0,211,16.0,25,59,0,page_2_practice,look
+k,1307.0,211,16.0,25,60,0,page_2_practice,look
+ ,1323.0,211,16.0,25,61,0,page_2_practice,
+f,1339.0,211,16.0,25,62,0,page_2_practice,fitting
+i,1355.0,211,16.0,25,63,0,page_2_practice,fitting
+t,1371.0,211,16.0,25,64,0,page_2_practice,fitting
+t,1387.0,211,16.0,25,65,0,page_2_practice,fitting
+i,1403.0,211,16.0,25,66,0,page_2_practice,fitting
+n,1419.0,211,16.0,25,67,0,page_2_practice,fitting
+g,1435.0,211,16.0,25,68,0,page_2_practice,fitting
+ ,1451.0,211,16.0,25,69,0,page_2_practice,
+f,1467.0,211,16.0,25,70,0,page_2_practice,for
+o,1483.0,211,16.0,25,71,0,page_2_practice,for
+r,1499.0,211,16.0,25,72,0,page_2_practice,for
+ ,1515.0,211,16.0,25,73,0,page_2_practice,
+a,1531.0,211,16.0,25,74,0,page_2_practice,a
+t,347.0,329,16.0,25,0,2,page_2_practice,technology
+e,363.0,329,16.0,25,1,2,page_2_practice,technology
+c,379.0,329,16.0,25,2,2,page_2_practice,technology
+h,395.0,329,16.0,25,3,2,page_2_practice,technology
+n,411.0,329,16.0,25,4,2,page_2_practice,technology
+o,427.0,329,16.0,25,5,2,page_2_practice,technology
+l,443.0,329,16.0,25,6,2,page_2_practice,technology
+o,459.0,329,16.0,25,7,2,page_2_practice,technology
+g,475.0,329,16.0,25,8,2,page_2_practice,technology
+y,491.0,329,16.0,25,9,2,page_2_practice,technology
+ ,507.0,329,16.0,25,10,2,page_2_practice,
+b,523.0,329,16.0,25,11,2,page_2_practice,blog.
+l,539.0,329,16.0,25,12,2,page_2_practice,blog.
+o,555.0,329,16.0,25,13,2,page_2_practice,blog.
+g,571.0,329,16.0,25,14,2,page_2_practice,blog.
+.,587.0,329,16.0,25,15,2,page_2_practice,blog.
+ ,603.0,329,16.0,25,16,2,page_2_practice,
+U,619.0,329,16.0,25,17,2,page_2_practice,Upon
+p,635.0,329,16.0,25,18,2,page_2_practice,Upon
+o,651.0,329,16.0,25,19,2,page_2_practice,Upon
+n,667.0,329,16.0,25,20,2,page_2_practice,Upon
+ ,683.0,329,16.0,25,21,2,page_2_practice,
+a,699.0,329,16.0,25,22,2,page_2_practice,accessing
+c,715.0,329,16.0,25,23,2,page_2_practice,accessing
+c,731.0,329,16.0,25,24,2,page_2_practice,accessing
+e,747.0,329,16.0,25,25,2,page_2_practice,accessing
+s,763.0,329,16.0,25,26,2,page_2_practice,accessing
+s,779.0,329,16.0,25,27,2,page_2_practice,accessing
+i,795.0,329,16.0,25,28,2,page_2_practice,accessing
+n,811.0,329,16.0,25,29,2,page_2_practice,accessing
+g,827.0,329,16.0,25,30,2,page_2_practice,accessing
+ ,843.0,329,16.0,25,31,2,page_2_practice,
+t,859.0,329,16.0,25,32,2,page_2_practice,the
+h,875.0,329,16.0,25,33,2,page_2_practice,the
+e,891.0,329,16.0,25,34,2,page_2_practice,the
+ ,907.0,329,16.0,25,35,2,page_2_practice,
+w,923.0,329,16.0,25,36,2,page_2_practice,"website,"
+e,939.0,329,16.0,25,37,2,page_2_practice,"website,"
+b,955.0,329,16.0,25,38,2,page_2_practice,"website,"
+s,971.0,329,16.0,25,39,2,page_2_practice,"website,"
+i,987.0,329,16.0,25,40,2,page_2_practice,"website,"
+t,1003.0,329,16.0,25,41,2,page_2_practice,"website,"
+e,1019.0,329,16.0,25,42,2,page_2_practice,"website,"
+",",1035.0,329,16.0,25,43,2,page_2_practice,"website,"
+ ,1051.0,329,16.0,25,44,2,page_2_practice,
+v,1067.0,329,16.0,25,45,2,page_2_practice,visitors’
+i,1083.0,329,16.0,25,46,2,page_2_practice,visitors’
+s,1099.0,329,16.0,25,47,2,page_2_practice,visitors’
+i,1115.0,329,16.0,25,48,2,page_2_practice,visitors’
+t,1131.0,329,16.0,25,49,2,page_2_practice,visitors’
+o,1147.0,329,16.0,25,50,2,page_2_practice,visitors’
+r,1163.0,329,16.0,25,51,2,page_2_practice,visitors’
+s,1179.0,329,16.0,25,52,2,page_2_practice,visitors’
+’,1195.0,329,16.0,25,53,2,page_2_practice,visitors’
+ ,1211.0,329,16.0,25,54,2,page_2_practice,
+e,1227.0,329,16.0,25,55,2,page_2_practice,eyes
+y,1243.0,329,16.0,25,56,2,page_2_practice,eyes
+e,1259.0,329,16.0,25,57,2,page_2_practice,eyes
+s,1275.0,329,16.0,25,58,2,page_2_practice,eyes
+ ,1291.0,329,16.0,25,59,2,page_2_practice,
+a,1307.0,329,16.0,25,60,2,page_2_practice,are
+r,1323.0,329,16.0,25,61,2,page_2_practice,are
+e,1339.0,329,16.0,25,62,2,page_2_practice,are
+ ,1355.0,329,16.0,25,63,2,page_2_practice,
+i,1371.0,329,16.0,25,64,2,page_2_practice,immediately
+m,1387.0,329,16.0,25,65,2,page_2_practice,immediately
+m,1403.0,329,16.0,25,66,2,page_2_practice,immediately
+e,1419.0,329,16.0,25,67,2,page_2_practice,immediately
+d,1435.0,329,16.0,25,68,2,page_2_practice,immediately
+i,1451.0,329,16.0,25,69,2,page_2_practice,immediately
+a,1467.0,329,16.0,25,70,2,page_2_practice,immediately
+t,1483.0,329,16.0,25,71,2,page_2_practice,immediately
+e,1499.0,329,16.0,25,72,2,page_2_practice,immediately
+l,1515.0,329,16.0,25,73,2,page_2_practice,immediately
+y,1531.0,329,16.0,25,74,2,page_2_practice,immediately
+d,347.0,447,16.0,25,0,4,page_2_practice,drawn
+r,363.0,447,16.0,25,1,4,page_2_practice,drawn
+a,379.0,447,16.0,25,2,4,page_2_practice,drawn
+w,395.0,447,16.0,25,3,4,page_2_practice,drawn
+n,411.0,447,16.0,25,4,4,page_2_practice,drawn
+ ,427.0,447,16.0,25,5,4,page_2_practice,
+t,443.0,447,16.0,25,6,4,page_2_practice,to
+o,459.0,447,16.0,25,7,4,page_2_practice,to
+ ,475.0,447,16.0,25,8,4,page_2_practice,
+t,491.0,447,16.0,25,9,4,page_2_practice,the
+h,507.0,447,16.0,25,10,4,page_2_practice,the
+e,523.0,447,16.0,25,11,4,page_2_practice,the
+ ,539.0,447,16.0,25,12,4,page_2_practice,
+c,555.0,447,16.0,25,13,4,page_2_practice,collage
+o,571.0,447,16.0,25,14,4,page_2_practice,collage
+l,587.0,447,16.0,25,15,4,page_2_practice,collage
+l,603.0,447,16.0,25,16,4,page_2_practice,collage
+a,619.0,447,16.0,25,17,4,page_2_practice,collage
+g,635.0,447,16.0,25,18,4,page_2_practice,collage
+e,651.0,447,16.0,25,19,4,page_2_practice,collage
+ ,667.0,447,16.0,25,20,4,page_2_practice,
+o,683.0,447,16.0,25,21,4,page_2_practice,of
+f,699.0,447,16.0,25,22,4,page_2_practice,of
+ ,715.0,447,16.0,25,23,4,page_2_practice,
+p,731.0,447,16.0,25,24,4,page_2_practice,photos
+h,747.0,447,16.0,25,25,4,page_2_practice,photos
+o,763.0,447,16.0,25,26,4,page_2_practice,photos
+t,779.0,447,16.0,25,27,4,page_2_practice,photos
+o,795.0,447,16.0,25,28,4,page_2_practice,photos
+s,811.0,447,16.0,25,29,4,page_2_practice,photos
+ ,827.0,447,16.0,25,30,4,page_2_practice,
+a,843.0,447,16.0,25,31,4,page_2_practice,and
+n,859.0,447,16.0,25,32,4,page_2_practice,and
+d,875.0,447,16.0,25,33,4,page_2_practice,and
+ ,891.0,447,16.0,25,34,4,page_2_practice,
+h,907.0,447,16.0,25,35,4,page_2_practice,headlines
+e,923.0,447,16.0,25,36,4,page_2_practice,headlines
+a,939.0,447,16.0,25,37,4,page_2_practice,headlines
+d,955.0,447,16.0,25,38,4,page_2_practice,headlines
+l,971.0,447,16.0,25,39,4,page_2_practice,headlines
+i,987.0,447,16.0,25,40,4,page_2_practice,headlines
+n,1003.0,447,16.0,25,41,4,page_2_practice,headlines
+e,1019.0,447,16.0,25,42,4,page_2_practice,headlines
+s,1035.0,447,16.0,25,43,4,page_2_practice,headlines
+ ,1051.0,447,16.0,25,44,4,page_2_practice,
+o,1067.0,447,16.0,25,45,4,page_2_practice,of
+f,1083.0,447,16.0,25,46,4,page_2_practice,of
+ ,1099.0,447,16.0,25,47,4,page_2_practice,
+t,1115.0,447,16.0,25,48,4,page_2_practice,their
+h,1131.0,447,16.0,25,49,4,page_2_practice,their
+e,1147.0,447,16.0,25,50,4,page_2_practice,their
+i,1163.0,447,16.0,25,51,4,page_2_practice,their
+r,1179.0,447,16.0,25,52,4,page_2_practice,their
+ ,1195.0,447,16.0,25,53,4,page_2_practice,
+m,1211.0,447,16.0,25,54,4,page_2_practice,most
+o,1227.0,447,16.0,25,55,4,page_2_practice,most
+s,1243.0,447,16.0,25,56,4,page_2_practice,most
+t,1259.0,447,16.0,25,57,4,page_2_practice,most
+ ,1275.0,447,16.0,25,58,4,page_2_practice,
+r,1291.0,447,16.0,25,59,4,page_2_practice,recent
+e,1307.0,447,16.0,25,60,4,page_2_practice,recent
+c,1323.0,447,16.0,25,61,4,page_2_practice,recent
+e,1339.0,447,16.0,25,62,4,page_2_practice,recent
+n,1355.0,447,16.0,25,63,4,page_2_practice,recent
+t,1371.0,447,16.0,25,64,4,page_2_practice,recent
+ ,1387.0,447,16.0,25,65,4,page_2_practice,
+a,1403.0,447,16.0,25,66,4,page_2_practice,and
+n,1419.0,447,16.0,25,67,4,page_2_practice,and
+d,1435.0,447,16.0,25,68,4,page_2_practice,and
+p,347.0,565,16.0,25,0,6,page_2_practice,popular
+o,363.0,565,16.0,25,1,6,page_2_practice,popular
+p,379.0,565,16.0,25,2,6,page_2_practice,popular
+u,395.0,565,16.0,25,3,6,page_2_practice,popular
+l,411.0,565,16.0,25,4,6,page_2_practice,popular
+a,427.0,565,16.0,25,5,6,page_2_practice,popular
+r,443.0,565,16.0,25,6,6,page_2_practice,popular
+ ,459.0,565,16.0,25,7,6,page_2_practice,
+a,475.0,565,16.0,25,8,6,page_2_practice,articles.
+r,491.0,565,16.0,25,9,6,page_2_practice,articles.
+t,507.0,565,16.0,25,10,6,page_2_practice,articles.
+i,523.0,565,16.0,25,11,6,page_2_practice,articles.
+c,539.0,565,16.0,25,12,6,page_2_practice,articles.
+l,555.0,565,16.0,25,13,6,page_2_practice,articles.
+e,571.0,565,16.0,25,14,6,page_2_practice,articles.
+s,587.0,565,16.0,25,15,6,page_2_practice,articles.
+.,603.0,565,16.0,25,16,6,page_2_practice,articles.
+ ,619.0,565,16.0,25,17,6,page_2_practice,
+F,635.0,565,16.0,25,18,6,page_2_practice,Further
+u,651.0,565,16.0,25,19,6,page_2_practice,Further
+r,667.0,565,16.0,25,20,6,page_2_practice,Further
+t,683.0,565,16.0,25,21,6,page_2_practice,Further
+h,699.0,565,16.0,25,22,6,page_2_practice,Further
+e,715.0,565,16.0,25,23,6,page_2_practice,Further
+r,731.0,565,16.0,25,24,6,page_2_practice,Further
+ ,747.0,565,16.0,25,25,6,page_2_practice,
+d,763.0,565,16.0,25,26,6,page_2_practice,down
+o,779.0,565,16.0,25,27,6,page_2_practice,down
+w,795.0,565,16.0,25,28,6,page_2_practice,down
+n,811.0,565,16.0,25,29,6,page_2_practice,down
+ ,827.0,565,16.0,25,30,6,page_2_practice,
+t,843.0,565,16.0,25,31,6,page_2_practice,the
+h,859.0,565,16.0,25,32,6,page_2_practice,the
+e,875.0,565,16.0,25,33,6,page_2_practice,the
+ ,891.0,565,16.0,25,34,6,page_2_practice,
+p,907.0,565,16.0,25,35,6,page_2_practice,"page,"
+a,923.0,565,16.0,25,36,6,page_2_practice,"page,"
+g,939.0,565,16.0,25,37,6,page_2_practice,"page,"
+e,955.0,565,16.0,25,38,6,page_2_practice,"page,"
+",",971.0,565,16.0,25,39,6,page_2_practice,"page,"
+ ,987.0,565,16.0,25,40,6,page_2_practice,
+m,1003.0,565,16.0,25,41,6,page_2_practice,more
+o,1019.0,565,16.0,25,42,6,page_2_practice,more
+r,1035.0,565,16.0,25,43,6,page_2_practice,more
+e,1051.0,565,16.0,25,44,6,page_2_practice,more
+ ,1067.0,565,16.0,25,45,6,page_2_practice,
+a,1083.0,565,16.0,25,46,6,page_2_practice,article
+r,1099.0,565,16.0,25,47,6,page_2_practice,article
+t,1115.0,565,16.0,25,48,6,page_2_practice,article
+i,1131.0,565,16.0,25,49,6,page_2_practice,article
+c,1147.0,565,16.0,25,50,6,page_2_practice,article
+l,1163.0,565,16.0,25,51,6,page_2_practice,article
+e,1179.0,565,16.0,25,52,6,page_2_practice,article
+ ,1195.0,565,16.0,25,53,6,page_2_practice,
+h,1211.0,565,16.0,25,54,6,page_2_practice,headlines
+e,1227.0,565,16.0,25,55,6,page_2_practice,headlines
+a,1243.0,565,16.0,25,56,6,page_2_practice,headlines
+d,1259.0,565,16.0,25,57,6,page_2_practice,headlines
+l,1275.0,565,16.0,25,58,6,page_2_practice,headlines
+i,1291.0,565,16.0,25,59,6,page_2_practice,headlines
+n,1307.0,565,16.0,25,60,6,page_2_practice,headlines
+e,1323.0,565,16.0,25,61,6,page_2_practice,headlines
+s,1339.0,565,16.0,25,62,6,page_2_practice,headlines
+ ,1355.0,565,16.0,25,63,6,page_2_practice,
+a,1371.0,565,16.0,25,64,6,page_2_practice,are
+r,1387.0,565,16.0,25,65,6,page_2_practice,are
+e,1403.0,565,16.0,25,66,6,page_2_practice,are
+ ,1419.0,565,16.0,25,67,6,page_2_practice,
+s,1435.0,565,16.0,25,68,6,page_2_practice,sorted
+o,1451.0,565,16.0,25,69,6,page_2_practice,sorted
+r,1467.0,565,16.0,25,70,6,page_2_practice,sorted
+t,1483.0,565,16.0,25,71,6,page_2_practice,sorted
+e,1499.0,565,16.0,25,72,6,page_2_practice,sorted
+d,1515.0,565,16.0,25,73,6,page_2_practice,sorted
+b,347.0,683,16.0,25,0,8,page_2_practice,by
+y,363.0,683,16.0,25,1,8,page_2_practice,by
+ ,379.0,683,16.0,25,2,8,page_2_practice,
+t,395.0,683,16.0,25,3,8,page_2_practice,the
+h,411.0,683,16.0,25,4,8,page_2_practice,the
+e,427.0,683,16.0,25,5,8,page_2_practice,the
+ ,443.0,683,16.0,25,6,8,page_2_practice,
+m,459.0,683,16.0,25,7,8,page_2_practice,most
+o,475.0,683,16.0,25,8,8,page_2_practice,most
+s,491.0,683,16.0,25,9,8,page_2_practice,most
+t,507.0,683,16.0,25,10,8,page_2_practice,most
+ ,523.0,683,16.0,25,11,8,page_2_practice,
+r,539.0,683,16.0,25,12,8,page_2_practice,recent
+e,555.0,683,16.0,25,13,8,page_2_practice,recent
+c,571.0,683,16.0,25,14,8,page_2_practice,recent
+e,587.0,683,16.0,25,15,8,page_2_practice,recent
+n,603.0,683,16.0,25,16,8,page_2_practice,recent
+t,619.0,683,16.0,25,17,8,page_2_practice,recent
+ ,635.0,683,16.0,25,18,8,page_2_practice,
+t,651.0,683,16.0,25,19,8,page_2_practice,to
+o,667.0,683,16.0,25,20,8,page_2_practice,to
+ ,683.0,683,16.0,25,21,8,page_2_practice,
+t,699.0,683,16.0,25,22,8,page_2_practice,the
+h,715.0,683,16.0,25,23,8,page_2_practice,the
+e,731.0,683,16.0,25,24,8,page_2_practice,the
+ ,747.0,683,16.0,25,25,8,page_2_practice,
+o,763.0,683,16.0,25,26,8,page_2_practice,oldest
+l,779.0,683,16.0,25,27,8,page_2_practice,oldest
+d,795.0,683,16.0,25,28,8,page_2_practice,oldest
+e,811.0,683,16.0,25,29,8,page_2_practice,oldest
+s,827.0,683,16.0,25,30,8,page_2_practice,oldest
+t,843.0,683,16.0,25,31,8,page_2_practice,oldest
+ ,859.0,683,16.0,25,32,8,page_2_practice,
+a,875.0,683,16.0,25,33,8,page_2_practice,and
+n,891.0,683,16.0,25,34,8,page_2_practice,and
+d,907.0,683,16.0,25,35,8,page_2_practice,and
+ ,923.0,683,16.0,25,36,8,page_2_practice,
+a,939.0,683,16.0,25,37,8,page_2_practice,accompanied
+c,955.0,683,16.0,25,38,8,page_2_practice,accompanied
+c,971.0,683,16.0,25,39,8,page_2_practice,accompanied
+o,987.0,683,16.0,25,40,8,page_2_practice,accompanied
+m,1003.0,683,16.0,25,41,8,page_2_practice,accompanied
+p,1019.0,683,16.0,25,42,8,page_2_practice,accompanied
+a,1035.0,683,16.0,25,43,8,page_2_practice,accompanied
+n,1051.0,683,16.0,25,44,8,page_2_practice,accompanied
+i,1067.0,683,16.0,25,45,8,page_2_practice,accompanied
+e,1083.0,683,16.0,25,46,8,page_2_practice,accompanied
+d,1099.0,683,16.0,25,47,8,page_2_practice,accompanied
+ ,1115.0,683,16.0,25,48,8,page_2_practice,
+b,1131.0,683,16.0,25,49,8,page_2_practice,by
+y,1147.0,683,16.0,25,50,8,page_2_practice,by
+ ,1163.0,683,16.0,25,51,8,page_2_practice,
+a,1179.0,683,16.0,25,52,8,page_2_practice,a
+ ,1195.0,683,16.0,25,53,8,page_2_practice,
+p,1211.0,683,16.0,25,54,8,page_2_practice,picture
+i,1227.0,683,16.0,25,55,8,page_2_practice,picture
+c,1243.0,683,16.0,25,56,8,page_2_practice,picture
+t,1259.0,683,16.0,25,57,8,page_2_practice,picture
+u,1275.0,683,16.0,25,58,8,page_2_practice,picture
+r,1291.0,683,16.0,25,59,8,page_2_practice,picture
+e,1307.0,683,16.0,25,60,8,page_2_practice,picture
+ ,1323.0,683,16.0,25,61,8,page_2_practice,
+a,1339.0,683,16.0,25,62,8,page_2_practice,and
+n,1355.0,683,16.0,25,63,8,page_2_practice,and
+d,1371.0,683,16.0,25,64,8,page_2_practice,and
+ ,1387.0,683,16.0,25,65,8,page_2_practice,
+s,1403.0,683,16.0,25,66,8,page_2_practice,sentence
+e,1419.0,683,16.0,25,67,8,page_2_practice,sentence
+n,1435.0,683,16.0,25,68,8,page_2_practice,sentence
+t,1451.0,683,16.0,25,69,8,page_2_practice,sentence
+e,1467.0,683,16.0,25,70,8,page_2_practice,sentence
+n,1483.0,683,16.0,25,71,8,page_2_practice,sentence
+c,1499.0,683,16.0,25,72,8,page_2_practice,sentence
+e,1515.0,683,16.0,25,73,8,page_2_practice,sentence
+s,347.0,801,16.0,25,0,10,page_2_practice,summarizing
+u,363.0,801,16.0,25,1,10,page_2_practice,summarizing
+m,379.0,801,16.0,25,2,10,page_2_practice,summarizing
+m,395.0,801,16.0,25,3,10,page_2_practice,summarizing
+a,411.0,801,16.0,25,4,10,page_2_practice,summarizing
+r,427.0,801,16.0,25,5,10,page_2_practice,summarizing
+i,443.0,801,16.0,25,6,10,page_2_practice,summarizing
+z,459.0,801,16.0,25,7,10,page_2_practice,summarizing
+i,475.0,801,16.0,25,8,10,page_2_practice,summarizing
+n,491.0,801,16.0,25,9,10,page_2_practice,summarizing
+g,507.0,801,16.0,25,10,10,page_2_practice,summarizing
+ ,523.0,801,16.0,25,11,10,page_2_practice,
+t,539.0,801,16.0,25,12,10,page_2_practice,the
+h,555.0,801,16.0,25,13,10,page_2_practice,the
+e,571.0,801,16.0,25,14,10,page_2_practice,the
+ ,587.0,801,16.0,25,15,10,page_2_practice,
+a,603.0,801,16.0,25,16,10,page_2_practice,article’s
+r,619.0,801,16.0,25,17,10,page_2_practice,article’s
+t,635.0,801,16.0,25,18,10,page_2_practice,article’s
+i,651.0,801,16.0,25,19,10,page_2_practice,article’s
+c,667.0,801,16.0,25,20,10,page_2_practice,article’s
+l,683.0,801,16.0,25,21,10,page_2_practice,article’s
+e,699.0,801,16.0,25,22,10,page_2_practice,article’s
+’,715.0,801,16.0,25,23,10,page_2_practice,article’s
+s,731.0,801,16.0,25,24,10,page_2_practice,article’s
+ ,747.0,801,16.0,25,25,10,page_2_practice,
+c,763.0,801,16.0,25,26,10,page_2_practice,content.
+o,779.0,801,16.0,25,27,10,page_2_practice,content.
+n,795.0,801,16.0,25,28,10,page_2_practice,content.
+t,811.0,801,16.0,25,29,10,page_2_practice,content.
+e,827.0,801,16.0,25,30,10,page_2_practice,content.
+n,843.0,801,16.0,25,31,10,page_2_practice,content.
+t,859.0,801,16.0,25,32,10,page_2_practice,content.
+.,875.0,801,16.0,25,33,10,page_2_practice,content.
+ ,891.0,801,16.0,25,34,10,page_2_practice,
+T,907.0,801,16.0,25,35,10,page_2_practice,This
+h,923.0,801,16.0,25,36,10,page_2_practice,This
+i,939.0,801,16.0,25,37,10,page_2_practice,This
+s,955.0,801,16.0,25,38,10,page_2_practice,This
+ ,971.0,801,16.0,25,39,10,page_2_practice,
+l,987.0,801,16.0,25,40,10,page_2_practice,lets
+e,1003.0,801,16.0,25,41,10,page_2_practice,lets
+t,1019.0,801,16.0,25,42,10,page_2_practice,lets
+s,1035.0,801,16.0,25,43,10,page_2_practice,lets
+ ,1051.0,801,16.0,25,44,10,page_2_practice,
+v,1067.0,801,16.0,25,45,10,page_2_practice,visitors
+i,1083.0,801,16.0,25,46,10,page_2_practice,visitors
+s,1099.0,801,16.0,25,47,10,page_2_practice,visitors
+i,1115.0,801,16.0,25,48,10,page_2_practice,visitors
+t,1131.0,801,16.0,25,49,10,page_2_practice,visitors
+o,1147.0,801,16.0,25,50,10,page_2_practice,visitors
+r,1163.0,801,16.0,25,51,10,page_2_practice,visitors
+s,1179.0,801,16.0,25,52,10,page_2_practice,visitors
+ ,1195.0,801,16.0,25,53,10,page_2_practice,
+k,1211.0,801,16.0,25,54,10,page_2_practice,know
+n,1227.0,801,16.0,25,55,10,page_2_practice,know
+o,1243.0,801,16.0,25,56,10,page_2_practice,know
+w,1259.0,801,16.0,25,57,10,page_2_practice,know
+ ,1275.0,801,16.0,25,58,10,page_2_practice,
+t,1291.0,801,16.0,25,59,10,page_2_practice,that
+h,1307.0,801,16.0,25,60,10,page_2_practice,that
+a,1323.0,801,16.0,25,61,10,page_2_practice,that
+t,1339.0,801,16.0,25,62,10,page_2_practice,that
+ ,1355.0,801,16.0,25,63,10,page_2_practice,
+t,1371.0,801,16.0,25,64,10,page_2_practice,the
+h,1387.0,801,16.0,25,65,10,page_2_practice,the
+e,1403.0,801,16.0,25,66,10,page_2_practice,the
+ ,1419.0,801,16.0,25,67,10,page_2_practice,
+b,1435.0,801,16.0,25,68,10,page_2_practice,blog
+l,1451.0,801,16.0,25,69,10,page_2_practice,blog
+o,1467.0,801,16.0,25,70,10,page_2_practice,blog
+g,1483.0,801,16.0,25,71,10,page_2_practice,blog
+ ,1499.0,801,16.0,25,72,10,page_2_practice,
+i,1515.0,801,16.0,25,73,10,page_2_practice,is
+s,1531.0,801,16.0,25,74,10,page_2_practice,is
+r,347.0,919,16.0,25,0,12,page_2_practice,regularly
+e,363.0,919,16.0,25,1,12,page_2_practice,regularly
+g,379.0,919,16.0,25,2,12,page_2_practice,regularly
+u,395.0,919,16.0,25,3,12,page_2_practice,regularly
+l,411.0,919,16.0,25,4,12,page_2_practice,regularly
+a,427.0,919,16.0,25,5,12,page_2_practice,regularly
+r,443.0,919,16.0,25,6,12,page_2_practice,regularly
+l,459.0,919,16.0,25,7,12,page_2_practice,regularly
+y,475.0,919,16.0,25,8,12,page_2_practice,regularly
+ ,491.0,919,16.0,25,9,12,page_2_practice,
+u,507.0,919,16.0,25,10,12,page_2_practice,updated
+p,523.0,919,16.0,25,11,12,page_2_practice,updated
+d,539.0,919,16.0,25,12,12,page_2_practice,updated
+a,555.0,919,16.0,25,13,12,page_2_practice,updated
+t,571.0,919,16.0,25,14,12,page_2_practice,updated
+e,587.0,919,16.0,25,15,12,page_2_practice,updated
+d,603.0,919,16.0,25,16,12,page_2_practice,updated
+ ,619.0,919,16.0,25,17,12,page_2_practice,
+w,635.0,919,16.0,25,18,12,page_2_practice,with
+i,651.0,919,16.0,25,19,12,page_2_practice,with
+t,667.0,919,16.0,25,20,12,page_2_practice,with
+h,683.0,919,16.0,25,21,12,page_2_practice,with
+ ,699.0,919,16.0,25,22,12,page_2_practice,
+a,715.0,919,16.0,25,23,12,page_2_practice,a
+ ,731.0,919,16.0,25,24,12,page_2_practice,
+v,747.0,919,16.0,25,25,12,page_2_practice,variety
+a,763.0,919,16.0,25,26,12,page_2_practice,variety
+r,779.0,919,16.0,25,27,12,page_2_practice,variety
+i,795.0,919,16.0,25,28,12,page_2_practice,variety
+e,811.0,919,16.0,25,29,12,page_2_practice,variety
+t,827.0,919,16.0,25,30,12,page_2_practice,variety
+y,843.0,919,16.0,25,31,12,page_2_practice,variety
+ ,859.0,919,16.0,25,32,12,page_2_practice,
+o,875.0,919,16.0,25,33,12,page_2_practice,of
+f,891.0,919,16.0,25,34,12,page_2_practice,of
+ ,907.0,919,16.0,25,35,12,page_2_practice,
+c,923.0,919,16.0,25,36,12,page_2_practice,content.
+o,939.0,919,16.0,25,37,12,page_2_practice,content.
+n,955.0,919,16.0,25,38,12,page_2_practice,content.
+t,971.0,919,16.0,25,39,12,page_2_practice,content.
+e,987.0,919,16.0,25,40,12,page_2_practice,content.
+n,1003.0,919,16.0,25,41,12,page_2_practice,content.
+t,1019.0,919,16.0,25,42,12,page_2_practice,content.
+.,1035.0,919,16.0,25,43,12,page_2_practice,content.

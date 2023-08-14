@@ -28,6 +28,11 @@ OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye-other-screens-{LANGUAGE}
 # Set this to true fi you want to generate the images with AOI boxes
 AOI = False
 
+
+################################################################
+# COPY TO EXPERIMENT FOLDER ####################################
+################################################################
+
 RESOLUTION = (1920, 1080)
 
 IMAGE_SIZE_CM = (36, 28)
@@ -58,4 +63,6 @@ TOP_LEFT_CORNER_X_PX = MIN_MARGIN_RIGHT_PX
 TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 
 FONT_SIZE = RESOLUTION[1] // 41
+
+####################################################################
 

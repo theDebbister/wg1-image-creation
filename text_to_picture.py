@@ -10,10 +10,6 @@ from tqdm import tqdm
 
 import image_config
 
-# if we want to check the screen information we can use this
-for m in get_monitors():
-    print(str(m))
-
 
 def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice=False):
     # Read the TSV file

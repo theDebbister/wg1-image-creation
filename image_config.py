@@ -14,7 +14,7 @@ BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 
-LANGUAGE = 'en'
+LANGUAGE = 'tr'
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
 AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
@@ -26,7 +26,7 @@ OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye-other-screens-{LANGUAGE}.xlsx'
 
 # Set this to true fi you want to generate the images with AOI boxes
-AOI = False
+AOI = True
 
 
 ################################################################

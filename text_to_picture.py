@@ -62,7 +62,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                 if column_name.startswith('question'):
                     # we need to extract order number of the question first
                     name_parts = column_name.split('_')
-                    number_of_question = name_parts[-2] if practice else name_parts[-1]
+                    number_of_question = str(name_parts[-2] if practice else name_parts[-1])
 
                     # we need to extract answers and add them to strings
                     # answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key' + '_practice' if practice else '']}] "
@@ -308,7 +308,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
     stimuli_file_name_stem = Path(stimuli_file_name).stem
 
-    full_output_file_name = f'{stimuli_file_name_stem}_with_img_paths.csv'
+    full_output_file_name = f'{stimuli_file_name_stem}{"_aoi" if image_config.AOI else ""}_with_img_paths.csv'
 
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
 
@@ -434,7 +434,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
-    font_type = "open-sans-bold.ttf"
+    font_type = "fonts/open-sans-bold.ttf"
 
     # Create a drawing object
     draw = ImageDraw.Draw(image)
@@ -506,7 +506,7 @@ def create_final_screen(image: Image, text: str):
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
-    font_type = "open-sans-bold.ttf"
+    font_type = "fonts/open-sans-bold.ttf"
 
     # Create a drawing object
     draw = ImageDraw.Draw(image)
@@ -587,7 +587,7 @@ def create_other_screens():
     other_screen_df['other_screen_img_name'] = file_names
     other_screen_df['other_screen_img_path'] = file_paths
 
-    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5] + '_with_img_paths.csv', index=False)
+    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5] + f'{"_aoi" if image_config.AOI else ""}_with_img_paths.csv', index=False)
 
 
 if __name__ == '__main__':

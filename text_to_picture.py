@@ -308,7 +308,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
     stimuli_file_name_stem = Path(stimuli_file_name).stem
 
-    full_output_file_name = f'{stimuli_file_name_stem}_with_img_paths.csv'
+    full_output_file_name = f'{stimuli_file_name_stem}{"_aoi" if image_config.AOI else ""}_with_img_paths.csv'
 
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
 
@@ -587,7 +587,7 @@ def create_other_screens():
     other_screen_df['other_screen_img_name'] = file_names
     other_screen_df['other_screen_img_path'] = file_paths
 
-    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5] + '_with_img_paths.csv', index=False)
+    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5] + f'{"_aoi" if image_config.AOI else ""}_with_img_paths.csv', index=False)
 
 
 if __name__ == '__main__':

@@ -64,13 +64,6 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                     name_parts = column_name.split('_')
                     number_of_question = str(name_parts[-2] if practice else name_parts[-1])
 
-                    # we need to extract answers and add them to strings
-                    # answer_1 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key' + '_practice' if practice else '']}] "
-                    #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1' + '_practice' if practice else ''])
-                    # answer_2 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key' + '_practice' if practice else '']}] "
-                    #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2' + '_practice' if practice else ''])
-                    # answer_3 = str(f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key' + '_practice' if practice else '']}] "
-                    #                + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3' + '_practice' if practice else ''])
                     if not practice:
                         answer_1 = str(
                             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
@@ -111,11 +104,6 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                     # Draw the text on the image
                     font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
 
-                    # make sure it works for different scripts we need to use re.split (otherwise we will lose "\n"
-                    # separating lines between question and answers), but next part of the code is then not properly
-                    # working for a sentences that are longer than one row, I do not know why, we need to address it
-                    # later <- addressed by splitting at white space only and preserved "\n"
-                    # words = re.split(r'(\n)', text)
                     words = re.split(r' ', text)
 
                     line = ""
@@ -149,8 +137,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                         # draw fixation point
                         r = 7
-                        fix_x = image_config.IMAGE_WIDTH_PX - 0.75 * image_config.MIN_MARGIN_LEFT_PX
-                        fix_y = image_config.IMAGE_HEIGHT_PX - 1.25 * image_config.MIN_MARGIN_TOP_PX
+                        fix_x = image_config.POS_BOTTOM_DOT_X_PX
+                        fix_y = image_config.POS_BOTTOM_DOT_Y_PX
                         draw.ellipse(
                             (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
                             fill=None,
@@ -160,7 +148,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
                     # best
-                    filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}.png"
+                    filename = (f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}"
+                                f"{'_aoi' if draw_aoi else ''}.png")
                     final_image.save(image_dir + filename)
 
                     # store image names and paths
@@ -277,8 +266,8 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                     # draw fixation point
                     r = 7
-                    fix_x = image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_LEFT_PX * 1.5
-                    fix_y = image_config.IMAGE_HEIGHT_PX - image_config.MIN_MARGIN_TOP_PX * 0.5
+                    fix_x = image_config.POS_BOTTOM_DOT_X_PX
+                    fix_y = image_config.POS_BOTTOM_DOT_Y_PX
                     draw.ellipse(
                         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
                         fill=None,
@@ -402,15 +391,6 @@ def draw_text(text, image):
 
             top_left_corner_y_line += text_height
 
-            # r = 7
-            # fix_x = image_config.IMAGE_WIDTH_PX - 0.75 * image_config.MIN_MARGIN_LEFT_PX
-            # fix_y = image_config.IMAGE_HEIGHT_PX - 1.25 * image_config.MIN_MARGIN_TOP_PX
-            # draw.ellipse(
-            #     (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
-            #     fill=None,
-            #     outline=image_config.TEXT_COLOR,
-            #     width=5
-            # )
 
 
 def create_welcome_screen(image: Image, text: str) -> None:

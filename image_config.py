@@ -1,13 +1,13 @@
-LANGUAGE = 'en'
+LANGUAGE = 'toy'
 RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
+
+# Set this to true if you want to generate the images with AOI boxes
+AOI = True
 
 ################################################################
 # PLEASE DO NOT CHANGE EVERYTHING BELOW THIS LINE ##############
 ################################################################
-# Set this to true if you want to generate the images with AOI boxes
-AOI = False
-
 NUM_STIMULI = 12
 NUM_PRACTICE_STIMULI = 2
 NUM_OTHER_SCREENS = 9
@@ -31,7 +31,7 @@ PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
 PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + 'practice_aoi/'
 PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + 'practice_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
-OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye-other-screens-{LANGUAGE}.xlsx'
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_other_screens_{LANGUAGE}.xlsx'
 
 ################################################################
 # COPY TO EXPERIMENT FOLDER ####################################
@@ -77,6 +77,5 @@ POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
 POS_BOTTOM_DOT_Y_PX = IMAGE_HEIGHT_PX - (2 / INCH_IN_CM) * RESOLUTION[1] / SCREEN_SIZE_INCH[1]
 
 FONT_SIZE = RESOLUTION[1] // 43
-print(FONT_SIZE)
 
 ####################################################################

@@ -1,4 +1,4 @@
-LANGUAGE = 'en'
+LANGUAGE = 'ru'
 RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
 
@@ -31,7 +31,7 @@ PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
 PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + 'practice_aoi/'
 PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + 'practice_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
-OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye-other-screens-{LANGUAGE}.xlsx'
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_other_screens_{LANGUAGE}.xlsx'
 
 ################################################################
 # COPY TO EXPERIMENT FOLDER ####################################
@@ -51,12 +51,12 @@ SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] /
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
-# calculate the margins in inch, we set the margin fixed as fixed percentage of the image size
+# calculate the margins in inch, we set the margin fixed as cm
 MARGIN_LEFT_INCH = 2.3 / INCH_IN_CM
 MARGIN_RIGHT_INCH = 2 / INCH_IN_CM
 
 MARGIN_BOTTOM_INCH = 3.3 / INCH_IN_CM
-MARGIN_TOP_INCH = 1.3 / INCH_IN_CM
+MARGIN_TOP_INCH = 2.3 / INCH_IN_CM
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
 MIN_MARGIN_LEFT_PX = int(MARGIN_LEFT_INCH *

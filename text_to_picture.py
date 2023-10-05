@@ -308,7 +308,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
 def create_stimuli_images():
     stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
-                        f'multipleye-stimuli-experiment-{image_config.LANGUAGE}.xlsx'
+                        f'multipleye_stimuli_experiment_{image_config.LANGUAGE}.xlsx'
     image_config.IMAGE_DIR = image_config.IMAGE_DIR
     image_config.AOI_DIR = image_config.AOI_DIR
     image_config.AOI_IMG_DIR = image_config.AOI_IMG_DIR
@@ -318,7 +318,7 @@ def create_stimuli_images():
 
 def create_practice_images():
     stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
-                        f'multipleye-stimuli-practice-{image_config.LANGUAGE}.xlsx'
+                        f'multipleye_stimuli_practice_{image_config.LANGUAGE}.xlsx'
     image_config.IMAGE_DIR = image_config.PRACTICE_IMAGE_DIR
     image_config.AOI_DIR = image_config.PRACTICE_AOI_DIR
     image_config.AOI_IMG_DIR = image_config.PRACTICE_AOI_IMG_DIR
@@ -572,5 +572,5 @@ def create_other_screens():
 
 if __name__ == '__main__':
     create_stimuli_images()
-    create_practice_images()
-    create_other_screens()
+    #create_practice_images()
+    #create_other_screens()

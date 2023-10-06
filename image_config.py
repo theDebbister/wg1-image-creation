@@ -24,13 +24,13 @@ BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
-IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
-AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi_images/'
-PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
-PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + 'practice_aoi/'
-PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + 'practice_aoi_images/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
+IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
+AOI_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_{LANGUAGE}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
+PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + f'practice_images_{LANGUAGE}/'
+PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + f'practice_aoi_{LANGUAGE}/'
+PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + f'practice_aoi_images_{LANGUAGE}/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'other_screens_{LANGUAGE}/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_other_screens_{LANGUAGE}.xlsx'
 
 ################################################################
@@ -77,6 +77,5 @@ POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
 POS_BOTTOM_DOT_Y_PX = IMAGE_HEIGHT_PX - (2 / INCH_IN_CM) * RESOLUTION[1] / SCREEN_SIZE_INCH[1]
 
 FONT_SIZE = RESOLUTION[1] // 43
-print(FONT_SIZE)
 
 ####################################################################

@@ -245,6 +245,8 @@ Temporary Items
 */practice_aoi_images*/
 */practice_images*/
 
+*/*/*with_img_paths*
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

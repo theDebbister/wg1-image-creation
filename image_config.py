@@ -1,13 +1,13 @@
-LANGUAGE = 'ru'
+LANGUAGE = 'en'
 RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
+
+# Set this to true if you want to generate the images with AOI boxes
+AOI = True
 
 ################################################################
 # PLEASE DO NOT CHANGE EVERYTHING BELOW THIS LINE ##############
 ################################################################
-# Set this to true if you want to generate the images with AOI boxes
-AOI = False
-
 NUM_STIMULI = 12
 NUM_PRACTICE_STIMULI = 2
 NUM_OTHER_SCREENS = 9

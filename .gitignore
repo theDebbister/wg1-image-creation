@@ -237,13 +237,15 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-*/stimuli_images/
-*/stimuli_aoi/
-*/other_screens/
-*/stimuli_aoi_images/
-*/practice_aoi/
-*/practice_aoi_images/
-*/practice_images/
+*/stimuli_images*/
+*/stimuli_aoi*/
+*/other_screens*/
+*/stimuli_aoi_images*/
+*/practice_aoi*/
+*/practice_aoi_images*/
+*/practice_images*/
+
+*/*with_img_paths*.csv
 
 .vscode/*
 !.vscode/settings.json

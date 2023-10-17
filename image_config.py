@@ -1,4 +1,4 @@
-LANGUAGE = 'en'
+LANGUAGE = 'ru'
 RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
 
@@ -6,7 +6,7 @@ SCREEN_SIZE_CM = (54.4, 30.3)
 AOI = True
 
 ################################################################
-# PLEASE DO NOT CHANGE EVERYTHING BELOW THIS LINE ##############
+# PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
 ################################################################
 NUM_STIMULI = 12
 NUM_PRACTICE_STIMULI = 2
@@ -30,8 +30,8 @@ AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
 PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + f'practice_images_{LANGUAGE}/'
 PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + f'practice_aoi_{LANGUAGE}/'
 PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + f'practice_aoi_images_{LANGUAGE}/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'other_screens_{LANGUAGE}/'
-OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_other_screens_{LANGUAGE}.xlsx'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_{LANGUAGE}/'
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 
 ################################################################
 # COPY TO EXPERIMENT FOLDER ####################################
@@ -53,7 +53,7 @@ IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
 # calculate the margins in inch, we set the margin fixed as cm
 MARGIN_LEFT_INCH = 2.3 / INCH_IN_CM
-MARGIN_RIGHT_INCH = 2 / INCH_IN_CM
+MARGIN_RIGHT_INCH = 2.1 / INCH_IN_CM
 
 MARGIN_BOTTOM_INCH = 3.3 / INCH_IN_CM
 MARGIN_TOP_INCH = 2.3 / INCH_IN_CM

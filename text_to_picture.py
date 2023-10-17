@@ -29,12 +29,12 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
     draw_aoi = False
 
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df),
-                               desc=f'Creating {image_config.LANGUAGE} images'):
+                               desc=f'Creating {image_config.LANGUAGE} {"practice " if practice else ""}images'):
         text_file_name = row[f"stimulus_text_title{'_practice' if practice else ''}"]
         text_file_name = re.sub(' ', '_', text_file_name).lower()
         text_id = int(row[f"stimulus_id{'_practice' if practice else ''}"])
 
-        aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
+        aoi_file_name = f'{text_file_name}_{text_id}_{image_config.LANGUAGE}_aoi.csv'
         aoi_header = ['char', 'x', 'y', 'width', 'height',
                       'char_idx_in_line', 'line_idx', 'page']
         aois = []
@@ -150,7 +150,10 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                     # best
                     filename = (f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}"
                                 f"{'_aoi' if draw_aoi else ''}.png")
-                    final_image.save(image_dir + filename)
+
+                    img_path = aoi_image_dir if draw_aoi else image_dir
+                    img_path = os.path.join(img_path, filename)
+                    final_image.save(img_path)
 
                     # store image names and paths
                     path = image_dir + filename
@@ -330,7 +333,7 @@ def draw_text(text, image):
     draw = ImageDraw.Draw(image)
 
     # font size is a bit smaller for these texts
-    font_size = image_config.FONT_SIZE -2
+    font_size = image_config.FONT_SIZE - 2
     font = ImageFont.truetype(image_config.FONT_TYPE, font_size)
     paragraphs = re.split(r'\n', text.strip())
 
@@ -470,15 +473,6 @@ def create_final_screen(image: Image, text: str):
     """
     Creates a final screen with a white background, one logo and a blue messages in the middle of the screen.
     """
-    # We have one multipleye logo - we can load other if needed
-    # cost_logo = Image.open("cost_logo.jpg")
-    # cost_width, cost_height = cost_logo.size
-    # cost_logo_new_size = (cost_width // 7, cost_height // 7)
-    # cost_logo = cost_logo.resize(cost_logo_new_size)
-    # eu_logo = Image.open("eu_fund_logo.png")
-    # eu_width, eu_height = eu_logo.size
-    # eu_logo_new_size = (eu_width // 7, eu_height // 7)
-    # eu_logo = eu_logo.resize(eu_logo_new_size)
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     final_text = text.split('\n')
@@ -495,18 +489,11 @@ def create_final_screen(image: Image, text: str):
     multipleye_logo_x = (image.width - multipleye_logo.width) // 2
     multipleye_logo_y = 10
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
-    # eu_logo_x = (final_image.width - eu_logo.width) // 6
-    # eu_logo_y = (final_image.height - eu_logo.height) - 18
-    # eu_logo_position = (eu_logo_x, eu_logo_y)
-    # cost_logo_x = ((final_image.width - eu_logo.width) // 6)  + 580
-    # cost_logo_y = final_image.height - cost_logo.height
-    # cost_logo_position = (cost_logo_x, cost_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates
     image.paste(
-        multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
-    # final_image.paste(eu_logo, eu_logo_position, mask = eu_logo)
-    # final_image.paste(cost_logo, cost_logo_position)
+        multipleye_logo, multipleye_logo_position, mask=multipleye_logo
+    )
 
     # Paste the texts onto the final image
     font = ImageFont.truetype(font_type, font_size)
@@ -573,4 +560,4 @@ def create_other_screens():
 if __name__ == '__main__':
     create_stimuli_images()
     #create_practice_images()
-    #create_other_screens()
+    create_other_screens()

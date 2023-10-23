@@ -8,8 +8,7 @@ AOI = True
 ################################################################
 # PLEASE DO NOT CHANGE EVERYTHING BELOW THIS LINE ##############
 ################################################################
-NUM_STIMULI = 12
-NUM_PRACTICE_STIMULI = 2
+NUM_STIMULI = 13
 NUM_OTHER_SCREENS = 9
 
 FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
@@ -31,7 +30,7 @@ PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
 PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + 'practice_aoi/'
 PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + 'practice_aoi_images/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
-OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_other_screens_{LANGUAGE}.xlsx'
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 
 ################################################################
 # COPY TO EXPERIMENT FOLDER ####################################

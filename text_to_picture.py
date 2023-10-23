@@ -11,10 +11,11 @@ from tqdm import tqdm
 import image_config
 
 
-def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice=False):
+def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
     # Read the TSV file
-    num = image_config.NUM_STIMULI if not practice else image_config.NUM_PRACTICE_STIMULI
-    initial_df = pd.read_excel(stimuli_file_name, nrows=num)
+    # num = image_config.NUM_STIMULI if not practice else image_config.NUM_PRACTICE_STIMULI
+    initial_df = pd.read_excel(stimuli_file_name)
+    initial_df.fillna('', inplace=True)
 
     if not os.path.isdir(image_dir):
         os.mkdir(image_dir)
@@ -30,9 +31,16 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df),
                                desc=f'Creating {image_config.LANGUAGE} images'):
-        text_file_name = row[f"stimulus_text_title{'_practice' if practice else ''}"]
+
+        if not row['stimulus_id'] or not row['stimulus_name']:
+            print('Stimulus creation ended at row ', row_index)
+            break
+
+        practice = True if row['text_type'] == 'practice' else False
+
+        text_file_name = row[f"stimulus_name"]
         text_file_name = re.sub(' ', '_', text_file_name).lower()
-        text_id = int(row[f"stimulus_id{'_practice' if practice else ''}"])
+        text_id = int(row[f"stimulus_id"])
 
         aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
         aoi_header = ['char', 'x', 'y', 'width', 'height',
@@ -58,54 +66,128 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
                     stimulus_images[new_col_name_file].append(pd.NA)
                     continue
 
-                # Extract the text data from the current cell, when it is question also add answers
-                if column_name.startswith('question'):
-                    # we need to extract order number of the question first
-                    name_parts = column_name.split('_')
-                    number_of_question = str(name_parts[-2] if practice else name_parts[-1])
+                # # Extract the text data from the current cell, when it is question also add answers
+                # if column_name.startswith('question'):
+                #     # we need to extract order number of the question first
+                #     name_parts = column_name.split('_')
+                #     number_of_question = str(name_parts[-2] if practice else name_parts[-1])
+                #
+                #     if not practice:
+                #         answer_1 = str(
+                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
+                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
+                #         answer_2 = str(
+                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
+                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2'])
+                #         answer_3 = str(
+                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
+                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
+                #     else:
+                #         answer_1 = str(
+                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
+                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
+                #         answer_2 = str(
+                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
+                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice'])
+                #         answer_3 = str(
+                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
+                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
+                #
+                #     text_question = str(initial_df.iloc[row_index, col_index])
+                #     text_question = text_question.split()
+                #     text_question = ' '.join(text_question)
+                #     answers = "\n\n\n".join([answer_1, answer_2, answer_3])
+                #
+                #     # creation of the final text - question with answers
+                #     text = text_question + "\n\n\n" + answers
+                #
+                #     # Create a new image with a previously defined color background and size
+                #     final_image = Image.new(
+                #         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                #         color=image_config.BACKGROUND_COLOR)
+                #
+                #     # Create a drawing object
+                #     draw = ImageDraw.Draw(final_image)
+                #
+                #     # Draw the text on the image
+                #     font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
+                #
+                #     words = re.split(r' ', text)
+                #
+                #     line = ""
+                #     lines = []
+                #     for word in words:
+                #         left, top, right, bottom = draw.multiline_textbbox(
+                #             (0, 0), line + word, font=font)
+                #         text_width, text_height = right - left, bottom - top
+                #
+                #         if text_width < (image_config.IMAGE_WIDTH_PX - (
+                #                 image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+                #             line += word + " "
+                #         else:
+                #             lines.append(line.strip())
+                #             lines.append("\n\n")
+                #             line = word + " "
+                #
+                #     lines.append(line.strip())
+                #
+                #     # we need this variable to have the original values in the next
+                #     # iteration, so we are creating a changing representation for the next iteration
+                #     top_left_corner_line = image_config.TOP_LEFT_CORNER_Y_PX
+                #
+                #     for line in lines:
+                #         left, top, right, bottom = draw.multiline_textbbox(
+                #             (0, 0), line, font=font)
+                #         text_width, text_height = right - left, bottom - top
+                #         draw.text((image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_line),
+                #                   line, fill=image_config.TEXT_COLOR, font=font)
+                #         top_left_corner_line += text_height
+                #
+                #         # draw fixation point
+                #         r = 7
+                #         fix_x = image_config.POS_BOTTOM_DOT_X_PX
+                #         fix_y = image_config.POS_BOTTOM_DOT_Y_PX
+                #         draw.ellipse(
+                #             (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+                #             fill=None,
+                #             outline=image_config.TEXT_COLOR,
+                #             width=5
+                #         )
+                #
+                #     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+                #     # best
+                #     filename = (f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}"
+                #                 f"{'_aoi' if draw_aoi else ''}.png")
+                #     final_image.save(image_dir + filename)
+                #
+                #     # store image names and paths
+                #     path = image_dir + filename
+                #     # maybe we can set path in the beginning as an object
+                #     stimulus_images[new_col_name_path].append(path)
+                #     stimulus_images[new_col_name_file].append(filename)
 
-                    if not practice:
-                        answer_1 = str(
-                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
-                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
-                        answer_2 = str(
-                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
-                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2'])
-                        answer_3 = str(
-                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
-                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
-                    else:
-                        answer_1 = str(
-                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
-                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
-                        answer_2 = str(
-                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
-                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice'])
-                        answer_3 = str(
-                            f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
-                            + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
+                # if it is not a question but a reading text
+                text = str(initial_df.iloc[row_index, col_index])
 
-                    text_question = str(initial_df.iloc[row_index, col_index])
-                    text_question = text_question.split()
-                    text_question = ' '.join(text_question)
-                    answers = "\n\n\n".join([answer_1, answer_2, answer_3])
+                # Create a new image with a previously defined color background and size
+                final_image = Image.new(
+                    'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                    color=image_config.BACKGROUND_COLOR)
 
-                    # creation of the final text - question with answers
-                    text = text_question + "\n\n\n" + answers
+                # Create a drawing object
+                draw = ImageDraw.Draw(final_image)
 
-                    # Create a new image with a previously defined color background and size
-                    final_image = Image.new(
-                        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
-                        color=image_config.BACKGROUND_COLOR)
+                # Draw the text on the image
+                font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
 
-                    # Create a drawing object
-                    draw = ImageDraw.Draw(final_image)
+                # make sure this works for different scripts!
+                paragraphs = re.split(r'\n+', text.strip())
 
-                    # Draw the text on the image
-                    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
+                # we need this variable to have the original values in the next
+                top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
 
-                    words = re.split(r' ', text)
-
+                for paragraph in paragraphs:
+                    words = paragraph.split()
                     line = ""
                     lines = []
                     for word in words:
@@ -115,175 +197,100 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir, practice
 
                         if text_width < (image_config.IMAGE_WIDTH_PX - (
                                 image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
-                            line += word + " "
+                            line += word.strip() + " "
                         else:
                             lines.append(line.strip())
-                            lines.append("\n\n")
+                            lines.append(image_config.SPACE_LINE * "\n")
                             line = word + " "
 
                     lines.append(line.strip())
+                    lines.append(image_config.SPACE_LINE * "\n")
 
-                    # we need this variable to have the original values in the next
-                    # iteration, so we are creating a changing representation for the next iteration
-                    top_left_corner_line = image_config.TOP_LEFT_CORNER_Y_PX
-
-                    for line in lines:
+                    for line_idx, line in enumerate(lines):
+                        if len(line) == 0:
+                            continue
                         left, top, right, bottom = draw.multiline_textbbox(
                             (0, 0), line, font=font)
                         text_width, text_height = right - left, bottom - top
-                        draw.text((image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_line),
-                                  line, fill=image_config.TEXT_COLOR, font=font)
-                        top_left_corner_line += text_height
 
-                        # draw fixation point
-                        r = 7
-                        fix_x = image_config.POS_BOTTOM_DOT_X_PX
-                        fix_y = image_config.POS_BOTTOM_DOT_Y_PX
-                        draw.ellipse(
-                            (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
-                            fill=None,
-                            outline=image_config.TEXT_COLOR,
-                            width=5
-                        )
+                        draw.text(
+                            (image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line,
+                            fill=image_config.TEXT_COLOR, font=font)
 
-                    # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-                    # best
-                    filename = (f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}"
-                                f"{'_aoi' if draw_aoi else ''}.png")
-                    final_image.save(image_dir + filename)
+                        # calculate aoi boxes for each letter
+                        top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
+                        letter_width = text_width / len(line)
+                        factor = text_height / 5.25
+                        words = []
+                        word = ''
 
-                    # store image names and paths
-                    path = image_dir + filename
-                    # maybe we can set path in the beginning as an object
-                    stimulus_images[new_col_name_path].append(path)
-                    stimulus_images[new_col_name_file].append(filename)
-
-                # if it is not a question but a reading text
-                else:
-                    text = str(initial_df.iloc[row_index, col_index])
-
-                    # Create a new image with a previously defined color background and size
-                    final_image = Image.new(
-                        'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
-                        color=image_config.BACKGROUND_COLOR)
-
-                    # Create a drawing object
-                    draw = ImageDraw.Draw(final_image)
-
-                    # Draw the text on the image
-                    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
-
-                    # make sure this works for different scripts!
-                    paragraphs = re.split(r'\n+', text.strip())
-
-                    # we need this variable to have the original values in the next
-                    top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
-
-                    for paragraph in paragraphs:
-                        words = paragraph.split()
-                        line = ""
-                        lines = []
-                        for word in words:
-                            left, top, right, bottom = draw.multiline_textbbox(
-                                (0, 0), line + word, font=font)
-                            text_width, text_height = right - left, bottom - top
-
-                            if text_width < (image_config.IMAGE_WIDTH_PX - (
-                                    image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
-                                line += word.strip() + " "
-                            else:
-                                lines.append(line.strip())
-                                lines.append(image_config.SPACE_LINE * "\n")
-                                line = word + " "
-
-                        lines.append(line.strip())
-                        lines.append(image_config.SPACE_LINE * "\n")
-
-                        for line_idx, line in enumerate(lines):
-                            if len(line) == 0:
+                        for char_idx_in_line, letter in enumerate(line):
+                            if line == image_config.SPACE_LINE * "\n":
                                 continue
-                            left, top, right, bottom = draw.multiline_textbbox(
-                                (0, 0), line, font=font)
-                            text_width, text_height = right - left, bottom - top
+                            if letter == ' ':
+                                # add the word once for each char
+                                words.extend(
+                                    [word for _ in range(len(word))] + [pd.NA])
+                                word = ''
+                            else:
+                                word += letter
 
-                            draw.text(
-                                (image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line,
-                                fill=image_config.TEXT_COLOR, font=font)
+                            if image_config.AOI:
+                                draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                                                top_left_corner_x_letter + letter_width,
+                                                top_left_corner_y_line + 5.25 * (factor + 2)),
+                                               outline='red', width=1)
+                                draw_aoi = True
 
-                            # calculate aoi boxes for each letter
-                            top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
-                            letter_width = text_width / len(line)
-                            factor = text_height / 5.25
-                            words = []
-                            word = ''
+                            # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
 
-                            for char_idx_in_line, letter in enumerate(line):
-                                if line == image_config.SPACE_LINE * "\n":
-                                    continue
-                                if letter == ' ':
-                                    # add the word once for each char
-                                    words.extend(
-                                        [word for _ in range(len(word))] + [pd.NA])
-                                    word = ''
-                                else:
-                                    word += letter
+                            # as the image is smaller than the actual screen we need to calculate
+                            aoi_letter = [
+                                letter,
+                                top_left_corner_x_letter +
+                                ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2),
+                                top_left_corner_y_line +
+                                ((image_config.RESOLUTION[1] -
+                                  image_config.IMAGE_HEIGHT_PX) // 2),
+                                letter_width,
+                                text_height,
+                                char_idx_in_line,
+                                line_idx,
+                                column_name
+                            ]
 
-                                if image_config.AOI:
-                                    draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
-                                                    top_left_corner_x_letter + letter_width,
-                                                    top_left_corner_y_line + 5.25 * (factor + 2)),
-                                                   outline='red', width=1)
-                                    draw_aoi = True
+                            # update top left corner x for next letter
+                            top_left_corner_x_letter += letter_width
 
-                                # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
+                            aois.append(aoi_letter)
 
-                                # as the image is smaller than the actual screen we need to calculate
-                                aoi_letter = [
-                                    letter,
-                                    top_left_corner_x_letter +
-                                    ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2),
-                                    top_left_corner_y_line +
-                                    ((image_config.RESOLUTION[1] -
-                                      image_config.IMAGE_HEIGHT_PX) // 2),
-                                    letter_width,
-                                    text_height,
-                                    char_idx_in_line,
-                                    line_idx,
-                                    column_name
-                                ]
+                        words.extend([word for _ in range(len(word))])
 
-                                # update top left corner x for next letter
-                                top_left_corner_x_letter += letter_width
+                        all_words.extend(words)
 
-                                aois.append(aoi_letter)
+                        # update top left corner y for next line
+                        top_left_corner_y_line += text_height
 
-                            words.extend([word for _ in range(len(word))])
+                # draw fixation point
+                r = 7
+                fix_x = image_config.POS_BOTTOM_DOT_X_PX
+                fix_y = image_config.POS_BOTTOM_DOT_Y_PX
+                draw.ellipse(
+                    (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+                    fill=None,
+                    outline=image_config.TEXT_COLOR,
+                    width=5
+                )
 
-                            all_words.extend(words)
+                filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
+                           f"{'_aoi' if draw_aoi else ''}.png"
 
-                            # update top left corner y for next line
-                            top_left_corner_y_line += text_height
+                img_path = aoi_image_dir if draw_aoi else image_dir
+                img_path = os.path.join(img_path, filename)
+                final_image.save(img_path)
 
-                    # draw fixation point
-                    r = 7
-                    fix_x = image_config.POS_BOTTOM_DOT_X_PX
-                    fix_y = image_config.POS_BOTTOM_DOT_Y_PX
-                    draw.ellipse(
-                        (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
-                        fill=None,
-                        outline=image_config.TEXT_COLOR,
-                        width=5
-                    )
-
-                    filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
-                               f"{'_aoi' if draw_aoi else ''}.png"
-
-                    img_path = aoi_image_dir if draw_aoi else image_dir
-                    img_path = os.path.join(img_path, filename)
-                    final_image.save(img_path)
-
-                    stimulus_images[new_col_name_path].append(img_path)
-                    stimulus_images[new_col_name_file].append(filename)
+                stimulus_images[new_col_name_path].append(img_path)
+                stimulus_images[new_col_name_file].append(filename)
 
         aoi_df = pd.DataFrame(aois, columns=aoi_header)
         aoi_df['word'] = all_words
@@ -314,16 +321,6 @@ def create_stimuli_images():
     image_config.AOI_IMG_DIR = image_config.AOI_IMG_DIR
     create_images(stimuli_file_name, image_config.IMAGE_DIR, image_config.AOI_DIR,
                   image_config.AOI_IMG_DIR)
-
-
-def create_practice_images():
-    stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
-                        f'multipleye_stimuli_practice_{image_config.LANGUAGE}.xlsx'
-    image_config.IMAGE_DIR = image_config.PRACTICE_IMAGE_DIR
-    image_config.AOI_DIR = image_config.PRACTICE_AOI_DIR
-    image_config.AOI_IMG_DIR = image_config.PRACTICE_AOI_IMG_DIR
-    create_images(stimuli_file_name, image_config.IMAGE_DIR, image_config.AOI_DIR,
-                  image_config.AOI_IMG_DIR, practice=True)
 
 
 def draw_text(text, image):
@@ -572,5 +569,4 @@ def create_other_screens():
 
 if __name__ == '__main__':
     create_stimuli_images()
-    create_practice_images()
     create_other_screens()

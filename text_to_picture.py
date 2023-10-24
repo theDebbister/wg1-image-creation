@@ -11,11 +11,19 @@ from tqdm import tqdm
 import image_config
 
 
-def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
-    # Read the TSV file
-    # num = image_config.NUM_STIMULI if not practice else image_config.NUM_PRACTICE_STIMULI
+def create_images(
+        stimuli_file_name: str,
+        question_file_name: str,
+        image_dir: str,
+        aoi_dir: str,
+        aoi_image_dir: str
+):
+
     initial_df = pd.read_excel(stimuli_file_name)
-    initial_df.fillna('', inplace=True)
+    initial_df.dropna(subset=['stimulus_id'], inplace=True)
+
+    question_df = pd.read_excel(question_file_name)
+    question_df.dropna(subset=['stimulus_id'], inplace=True)
 
     if not os.path.isdir(image_dir):
         os.mkdir(image_dir)
@@ -32,10 +40,6 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
     for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df),
                                desc=f'Creating {image_config.LANGUAGE} images'):
 
-        if not row['stimulus_id'] or not row['stimulus_name']:
-            print('Stimulus creation ended at row ', row_index)
-            break
-
         practice = True if row['text_type'] == 'practice' else False
 
         text_file_name = row[f"stimulus_name"]
@@ -48,9 +52,11 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
         aois = []
         all_words = []
 
+        question_sub_df_stimulus = question_df[question_df['stimulus_id'] == text_id]
+
         for col_index, column_name in enumerate(initial_df.columns):
 
-            if column_name.startswith('page') or column_name.startswith('question'):
+            if column_name.startswith('page'):
 
                 new_col_name_path = column_name + '_img_path'
                 new_col_name_file = column_name + '_img_file'
@@ -61,112 +67,12 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
                 if new_col_name_file not in stimulus_images:
                     stimulus_images[new_col_name_file] = []
 
+                # if page for that text is empty
                 if row[[column_name]].isnull().values.any():
                     stimulus_images[new_col_name_path].append(pd.NA)
                     stimulus_images[new_col_name_file].append(pd.NA)
                     continue
 
-                # # Extract the text data from the current cell, when it is question also add answers
-                # if column_name.startswith('question'):
-                #     # we need to extract order number of the question first
-                #     name_parts = column_name.split('_')
-                #     number_of_question = str(name_parts[-2] if practice else name_parts[-1])
-                #
-                #     if not practice:
-                #         answer_1 = str(
-                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
-                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
-                #         answer_2 = str(
-                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
-                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2'])
-                #         answer_3 = str(
-                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
-                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
-                #     else:
-                #         answer_1 = str(
-                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
-                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
-                #         answer_2 = str(
-                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
-                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice'])
-                #         answer_3 = str(
-                #             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
-                #             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
-                #
-                #     text_question = str(initial_df.iloc[row_index, col_index])
-                #     text_question = text_question.split()
-                #     text_question = ' '.join(text_question)
-                #     answers = "\n\n\n".join([answer_1, answer_2, answer_3])
-                #
-                #     # creation of the final text - question with answers
-                #     text = text_question + "\n\n\n" + answers
-                #
-                #     # Create a new image with a previously defined color background and size
-                #     final_image = Image.new(
-                #         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
-                #         color=image_config.BACKGROUND_COLOR)
-                #
-                #     # Create a drawing object
-                #     draw = ImageDraw.Draw(final_image)
-                #
-                #     # Draw the text on the image
-                #     font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
-                #
-                #     words = re.split(r' ', text)
-                #
-                #     line = ""
-                #     lines = []
-                #     for word in words:
-                #         left, top, right, bottom = draw.multiline_textbbox(
-                #             (0, 0), line + word, font=font)
-                #         text_width, text_height = right - left, bottom - top
-                #
-                #         if text_width < (image_config.IMAGE_WIDTH_PX - (
-                #                 image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
-                #             line += word + " "
-                #         else:
-                #             lines.append(line.strip())
-                #             lines.append("\n\n")
-                #             line = word + " "
-                #
-                #     lines.append(line.strip())
-                #
-                #     # we need this variable to have the original values in the next
-                #     # iteration, so we are creating a changing representation for the next iteration
-                #     top_left_corner_line = image_config.TOP_LEFT_CORNER_Y_PX
-                #
-                #     for line in lines:
-                #         left, top, right, bottom = draw.multiline_textbbox(
-                #             (0, 0), line, font=font)
-                #         text_width, text_height = right - left, bottom - top
-                #         draw.text((image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_line),
-                #                   line, fill=image_config.TEXT_COLOR, font=font)
-                #         top_left_corner_line += text_height
-                #
-                #         # draw fixation point
-                #         r = 7
-                #         fix_x = image_config.POS_BOTTOM_DOT_X_PX
-                #         fix_y = image_config.POS_BOTTOM_DOT_Y_PX
-                #         draw.ellipse(
-                #             (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
-                #             fill=None,
-                #             outline=image_config.TEXT_COLOR,
-                #             width=5
-                #         )
-                #
-                #     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
-                #     # best
-                #     filename = (f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}"
-                #                 f"{'_aoi' if draw_aoi else ''}.png")
-                #     final_image.save(image_dir + filename)
-                #
-                #     # store image names and paths
-                #     path = image_dir + filename
-                #     # maybe we can set path in the beginning as an object
-                #     stimulus_images[new_col_name_path].append(path)
-                #     stimulus_images[new_col_name_file].append(filename)
-
-                # if it is not a question but a reading text
                 text = str(initial_df.iloc[row_index, col_index])
 
                 # Create a new image with a previously defined color background and size
@@ -180,7 +86,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
                 # Draw the text on the image
                 font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
 
-                # make sure this works for different scripts!
+                # TODO make sure this works for different scripts!
                 paragraphs = re.split(r'\n+', text.strip())
 
                 # we need this variable to have the original values in the next
@@ -220,6 +126,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
                         # calculate aoi boxes for each letter
                         top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
                         letter_width = text_width / len(line)
+                        # TODO hardcode this factor somewhere else
                         factor = text_height / 5.25
                         words = []
                         word = ''
@@ -243,15 +150,15 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
                                 draw_aoi = True
 
                             # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
+                            # as the image is smaller than the actual screen we need to calculate the aoi boxes
 
-                            # as the image is smaller than the actual screen we need to calculate
+                            aoi_x = top_left_corner_x_letter + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
+                            aoi_y = top_left_corner_y_line + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+
                             aoi_letter = [
                                 letter,
-                                top_left_corner_x_letter +
-                                ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2),
-                                top_left_corner_y_line +
-                                ((image_config.RESOLUTION[1] -
-                                  image_config.IMAGE_HEIGHT_PX) // 2),
+                                aoi_x,
+                                aoi_y,
                                 letter_width,
                                 text_height,
                                 char_idx_in_line,
@@ -271,7 +178,7 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
                         # update top left corner y for next line
                         top_left_corner_y_line += text_height
 
-                # draw fixation point
+                # draw fixation point in bottom right corner
                 r = 7
                 fix_x = image_config.POS_BOTTOM_DOT_X_PX
                 fix_y = image_config.POS_BOTTOM_DOT_Y_PX
@@ -316,35 +223,37 @@ def create_images(stimuli_file_name, image_dir, aoi_dir, aoi_image_dir):
 def create_stimuli_images():
     stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
                         f'multipleye_stimuli_experiment_{image_config.LANGUAGE}.xlsx'
-    image_config.IMAGE_DIR = image_config.IMAGE_DIR
-    image_config.AOI_DIR = image_config.AOI_DIR
-    image_config.AOI_IMG_DIR = image_config.AOI_IMG_DIR
-    create_images(stimuli_file_name, image_config.IMAGE_DIR, image_config.AOI_DIR,
+
+    create_images(stimuli_file_name, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR, image_config.AOI_DIR,
                   image_config.AOI_IMG_DIR)
 
 
-def draw_text(text, image):
+def draw_text(text: str, image: Image, fontsize: int) -> None:
+    # Create a drawing object
     draw = ImageDraw.Draw(image)
 
-    # font size is a bit smaller for these texts
-    font_size = image_config.FONT_SIZE -2
-    font = ImageFont.truetype(image_config.FONT_TYPE, font_size)
-    paragraphs = re.split(r'\n', text.strip())
+    # Draw the text on the image
+    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
 
+    # TODO make sure this works for different scripts!
+    paragraphs = re.split(r'\n+', text.strip())
+
+    # we need this variable to have the original values in the next
     top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
 
     for paragraph in paragraphs:
-        words = paragraph.split()
+        words_in_paragraph = paragraph.split()
         line = ""
         lines = []
 
-        for word in words:
+        # create lines based on image margins
+        for word in words_in_paragraph:
             left, top, right, bottom = draw.multiline_textbbox(
                 (0, 0), line + word, font=font)
-            text_width = right - left
+            text_width, text_height = right - left, bottom - top
 
-            if text_width < (
-                    image_config.IMAGE_WIDTH_PX - (image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+            if text_width < (image_config.IMAGE_WIDTH_PX - (
+                    image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
                 line += word.strip() + " "
             else:
                 lines.append(line.strip())
@@ -354,7 +263,7 @@ def draw_text(text, image):
         lines.append(line.strip())
         lines.append("\n")
 
-        for line in lines:
+        for line_idx, line in enumerate(lines):
             if len(line) == 0:
                 continue
 
@@ -363,32 +272,146 @@ def draw_text(text, image):
 
             left, top, right, bottom = draw.multiline_textbbox(
                 (0, 0), line + '  ', font=font)
-            text_height = bottom - top
+            text_width, text_height = right - left, bottom - top
 
             stop_bold = False
-            for w in words_in_line:
+            for word in words_in_line:
 
-                if w.startswith('**'):
-                    font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, font_size)
-                    w = w[2:]
+                if word.startswith('**'):
+                    font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, fontsize)
+                    word = word[2:]
 
-                if w.endswith('**'):
+                if word.endswith('**'):
                     stop_bold = True
-                    w = w[:-2]
+                    word = word[:-2]
 
                 left, top, right, bottom = draw.multiline_textbbox(
-                    (0, 0), w + ' ', font=font)
+                    (0, 0), word + ' ', font=font)
+
                 draw.text(
-                    (x_word, top_left_corner_y_line), w, fill=image_config.TEXT_COLOR, font=font)
+                    (x_word, top_left_corner_y_line), word, fill=image_config.TEXT_COLOR, font=font)
                 x_word += right - left
 
                 if stop_bold:
-                    font = ImageFont.truetype(image_config.FONT_TYPE, font_size)
+                    font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
                     stop_bold = False
 
             top_left_corner_y_line += text_height
 
+    # draw fixation point
+    r = 7
+    fix_x = image_config.POS_BOTTOM_DOT_X_PX
+    fix_y = image_config.POS_BOTTOM_DOT_Y_PX
+    draw.ellipse(
+        (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+        fill=None,
+        outline=image_config.TEXT_COLOR,
+        width=5
+    )
 
+def create_question_screens():
+    pass
+
+
+# # Extract the text data from the current cell, when it is question also add answers
+# if column_name.startswith('question'):
+#     # we need to extract order number of the question first
+#     name_parts = column_name.split('_')
+#     number_of_question = str(name_parts[-2] if practice else name_parts[-1])
+#
+#     if not practice:
+#         answer_1 = str(
+#             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key']}] "
+#             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1'])
+#         answer_2 = str(
+#             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key']}] "
+#             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2'])
+#         answer_3 = str(
+#             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key']}] "
+#             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3'])
+#     else:
+#         answer_1 = str(
+#             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_key_practice']}] "
+#             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_1_practice'])
+#         answer_2 = str(
+#             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_key_practice']}] "
+#             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_2_practice'])
+#         answer_3 = str(
+#             f"[{initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_key_practice']}] "
+#             + initial_df.loc[row_index, 'answer_option_q' + number_of_question + '_3_practice'])
+#
+#     text_question = str(initial_df.iloc[row_index, col_index])
+#     text_question = text_question.split()
+#     text_question = ' '.join(text_question)
+#     answers = "\n\n\n".join([answer_1, answer_2, answer_3])
+#
+#     # creation of the final text - question with answers
+#     text = text_question + "\n\n\n" + answers
+#
+#     # Create a new image with a previously defined color background and size
+#     final_image = Image.new(
+#         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+#         color=image_config.BACKGROUND_COLOR)
+#
+#     # Create a drawing object
+#     draw = ImageDraw.Draw(final_image)
+#
+#     # Draw the text on the image
+#     font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
+#
+#     words = re.split(r' ', text)
+#
+#     line = ""
+#     lines = []
+#     for word in words:
+#         left, top, right, bottom = draw.multiline_textbbox(
+#             (0, 0), line + word, font=font)
+#         text_width, text_height = right - left, bottom - top
+#
+#         if text_width < (image_config.IMAGE_WIDTH_PX - (
+#                 image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+#             line += word + " "
+#         else:
+#             lines.append(line.strip())
+#             lines.append("\n\n")
+#             line = word + " "
+#
+#     lines.append(line.strip())
+#
+#     # we need this variable to have the original values in the next
+#     # iteration, so we are creating a changing representation for the next iteration
+#     top_left_corner_line = image_config.TOP_LEFT_CORNER_Y_PX
+#
+#     for line in lines:
+#         left, top, right, bottom = draw.multiline_textbbox(
+#             (0, 0), line, font=font)
+#         text_width, text_height = right - left, bottom - top
+#         draw.text((image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_line),
+#                   line, fill=image_config.TEXT_COLOR, font=font)
+#         top_left_corner_line += text_height
+#
+#         # draw fixation point
+#         r = 7
+#         fix_x = image_config.POS_BOTTOM_DOT_X_PX
+#         fix_y = image_config.POS_BOTTOM_DOT_Y_PX
+#         draw.ellipse(
+#             (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
+#             fill=None,
+#             outline=image_config.TEXT_COLOR,
+#             width=5
+#         )
+#
+#     # Save the image as a PNG file; jpg has kind of worse quality, maybe we need to check what is the
+#     # best
+#     filename = (f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}"
+#                 f"{'_aoi' if draw_aoi else ''}.png")
+#     final_image.save(image_dir + filename)
+#
+#     # store image names and paths
+#     path = image_dir + filename
+#     # maybe we can set path in the beginning as an object
+#     stimulus_images[new_col_name_path].append(path)
+#     stimulus_images[new_col_name_file].append(filename)
 
 def create_welcome_screen(image: Image, text: str) -> None:
     """
@@ -467,15 +490,6 @@ def create_final_screen(image: Image, text: str):
     """
     Creates a final screen with a white background, one logo and a blue messages in the middle of the screen.
     """
-    # We have one multipleye logo - we can load other if needed
-    # cost_logo = Image.open("cost_logo.jpg")
-    # cost_width, cost_height = cost_logo.size
-    # cost_logo_new_size = (cost_width // 7, cost_height // 7)
-    # cost_logo = cost_logo.resize(cost_logo_new_size)
-    # eu_logo = Image.open("eu_fund_logo.png")
-    # eu_width, eu_height = eu_logo.size
-    # eu_logo_new_size = (eu_width // 7, eu_height // 7)
-    # eu_logo = eu_logo.resize(eu_logo_new_size)
     multipleye_logo = Image.open("logo_imgs/logo_multipleye.png")
 
     final_text = text.split('\n')
@@ -492,12 +506,7 @@ def create_final_screen(image: Image, text: str):
     multipleye_logo_x = (image.width - multipleye_logo.width) // 2
     multipleye_logo_y = 10
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
-    # eu_logo_x = (final_image.width - eu_logo.width) // 6
-    # eu_logo_y = (final_image.height - eu_logo.height) - 18
-    # eu_logo_position = (eu_logo_x, eu_logo_y)
-    # cost_logo_x = ((final_image.width - eu_logo.width) // 6)  + 580
-    # cost_logo_y = final_image.height - cost_logo.height
-    # cost_logo_position = (cost_logo_x, cost_logo_y)
+
 
     # Paste the logos onto the final image at the calculated coordinates
     image.paste(
@@ -524,7 +533,8 @@ def create_final_screen(image: Image, text: str):
 
 
 def create_other_screens():
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH, nrows=image_config.NUM_OTHER_SCREENS)
+    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH)
+    other_screen_df.dropna(subset=['instruction_screen_id'], inplace=True)
 
     if not os.path.isdir(image_config.OTHER_SCREENS_DIR):
         os.mkdir(image_config.OTHER_SCREENS_DIR)
@@ -539,8 +549,8 @@ def create_other_screens():
         final_image = Image.new(
             'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
 
-        title = row["other_screen_title"]
-        text = row["other_screen_text"]
+        title = row["instruction_screen_name"]
+        text = row["instruction_screen_text"]
 
         if title == "welcome_screen":
             create_welcome_screen(final_image, text)
@@ -552,7 +562,7 @@ def create_other_screens():
             create_final_screen(final_image, text)
 
         elif title != 'empty_screen':
-            draw_text(text, final_image)
+            draw_text(text, final_image, image_config.FONT_SIZE - 2)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name
@@ -564,7 +574,9 @@ def create_other_screens():
     other_screen_df['other_screen_img_name'] = file_names
     other_screen_df['other_screen_img_path'] = file_paths
 
-    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5] + f'{"_aoi" if image_config.AOI else ""}_with_img_paths.csv', index=False)
+    other_screen_df.to_csv(image_config.OTHER_SCREENS_FILE_PATH[:-5]
+                           + f'{"_aoi" if image_config.AOI else ""}_with_img_paths.csv',
+                           index=False)
 
 
 if __name__ == '__main__':

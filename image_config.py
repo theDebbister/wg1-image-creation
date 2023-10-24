@@ -6,7 +6,7 @@ SCREEN_SIZE_CM = (54.4, 30.3)
 AOI = True
 
 ################################################################
-# PLEASE DO NOT CHANGE EVERYTHING BELOW THIS LINE ##############
+# PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
 ################################################################
 NUM_STIMULI = 13
 NUM_OTHER_SCREENS = 9
@@ -23,13 +23,13 @@ BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
-IMAGE_DIR = OUTPUT_TOP_DIR + 'stimuli_images/'
-AOI_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + 'stimuli_aoi_images/'
-PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + 'practice_images/'
-PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + 'practice_aoi/'
-PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + 'practice_aoi_images/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + 'other_screens/'
+IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
+AOI_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_{LANGUAGE}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
+PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + f'practice_images_{LANGUAGE}/'
+PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + f'practice_aoi_{LANGUAGE}/'
+PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + f'practice_aoi_images_{LANGUAGE}/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_{LANGUAGE}/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 
 ################################################################
@@ -50,12 +50,12 @@ SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] /
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
-# calculate the margins in inch, we set the margin fixed as fixed percentage of the image size
+# calculate the margins in inch, we set the margin fixed as cm
 MARGIN_LEFT_INCH = 2.3 / INCH_IN_CM
-MARGIN_RIGHT_INCH = 2 / INCH_IN_CM
+MARGIN_RIGHT_INCH = 2.1 / INCH_IN_CM
 
 MARGIN_BOTTOM_INCH = 3.3 / INCH_IN_CM
-MARGIN_TOP_INCH = 1.3 / INCH_IN_CM
+MARGIN_TOP_INCH = 2.3 / INCH_IN_CM
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
 MIN_MARGIN_LEFT_PX = int(MARGIN_LEFT_INCH *

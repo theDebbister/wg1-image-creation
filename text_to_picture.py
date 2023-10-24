@@ -80,114 +80,8 @@ def create_images(
                     'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
                     color=image_config.BACKGROUND_COLOR)
 
-                # Create a drawing object
-                draw = ImageDraw.Draw(final_image)
-
-                # Draw the text on the image
-                font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
-
-                # TODO make sure this works for different scripts!
-                paragraphs = re.split(r'\n+', text.strip())
-
-                # we need this variable to have the original values in the next
-                top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
-
-                for paragraph in paragraphs:
-                    words = paragraph.split()
-                    line = ""
-                    lines = []
-                    for word in words:
-                        left, top, right, bottom = draw.multiline_textbbox(
-                            (0, 0), line + word, font=font)
-                        text_width, text_height = right - left, bottom - top
-
-                        if text_width < (image_config.IMAGE_WIDTH_PX - (
-                                image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
-                            line += word.strip() + " "
-                        else:
-                            lines.append(line.strip())
-                            lines.append(image_config.SPACE_LINE * "\n")
-                            line = word + " "
-
-                    lines.append(line.strip())
-                    lines.append(image_config.SPACE_LINE * "\n")
-
-                    for line_idx, line in enumerate(lines):
-                        if len(line) == 0:
-                            continue
-                        left, top, right, bottom = draw.multiline_textbbox(
-                            (0, 0), line, font=font)
-                        text_width, text_height = right - left, bottom - top
-
-                        draw.text(
-                            (image_config.TOP_LEFT_CORNER_X_PX, top_left_corner_y_line), line,
-                            fill=image_config.TEXT_COLOR, font=font)
-
-                        # calculate aoi boxes for each letter
-                        top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
-                        letter_width = text_width / len(line)
-                        # TODO hardcode this factor somewhere else
-                        factor = text_height / 5.25
-                        words = []
-                        word = ''
-
-                        for char_idx_in_line, letter in enumerate(line):
-                            if line == image_config.SPACE_LINE * "\n":
-                                continue
-                            if letter == ' ':
-                                # add the word once for each char
-                                words.extend(
-                                    [word for _ in range(len(word))] + [pd.NA])
-                                word = ''
-                            else:
-                                word += letter
-
-                            if image_config.AOI:
-                                draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
-                                                top_left_corner_x_letter + letter_width,
-                                                top_left_corner_y_line + 5.25 * (factor + 2)),
-                                               outline='red', width=1)
-                                draw_aoi = True
-
-                            # aoi_header = ['char', 'x', 'y', 'width', 'height', 'word', 'line', 'page']
-                            # as the image is smaller than the actual screen we need to calculate the aoi boxes
-
-                            aoi_x = top_left_corner_x_letter + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
-                            aoi_y = top_left_corner_y_line + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
-
-                            aoi_letter = [
-                                letter,
-                                aoi_x,
-                                aoi_y,
-                                letter_width,
-                                text_height,
-                                char_idx_in_line,
-                                line_idx,
-                                column_name
-                            ]
-
-                            # update top left corner x for next letter
-                            top_left_corner_x_letter += letter_width
-
-                            aois.append(aoi_letter)
-
-                        words.extend([word for _ in range(len(word))])
-
-                        all_words.extend(words)
-
-                        # update top left corner y for next line
-                        top_left_corner_y_line += text_height
-
-                # draw fixation point in bottom right corner
-                r = 7
-                fix_x = image_config.POS_BOTTOM_DOT_X_PX
-                fix_y = image_config.POS_BOTTOM_DOT_Y_PX
-                draw.ellipse(
-                    (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
-                    fill=None,
-                    outline=image_config.TEXT_COLOR,
-                    width=5
-                )
+                draw_text(text, final_image, image_config.FONT_SIZE,
+                          spacing=image_config.SPACE_LINE, column_name=column_name)
 
                 filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_aoi' if draw_aoi else ''}.png"
@@ -228,15 +122,19 @@ def create_stimuli_images():
                   image_config.AOI_IMG_DIR)
 
 
-def draw_text(text: str, image: Image, fontsize: int) -> None:
-    # Create a drawing object
+def draw_text(text: str, image: Image, fontsize: int,
+              spacing=image_config.SPACE_LINE, column_name: str = None) -> (list, list):
+
+    # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
-    # Draw the text on the image
     font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
 
     # TODO make sure this works for different scripts!
     paragraphs = re.split(r'\n+', text.strip())
+
+    aois = []
+    all_words = []
 
     # we need this variable to have the original values in the next
     top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
@@ -257,22 +155,33 @@ def draw_text(text: str, image: Image, fontsize: int) -> None:
                 line += word.strip() + " "
             else:
                 lines.append(line.strip())
-                lines.append("\n")
+                lines.append(spacing * "\n")
                 line = word + " "
 
         lines.append(line.strip())
-        lines.append("\n")
+        lines.append(spacing * "\n")
 
         for line_idx, line in enumerate(lines):
             if len(line) == 0:
                 continue
 
-            words_in_line = line.split()
-            x_word = image_config.TOP_LEFT_CORNER_X_PX
+            if line == spacing * "\n":
+                top_left_corner_y_line += image_config.FONT_SIZE * spacing
+                continue
 
-            left, top, right, bottom = draw.multiline_textbbox(
-                (0, 0), line + '  ', font=font)
-            text_width, text_height = right - left, bottom - top
+            words_in_line = line.split()
+            x_char = image_config.TOP_LEFT_CORNER_X_PX
+
+            left, top, right, bottom = draw.multiline_textbbox((0, 0), line + '  ', font=font)
+            line_width, line_height = right - left, bottom - top
+
+            # calculate aoi boxes for each letter
+            top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
+            letter_width = line_width / len(line)
+            # TODO hardcode this factor somewhere else
+            factor = line_height / 5.25
+            words = []
+            word = ''
 
             stop_bold = False
             for word in words_in_line:
@@ -285,18 +194,57 @@ def draw_text(text: str, image: Image, fontsize: int) -> None:
                     stop_bold = True
                     word = word[:-2]
 
-                left, top, right, bottom = draw.multiline_textbbox(
-                    (0, 0), word + ' ', font=font)
+                for char_idx, char in enumerate(word):
 
-                draw.text(
-                    (x_word, top_left_corner_y_line), word, fill=image_config.TEXT_COLOR, font=font)
-                x_word += right - left
+                    left, top, right, bottom = draw.multiline_textbbox(
+                        (0, 0), char, font=font)
+
+                    draw.text((x_char, top_left_corner_y_line), char, fill=image_config.TEXT_COLOR, font=font)
+
+                    if image_config.AOI:
+                        draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                                        top_left_corner_x_letter + letter_width,
+                                        top_left_corner_y_line + 5.25 * (factor + 2)),
+                                       outline='red', width=1)
+                        draw_aoi = True
+
+                    x_char += right - left
+
+                    # aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
+                    # as the image is smaller than the actual screen we need to calculate the aoi boxes
+
+                    aoi_x = top_left_corner_x_letter + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
+                    aoi_y = top_left_corner_y_line + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+
+                    aoi_letter = [
+                        char,
+                        aoi_x,
+                        aoi_y,
+                        letter_width,
+                        line_height,
+                        char_idx,
+                        line_idx,
+                        column_name
+                    ]
+
+                    # update top left corner x for next letter
+                    top_left_corner_x_letter += letter_width
+
+                    aois.append(aoi_letter)
+
+                # for the aoi file: add the word once for each char + pd.NA for the space
+                words.extend([word for _ in range(len(word))] + [pd.NA])
 
                 if stop_bold:
                     font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
                     stop_bold = False
 
-            top_left_corner_y_line += text_height
+            # for last word no space is added
+            words.extend([word for _ in range(len(word))])
+
+            all_words.extend(words)
+
+            top_left_corner_y_line += line_height
 
     # draw fixation point
     r = 7
@@ -308,6 +256,8 @@ def draw_text(text: str, image: Image, fontsize: int) -> None:
         outline=image_config.TEXT_COLOR,
         width=5
     )
+
+    return aois, all_words
 
 def create_question_screens():
     pass
@@ -562,7 +512,7 @@ def create_other_screens():
             create_final_screen(final_image, text)
 
         elif title != 'empty_screen':
-            draw_text(text, final_image, image_config.FONT_SIZE - 2)
+            draw_text(text, final_image, image_config.FONT_SIZE - 2, spacing=1)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name

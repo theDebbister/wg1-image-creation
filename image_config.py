@@ -24,11 +24,9 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
+QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
 AOI_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_{LANGUAGE}/'
 AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
-PRACTICE_IMAGE_DIR = OUTPUT_TOP_DIR + f'practice_images_{LANGUAGE}/'
-PRACTICE_AOI_DIR = OUTPUT_TOP_DIR + f'practice_aoi_{LANGUAGE}/'
-PRACTICE_AOI_IMG_DIR = OUTPUT_TOP_DIR + f'practice_aoi_images_{LANGUAGE}/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_{LANGUAGE}/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 

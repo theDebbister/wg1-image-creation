@@ -18,9 +18,8 @@ def create_images(
         aoi_dir: str,
         aoi_image_dir: str
 ):
-
-    initial_df = pd.read_excel(stimuli_file_name)
-    initial_df.dropna(subset=['stimulus_id'], inplace=True)
+    initial_stimulus_df = pd.read_excel(stimuli_file_name)
+    initial_stimulus_df.dropna(subset=['stimulus_id'], inplace=True)
 
     question_df = pd.read_excel(question_file_name)
     question_df.dropna(subset=['stimulus_id'], inplace=True)
@@ -35,10 +34,9 @@ def create_images(
         os.mkdir(aoi_image_dir)
 
     stimulus_images = {}
-    draw_aoi = False
 
-    for row_index, row in tqdm(initial_df.iterrows(), total=len(initial_df),
-                               desc=f'Creating {image_config.LANGUAGE} images'):
+    for row_index, row in tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df),
+                               desc=f'Creating {image_config.LANGUAGE} stimuli images'):
 
         practice = True if row['text_type'] == 'practice' else False
 
@@ -52,9 +50,7 @@ def create_images(
         aois = []
         all_words = []
 
-        question_sub_df_stimulus = question_df[question_df['stimulus_id'] == text_id]
-
-        for col_index, column_name in enumerate(initial_df.columns):
+        for col_index, column_name in enumerate(initial_stimulus_df.columns):
 
             if column_name.startswith('page'):
 
@@ -73,20 +69,21 @@ def create_images(
                     stimulus_images[new_col_name_file].append(pd.NA)
                     continue
 
-                text = str(initial_df.iloc[row_index, col_index])
+                text = str(initial_stimulus_df.iloc[row_index, col_index])
 
                 # Create a new image with a previously defined color background and size
                 final_image = Image.new(
                     'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
                     color=image_config.BACKGROUND_COLOR)
 
-                draw_text(text, final_image, image_config.FONT_SIZE,
-                          spacing=image_config.SPACE_LINE, column_name=column_name)
+                aois, all_words = draw_text(text, final_image, image_config.FONT_SIZE,
+                                            spacing=image_config.SPACE_LINE, column_name=column_name,
+                                            draw_aoi=image_config.AOI)
 
                 filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
-                           f"{'_aoi' if draw_aoi else ''}.png"
+                           f"{'_practice' if practice else ''}{'_aoi' if image_config.AOI else ''}.png"
 
-                img_path = aoi_image_dir if draw_aoi else image_dir
+                img_path = aoi_image_dir if image_config.AOI else image_dir
                 img_path = os.path.join(img_path, filename)
                 final_image.save(img_path)
 
@@ -101,7 +98,7 @@ def create_images(
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
-    final_df = initial_df.join(image_df)
+    final_stimulus_df = initial_stimulus_df.join(image_df)
 
     stimuli_file_name_stem = Path(stimuli_file_name).stem
 
@@ -109,9 +106,9 @@ def create_images(
 
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
 
-    final_df.to_csv(full_path,
-                    sep=',',
-                    index=False)
+    final_stimulus_df.to_csv(full_path,
+                             sep=',',
+                             index=False)
 
 
 def create_stimuli_images():
@@ -122,13 +119,12 @@ def create_stimuli_images():
                   image_config.AOI_IMG_DIR)
 
 
-def draw_text(text: str, image: Image, fontsize: int,
-              spacing=image_config.SPACE_LINE, column_name: str = None) -> (list, list):
-
+def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
+              spacing: int = image_config.SPACE_LINE, column_name: str = None) -> (list, list):
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
-    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE)
+    font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
 
     # TODO make sure this works for different scripts!
     paragraphs = re.split(r'\n+', text.strip())
@@ -139,6 +135,7 @@ def draw_text(text: str, image: Image, fontsize: int,
     # we need this variable to have the original values in the next
     top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
 
+    line_idx = 0
     for paragraph in paragraphs:
         words_in_paragraph = paragraph.split()
         line = ""
@@ -161,7 +158,7 @@ def draw_text(text: str, image: Image, fontsize: int,
         lines.append(line.strip())
         lines.append(spacing * "\n")
 
-        for line_idx, line in enumerate(lines):
+        for line in lines:
             if len(line) == 0:
                 continue
 
@@ -170,9 +167,9 @@ def draw_text(text: str, image: Image, fontsize: int,
                 continue
 
             words_in_line = line.split()
-            x_char = image_config.TOP_LEFT_CORNER_X_PX
+            x_word = image_config.TOP_LEFT_CORNER_X_PX
 
-            left, top, right, bottom = draw.multiline_textbbox((0, 0), line + '  ', font=font)
+            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
             line_width, line_height = right - left, bottom - top
 
             # calculate aoi boxes for each letter
@@ -181,10 +178,13 @@ def draw_text(text: str, image: Image, fontsize: int,
             # TODO hardcode this factor somewhere else
             factor = line_height / 5.25
             words = []
-            word = ''
+
+            char_idx_in_line = 0
 
             stop_bold = False
-            for word in words_in_line:
+            num_words = len(words_in_line)
+
+            for word_number, word in enumerate(words_in_line):
 
                 if word.startswith('**'):
                     font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, fontsize)
@@ -194,37 +194,34 @@ def draw_text(text: str, image: Image, fontsize: int,
                     stop_bold = True
                     word = word[:-2]
 
+                # add a space if it is in the middle of a line
+                if word_number < num_words - 1:
+                    word = word + ' '
+
+                word_left, word_top, word_right, word_bottom = draw.multiline_textbbox(
+                    (0, 0), word, font=font)
+
+                word_width = word_right - word_left
+
+                draw.text((x_word, top_left_corner_y_line), word, fill=image_config.TEXT_COLOR, font=font)
+
                 for char_idx, char in enumerate(word):
 
-                    left, top, right, bottom = draw.multiline_textbbox(
-                        (0, 0), char, font=font)
-
-                    draw.text((x_char, top_left_corner_y_line), char, fill=image_config.TEXT_COLOR, font=font)
-
-                    if image_config.AOI:
+                    if draw_aoi:
                         draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
                                         top_left_corner_x_letter + letter_width,
                                         top_left_corner_y_line + 5.25 * (factor + 2)),
                                        outline='red', width=1)
-                        draw_aoi = True
-
-                    x_char += right - left
 
                     # aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
                     # as the image is smaller than the actual screen we need to calculate the aoi boxes
-
                     aoi_x = top_left_corner_x_letter + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
                     aoi_y = top_left_corner_y_line + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
 
                     aoi_letter = [
-                        char,
-                        aoi_x,
-                        aoi_y,
-                        letter_width,
-                        line_height,
-                        char_idx,
-                        line_idx,
-                        column_name
+                        char, aoi_x, aoi_y,
+                        letter_width, line_height,
+                        char_idx_in_line, line_idx, column_name
                     ]
 
                     # update top left corner x for next letter
@@ -232,19 +229,22 @@ def draw_text(text: str, image: Image, fontsize: int,
 
                     aois.append(aoi_letter)
 
-                # for the aoi file: add the word once for each char + pd.NA for the space
-                words.extend([word for _ in range(len(word))] + [pd.NA])
+                    char_idx_in_line += 1
+
+                if word_number < num_words - 1:
+                    words.extend([word.strip() for _ in range(len(word.strip()))] + [pd.NA])
+                else:
+                    words.extend([word.strip() for _ in range(len(word))])
 
                 if stop_bold:
                     font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
                     stop_bold = False
 
-            # for last word no space is added
-            words.extend([word for _ in range(len(word))])
+                x_word += word_width
 
             all_words.extend(words)
-
             top_left_corner_y_line += line_height
+            line_idx += 1
 
     # draw fixation point
     r = 7
@@ -258,6 +258,7 @@ def draw_text(text: str, image: Image, fontsize: int,
     )
 
     return aois, all_words
+
 
 def create_question_screens():
     pass
@@ -457,7 +458,6 @@ def create_final_screen(image: Image, text: str):
     multipleye_logo_y = 10
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
 
-
     # Paste the logos onto the final image at the calculated coordinates
     image.paste(
         multipleye_logo, multipleye_logo_position, mask=multipleye_logo)
@@ -512,7 +512,7 @@ def create_other_screens():
             create_final_screen(final_image, text)
 
         elif title != 'empty_screen':
-            draw_text(text, final_image, image_config.FONT_SIZE - 2, spacing=1)
+            draw_text(text, final_image, image_config.FONT_SIZE - 2, spacing=2, draw_aoi=False)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name

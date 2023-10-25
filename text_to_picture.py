@@ -1,7 +1,9 @@
 import csv
 import os
 import re
+from collections import OrderedDict
 from pathlib import Path
+import random
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
@@ -15,7 +17,9 @@ def create_images(
         stimuli_file_name: str,
         question_file_name: str,
         image_dir: str,
+        question_dir: str,
         aoi_dir: str,
+        question_aoi_dir: str,
         aoi_image_dir: str
 ):
     initial_stimulus_df = pd.read_excel(stimuli_file_name)
@@ -33,7 +37,14 @@ def create_images(
     if not os.path.isdir(aoi_image_dir):
         os.mkdir(aoi_image_dir)
 
+    if not os.path.isdir(question_dir):
+        os.mkdir(question_dir)
+
+    if not os.path.isdir(question_aoi_dir):
+        os.mkdir(question_aoi_dir)
+
     stimulus_images = {}
+    question_images = {}
 
     for row_index, row in tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df),
                                desc=f'Creating {image_config.LANGUAGE} stimuli images'):
@@ -49,6 +60,107 @@ def create_images(
                       'char_idx_in_line', 'line_idx', 'page']
         aois = []
         all_words = []
+
+        question_sub_df_stimulus = question_df[question_df['stimulus_id'] == text_id]
+
+        for question_row_index, question_row in question_sub_df_stimulus.iterrows():
+
+            question = question_row['question']
+            question_id = question_row['question_id']
+
+            answer_options = OrderedDict({'target': question_row['target'],
+                                          'distractor_1': question_row['distractor_1'],
+                                          'distractor_2': question_row['distractor_2'],
+                                          'distractor_3': question_row['distractor_3']})
+
+            new_col_name_path = f'question_{question_id}_stimulus_{text_id}_img_path'
+            new_col_name_file = f'question_{question_id}_stimulus_{text_id}_img_file'
+
+            if new_col_name_path not in question_images:
+                question_images[new_col_name_path] = []
+
+            if new_col_name_file not in question_images:
+                question_images[new_col_name_file] = []
+
+            annotated_text = question_row['text_annotated_spans']
+            target_span_text = question_row['target_span_text']
+            distractor_1_span_text = question_row['distractor_1_span_text']
+
+            _get_distractor_spans(annotated_text, target_span_text, distractor_1_span_text)
+
+            question_image = Image.new(
+                'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                color=image_config.BACKGROUND_COLOR)
+
+            arrow_img_path = 'logo_imgs/arrow_symbols.png'
+            arrow_img = Image.open(arrow_img_path)
+
+            # get size of arrow image and past it on the question image centralized
+            arrow_width, arrow_height = arrow_img.size
+            arrow_width, arrow_height = arrow_width // 3, arrow_height // 3
+            arrow_img = arrow_img.resize((arrow_width, arrow_height))
+            x_arrow = (image_config.IMAGE_WIDTH_PX - arrow_width) // 2
+            y_arrow = image_config.IMAGE_HEIGHT_PX // 2
+
+            question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
+
+            aois, all_words = draw_text(question, question_image, image_config.FONT_SIZE,
+                                        spacing=image_config.SPACE_LINE, column_name=f'question_{question_id}',
+                                        draw_aoi=image_config.AOI)
+
+            distractor_positions = {
+                'arrow_left': {
+                    'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
+                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                },
+                'arrow_up': {
+                    'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
+                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+
+                },
+                'arrow_right': {
+                    'x_px': image_config.IMAGE_WIDTH_PX * 0.57,
+                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
+                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                },
+                'arrow_down': {
+                    'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
+                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+                }
+            }
+
+            shuffled_distractor_keys = list(distractor_positions.keys())
+            random.shuffle(shuffled_distractor_keys)
+
+            for option, distractor in zip(answer_options, shuffled_distractor_keys):
+                aois, all_words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE,
+                                            spacing=image_config.SPACE_LINE, column_name=f'question_{question_id}',
+                                            draw_aoi=image_config.AOI,
+                                            x_px=distractor_positions[distractor]['x_px'],
+                                            y_px=distractor_positions[distractor]['y_px'],
+                                            text_width_px=distractor_positions[distractor]['text_width_px'], )
+
+                draw = ImageDraw.Draw(question_image)
+                draw.rectangle(
+                    (distractor_positions[distractor]['x_px'], distractor_positions[distractor]['y_px'],
+                     distractor_positions[distractor]['x_px'] + distractor_positions[distractor]['text_width_px'],
+                     distractor_positions[distractor]['y_px'] + distractor_positions[distractor]['text_height_px']),
+                    outline='black', width=2
+                )
+
+            filename = f"{text_file_name}_id{text_id}_question_{question_id}_{image_config.LANGUAGE}" \
+                       f"{'_practice' if practice else ''}{'_aoi' if image_config.AOI else ''}.png"
+
+            img_path = question_aoi_dir if image_config.AOI else question_dir
+            img_path = os.path.join(img_path, filename)
+            question_image.save(img_path)
 
         for col_index, column_name in enumerate(initial_stimulus_df.columns):
 
@@ -93,8 +205,7 @@ def create_images(
         aoi_df = pd.DataFrame(aois, columns=aoi_header)
         aoi_df['word'] = all_words
         # here changing sep back to ',' will prevent skipping an actual  ',' value
-        aoi_df.to_csv(aoi_dir + aoi_file_name, sep=',',
-                      index=False, encoding='UTF-8')
+        aoi_df.to_csv(aoi_dir + aoi_file_name, sep=',', index=False, encoding='UTF-8')
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
@@ -111,16 +222,23 @@ def create_images(
                              index=False)
 
 
+def _get_distractor_spans(text, target_span, distractor_span):
+    pass
+
+
 def create_stimuli_images():
     stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
                         f'multipleye_stimuli_experiment_{image_config.LANGUAGE}.xlsx'
 
-    create_images(stimuli_file_name, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR, image_config.AOI_DIR,
-                  image_config.AOI_IMG_DIR)
+    create_images(stimuli_file_name, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
+                  image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
+                  image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR)
 
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
-              spacing: int = image_config.SPACE_LINE, column_name: str = None) -> (list, list):
+              spacing: int = image_config.SPACE_LINE, column_name: str = None,
+              x_px: int = image_config.TOP_LEFT_CORNER_X_PX, y_px: int = image_config.TOP_LEFT_CORNER_Y_PX,
+              text_width_px: int = image_config.TEXT_WIDTH_PX) -> (list, list):
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
@@ -131,11 +249,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
     aois = []
     all_words = []
-
-    # we need this variable to have the original values in the next
-    top_left_corner_y_line = image_config.TOP_LEFT_CORNER_Y_PX
-
     line_idx = 0
+
     for paragraph in paragraphs:
         words_in_paragraph = paragraph.split()
         line = ""
@@ -147,8 +262,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 (0, 0), line + word, font=font)
             text_width, text_height = right - left, bottom - top
 
-            if text_width < (image_config.IMAGE_WIDTH_PX - (
-                    image_config.MIN_MARGIN_RIGHT_PX + image_config.MIN_MARGIN_LEFT_PX)):
+            if text_width < text_width_px:
                 line += word.strip() + " "
             else:
                 lines.append(line.strip())
@@ -163,17 +277,17 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 continue
 
             if line == spacing * "\n":
-                top_left_corner_y_line += image_config.FONT_SIZE * spacing
+                y_px += image_config.FONT_SIZE * spacing
                 continue
 
             words_in_line = line.split()
-            x_word = image_config.TOP_LEFT_CORNER_X_PX
+            x_word = x_px
 
             left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
             line_width, line_height = right - left, bottom - top
 
             # calculate aoi boxes for each letter
-            top_left_corner_x_letter = image_config.TOP_LEFT_CORNER_X_PX
+            top_left_corner_x_letter = x_px
             letter_width = line_width / len(line)
             # TODO hardcode this factor somewhere else
             factor = line_height / 5.25
@@ -203,20 +317,20 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                 word_width = word_right - word_left
 
-                draw.text((x_word, top_left_corner_y_line), word, fill=image_config.TEXT_COLOR, font=font)
+                draw.text((x_word, y_px), word, fill=image_config.TEXT_COLOR, font=font)
 
                 for char_idx, char in enumerate(word):
 
                     if draw_aoi:
-                        draw.rectangle((top_left_corner_x_letter, top_left_corner_y_line,
+                        draw.rectangle((top_left_corner_x_letter, y_px,
                                         top_left_corner_x_letter + letter_width,
-                                        top_left_corner_y_line + 5.25 * (factor + 2)),
+                                        y_px + 5.25 * (factor + 2)),
                                        outline='red', width=1)
 
                     # aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
                     # as the image is smaller than the actual screen we need to calculate the aoi boxes
                     aoi_x = top_left_corner_x_letter + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
-                    aoi_y = top_left_corner_y_line + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+                    aoi_y = y_px + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
 
                     aoi_letter = [
                         char, aoi_x, aoi_y,
@@ -243,7 +357,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 x_word += word_width
 
             all_words.extend(words)
-            top_left_corner_y_line += line_height
+            y_px += line_height
             line_idx += 1
 
     # draw fixation point

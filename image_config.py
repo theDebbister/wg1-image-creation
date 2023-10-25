@@ -3,7 +3,7 @@ RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
 
 # Set this to true if you want to generate the images with AOI boxes
-AOI = True
+AOI = False
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
@@ -24,9 +24,11 @@ INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
 OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
+QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}/'
 QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
 AOI_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_{LANGUAGE}/'
 AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
+AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'question_aoi_images_{LANGUAGE}/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_{LANGUAGE}/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 
@@ -67,6 +69,8 @@ MIN_MARGIN_BOTTOM_PX = int(MARGIN_BOTTOM_INCH *
                            RESOLUTION[1] / SCREEN_SIZE_INCH[1])
 
 # Coordinates that are saying how far from the upper left corner of the image will be the text displayed, in pixels
+TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
+
 TOP_LEFT_CORNER_X_PX = MIN_MARGIN_LEFT_PX
 TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 

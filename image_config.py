@@ -18,11 +18,11 @@ TEXT_COLOR = (0, 0, 0)
 SPACE_LINE = 3
 
 # Set the picture variables
-BACKGROUND_COLOR = "#DFDFDF"  # possibly also in rgb: (231, 230, 230)
+BACKGROUND_COLOR = (231, 230, 230)
 
 INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
 
-OUTPUT_TOP_DIR = f'stimuli_{LANGUAGE}/'
+OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}/'
 QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
@@ -31,6 +31,8 @@ AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
 AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'question_aoi_images_{LANGUAGE}/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_{LANGUAGE}/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
+
+CONFIG_INI = f'data/stimuli_{LANGUAGE}/config/config_{LANGUAGE}.ini'
 
 ################################################################
 # COPY TO EXPERIMENT FOLDER ####################################

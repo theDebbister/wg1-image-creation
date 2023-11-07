@@ -1,17 +1,16 @@
 import configparser
-import csv
 import os
+import random
 import re
 from collections import OrderedDict
 from pathlib import Path
-import random
 
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
-from screeninfo import get_monitors
 from tqdm import tqdm
 
 import image_config
+from utils import config_utils
 
 
 def create_images(
@@ -89,7 +88,7 @@ def create_images(
             target_span_text = question_row['target_span_text']
             distractor_1_span_text = question_row['distractor_1_span_text']
 
-            _get_distractor_spans(annotated_text, target_span_text, distractor_1_span_text)
+            get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
 
             question_image = Image.new(
                 'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
@@ -108,8 +107,8 @@ def create_images(
             question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
 
             aois, words = draw_text(question, question_image, image_config.FONT_SIZE,
-                                        spacing=image_config.SPACE_LINE, column_name=f'question_{question_id}',
-                                        draw_aoi=image_config.AOI)
+                                    spacing=image_config.SPACE_LINE, column_name=f'question_{question_id}',
+                                    draw_aoi=image_config.AOI)
 
             all_aois.extend(aois)
             all_words.extend(words)
@@ -145,22 +144,29 @@ def create_images(
             shuffled_distractor_keys = list(distractor_positions.keys())
             random.shuffle(shuffled_distractor_keys)
 
-            for option, distractor in zip(answer_options, shuffled_distractor_keys):
+            for option, distractor_key in zip(answer_options, shuffled_distractor_keys):
                 aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE,
-                                            spacing=image_config.SPACE_LINE, column_name=f'question_{question_id}_{option}',
-                                            draw_aoi=image_config.AOI,
-                                            x_px=distractor_positions[distractor]['x_px'],
-                                            y_px=distractor_positions[distractor]['y_px'],
-                                            text_width_px=distractor_positions[distractor]['text_width_px'], )
+                                        spacing=image_config.SPACE_LINE, column_name=f'question_{question_id}_{option}',
+                                        draw_aoi=image_config.AOI,
+                                        x_px=distractor_positions[distractor_key]['x_px'],
+                                        y_px=distractor_positions[distractor_key]['y_px'],
+                                        text_width_px=distractor_positions[distractor_key]['text_width_px'], )
 
                 draw = ImageDraw.Draw(question_image)
-                draw.rectangle(
-                    (distractor_positions[distractor]['x_px'], distractor_positions[distractor]['y_px'],
-                     distractor_positions[distractor]['x_px'] + distractor_positions[distractor]['text_width_px'],
-                     distractor_positions[distractor]['y_px'] + distractor_positions[distractor]['text_height_px']),
-                    outline='black', width=2
-                )
-                # TODO: write box coordinates to config file such that we have it in the experiment
+
+                box_coordinates = (
+                    distractor_positions[distractor_key]['x_px'], distractor_positions[distractor_key]['y_px'],
+                    distractor_positions[distractor_key]['x_px'] + distractor_positions[distractor_key][
+                        'text_width_px'],
+                    distractor_positions[distractor_key]['y_px'] + distractor_positions[distractor_key][
+                        'text_height_px'])
+
+                draw.rectangle(box_coordinates, outline='black', width=2)
+
+                config_utils.write_to_config(image_config.CONFIG_INI,
+                                             'QUESTION_OPTION_BOXES',
+                                             {f'{distractor_key}': box_coordinates}
+                                             )
 
                 all_aois.extend(aois)
                 all_words.extend(words)
@@ -199,8 +205,8 @@ def create_images(
                     color=image_config.BACKGROUND_COLOR)
 
                 aois, words = draw_text(text, final_image, image_config.FONT_SIZE,
-                                            spacing=image_config.SPACE_LINE, column_name=column_name,
-                                            draw_aoi=image_config.AOI)
+                                        spacing=image_config.SPACE_LINE, column_name=column_name,
+                                        draw_aoi=image_config.AOI)
 
                 filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_practice' if practice else ''}{'_aoi' if image_config.AOI else ''}.png"
@@ -235,7 +241,14 @@ def create_images(
                              index=False)
 
 
-def _get_distractor_spans(text, target_span, distractor_span):
+def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
+    """
+    Searches a text span in a text and returns the word and char indices in the text of the span.
+    :param text: Text with annotated spans
+    :param span: That span that is marked in the text
+    :param span_marker: The marker that is used to mark the span in the text
+    :return: Word and char indices of the span in the text
+    """
     pass
 
 
@@ -504,34 +517,42 @@ def create_final_screen(image: Image, text: str):
 
         draw.text((text_x, text_y), paragraph, font=font, fill=our_blue)
 
-def write_image_config() -> None:
+
+def write_final_image_config() -> None:
     """
     Some settings from the image creation need to be imported in the experiment.
     This function writes them to a language config file.
     """
-    config = configparser.ConfigParser()
-    config['IMAGE'] = {
-        'language': image_config.LANGUAGE,
-        'font_size': image_config.FONT_SIZE,
-        'font_type': image_config.FONT_TYPE,
-        'text_color': image_config.TEXT_COLOR,
-        'background_color': image_config.BACKGROUND_COLOR,
-        'image_width_px': image_config.IMAGE_WIDTH_PX,
-        'image_height_px': image_config.IMAGE_HEIGHT_PX,
-        'min_margin_left_px': image_config.MIN_MARGIN_LEFT_PX,
-        'min_margin_right_px': image_config.MIN_MARGIN_RIGHT_PX,
-        'min_margin_top_px': image_config.MIN_MARGIN_TOP_PX,
-        'min_margin_bottom_px': image_config.MIN_MARGIN_BOTTOM_PX,
-        'pos_bottom_dot_x_px': image_config.POS_BOTTOM_DOT_X_PX,
-        'pos_bottom_dot_y_px': image_config.POS_BOTTOM_DOT_Y_PX,
+
+    experiment = {
+        'LANGUAGE': image_config.LANGUAGE,
     }
 
-    config['PATHS'] = {
+    image = {
+        'font_size': image_config.FONT_SIZE,
+        'FONT': image_config.FONT_TYPE,
+        'FGC': image_config.TEXT_COLOR,
+        'IMAGE_BGC': image_config.BACKGROUND_COLOR,
+        'IMAGE_WIDTH_PX': image_config.IMAGE_WIDTH_PX,
+        'IMAGE_HEIGHT_PX': image_config.IMAGE_HEIGHT_PX,
+        'MIN_MARGIN_LEFT_PX': image_config.MIN_MARGIN_LEFT_PX,
+        'MIN_MARGIN_RIGHT_PX': image_config.MIN_MARGIN_RIGHT_PX,
+        'MIN_MARGIN_TOP_PX': image_config.MIN_MARGIN_TOP_PX,
+        'MIN_MARGIN_BOTTOM_PX': image_config.MIN_MARGIN_BOTTOM_PX,
+    }
+
+    screen = {
+        'DISPSIZE': image_config.RESOLUTION,
+        'SCREENSIZE': image_config.SCREEN_SIZE_CM,
+
+    }
+
+    paths = {
         'question_file_path': image_config.QUESTION_FILE_PATH,
         'other_screens_file_path': image_config.OTHER_SCREENS_FILE_PATH,
     }
 
-    config['DIRECTORIES'] = {
+    directories = {
         'question_image_dir': image_config.QUESTION_IMAGE_DIR,
         'image_dir': image_config.IMAGE_DIR,
         'aoi_dir': image_config.AOI_DIR,
@@ -541,10 +562,12 @@ def write_image_config() -> None:
         'output_top_dir': image_config.OUTPUT_TOP_DIR,
     }
 
-    with open(f'stimuli_{image_config.LANGUAGE}/config/config_{image_config.LANGUAGE}.ini', 'w') as configfile:
-        config.write(configfile)
-
-
+    # probably need to refactor this method, but whatever
+    config_utils.write_to_config(image_config.CONFIG_INI, 'PATHS', paths)
+    config_utils.write_to_config(image_config.CONFIG_INI, 'DIRECTORIES', directories)
+    config_utils.write_to_config(image_config.CONFIG_INI, 'IMAGE', image)
+    config_utils.write_to_config(image_config.CONFIG_INI, 'SCREEN', screen)
+    config_utils.write_to_config(image_config.CONFIG_INI, 'EXPERIMENT', experiment)
 
 
 def create_other_screens():
@@ -597,4 +620,4 @@ def create_other_screens():
 if __name__ == '__main__':
     create_stimuli_images()
     create_other_screens()
-    write_image_config()
+    write_final_image_config()

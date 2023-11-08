@@ -24,9 +24,9 @@ Steps to create the images:
 1. Go to the `image_config.py` file
 2. Set the variable language on top of the file to the language you want to create the images for. Please use the
    two-character code from this list: [ISO 639-1 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
-3. Create a new folder called `stimuli_[language]` where language is the same language code that you specified in the
+3. Create a new folder called `data/stimuli_[language]` where language is the same language code that you specified in the
    config
-4. Paste the Excel files for the stimuli texts, the practice texts and the other screens into that folder.
+4. Paste the Excel files for the stimuli texts, the questions and the instruction screens into that folder.
 5. Go again to the `image_config.py` file
 6. Set the variables `RESOLUTION` and `SCREEN SIZE`. PLease make sure that both values reflect the size of the
    presentation monitor

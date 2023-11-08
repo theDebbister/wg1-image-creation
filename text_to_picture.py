@@ -59,8 +59,6 @@ def create_images(
         aoi_header = ['char', 'x', 'y', 'width', 'height',
                       'char_idx_in_line', 'line_idx', 'page']
         all_aois = []
-        all_aois = []
-        all_words = []
         all_words = []
 
         question_sub_df_stimulus = question_df[question_df['stimulus_id'] == text_id]
@@ -248,6 +246,8 @@ def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
     :param span: That span that is marked in the text
     :param span_marker: The marker that is used to mark the span in the text
     :return: Word and char indices of the span in the text
+
+    see: https://pynative.com/python-find-position-of-regex-match-using-span-start-end/
     """
     pass
 

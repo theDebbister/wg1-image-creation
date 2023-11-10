@@ -3,7 +3,7 @@ RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
 
 # Set this to true if you want to generate the images with AOI boxes
-AOI = False
+AOI = True
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############

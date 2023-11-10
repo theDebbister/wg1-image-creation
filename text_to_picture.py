@@ -269,6 +269,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     draw = ImageDraw.Draw(image)
 
     font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
+    #font = ImageFont.truetype('font/FreeMono.ttf', fontsize)
 
     # TODO make sure this works for different scripts!
     paragraphs = re.split(r'\n+', text.strip())
@@ -324,6 +325,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             stop_bold = False
             num_words = len(words_in_line)
 
+            draw.text((x_word, y_px), line, fill=image_config.TEXT_COLOR, font=font)
+
             for word_number, word in enumerate(words_in_line):
 
                 if word.startswith('**'):
@@ -343,7 +346,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                 word_width = word_right - word_left
 
-                draw.text((x_word, y_px), word, fill=image_config.TEXT_COLOR, font=font)
+                #draw.text((x_word, y_px), word, fill=image_config.TEXT_COLOR, font=font)
 
                 for char_idx, char in enumerate(word):
 

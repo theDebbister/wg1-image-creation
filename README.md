@@ -17,6 +17,33 @@ PyCharm you can follow these [instructions](https://www.jetbrains.com/help/pycha
 
 Once you have the environment you can install the necessary packages using the `requirements.txt` file.
 
+In order to create images for right-to-left scripts, it is necessary to install more dependencies.
+
+### Install dependencies for right-to-left scripts: MAC
+The easiest way to install the dependencies is using `homwbrew`. 
+
+```bash
+brew install libraqm
+```
+
+The following dependencies are needed for `libraqm`. You might have some of them already installed:
+
+```bash
+brew install libtiff libjpeg webp little-cms2 pkg-config cmake freetype harfbuzz fribidi meson gtk-doc
+```
+
+In order to have `libraqm` available for Pillow, you need to build Pillow from source. 
+If you have already installed it, you need to uninstall it and rebuild it:
+
+```bash
+pip uninstall Pillow
+python3 -m pip install --upgrade Pillow --no-binary :all:
+```
+
+### Install dependencies for right-to-left scripts: Windows
+Not tested so far. If you had to install it, please update the `README`.
+
+
 ## Create the images
 
 Steps to create the images:

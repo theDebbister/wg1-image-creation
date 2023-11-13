@@ -1,83 +1,77 @@
 LANGUAGE = 'toy'
-RESOLUTION = (1920, 1080)
-SCREEN_SIZE_CM = (54.4, 30.3)
-
-# Set this to true if you want to generate the images with AOI boxes
-AOI = True
+FULL_LANGUAGE = 'English'
+COUNTRY_CODE = 'toy'
+LAB_NUMBER = 0
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
 ################################################################
-NUM_STIMULI = 13
-NUM_OTHER_SCREENS = 9
+from utils.config_utils import read_image_configuration
 
-FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
-FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"
+# set the font based on the language
+if LANGUAGE == 'he':
+    FONT_TYPE = "fonts/FreeMono.ttf"
+    FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
+else:
+    FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"
+
 TEXT_COLOR = (0, 0, 0)
-# vertical spacing between lines; in units of font’s default line height proportion
-SPACE_LINE = 3
-
-# Set the picture variables
 BACKGROUND_COLOR = (231, 230, 230)
 
-INCH_IN_CM = 2.54  # Constant; we need it in the formula; 1 inch is 2.54 cm
+# vertical spacing between lines
+LINE_SPACING = 3
 
 OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}/'
 QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
-AOI_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_{LANGUAGE}/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + f'stimuli_aoi_images_{LANGUAGE}/'
-AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'question_aoi_images_{LANGUAGE}/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_{LANGUAGE}/'
+AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}/'
+AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}/'
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 
-CONFIG_INI = f'data/stimuli_{LANGUAGE}/config/config_{LANGUAGE}.ini'
+SHUFFLED_ANSWER_OPTIONS = OUTPUT_TOP_DIR + f'config/shuffled_option_keys_{LANGUAGE}.json'
 
-################################################################
-# COPY TO EXPERIMENT FOLDER ####################################
-################################################################
+FINAL_CONFIG = f'data/stimuli_{LANGUAGE}/config/config_{LANGUAGE}.py'
 
-# also copy resolution from above!!
+LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + f'config/{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}_lab_configuration.txt'
+LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)
 
-# also copy screen size in cm from above!!
+RESOLUTION = LAB_CONFIGURATION['RESOLUTION']
+SCREEN_SIZE_CM = LAB_CONFIGURATION['SCREEN_SIZE_CM']
+DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
+SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION']
 
 IMAGE_SIZE_CM = (37, 28)
-IMAGE_SIZE_INCH = (IMAGE_SIZE_CM[0] / INCH_IN_CM,
-                   IMAGE_SIZE_CM[1] / INCH_IN_CM)
 
-SCREEN_SIZE_INCH = (SCREEN_SIZE_CM[0] /
-                    INCH_IN_CM, SCREEN_SIZE_CM[1] / INCH_IN_CM)
+IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
+IMAGE_HEIGHT_PX = int(IMAGE_SIZE_CM[1] * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 
-IMAGE_WIDTH_PX = int(IMAGE_SIZE_INCH[0] * RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-IMAGE_HEIGHT_PX = int(IMAGE_SIZE_INCH[1] * RESOLUTION[1] / SCREEN_SIZE_INCH[1])
-
-# calculate the margins in inch, we set the margin fixed as cm
-MARGIN_LEFT_INCH = 2.3 / INCH_IN_CM
-MARGIN_RIGHT_INCH = 2.1 / INCH_IN_CM
-
-MARGIN_BOTTOM_INCH = 3.3 / INCH_IN_CM
-MARGIN_TOP_INCH = 2.3 / INCH_IN_CM
+MARGIN_LEFT_CM = 2.3
+MARGIN_RIGHT_CM = 2.1
+MARGIN_BOTTOM_CM = 3.3
+MARGIN_TOP_CM = 2.3
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
-MIN_MARGIN_LEFT_PX = int(MARGIN_LEFT_INCH *
-                         RESOLUTION[0] / SCREEN_SIZE_INCH[0])
-MIN_MARGIN_RIGHT_PX = int(MARGIN_RIGHT_INCH *
-                          RESOLUTION[0] / SCREEN_SIZE_INCH[0])
+MIN_MARGIN_LEFT_PX = int(MARGIN_LEFT_CM *
+                         RESOLUTION[0] / SCREEN_SIZE_CM[0])
+MIN_MARGIN_RIGHT_PX = int(MARGIN_RIGHT_CM *
+                          RESOLUTION[0] / SCREEN_SIZE_CM[0])
 
-MIN_MARGIN_TOP_PX = int(MARGIN_TOP_INCH *
-                        RESOLUTION[1] / SCREEN_SIZE_INCH[1])
-MIN_MARGIN_BOTTOM_PX = int(MARGIN_BOTTOM_INCH *
-                           RESOLUTION[1] / SCREEN_SIZE_INCH[1])
+MIN_MARGIN_TOP_PX = int(MARGIN_TOP_CM *
+                        RESOLUTION[1] / SCREEN_SIZE_CM[1])
+MIN_MARGIN_BOTTOM_PX = int(MARGIN_BOTTOM_CM *
+                           RESOLUTION[1] / SCREEN_SIZE_CM[1])
 
-# Coordinates that are saying how far from the upper left corner of the image will be the text displayed, in pixels
 TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
 
 TOP_LEFT_CORNER_X_PX = MIN_MARGIN_LEFT_PX
 TOP_LEFT_CORNER_Y_PX = MIN_MARGIN_TOP_PX
 
 POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
-POS_BOTTOM_DOT_Y_PX = IMAGE_HEIGHT_PX - (2 / INCH_IN_CM) * RESOLUTION[1] / SCREEN_SIZE_INCH[1]
+POS_BOTTOM_DOT_Y_PX = IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1]
 
 FONT_SIZE = RESOLUTION[1] // 43
 

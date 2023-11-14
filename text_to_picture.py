@@ -76,7 +76,7 @@ def create_images(
         text_id = int(row[f"stimulus_id"])
 
         aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
-        aoi_header = ['char', 'x', 'y', 'width', 'height',
+        aoi_header = ['char', 'top_left_x', 'top_left_y', 'width', 'height',
                       'char_idx_in_line', 'line_idx', 'page']
         all_aois = []
         all_words = []
@@ -408,9 +408,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                         aoi_x = top_left_corner_x_letter - letter_width
                     else:
                         aoi_x = top_left_corner_x_letter
-
-                    draw.ellipse((aoi_x - 2, aoi_y - 2, aoi_x + 2, aoi_y + 2),
-                                 outline=image_config.TEXT_COLOR, width=5)
 
                     if draw_aoi:
 

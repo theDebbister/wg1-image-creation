@@ -238,7 +238,7 @@ Temporary Items
 .apdisk
 
 data/stimuli_*/*
-#!data/stimuli_*/config
+!data/stimuli_*/config
 #!data/stimuli_toy/*
 
 

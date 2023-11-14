@@ -177,8 +177,8 @@ def create_images(
                 aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE,
                                         spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}_{option}',
                                         draw_aoi=draw_aoi,
-                                        x_px=option_keys[distractor_key]['x_px'],
-                                        y_px=option_keys[distractor_key]['y_px'],
+                                        anchor_x_px=option_keys[distractor_key]['x_px'],
+                                        anchor_y_px=option_keys[distractor_key]['y_px'],
                                         text_width_px=option_keys[distractor_key]['text_width_px'], )
 
                 draw = ImageDraw.Draw(question_image)
@@ -249,7 +249,6 @@ def create_images(
 
         aoi_df = pd.DataFrame(all_aois, columns=aoi_header)
         aoi_df['word'] = all_words
-        # here changing sep back to ',' will prevent skipping an actual  ',' value
         aoi_df.to_csv(aoi_dir + aoi_file_name, sep=',', index=False, encoding='UTF-8')
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
@@ -316,13 +315,14 @@ def create_stimuli_images():
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               spacing: int = image_config.LINE_SPACING, column_name: str = None,
-              x_px: int = image_config.TOP_LEFT_CORNER_X_PX, y_px: int = image_config.TOP_LEFT_CORNER_Y_PX,
-              text_width_px: int = image_config.TEXT_WIDTH_PX) -> (list, list):
+              anchor_x_px: int = image_config.ANCHOR_POINT_X_PX,
+              anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
+              text_width_px: int = image_config.TEXT_WIDTH_PX,
+              script_direction: str = image_config.SCRIPT_DIRECTION) -> (list, list):
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
     font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
-    # font = ImageFont.truetype('font/FreeMono.ttf', fontsize)
 
     # TODO make sure this works for different scripts!
     paragraphs = re.split(r'\n+', text.strip())
@@ -357,17 +357,17 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 continue
 
             if line == spacing * "\n":
-                y_px += image_config.FONT_SIZE * spacing
+                anchor_y_px += image_config.FONT_SIZE * spacing
                 continue
 
             words_in_line = line.split()
-            x_word = x_px
+            x_word = anchor_x_px
 
             left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
             line_width, line_height = right - left, bottom - top
 
             # calculate aoi boxes for each letter
-            top_left_corner_x_letter = x_px
+            top_left_corner_x_letter = anchor_x_px
             letter_width = line_width / len(line)
             # TODO hardcode this factor somewhere else
             factor = line_height / 5.25
@@ -378,7 +378,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             stop_bold = False
             num_words = len(words_in_line)
 
-            draw.text((x_word, y_px), line, fill=image_config.TEXT_COLOR, font=font)
+            draw.text((x_word, anchor_y_px), line, fill=image_config.TEXT_COLOR,
+                      font=font, direction=script_direction, anchor='rt' if script_direction == 'rtl' else 'lt')
 
             for word_number, word in enumerate(words_in_line):
 
@@ -401,16 +402,27 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                 for char_idx, char in enumerate(word):
 
+                    aoi_y = anchor_y_px
+
+                    if script_direction == 'rtl':
+                        aoi_x = top_left_corner_x_letter - letter_width
+                    else:
+                        aoi_x = top_left_corner_x_letter
+
+                    draw.ellipse((aoi_x - 2, aoi_y - 2, aoi_x + 2, aoi_y + 2),
+                                 outline=image_config.TEXT_COLOR, width=5)
+
                     if draw_aoi:
-                        draw.rectangle((top_left_corner_x_letter, y_px,
-                                        top_left_corner_x_letter + letter_width,
-                                        y_px + 5.25 * (factor + 2)),
+
+                        draw.rectangle((aoi_x, aoi_y,
+                                        aoi_x + letter_width,
+                                        aoi_y + 5.25 * (factor + 2)),
                                        outline='red', width=1)
 
                     # aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
                     # as the image is smaller than the actual screen we need to calculate the aoi boxes
-                    aoi_x = top_left_corner_x_letter + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
-                    aoi_y = y_px + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+                    aoi_x = aoi_x + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
+                    aoi_y = aoi_y + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
 
                     aoi_letter = [
                         char, aoi_x, aoi_y,
@@ -419,7 +431,10 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     ]
 
                     # update top left corner x for next letter
-                    top_left_corner_x_letter += letter_width
+                    if script_direction == 'rtl':
+                        top_left_corner_x_letter -= letter_width
+                    else:
+                        top_left_corner_x_letter += letter_width
 
                     aois.append(aoi_letter)
 
@@ -437,7 +452,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 x_word += word_width
 
             all_words.extend(words)
-            y_px += line_height
+            anchor_y_px += line_height
             line_idx += 1
 
     # draw fixation point
@@ -517,7 +532,7 @@ def create_fixation_screen(image: Image):
 
     # The fixation dot is positioned a bit left to the first char in the middle of the line
     r = 7
-    fix_x = 0.75 * image_config.MIN_MARGIN_LEFT_PX
+    fix_x = 0.75 * image_config.MIN_MARGIN_LEFT_PX if image_config.SCRIPT_DIRECTION == 'ltr' else image_config.IMAGE_WIDTH_PX - 0.75 * image_config.MIN_MARGIN_RIGHT_PX
     fix_y = 1.25 * image_config.MIN_MARGIN_TOP_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),

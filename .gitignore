@@ -237,9 +237,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-data
-!data/stimuli_toy
-!data/*/config
+data/stimuli_*/*
+#!data/stimuli_*/config
+#!data/stimuli_toy/*
+
 
 
 .vscode/*

@@ -20,7 +20,7 @@ arrow_left = (81, 439.12, 563.8499999999999, 718.5600000000001)
 LANGUAGE = "he"
 
 # IMAGE ##########
-FONT_SIZE = 25
+FONT_SIZE = 24.95049504950495
 FONT = "fonts/FreeMono.ttf"
 FGC = (0, 0, 0)
 IMAGE_BGC = (231, 230, 230)

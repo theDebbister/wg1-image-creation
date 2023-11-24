@@ -124,7 +124,7 @@ def create_images(
 
             question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
 
-            aois, words = draw_text(question, question_image, image_config.FONT_SIZE,
+            aois, words = draw_text(question, question_image, image_config.FONT_SIZE_PX,
                                     spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}',
                                     draw_aoi=draw_aoi)
 
@@ -174,7 +174,7 @@ def create_images(
             question_images['distractor_C_key'].append(shuffled_option_keys['distractor_3'])
 
             for option, distractor_key in shuffled_option_keys.items():
-                aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE,
+                aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
                                         spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}_{option}',
                                         draw_aoi=draw_aoi,
                                         anchor_x_px=option_keys[distractor_key]['x_px'],
@@ -230,7 +230,7 @@ def create_images(
                     'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
                     color=image_config.BACKGROUND_COLOR)
 
-                aois, words = draw_text(text, final_image, image_config.FONT_SIZE,
+                aois, words = draw_text(text, final_image, image_config.FONT_SIZE_PX,
                                         spacing=image_config.LINE_SPACING, column_name=column_name,
                                         draw_aoi=draw_aoi)
 
@@ -357,7 +357,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 continue
 
             if line == spacing * "\n":
-                anchor_y_px += image_config.FONT_SIZE * spacing
+                anchor_y_px += image_config.FONT_SIZE_PX * spacing
                 continue
 
             words_in_line = line.split()
@@ -378,9 +378,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             stop_bold = False
             num_words = len(words_in_line)
 
-            draw.text((x_word, anchor_y_px), line, fill=image_config.TEXT_COLOR,
-                      font=font, direction=script_direction, anchor='rt' if script_direction == 'rtl' else 'lt')
-
             for word_number, word in enumerate(words_in_line):
 
                 if word.startswith('**'):
@@ -399,6 +396,9 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     (0, 0), word, font=font)
 
                 word_width = word_right - word_left
+
+                draw.text((x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
+                          font=font, direction=script_direction, anchor='ra' if script_direction == 'rtl' else 'la')
 
                 for char_idx, char in enumerate(word):
 
@@ -446,7 +446,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
                     stop_bold = False
 
-                x_word += word_width
+                x_word = x_word + word_width if script_direction == 'ltr' else x_word - word_width
 
             all_words.extend(words)
             anchor_y_px += line_height
@@ -593,7 +593,7 @@ def write_final_image_config() -> None:
     CONFIG.setdefault('EXPERIMENT', {}).update({'LANGUAGE': image_config.LANGUAGE})
 
     CONFIG.setdefault('IMAGE', {}).update({
-        'FONT_SIZE': image_config.FONT_SIZE,
+        'FONT_SIZE': image_config.FONT_SIZE_PX,
         'FONT': image_config.FONT_TYPE,
         'FGC': image_config.TEXT_COLOR,
         'IMAGE_BGC': image_config.BACKGROUND_COLOR,
@@ -660,7 +660,7 @@ def create_other_screens(draw_aoi=False):
             create_final_screen(final_image, text)
 
         elif title != 'empty_screen':
-            draw_text(text, final_image, image_config.FONT_SIZE - 2, spacing=2, draw_aoi=False)
+            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name

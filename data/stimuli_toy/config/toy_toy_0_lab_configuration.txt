@@ -2,7 +2,7 @@
 # properties in regard to the display screen. This is the screen where the stimuli will be shown.
 
 # Please specify the resolution in pixels of the display screen
-RESOLUTION = (1920, 1080)
+RESOLUTION = (1980, 1080)
 
 # Please specify the size of the display screen in centimeters
 SCREEN_SIZE_CM = (54.4, 30.3)

@@ -11,29 +11,29 @@ question_file_excel = "data/stimuli_toy/multipleye_comprehension_questions_toy.x
 participant_instruction_excel = "data/stimuli_toy/multipleye_participant_instructions_toy.xlsx"
 
 # QUESTION_OPTION_BOXES ##########
-arrow_left = (81, 439.12, 563.8499999999999, 718.5600000000001)
-arrow_down = (195.75, 748.5, 1109.25, 918.1600000000001)
-arrow_up = (195.75, 249.5, 1109.25, 419.16)
-arrow_right = (743.8499999999999, 439.12, 1226.6999999999998, 718.5600000000001)
+arrow_left = (83, 439.12, 581.02, 718.5600000000001)
+arrow_down = (201.9, 748.5, 1144.1, 918.1600000000001)
+arrow_up = (201.9, 249.5, 1144.1, 419.16)
+arrow_right = (767.2199999999999, 439.12, 1265.2399999999998, 718.5600000000001)
 
 # EXPERIMENT ##########
 LANGUAGE = "toy"
 
 # IMAGE ##########
-FONT_SIZE = 25
+FONT_SIZE = 24.95049504950495
 FONT = "fonts/JetBrainsMono-Regular.ttf"
 FGC = (0, 0, 0)
 IMAGE_BGC = (231, 230, 230)
-IMAGE_WIDTH_PX = 1305
+IMAGE_WIDTH_PX = 1346
 IMAGE_HEIGHT_PX = 998
-MIN_MARGIN_LEFT_PX = 81
-MIN_MARGIN_RIGHT_PX = 74
+MIN_MARGIN_LEFT_PX = 83
+MIN_MARGIN_RIGHT_PX = 76
 MIN_MARGIN_TOP_PX = 81
 MIN_MARGIN_BOTTOM_PX = 117
 IMAGE_SIZE_CM = (37, 28)
 
 # SCREEN ##########
-DISPSIZE = (1920, 1080)
+DISPSIZE = (1980, 1080)
 SCREENSIZE = (54.4, 30.3)
 
 # DIRECTORIES ##########

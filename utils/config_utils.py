@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 
 def write_final_config(
@@ -24,7 +25,7 @@ def write_final_config(
                     configfile.write(f'{key} = {value}\n')
 
 
-def read_image_configuration(config_path: str) -> dict:
+def read_image_configuration(config_path: Path) -> dict:
 
     image_config = {}
 

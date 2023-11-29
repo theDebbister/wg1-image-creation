@@ -1,12 +1,15 @@
-LANGUAGE = 'toy'
+LANGUAGE = 'en'
 FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'toy'
+COUNTRY_CODE = 'en'
 LAB_NUMBER = 0
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
 ################################################################
 from utils.config_utils import read_image_configuration
+from pathlib import Path
+
+this_file = Path(__file__).parent
 
 # set the font based on the language
 if LANGUAGE == 'he':
@@ -25,12 +28,16 @@ LINE_SPACING = 3
 OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}/'
-QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}/'
 AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}/'
 AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}/'
+
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
+STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_stimuli_experiment_{LANGUAGE}.xlsx'
+QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
+
+BLOCK_CONFIG_PATH = this_file / "global_configs/stimulus_to_block_mapping.csv"
 
 SHUFFLED_ANSWER_OPTIONS = OUTPUT_TOP_DIR + f'config/shuffled_option_keys_{LANGUAGE}.json'
 
@@ -76,7 +83,7 @@ TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
 POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else MIN_MARGIN_LEFT_PX
 POS_BOTTOM_DOT_Y_PX = IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1]
 
-FONT_SIZE_CM = 0.7
+FONT_SIZE_CM = 0.67
 FONT_SIZE_PX = FONT_SIZE_CM * RESOLUTION[1] / SCREEN_SIZE_CM[1]
 
 ####################################################################

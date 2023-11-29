@@ -1,4 +1,3 @@
-import configparser
 import json
 import os
 import random
@@ -32,6 +31,8 @@ def create_images(
     initial_question_df = pd.read_excel(question_file_name)
     initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
 
+    block_config = pd.read_csv(image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
+
     if not os.path.isdir(image_dir):
         os.mkdir(image_dir)
 
@@ -47,7 +48,9 @@ def create_images(
     if not os.path.isdir(question_aoi_dir):
         os.mkdir(question_aoi_dir)
 
-    stimulus_images = {}
+    stimulus_images = {
+        'block': [],
+    }
     question_images = {
         'question_img_path': [],
         'question_img_file': [],
@@ -71,11 +74,20 @@ def create_images(
 
         practice = True if row['text_type'] == 'practice' else False
 
-        text_file_name = row[f"stimulus_name"]
-        text_file_name = re.sub(' ', '_', text_file_name).lower()
+        text_name = row[f"stimulus_name"]
         text_id = int(row[f"stimulus_id"])
 
-        aoi_file_name = f'{text_file_name}_{text_id}_aoi.csv'
+        # get block information from block config match stimulus id and name
+        if image_config.LANGUAGE != 'toy':
+            block_info = block_config[((block_config['stimulus_id'] == text_id) & (block_config['stimulus_name'] == text_name))
+                                      ]['block_name'].values[0]
+        else:
+            block_info = 'toy'
+
+        stimulus_images['block'].append(block_info)
+        text_name = re.sub(' ', '_', text_name).lower()
+
+        aoi_file_name = f'{text_name}_{text_id}_aoi.csv'
         aoi_header = ['char', 'top_left_x', 'top_left_y', 'width', 'height',
                       'char_idx_in_line', 'line_idx', 'page']
         all_aois = []
@@ -100,7 +112,6 @@ def create_images(
                                           'distractor_1': question_row['distractor_1'],
                                           'distractor_2': question_row['distractor_2'],
                                           'distractor_3': question_row['distractor_3']})
-
 
             annotated_text = question_row['text_annotated_spans']
             target_span_text = question_row['target_span_text']
@@ -175,7 +186,8 @@ def create_images(
 
             for option, distractor_key in shuffled_option_keys.items():
                 aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
-                                        spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}_{option}',
+                                        spacing=image_config.LINE_SPACING,
+                                        column_name=f'question_{question_id}_{option}',
                                         draw_aoi=draw_aoi,
                                         anchor_x_px=option_keys[distractor_key]['x_px'],
                                         anchor_y_px=option_keys[distractor_key]['y_px'],
@@ -197,7 +209,7 @@ def create_images(
                 all_aois.extend(aois)
                 all_words.extend(words)
 
-            filename = f"{text_file_name}_id{text_id}_question_{question_id}_{image_config.LANGUAGE}" \
+            filename = f"{text_name}_id{text_id}_question_{question_id}_{image_config.LANGUAGE}" \
                        f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
 
             img_path = question_aoi_dir if draw_aoi else question_dir
@@ -234,7 +246,7 @@ def create_images(
                                         spacing=image_config.LINE_SPACING, column_name=column_name,
                                         draw_aoi=draw_aoi)
 
-                filename = f"{text_file_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
+                filename = f"{text_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
 
                 img_path = aoi_image_dir if draw_aoi else image_dir
@@ -249,7 +261,8 @@ def create_images(
 
         aoi_df = pd.DataFrame(all_aois, columns=aoi_header)
         aoi_df['word'] = all_words
-        aoi_df.to_csv(aoi_dir + aoi_file_name, sep=',', index=False, encoding='UTF-8')
+        aoi_df_path = os.path.join(aoi_dir, aoi_file_name)
+        aoi_df.to_csv(aoi_df_path, sep=',', index=False, encoding='UTF-8')
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
@@ -277,8 +290,8 @@ def create_images(
                              index=False)
 
     final_question_df.to_csv(full_path_questions,
-                                sep=',',
-                                index=False)
+                             sep=',',
+                             index=False)
 
     if shuffle_answer_options:
         with open(image_config.SHUFFLED_ANSWER_OPTIONS, 'w') as f:
@@ -299,18 +312,28 @@ def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
 
 
 def create_stimuli_images():
-    stimuli_file_name = image_config.OUTPUT_TOP_DIR + \
-                        f'multipleye_stimuli_experiment_{image_config.LANGUAGE}.xlsx'
+    if os.path.isfile(image_config.STIMULI_FILE_PATH):
 
-    CONFIG.setdefault('PATHS', {}).update({'stimuli_file_excel': stimuli_file_name})
+        create_images(image_config.STIMULI_FILE_PATH, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
+                      image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
+                      image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=False)
 
-    create_images(stimuli_file_name, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
-                  image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
-                  image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=False)
+        create_images(image_config.STIMULI_FILE_PATH, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
+                      image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
+                      image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=True)
+    else:
+        print(f'No excel file for stimuli found at {image_config.STIMULI_FILE_PATH}. '
+              f'No stimuli images will be created.')
 
-    create_images(stimuli_file_name, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
-                  image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
-                  image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=True)
+    # check whether excel for other screens exists
+    if os.path.isfile(image_config.OTHER_SCREENS_FILE_PATH):
+
+        create_other_screens(draw_aoi=False)
+        create_other_screens(draw_aoi=True)
+
+    else:
+        print(f'No excel file for other screens found at {image_config.OTHER_SCREENS_FILE_PATH}. '
+              f'No other screens will be created.')
 
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
@@ -410,7 +433,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                         aoi_x = top_left_corner_x_letter
 
                     if draw_aoi:
-
                         draw.rectangle((aoi_x, aoi_y,
                                         aoi_x + letter_width,
                                         aoi_y + 5.25 * (factor + 2)),
@@ -614,6 +636,7 @@ def write_final_image_config() -> None:
     CONFIG.setdefault('PATHS', {}).update({
         'question_file_excel': image_config.QUESTION_FILE_PATH,
         'participant_instruction_excel': image_config.OTHER_SCREENS_FILE_PATH,
+        'stimuli_file_excel': image_config.STIMULI_FILE_PATH
     })
 
     CONFIG.setdefault('DIRECTORIES', {}).update({
@@ -675,7 +698,8 @@ def create_other_screens(draw_aoi=False):
     participant_instruction_csv_path = (image_config.OTHER_SCREENS_FILE_PATH[:-5]
                                         + f'{"_aoi" if draw_aoi else ""}_with_img_paths.csv')
 
-    CONFIG.setdefault('PATHS', {}).update({f'participant_instruction{"_aoi" if draw_aoi else ""}_csv': participant_instruction_csv_path})
+    CONFIG.setdefault('PATHS', {}).update(
+        {f'participant_instruction{"_aoi" if draw_aoi else ""}_csv': participant_instruction_csv_path})
 
     other_screen_df.to_csv(participant_instruction_csv_path,
                            index=False)
@@ -683,6 +707,4 @@ def create_other_screens(draw_aoi=False):
 
 if __name__ == '__main__':
     create_stimuli_images()
-    create_other_screens()
-    create_other_screens(draw_aoi=True)
     write_final_image_config()

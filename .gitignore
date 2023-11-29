@@ -237,20 +237,13 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-*/stimuli_images/
-*/stimuli_aoi/
-*/other_screens/
-*/stimuli_aoi_images/
-*/practice_aoi/
-*/practice_aoi_images/
-*/practice_images/
+data/stimuli_*/*
+!data/stimuli_*/config
+#!data/stimuli_toy/*
+
+
 
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/

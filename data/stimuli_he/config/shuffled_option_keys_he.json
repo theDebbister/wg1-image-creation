@@ -1,0 +1,26 @@
+{
+    "question_1_stimulus_1": {
+        "target": "arrow_up",
+        "distractor_1": "arrow_right",
+        "distractor_2": "arrow_down",
+        "distractor_3": "arrow_left"
+    },
+    "question_1_stimulus_2": {
+        "target": "arrow_up",
+        "distractor_1": "arrow_right",
+        "distractor_2": "arrow_down",
+        "distractor_3": "arrow_left"
+    },
+    "question_2_stimulus_2": {
+        "target": "arrow_left",
+        "distractor_1": "arrow_right",
+        "distractor_2": "arrow_up",
+        "distractor_3": "arrow_down"
+    },
+    "question_1_stimulus_3": {
+        "target": "arrow_right",
+        "distractor_1": "arrow_left",
+        "distractor_2": "arrow_up",
+        "distractor_3": "arrow_down"
+    }
+}

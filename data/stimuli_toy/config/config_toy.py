@@ -33,8 +33,9 @@ MIN_MARGIN_BOTTOM_PX = 117
 IMAGE_SIZE_CM = (37, 28)
 
 # SCREEN ##########
-DISPSIZE = (1980, 1080)
-SCREENSIZE = (54.4, 30.3)
+RESOLUTION = (1980, 1080)
+SCREEN_SIZE_CM = (54.4, 30.3)
+DISTANCE_CM = 60.0
 
 # DIRECTORIES ##########
 question_image_dir = "data/stimuli_toy/question_images_toy/"

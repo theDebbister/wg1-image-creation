@@ -55,9 +55,9 @@ def create_images(
         'question_img_path': [],
         'question_img_file': [],
         'target_key': [],
-        'distractor_A_key': [],
-        'distractor_B_key': [],
-        'distractor_C_key': [],
+        'distractor_a_key': [],
+        'distractor_b_key': [],
+        'distractor_c_key': [],
     }
 
     # the answer options are shuffled once for each language, if they have been shuffled already, we don't shuffle again
@@ -78,11 +78,8 @@ def create_images(
         text_id = int(row[f"stimulus_id"])
 
         # get block information from block config match stimulus id and name
-        if image_config.LANGUAGE != 'toy':
-            block_info = block_config[((block_config['stimulus_id'] == text_id) & (block_config['stimulus_name'] == text_name))
-                                      ]['block_name'].values[0]
-        else:
-            block_info = 'toy'
+        block_info = block_config[((block_config['stimulus_id'] == text_id)
+                                   & (block_config['stimulus_name'] == text_name))]['block_name'].values[0]
 
         stimulus_images['block'].append(block_info)
         text_name = re.sub(' ', '_', text_name).lower()
@@ -109,13 +106,13 @@ def create_images(
             question_images['question_img_file'].append(question_image_file)
 
             answer_options = OrderedDict({'target': question_row['target'],
-                                          'distractor_1': question_row['distractor_1'],
-                                          'distractor_2': question_row['distractor_2'],
-                                          'distractor_3': question_row['distractor_3']})
+                                          'distractor_a': question_row['distractor_a'],
+                                          'distractor_b': question_row['distractor_b'],
+                                          'distractor_c': question_row['distractor_c']})
 
-            annotated_text = question_row['text_annotated_spans']
+            annotated_text = question_row['text_with_annotated_spans']
             target_span_text = question_row['target_span_text']
-            distractor_1_span_text = question_row['distractor_1_span_text']
+            distractor_1_span_text = question_row['distractor_span_text']
 
             get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
 
@@ -172,6 +169,8 @@ def create_images(
 
             if shuffle_answer_options:
                 shuffled_option_keys = list(option_keys.keys())
+                # shuffled_option_keys = ['arrow_left', 'arrow_up', 'arrow_right', 'arrow_down']
+                # shuffled_option_keys = ['arrow_up', 'arrow_left', 'arrow_down', 'arrow_right']
                 random.shuffle(shuffled_option_keys)
                 shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
                 shuffled_option_dict[question_identifier] = shuffled_option_keys
@@ -180,18 +179,19 @@ def create_images(
                 shuffled_option_keys = shuffled_option_dict[question_identifier]
 
             question_images['target_key'].append(shuffled_option_keys['target'])
-            question_images['distractor_A_key'].append(shuffled_option_keys['distractor_1'])
-            question_images['distractor_B_key'].append(shuffled_option_keys['distractor_2'])
-            question_images['distractor_C_key'].append(shuffled_option_keys['distractor_3'])
+            question_images['distractor_a_key'].append(shuffled_option_keys['distractor_a'])
+            question_images['distractor_b_key'].append(shuffled_option_keys['distractor_b'])
+            question_images['distractor_c_key'].append(shuffled_option_keys['distractor_c'])
 
             for option, distractor_key in shuffled_option_keys.items():
                 aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
                                         spacing=image_config.LINE_SPACING,
-                                        column_name=f'question_{question_id}_{option}',
+                                        column_name=f'{text_name}_{text_id}_question_{question_id}_{option}',
                                         draw_aoi=draw_aoi,
                                         anchor_x_px=option_keys[distractor_key]['x_px'],
                                         anchor_y_px=option_keys[distractor_key]['y_px'],
-                                        text_width_px=option_keys[distractor_key]['text_width_px'], )
+                                        text_width_px=option_keys[distractor_key]['text_width_px'],
+                                        question_type=distractor_key)
 
                 draw = ImageDraw.Draw(question_image)
 
@@ -341,7 +341,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               anchor_x_px: int = image_config.ANCHOR_POINT_X_PX,
               anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
               text_width_px: int = image_config.TEXT_WIDTH_PX,
-              script_direction: str = image_config.SCRIPT_DIRECTION) -> (list, list):
+              script_direction: str = image_config.SCRIPT_DIRECTION,
+              question_type: str = None) -> (list, list):
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
@@ -353,6 +354,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     aois = []
     all_words = []
     line_idx = 0
+    all_lines = []
 
     for paragraph in paragraphs:
         words_in_paragraph = paragraph.split()
@@ -376,12 +378,15 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         lines.append(spacing * "\n")
 
         for line in lines:
+
             if len(line) == 0:
                 continue
 
             if line == spacing * "\n":
                 anchor_y_px += image_config.FONT_SIZE_PX * spacing
                 continue
+
+            all_lines.append(line)
 
             words_in_line = line.split()
             x_word = anchor_x_px
@@ -473,6 +478,19 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             all_words.extend(words)
             anchor_y_px += line_height
             line_idx += 1
+
+    if question_type and not draw_aoi:
+        num_lines = len(all_lines)
+        num_words = len(text.split())
+        num_chars = len(text.strip())
+        if question_type == 'arrow_left' or 'arrow_right':
+            # count only the lines with text
+            if num_lines > 3:
+                print(f'{column_name},{num_lines},{num_words},{num_chars}')
+        else:
+
+            if num_lines > 2:
+                print(f'{column_name},{num_lines},{num_words},{num_chars}')
 
     # draw fixation point
     r = 7
@@ -629,8 +647,9 @@ def write_final_image_config() -> None:
     })
 
     CONFIG.setdefault('SCREEN', {}).update({
-        'DISPSIZE': image_config.RESOLUTION,
-        'SCREENSIZE': image_config.SCREEN_SIZE_CM
+        'RESOLUTION': image_config.RESOLUTION,
+        'SCREEN_SIZE_CM': image_config.SCREEN_SIZE_CM,
+        'DISTANCE_CM': image_config.DISTANCE_CM,
     })
 
     CONFIG.setdefault('PATHS', {}).update({

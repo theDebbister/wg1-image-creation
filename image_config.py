@@ -1,6 +1,6 @@
-LANGUAGE = 'en'
-FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'en'
+LANGUAGE = 'he'
+FULL_LANGUAGE = 'Hebrew'
+COUNTRY_CODE = 'he'
 LAB_NUMBER = 0
 
 ################################################################

@@ -28,8 +28,12 @@ def create_images(
     initial_stimulus_df = pd.read_excel(stimuli_file_name)
     initial_stimulus_df.dropna(subset=['stimulus_id'], inplace=True)
 
-    initial_question_df = pd.read_excel(question_file_name)
-    initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+    # check whether question excel exists as file, stimuli can be created independent of questions
+    if os.path.isfile(question_file_name):
+        initial_question_df = pd.read_excel(question_file_name)
+        initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+    else:
+        question_file_name = None
 
     block_config = pd.read_csv(image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
 
@@ -90,131 +94,135 @@ def create_images(
         all_aois = []
         all_words = []
 
-        question_sub_df_stimulus = initial_question_df[initial_question_df['stimulus_id'] == text_id]
+        # check whether question excel exists
+        if question_file_name:
 
-        for question_row_index, question_row in question_sub_df_stimulus.iterrows():
+            # get all questions for that text
+            question_sub_df_stimulus = initial_question_df[initial_question_df['stimulus_id'] == text_id]
 
-            question = question_row['question']
-            question_id = question_row['question_id']
+            for question_row_index, question_row in question_sub_df_stimulus.iterrows():
 
-            question_identifier = f'question_{question_id}_stimulus_{text_id}'
+                question = question_row['question']
+                question_id = question_row['question_id']
 
-            question_image_path = question_identifier + '_img_path'
-            question_image_file = question_identifier + '_img_file'
+                question_identifier = f'question_{question_id}_stimulus_{text_id}'
 
-            question_images['question_img_path'].append(question_image_path)
-            question_images['question_img_file'].append(question_image_file)
+                question_image_path = question_identifier + '_img_path'
+                question_image_file = question_identifier + '_img_file'
 
-            answer_options = OrderedDict({'target': question_row['target'],
-                                          'distractor_a': question_row['distractor_a'],
-                                          'distractor_b': question_row['distractor_b'],
-                                          'distractor_c': question_row['distractor_c']})
+                question_images['question_img_path'].append(question_image_path)
+                question_images['question_img_file'].append(question_image_file)
 
-            annotated_text = question_row['text_with_annotated_spans']
-            target_span_text = question_row['target_span_text']
-            distractor_1_span_text = question_row['distractor_span_text']
+                answer_options = OrderedDict({'target': question_row['target'],
+                                              'distractor_a': question_row['distractor_a'],
+                                              'distractor_b': question_row['distractor_b'],
+                                              'distractor_c': question_row['distractor_c']})
 
-            get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
+                annotated_text = question_row['text_with_annotated_spans']
+                target_span_text = question_row['target_span_text']
+                distractor_1_span_text = question_row['distractor_span_text']
 
-            question_image = Image.new(
-                'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
-                color=image_config.BACKGROUND_COLOR)
+                get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
 
-            arrow_img_path = 'logo_imgs/arrow_symbols.png'
-            arrow_img = Image.open(arrow_img_path)
+                question_image = Image.new(
+                    'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                    color=image_config.BACKGROUND_COLOR)
 
-            # get size of arrow image and past it on the question image centralized
-            arrow_width, arrow_height = arrow_img.size
-            arrow_width, arrow_height = arrow_width // 3, arrow_height // 3
-            arrow_img = arrow_img.resize((arrow_width, arrow_height))
-            x_arrow = (image_config.IMAGE_WIDTH_PX - arrow_width) // 2
-            y_arrow = image_config.IMAGE_HEIGHT_PX // 2
+                arrow_img_path = 'logo_imgs/arrow_symbols.png'
+                arrow_img = Image.open(arrow_img_path)
 
-            question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
+                # get size of arrow image and past it on the question image centralized
+                arrow_width, arrow_height = arrow_img.size
+                arrow_width, arrow_height = arrow_width // 3, arrow_height // 3
+                arrow_img = arrow_img.resize((arrow_width, arrow_height))
+                x_arrow = (image_config.IMAGE_WIDTH_PX - arrow_width) // 2
+                y_arrow = image_config.IMAGE_HEIGHT_PX // 2
 
-            aois, words = draw_text(question, question_image, image_config.FONT_SIZE_PX,
-                                    spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}',
-                                    draw_aoi=draw_aoi)
+                question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
 
-            all_aois.extend(aois)
-            all_words.extend(words)
-
-            option_keys = {
-                'arrow_left': {
-                    'x_px': image_config.MIN_MARGIN_LEFT_PX,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
-                },
-                'arrow_up': {
-                    'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
-
-                },
-                'arrow_right': {
-                    'x_px': image_config.IMAGE_WIDTH_PX * 0.57,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
-                },
-                'arrow_down': {
-                    'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
-                }
-            }
-
-            if shuffle_answer_options:
-                shuffled_option_keys = list(option_keys.keys())
-                # shuffled_option_keys = ['arrow_left', 'arrow_up', 'arrow_right', 'arrow_down']
-                # shuffled_option_keys = ['arrow_up', 'arrow_left', 'arrow_down', 'arrow_right']
-                random.shuffle(shuffled_option_keys)
-                shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
-                shuffled_option_dict[question_identifier] = shuffled_option_keys
-
-            else:
-                shuffled_option_keys = shuffled_option_dict[question_identifier]
-
-            question_images['target_key'].append(shuffled_option_keys['target'])
-            question_images['distractor_a_key'].append(shuffled_option_keys['distractor_a'])
-            question_images['distractor_b_key'].append(shuffled_option_keys['distractor_b'])
-            question_images['distractor_c_key'].append(shuffled_option_keys['distractor_c'])
-
-            for option, distractor_key in shuffled_option_keys.items():
-                aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
-                                        spacing=image_config.LINE_SPACING,
-                                        column_name=f'{text_name}_{text_id}_question_{question_id}_{option}',
-                                        draw_aoi=draw_aoi,
-                                        anchor_x_px=option_keys[distractor_key]['x_px'],
-                                        anchor_y_px=option_keys[distractor_key]['y_px'],
-                                        text_width_px=option_keys[distractor_key]['text_width_px'],
-                                        question_type=distractor_key)
-
-                draw = ImageDraw.Draw(question_image)
-
-                box_coordinates = (
-                    option_keys[distractor_key]['x_px'], option_keys[distractor_key]['y_px'],
-                    option_keys[distractor_key]['x_px'] + option_keys[distractor_key][
-                        'text_width_px'],
-                    option_keys[distractor_key]['y_px'] + option_keys[distractor_key][
-                        'text_height_px'])
-
-                draw.rectangle(box_coordinates, outline='black', width=2)
-
-                CONFIG.setdefault('QUESTION_OPTION_BOXES', {}).update({distractor_key: box_coordinates})
+                aois, words = draw_text(question, question_image, image_config.FONT_SIZE_PX,
+                                        spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}',
+                                        draw_aoi=draw_aoi)
 
                 all_aois.extend(aois)
                 all_words.extend(words)
 
-            filename = f"{text_name}_id{text_id}_question_{question_id}_{image_config.LANGUAGE}" \
-                       f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                option_keys = {
+                    'arrow_left': {
+                        'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                    },
+                    'arrow_up': {
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
 
-            img_path = question_aoi_dir if draw_aoi else question_dir
-            img_path = os.path.join(img_path, filename)
-            question_image.save(img_path)
+                    },
+                    'arrow_right': {
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.57,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                    },
+                    'arrow_down': {
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+                    }
+                }
+
+                if shuffle_answer_options:
+                    shuffled_option_keys = list(option_keys.keys())
+                    # shuffled_option_keys = ['arrow_left', 'arrow_up', 'arrow_right', 'arrow_down']
+                    # shuffled_option_keys = ['arrow_up', 'arrow_left', 'arrow_down', 'arrow_right']
+                    random.shuffle(shuffled_option_keys)
+                    shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
+                    shuffled_option_dict[question_identifier] = shuffled_option_keys
+
+                else:
+                    shuffled_option_keys = shuffled_option_dict[question_identifier]
+
+                question_images['target_key'].append(shuffled_option_keys['target'])
+                question_images['distractor_a_key'].append(shuffled_option_keys['distractor_a'])
+                question_images['distractor_b_key'].append(shuffled_option_keys['distractor_b'])
+                question_images['distractor_c_key'].append(shuffled_option_keys['distractor_c'])
+
+                for option, distractor_key in shuffled_option_keys.items():
+                    aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
+                                            spacing=image_config.LINE_SPACING,
+                                            column_name=f'{text_name}_{text_id}_question_{question_id}_{option}',
+                                            draw_aoi=draw_aoi,
+                                            anchor_x_px=option_keys[distractor_key]['x_px'],
+                                            anchor_y_px=option_keys[distractor_key]['y_px'],
+                                            text_width_px=option_keys[distractor_key]['text_width_px'],
+                                            question_type=distractor_key)
+
+                    draw = ImageDraw.Draw(question_image)
+
+                    box_coordinates = (
+                        option_keys[distractor_key]['x_px'], option_keys[distractor_key]['y_px'],
+                        option_keys[distractor_key]['x_px'] + option_keys[distractor_key][
+                            'text_width_px'],
+                        option_keys[distractor_key]['y_px'] + option_keys[distractor_key][
+                            'text_height_px'])
+
+                    draw.rectangle(box_coordinates, outline='black', width=2)
+
+                    CONFIG.setdefault('QUESTION_OPTION_BOXES', {}).update({distractor_key: box_coordinates})
+
+                    all_aois.extend(aois)
+                    all_words.extend(words)
+
+                filename = f"{text_name}_id{text_id}_question_{question_id}_{image_config.LANGUAGE}" \
+                           f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+
+                img_path = question_aoi_dir if draw_aoi else question_dir
+                img_path = os.path.join(img_path, filename)
+                question_image.save(img_path)
 
         for col_index, column_name in enumerate(initial_stimulus_df.columns):
 
@@ -264,32 +272,27 @@ def create_images(
         aoi_df_path = os.path.join(aoi_dir, aoi_file_name)
         aoi_df.to_csv(aoi_df_path, sep=',', index=False, encoding='UTF-8')
 
+    if question_file_name:
+        question_df = pd.DataFrame(question_images)
+        final_question_df = initial_question_df.join(question_df)
+        questions_file_name_stem = Path(question_file_name).stem
+        full_output_file_name_questions = f'{questions_file_name_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
+        full_path_questions = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name_questions)
+        final_question_df.to_csv(full_path_questions,
+                                 sep=',',
+                                 index=False)
+        CONFIG.setdefault('PATHS', {}).update({
+            f'question_images{"_aoi" if draw_aoi else ""}_csv': full_path_questions
+        })
+
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
     final_stimulus_df = initial_stimulus_df.join(image_df)
-
-    question_df = pd.DataFrame(question_images)
-    final_question_df = initial_question_df.join(question_df)
-
     stimuli_file_name_stem = Path(stimuli_file_name).stem
-    questions_file_name_stem = Path(question_file_name).stem
-
     full_output_file_name = f'{stimuli_file_name_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
-
-    full_output_file_name_questions = f'{questions_file_name_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
-    full_path_questions = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name_questions)
-
     CONFIG.setdefault('PATHS', {}).update({f'stimuli_images{"_aoi" if draw_aoi else ""}_csv': full_path})
-    CONFIG.setdefault('PATHS', {}).update({
-        f'question_images{"_aoi" if draw_aoi else ""}_csv': full_path_questions
-    })
-
     final_stimulus_df.to_csv(full_path,
-                             sep=',',
-                             index=False)
-
-    final_question_df.to_csv(full_path_questions,
                              sep=',',
                              index=False)
 

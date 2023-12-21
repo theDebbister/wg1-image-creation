@@ -394,7 +394,9 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             words_in_line = line.split()
             x_word = anchor_x_px
 
-            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
+            # left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
+
+            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font, direction=script_direction, anchor='ra' if script_direction == 'rtl' else 'la')
             line_width, line_height = right - left, bottom - top
 
             # calculate aoi boxes for each letter
@@ -443,17 +445,17 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     if draw_aoi:
                         draw.rectangle((aoi_x, aoi_y,
                                         aoi_x + letter_width,
-                                        aoi_y + 5.25 * (factor + 2)),
+                                        aoi_y + line_height * 1.5),
                                        outline='red', width=1)
 
                     # aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
                     # as the image is smaller than the actual screen we need to calculate the aoi boxes
-                    aoi_x = aoi_x + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
-                    aoi_y = aoi_y + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+                    aoi_x = int(aoi_x)  # + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
+                    aoi_y = int(aoi_y)  # + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
 
                     aoi_letter = [
                         char, aoi_x, aoi_y,
-                        letter_width, line_height,
+                        int(letter_width), int(line_height * 1.5),
                         char_idx_in_line, line_idx, column_name
                     ]
 

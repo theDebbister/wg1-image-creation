@@ -394,9 +394,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             words_in_line = line.split()
             x_word = anchor_x_px
 
-            # left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
-
-            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font, direction=script_direction, anchor='ra' if script_direction == 'rtl' else 'la')
+            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font, anchor='ra' if script_direction == 'rtl' else 'la')
             line_width, line_height = right - left, bottom - top
 
             # calculate aoi boxes for each letter
@@ -431,7 +429,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 word_width = word_right - word_left
 
                 draw.text((x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
-                          font=font, direction=script_direction, anchor='ra' if script_direction == 'rtl' else 'la')
+                          font=font, anchor='ra' if script_direction == 'rtl' else 'la')
 
                 for char_idx, char in enumerate(word):
 

@@ -1,7 +1,7 @@
-LANGUAGE = 'toy'
+LANGUAGE = 'en'
 FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'toy'
-LAB_NUMBER = 0
+COUNTRY_CODE = 'en'
+LAB_NUMBER = 1
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############

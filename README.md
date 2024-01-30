@@ -43,3 +43,5 @@ clean Python environment to do so. If you use an IDE you can create the environm
 PyCharm you can follow these [instructions](https://www.jetbrains.com/help/pycharm/creating-virtual-environment.html).
 
 Once you have the environment you can install the necessary packages using the `requirements.txt` file.
+
+In order to create images for right-to-left scripts, it is necessary to install more dependencies.

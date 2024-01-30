@@ -1,7 +1,7 @@
 LANGUAGE = 'en'
 FULL_LANGUAGE = 'English'
 COUNTRY_CODE = 'en'
-LAB_NUMBER = 0
+LAB_NUMBER = 1
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
@@ -59,7 +59,7 @@ IMAGE_HEIGHT_PX = int(IMAGE_SIZE_CM[1] * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 MARGIN_LEFT_CM = 2.3
 MARGIN_RIGHT_CM = 2.1
 MARGIN_BOTTOM_CM = 3.3
-MARGIN_TOP_CM = 2.3
+MARGIN_TOP_CM = 2.5
 
 # margins from all sides in pixels, at the moment the same for all, but can be changed later
 MIN_MARGIN_LEFT_PX = int(MARGIN_LEFT_CM *

@@ -16,8 +16,8 @@ CONFIG = {}
 
 
 def create_images(
-        stimuli_file_name: str,
-        question_file_name: str,
+        stimuli_csv_file_name: str,
+        question_csv_file_name: str,
         image_dir: str,
         question_dir: str,
         aoi_dir: str,
@@ -25,11 +25,15 @@ def create_images(
         aoi_image_dir: str,
         draw_aoi=False,
 ):
-    initial_stimulus_df = pd.read_excel(stimuli_file_name)
+    initial_stimulus_df = pd.read_excel(stimuli_csv_file_name)
     initial_stimulus_df.dropna(subset=['stimulus_id'], inplace=True)
 
-    initial_question_df = pd.read_excel(question_file_name)
-    initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+    # check whether question excel exists as file, stimuli can be created independent of questions
+    if os.path.isfile(question_csv_file_name):
+        initial_question_df = pd.read_excel(question_csv_file_name)
+        initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+    else:
+        question_csv_file_name = None
 
     block_config = pd.read_csv(image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
 
@@ -55,9 +59,9 @@ def create_images(
         'question_img_path': [],
         'question_img_file': [],
         'target_key': [],
-        'distractor_A_key': [],
-        'distractor_B_key': [],
-        'distractor_C_key': [],
+        'distractor_a_key': [],
+        'distractor_b_key': [],
+        'distractor_c_key': [],
     }
 
     # the answer options are shuffled once for each language, if they have been shuffled already, we don't shuffle again
@@ -78,11 +82,8 @@ def create_images(
         text_id = int(row[f"stimulus_id"])
 
         # get block information from block config match stimulus id and name
-        if image_config.LANGUAGE != 'toy':
-            block_info = block_config[((block_config['stimulus_id'] == text_id) & (block_config['stimulus_name'] == text_name))
-                                      ]['block_name'].values[0]
-        else:
-            block_info = 'toy'
+        block_info = block_config[((block_config['stimulus_id'] == text_id)
+                                   & (block_config['stimulus_name'] == text_name))]['block_name'].values[0]
 
         stimulus_images['block'].append(block_info)
         text_name = re.sub(' ', '_', text_name).lower()
@@ -93,128 +94,137 @@ def create_images(
         all_aois = []
         all_words = []
 
-        question_sub_df_stimulus = initial_question_df[initial_question_df['stimulus_id'] == text_id]
+        # check whether question excel exists
+        if question_csv_file_name:
 
-        for question_row_index, question_row in question_sub_df_stimulus.iterrows():
+            # get all questions for that text
+            question_sub_df_stimulus = initial_question_df[initial_question_df['stimulus_id'] == text_id]
 
-            question = question_row['question']
-            question_id = question_row['question_id']
+            for question_row_index, question_row in question_sub_df_stimulus.iterrows():
 
-            question_identifier = f'question_{question_id}_stimulus_{text_id}'
+                question = question_row['question']
+                question_id = question_row['question_id']
+                item_id = question_row['item_id']
 
-            question_image_path = question_identifier + '_img_path'
-            question_image_file = question_identifier + '_img_file'
+                question_identifier = f'question_{item_id}_stimulus_{text_id}'
 
-            question_images['question_img_path'].append(question_image_path)
-            question_images['question_img_file'].append(question_image_file)
+                answer_options = OrderedDict({'target': question_row['target'],
+                                              'distractor_a': question_row['distractor_a'],
+                                              'distractor_b': question_row['distractor_b'],
+                                              'distractor_c': question_row['distractor_c']})
 
-            answer_options = OrderedDict({'target': question_row['target'],
-                                          'distractor_1': question_row['distractor_1'],
-                                          'distractor_2': question_row['distractor_2'],
-                                          'distractor_3': question_row['distractor_3']})
+                annotated_text = question_row['text_with_annotated_spans']
+                target_span_text = question_row['target_span_text']
+                distractor_1_span_text = question_row['distractor_span_text']
 
-            annotated_text = question_row['text_annotated_spans']
-            target_span_text = question_row['target_span_text']
-            distractor_1_span_text = question_row['distractor_1_span_text']
+                get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
 
-            get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
+                question_image = Image.new(
+                    'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                    color=image_config.BACKGROUND_COLOR)
 
-            question_image = Image.new(
-                'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
-                color=image_config.BACKGROUND_COLOR)
+                arrow_img_path = 'logo_imgs/arrow_symbols.png'
+                arrow_img = Image.open(arrow_img_path)
 
-            arrow_img_path = 'logo_imgs/arrow_symbols.png'
-            arrow_img = Image.open(arrow_img_path)
+                # get size of arrow image and past it on the question image centralized
+                arrow_width, arrow_height = arrow_img.size
+                arrow_width, arrow_height = int(arrow_width / 4), int(arrow_height / 4)
+                arrow_img = arrow_img.resize((arrow_width, arrow_height))
+                x_arrow = (image_config.IMAGE_WIDTH_PX - arrow_width) // 2
+                y_arrow = image_config.IMAGE_HEIGHT_PX // 2
 
-            # get size of arrow image and past it on the question image centralized
-            arrow_width, arrow_height = arrow_img.size
-            arrow_width, arrow_height = arrow_width // 3, arrow_height // 3
-            arrow_img = arrow_img.resize((arrow_width, arrow_height))
-            x_arrow = (image_config.IMAGE_WIDTH_PX - arrow_width) // 2
-            y_arrow = image_config.IMAGE_HEIGHT_PX // 2
+                # question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
 
-            question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
-
-            aois, words = draw_text(question, question_image, image_config.FONT_SIZE_PX,
-                                    spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}',
-                                    draw_aoi=draw_aoi)
-
-            all_aois.extend(aois)
-            all_words.extend(words)
-
-            option_keys = {
-                'arrow_left': {
-                    'x_px': image_config.MIN_MARGIN_LEFT_PX,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
-                },
-                'arrow_up': {
-                    'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
-
-                },
-                'arrow_right': {
-                    'x_px': image_config.IMAGE_WIDTH_PX * 0.57,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.37,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
-                },
-                'arrow_down': {
-                    'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
-                    'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
-                    'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
-                    'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
-                }
-            }
-
-            if shuffle_answer_options:
-                shuffled_option_keys = list(option_keys.keys())
-                random.shuffle(shuffled_option_keys)
-                shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
-                shuffled_option_dict[question_identifier] = shuffled_option_keys
-
-            else:
-                shuffled_option_keys = shuffled_option_dict[question_identifier]
-
-            question_images['target_key'].append(shuffled_option_keys['target'])
-            question_images['distractor_A_key'].append(shuffled_option_keys['distractor_1'])
-            question_images['distractor_B_key'].append(shuffled_option_keys['distractor_2'])
-            question_images['distractor_C_key'].append(shuffled_option_keys['distractor_3'])
-
-            for option, distractor_key in shuffled_option_keys.items():
-                aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
-                                        spacing=image_config.LINE_SPACING,
-                                        column_name=f'question_{question_id}_{option}',
-                                        draw_aoi=draw_aoi,
-                                        anchor_x_px=option_keys[distractor_key]['x_px'],
-                                        anchor_y_px=option_keys[distractor_key]['y_px'],
-                                        text_width_px=option_keys[distractor_key]['text_width_px'], )
-
-                draw = ImageDraw.Draw(question_image)
-
-                box_coordinates = (
-                    option_keys[distractor_key]['x_px'], option_keys[distractor_key]['y_px'],
-                    option_keys[distractor_key]['x_px'] + option_keys[distractor_key][
-                        'text_width_px'],
-                    option_keys[distractor_key]['y_px'] + option_keys[distractor_key][
-                        'text_height_px'])
-
-                draw.rectangle(box_coordinates, outline='black', width=2)
-
-                CONFIG.setdefault('QUESTION_OPTION_BOXES', {}).update({distractor_key: box_coordinates})
+                aois, words = draw_text(question, question_image, image_config.FONT_SIZE_PX,
+                                        spacing=image_config.LINE_SPACING, column_name=f'question_{question_id}',
+                                        draw_aoi=draw_aoi)
 
                 all_aois.extend(aois)
                 all_words.extend(words)
 
-            filename = f"{text_name}_id{text_id}_question_{question_id}_{image_config.LANGUAGE}" \
-                       f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                option_keys = {
+                    'left': {
+                        'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.39,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                    },
+                    'up': {
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
 
-            img_path = question_aoi_dir if draw_aoi else question_dir
-            img_path = os.path.join(img_path, filename)
-            question_image.save(img_path)
+                    },
+                    'right': {
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.55,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.39,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                    },
+                    'down': {
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                        'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                        'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+                    }
+                }
+
+                if shuffle_answer_options:
+                    #shuffled_option_keys = list(option_keys.keys())
+                    shuffled_option_keys = ['left', 'up', 'right', 'down']
+                    # shuffled_option_keys = ['up', 'left', 'down', 'right']
+                    random.shuffle(shuffled_option_keys)
+                    shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
+                    shuffled_option_dict[question_identifier] = shuffled_option_keys
+
+                else:
+                    shuffled_option_keys = shuffled_option_dict[question_identifier]
+
+                question_images['target_key'].append(shuffled_option_keys['target'])
+                question_images['distractor_a_key'].append(shuffled_option_keys['distractor_a'])
+                question_images['distractor_b_key'].append(shuffled_option_keys['distractor_b'])
+                question_images['distractor_c_key'].append(shuffled_option_keys['distractor_c'])
+
+                for option, distractor_key in shuffled_option_keys.items():
+                    aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
+                                            spacing=image_config.LINE_SPACING,
+                                            column_name=f'{text_name}_{text_id}_question_{item_id}_{option}',
+                                            draw_aoi=draw_aoi,
+                                            anchor_x_px=option_keys[distractor_key]['x_px'],
+                                            anchor_y_px=option_keys[distractor_key]['y_px'],
+                                            text_width_px=option_keys[distractor_key]['text_width_px'],
+                                            question_type=distractor_key)
+
+                    draw = ImageDraw.Draw(question_image)
+
+                    # draw a box around the answer options: x, y, x + width, y + height, x must be a bit smaller
+                    # otherwise it is too close to the letters
+                    new_x = option_keys[distractor_key]['x_px'] - image_config.MIN_MARGIN_LEFT_PX * 0.1
+                    new_width = option_keys[distractor_key]['text_width_px'] + image_config.MIN_MARGIN_LEFT_PX * 0.1
+                    box_coordinates = (
+                        new_x,
+                        option_keys[distractor_key]['y_px'],
+                        new_x + new_width,
+                        option_keys[distractor_key]['y_px'] + option_keys[distractor_key][
+                            'text_height_px'])
+
+                    draw.rectangle(box_coordinates, outline='black', width=1)
+
+                    CONFIG.setdefault('QUESTION_OPTION_BOXES', {}).update({distractor_key: box_coordinates})
+
+                    all_aois.extend(aois)
+                    all_words.extend(words)
+
+                question_image_file = f"{text_name}_id{text_id}_question_{item_id}_{image_config.LANGUAGE}" \
+                                      f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                question_image_path = question_aoi_dir if draw_aoi else question_dir
+                question_image_path = os.path.join(question_image_path, question_image_file)
+
+                question_images['question_img_path'].append(question_image_path)
+                question_images['question_img_file'].append(question_image_file)
+
+                question_image.save(question_image_path)
 
         for col_index, column_name in enumerate(initial_stimulus_df.columns):
 
@@ -264,32 +274,27 @@ def create_images(
         aoi_df_path = os.path.join(aoi_dir, aoi_file_name)
         aoi_df.to_csv(aoi_df_path, sep=',', index=False, encoding='UTF-8')
 
+    if question_csv_file_name:
+        question_df = pd.DataFrame(question_images)
+        final_question_df = initial_question_df.join(question_df)
+        question_csv_filename_stem = Path(question_csv_file_name).stem
+        full_output_file_name_questions = f'{question_csv_filename_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
+        full_path_questions = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name_questions)
+        final_question_df.to_csv(full_path_questions,
+                                 sep=',',
+                                 index=False)
+        CONFIG.setdefault('PATHS', {}).update({
+            f'question_images{"_aoi" if draw_aoi else ""}_csv': full_path_questions
+        })
+
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
     final_stimulus_df = initial_stimulus_df.join(image_df)
-
-    question_df = pd.DataFrame(question_images)
-    final_question_df = initial_question_df.join(question_df)
-
-    stimuli_file_name_stem = Path(stimuli_file_name).stem
-    questions_file_name_stem = Path(question_file_name).stem
-
+    stimuli_file_name_stem = Path(stimuli_csv_file_name).stem
     full_output_file_name = f'{stimuli_file_name_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
-
-    full_output_file_name_questions = f'{questions_file_name_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
-    full_path_questions = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name_questions)
-
     CONFIG.setdefault('PATHS', {}).update({f'stimuli_images{"_aoi" if draw_aoi else ""}_csv': full_path})
-    CONFIG.setdefault('PATHS', {}).update({
-        f'question_images{"_aoi" if draw_aoi else ""}_csv': full_path_questions
-    })
-
     final_stimulus_df.to_csv(full_path,
-                             sep=',',
-                             index=False)
-
-    final_question_df.to_csv(full_path_questions,
                              sep=',',
                              index=False)
 
@@ -341,18 +346,23 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               anchor_x_px: int = image_config.ANCHOR_POINT_X_PX,
               anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
               text_width_px: int = image_config.TEXT_WIDTH_PX,
-              script_direction: str = image_config.SCRIPT_DIRECTION) -> (list, list):
+              script_direction: str = image_config.SCRIPT_DIRECTION,
+              question_type: str = None) -> (list, list):
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
     font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
 
     # TODO make sure this works for different scripts!
-    paragraphs = re.split(r'\n+', text.strip())
+    try:
+        paragraphs = re.split(r'\n+', text.strip())
+    except AttributeError:
+        print(text, column_name)
 
     aois = []
     all_words = []
     line_idx = 0
+    all_lines = []
 
     for paragraph in paragraphs:
         words_in_paragraph = paragraph.split()
@@ -376,6 +386,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         lines.append(spacing * "\n")
 
         for line in lines:
+
             if len(line) == 0:
                 continue
 
@@ -383,10 +394,13 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 anchor_y_px += image_config.FONT_SIZE_PX * spacing
                 continue
 
+            all_lines.append(line)
+
             words_in_line = line.split()
             x_word = anchor_x_px
 
-            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font)
+            left, top, right, bottom = draw.multiline_textbbox((0, 0), line, font=font,
+                                                               anchor='ra' if script_direction == 'rtl' else 'la')
             line_width, line_height = right - left, bottom - top
 
             # calculate aoi boxes for each letter
@@ -421,7 +435,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 word_width = word_right - word_left
 
                 draw.text((x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
-                          font=font, direction=script_direction, anchor='ra' if script_direction == 'rtl' else 'la')
+                          font=font, anchor='ra' if script_direction == 'rtl' else 'la')
 
                 for char_idx, char in enumerate(word):
 
@@ -435,17 +449,17 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     if draw_aoi:
                         draw.rectangle((aoi_x, aoi_y,
                                         aoi_x + letter_width,
-                                        aoi_y + 5.25 * (factor + 2)),
+                                        aoi_y + line_height * 1.5),
                                        outline='red', width=1)
 
                     # aoi_header = ['char', 'x', 'y', 'width', 'height', 'char_idx_in_line', 'line_idx', 'page']
                     # as the image is smaller than the actual screen we need to calculate the aoi boxes
-                    aoi_x = aoi_x + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
-                    aoi_y = aoi_y + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+                    aoi_x = int(aoi_x)  # + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
+                    aoi_y = int(aoi_y)  # + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
 
                     aoi_letter = [
                         char, aoi_x, aoi_y,
-                        letter_width, line_height,
+                        int(letter_width), int(line_height * 1.5),
                         char_idx_in_line, line_idx, column_name
                     ]
 
@@ -473,6 +487,20 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             all_words.extend(words)
             anchor_y_px += line_height
             line_idx += 1
+
+    if question_type and not draw_aoi:
+        num_lines = len(all_lines)
+        num_words = len(text.split())
+        num_chars = len(text.strip())
+        if question_type == 'left' or 'right':
+            # count only the lines with text
+            if num_lines > 3:
+                print(lines)
+                print(f'Questions options that do not fit:\n{column_name},{num_lines},{num_words},{num_chars}')
+        else:
+
+            if num_lines > 2:
+                print(f'Questions options that do not fit:\n{column_name},{num_lines},{num_words},{num_chars}')
 
     # draw fixation point
     r = 7
@@ -508,7 +536,8 @@ def create_welcome_screen(image: Image, text: str) -> None:
     # Set the text
     our_blue = "#007baf"
     our_red = "#b94128"
-    font_size = 38
+    font_size_title = 38
+    font_size_text = 28
     font_type = "fonts/open-sans-bold.ttf"
 
     # Create a drawing object
@@ -531,15 +560,23 @@ def create_welcome_screen(image: Image, text: str) -> None:
     image.paste(eu_logo, eu_logo_position, mask=eu_logo)
     image.paste(cost_logo, cost_logo_position)
 
-    # Paste the text onto the final image
-    font = ImageFont.truetype(font_type, font_size)
-    left, top, right, bottom = draw.multiline_textbbox(
-        (0, 0), text, font=font)
-    text_width, text_height = right - left, bottom - top
-    # text_width, text_height = draw.textsize(welcome_text, font=font)
-    text_x = (image_config.IMAGE_WIDTH_PX - text_width) / 2
-    text_y = (image_config.IMAGE_HEIGHT_PX - text_height) / 2
-    draw.text((text_x, text_y), text, font=font, fill=our_blue)
+    texts = text.split('\n')
+
+    text_y = image_config.IMAGE_HEIGHT_PX // 3
+    for idx, t in enumerate(texts):
+        if idx == 0:
+            font = ImageFont.truetype(font_type, font_size_title)
+
+        else:
+            font = ImageFont.truetype(font_type, font_size_text)
+
+        left, top, right, bottom = draw.multiline_textbbox(
+            (0, 0), t, font=font)
+
+        text_width, text_height = right - left, bottom - top
+        text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
+        text_y += text_height * 5
+        draw.text((text_x, text_y), t, font=font, fill=our_blue)
 
 
 def create_fixation_screen(image: Image):
@@ -605,6 +642,18 @@ def create_final_screen(image: Image, text: str):
 
         draw.text((text_x, text_y), paragraph, font=font, fill=our_blue)
 
+def create_rating_screens(image: Image, text: str, num_options: int):
+
+    sentences = text.split('\n')
+    question = sentences[0]
+    options = sentences[1:]
+
+    draw_text(question, image, image_config.FONT_SIZE_PX)
+
+    draw = ImageDraw.Draw(image)
+    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE_PX)
+
+
 
 def write_final_image_config() -> None:
     """
@@ -629,8 +678,9 @@ def write_final_image_config() -> None:
     })
 
     CONFIG.setdefault('SCREEN', {}).update({
-        'DISPSIZE': image_config.RESOLUTION,
-        'SCREENSIZE': image_config.SCREEN_SIZE_CM
+        'RESOLUTION': image_config.RESOLUTION,
+        'SCREEN_SIZE_CM': image_config.SCREEN_SIZE_CM,
+        'DISTANCE_CM': image_config.DISTANCE_CM,
     })
 
     CONFIG.setdefault('PATHS', {}).update({
@@ -682,8 +732,17 @@ def create_other_screens(draw_aoi=False):
         elif title == "final_screen":
             create_final_screen(final_image, text)
 
+        elif title == 'familiarity_rating_screen_1':
+            create_rating_screens(final_image, text, 3)
+
+        elif title == 'subject_difficulty_screen' or title == 'familiarity_rating_screen_2':
+            create_rating_screens(final_image, text, 5)
+
+        # for all other text screens
         elif title != 'empty_screen':
             draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False)
+
+
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name
@@ -692,8 +751,8 @@ def create_other_screens(draw_aoi=False):
 
         final_image.save(image_config.OTHER_SCREENS_DIR + file_name)
 
-    other_screen_df['other_screen_img_name'] = file_names
-    other_screen_df['other_screen_img_path'] = file_paths
+    other_screen_df['instruction_screen_img_name'] = file_names
+    other_screen_df['instruction_screen_img_path'] = file_paths
 
     participant_instruction_csv_path = (image_config.OTHER_SCREENS_FILE_PATH[:-5]
                                         + f'{"_aoi" if draw_aoi else ""}_with_img_paths.csv')

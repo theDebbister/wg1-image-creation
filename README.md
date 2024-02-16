@@ -9,6 +9,10 @@ refer to these as an examples.
 TBD --> for now just copy the files in the English folder and translate all the texts and questions. The title and ID
 columns need to stay the same!
 
+For RTL texts - when there are English chunks of the texts and they are displayed in the
+created images in wrong order, they order need to be changed in the xlsx file. For example:
+if the ":1" is displayed in the wrong order, it need to be changed to "1:". The program has a problem when changing from RTL to LTR texts.
+
 ## Create the images
 
 Steps to create the images:

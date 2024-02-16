@@ -1,21 +1,4 @@
 
-# QUESTION_OPTION_BOXES ##########
-arrow_left = (81, 439.12, 563.8499999999999, 718.5600000000001)
-arrow_right = (743.8499999999999, 439.12, 1226.6999999999998, 718.5600000000001)
-arrow_down = (195.75, 748.5, 1109.25, 918.1600000000001)
-arrow_up = (195.75, 249.5, 1109.25, 419.16)
-
-# PATHS ##########
-question_images_csv = "data/stimuli_he/multipleye_comprehension_questions_he_with_img_paths.csv"
-stimuli_images_csv = "data/stimuli_he/multipleye_stimuli_experiment_he_with_img_paths.csv"
-question_images_aoi_csv = "data/stimuli_he/multipleye_comprehension_questions_he_aoi_with_img_paths.csv"
-stimuli_images_aoi_csv = "data/stimuli_he/multipleye_stimuli_experiment_he_aoi_with_img_paths.csv"
-participant_instruction_csv = "data/stimuli_he/multipleye_participant_instructions_he_with_img_paths.csv"
-participant_instruction_aoi_csv = "data/stimuli_he/multipleye_participant_instructions_he_aoi_with_img_paths.csv"
-question_file_excel = "data/stimuli_he/multipleye_comprehension_questions_he.xlsx"
-participant_instruction_excel = "data/stimuli_he/multipleye_participant_instructions_he.xlsx"
-stimuli_file_excel = "data/stimuli_he/multipleye_stimuli_experiment_he.xlsx"
-
 # EXPERIMENT ##########
 LANGUAGE = "he"
 
@@ -36,6 +19,11 @@ IMAGE_SIZE_CM = (37, 28)
 RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
 DISTANCE_CM = 60.0
+
+# PATHS ##########
+question_file_excel = "data/stimuli_he/multipleye_comprehension_questions_he.xlsx"
+participant_instruction_excel = "data/stimuli_he/multipleye_participant_instructions_he.xlsx"
+stimuli_file_excel = "data/stimuli_he/multipleye_stimuli_experiment_he.xlsx"
 
 # DIRECTORIES ##########
 question_image_dir = "data/stimuli_he/question_images_he/"

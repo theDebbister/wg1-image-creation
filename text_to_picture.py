@@ -26,6 +26,7 @@ def create_images(
         draw_aoi=False,
 ):
     initial_stimulus_df = pd.read_excel(stimuli_csv_file_name)
+    #initial_stimulus_df = pd.read_csv(stimuli_csv_file_name, sep=',', encoding='utf-8')
     initial_stimulus_df.dropna(subset=['stimulus_id'], inplace=True)
 
     # check whether question excel exists as file, stimuli can be created independent of questions
@@ -73,22 +74,21 @@ def create_images(
         shuffle_answer_options = True
         shuffled_option_dict = {}
 
-    for row_index, row in tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df),
-                               desc=f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} stimuli images'):
+    for row_index, row in (pbar := tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df))):
+        stimulus_name = row[f"stimulus_name"]
+        stimulus_id = int(row[f"stimulus_id"])
+        pbar.set_description(f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} stimuli images for {stimulus_id} {stimulus_name}')
 
         practice = True if row['text_type'] == 'practice' else False
 
-        text_name = row[f"stimulus_name"]
-        text_id = int(row[f"stimulus_id"])
-
         # get block information from block config match stimulus id and name
-        block_info = block_config[((block_config['stimulus_id'] == text_id)
-                                   & (block_config['stimulus_name'] == text_name))]['block_name'].values[0]
+        block_info = block_config[((block_config['stimulus_id'] == stimulus_id)
+                                   & (block_config['stimulus_name'] == stimulus_name))]['block_name'].values[0]
 
         stimulus_images['block'].append(block_info)
-        text_name = re.sub(' ', '_', text_name).lower()
+        stimulus_name = re.sub(' ', '_', stimulus_name).lower()
 
-        aoi_file_name = f'{text_name}_{text_id}_aoi.csv'
+        aoi_file_name = f'{stimulus_name}_{stimulus_id}_aoi.csv'
         aoi_header = ['char', 'top_left_x', 'top_left_y', 'width', 'height',
                       'char_idx_in_line', 'line_idx', 'page']
         all_aois = []
@@ -98,40 +98,33 @@ def create_images(
         if question_csv_file_name:
 
             # get all questions for that text
-            question_sub_df_stimulus = initial_question_df[initial_question_df['stimulus_id'] == text_id]
+            question_sub_df_stimulus = initial_question_df[initial_question_df['stimulus_id'] == stimulus_id]
 
             for question_row_index, question_row in question_sub_df_stimulus.iterrows():
 
                 question = question_row['question']
-                question_id = question_row['question_id']
-                item_id = question_row['item_id']
+                snippet_no = question_row['snippet_no']
+                condition_no = question_row['condition_no']
+                question_no = question_row['question_no']
+                question_id = str(stimulus_id) + str(snippet_no) + str(condition_no) + str(question_no)
+                # item_id = question_row['item_id']
 
-                question_identifier = f'question_{item_id}_stimulus_{text_id}'
+                question_identifier = f'question_{question_id}_stimulus_{stimulus_id}'
 
                 answer_options = OrderedDict({'target': question_row['target'],
                                               'distractor_a': question_row['distractor_a'],
                                               'distractor_b': question_row['distractor_b'],
                                               'distractor_c': question_row['distractor_c']})
 
-                annotated_text = question_row['text_with_annotated_spans']
-                target_span_text = question_row['target_span_text']
-                distractor_1_span_text = question_row['distractor_span_text']
+                annotated_text = question_row['stimulus_text_with_annotated_spans']
+                target_span_text = question_row['target_span_target_distractor_a_text']
+                distractor_1_span_text = question_row['distractor_span_distractor_b_text']
 
                 get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
 
                 question_image = Image.new(
                     'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
                     color=image_config.BACKGROUND_COLOR)
-
-                arrow_img_path = 'logo_imgs/arrow_symbols.png'
-                arrow_img = Image.open(arrow_img_path)
-
-                # get size of arrow image and past it on the question image centralized
-                arrow_width, arrow_height = arrow_img.size
-                arrow_width, arrow_height = int(arrow_width / 4), int(arrow_height / 4)
-                arrow_img = arrow_img.resize((arrow_width, arrow_height))
-                x_arrow = (image_config.IMAGE_WIDTH_PX - arrow_width) // 2
-                y_arrow = image_config.IMAGE_HEIGHT_PX // 2
 
                 # question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
 
@@ -146,7 +139,7 @@ def create_images(
                     'left': {
                         'x_px': image_config.MIN_MARGIN_LEFT_PX,
                         'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.39,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.41,
                         'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
                     },
                     'up': {
@@ -157,9 +150,9 @@ def create_images(
 
                     },
                     'right': {
-                        'x_px': image_config.IMAGE_WIDTH_PX * 0.55,
+                        'x_px': image_config.IMAGE_WIDTH_PX * 0.53,
                         'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.39,
+                        'text_width_px': image_config.IMAGE_WIDTH_PX * 0.41,
                         'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
                     },
                     'down': {
@@ -171,10 +164,10 @@ def create_images(
                 }
 
                 if shuffle_answer_options:
-                    #shuffled_option_keys = list(option_keys.keys())
-                    shuffled_option_keys = ['left', 'up', 'right', 'down']
-                    # shuffled_option_keys = ['up', 'left', 'down', 'right']
-                    random.shuffle(shuffled_option_keys)
+                    # shuffled_option_keys = list(option_keys.keys())
+                    #shuffled_option_keys = ['left', 'up', 'right', 'down']
+                    shuffled_option_keys = ['up', 'left', 'down', 'right']
+                    # random.shuffle(shuffled_option_keys)
                     shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
                     shuffled_option_dict[question_identifier] = shuffled_option_keys
 
@@ -189,7 +182,7 @@ def create_images(
                 for option, distractor_key in shuffled_option_keys.items():
                     aois, words = draw_text(answer_options[option], question_image, image_config.FONT_SIZE_PX,
                                             spacing=image_config.LINE_SPACING,
-                                            column_name=f'{text_name}_{text_id}_question_{item_id}_{option}',
+                                            column_name=f'{stimulus_name}_{stimulus_id}_question_{question_id}_{option}',
                                             draw_aoi=draw_aoi,
                                             anchor_x_px=option_keys[distractor_key]['x_px'],
                                             anchor_y_px=option_keys[distractor_key]['y_px'],
@@ -216,7 +209,7 @@ def create_images(
                     all_aois.extend(aois)
                     all_words.extend(words)
 
-                question_image_file = f"{text_name}_id{text_id}_question_{item_id}_{image_config.LANGUAGE}" \
+                question_image_file = f"{stimulus_name}_id{stimulus_id}_question_{question_id}_{image_config.LANGUAGE}" \
                                       f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
                 question_image_path = question_aoi_dir if draw_aoi else question_dir
                 question_image_path = os.path.join(question_image_path, question_image_file)
@@ -256,7 +249,7 @@ def create_images(
                                         spacing=image_config.LINE_SPACING, column_name=column_name,
                                         draw_aoi=draw_aoi)
 
-                filename = f"{text_name}_id{text_id}_{column_name}_{image_config.LANGUAGE}" \
+                filename = f"{stimulus_name}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
 
                 img_path = aoi_image_dir if draw_aoi else image_dir
@@ -318,6 +311,7 @@ def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
 
 def create_stimuli_images():
     if os.path.isfile(image_config.STIMULI_FILE_PATH):
+        pass
 
         create_images(image_config.STIMULI_FILE_PATH, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
                       image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
@@ -327,14 +321,14 @@ def create_stimuli_images():
                       image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
                       image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=True)
     else:
-        print(f'No excel file for stimuli found at {image_config.STIMULI_FILE_PATH}. '
+        raise Warning(f'No excel file for stimuli found at {image_config.STIMULI_FILE_PATH}. '
               f'No stimuli images will be created.')
 
     # check whether excel for other screens exists
     if os.path.isfile(image_config.OTHER_SCREENS_FILE_PATH):
 
         create_other_screens(draw_aoi=False)
-        create_other_screens(draw_aoi=True)
+        #create_other_screens(draw_aoi=True)
 
     else:
         print(f'No excel file for other screens found at {image_config.OTHER_SCREENS_FILE_PATH}. '
@@ -406,8 +400,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             # calculate aoi boxes for each letter
             top_left_corner_x_letter = anchor_x_px
             letter_width = line_width / len(line)
-            # TODO hardcode this factor somewhere else
-            factor = line_height / 5.25
             words = []
 
             char_idx_in_line = 0
@@ -742,8 +734,6 @@ def create_other_screens(draw_aoi=False):
         elif title != 'empty_screen':
             draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False)
 
-
-
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name
         file_names.append(file_name)
@@ -767,3 +757,5 @@ def create_other_screens(draw_aoi=False):
 if __name__ == '__main__':
     create_stimuli_images()
     write_final_image_config()
+
+    # get_option_span_indices('This is <tb>a test sentence.<te>', '<tb>', '<te>')

@@ -55,7 +55,8 @@ In order to create images for right-to-left scripts, it is necessary to install 
 ## Page specifications
 For the default setting of `IMAGE_SIZE_CM = (37, 28)` the following applies:
 
-The maximum number of character per line is 79. And the maximum number of lines per page is 9. 
+The maximum number of character per line is 79. And the maximum number of lines per page is 9. This means that the last
+line will be above the fixation dot in the corner of the screen.
 However, as we do not split the words, if a word, for example, makes the line 80 characters long, 
 this entire word will be moved to the next line. So the maximum number of chars per page is in theory 711, 
 but in reality this is rarely the case as the words usually don’t perfectly fit on the lines. 

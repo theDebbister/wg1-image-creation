@@ -118,9 +118,9 @@ def create_permutations() -> None:
         if is_id_not_consecutive(temp_version, 5, 8):
             two_long_not_consecutive.add(version)
 
-    all_combined_two_long_separate = equal_page_split.intersection(two_long_separate, not_two_consecutive_ins, not_two_consecutive_arg)
-    all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive, not_two_consecutive_ins, not_two_consecutive_arg)
-    minimal_criteria = equal_page_split.intersection(two_long_separate)
+    all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(not_two_consecutive_ins).intersection(not_two_consecutive_arg)
+    all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(not_two_consecutive_ins).intersection(not_two_consecutive_arg)
+    minimal_criteria = not_two_consecutive_arg.intersection(not_two_consecutive_ins)
 
     print(f'1. All permutations: {len(permutations)}')
     print(f'2. Equal page split: {len(equal_page_split)}')
@@ -139,7 +139,7 @@ def create_permutations() -> None:
     max_count = 0
     found = 0
 
-    with open('final_permutations.txt', 'w', encoding='utf-8') as f:
+    with open('../final_permutations.txt', 'w', encoding='utf-8') as f:
 
         while len(final_permutations) < 200:
             print(f'Found: {len(final_permutations)}')

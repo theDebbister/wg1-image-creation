@@ -1,4 +1,11 @@
 
+# PATHS ##########
+stimuli_images_csv = "data/stimuli_he/multipleye_stimuli_experiment_he_with_img_paths.csv"
+stimuli_images_aoi_csv = "data/stimuli_he/multipleye_stimuli_experiment_he_aoi_with_img_paths.csv"
+question_file_excel = "data/stimuli_he/multipleye_comprehension_questions_he.xlsx"
+participant_instruction_excel = "data/stimuli_he/multipleye_participant_instructions_he.xlsx"
+stimuli_file_excel = "data/stimuli_he/multipleye_stimuli_experiment_he.xlsx"
+
 # EXPERIMENT ##########
 LANGUAGE = "he"
 
@@ -19,11 +26,6 @@ IMAGE_SIZE_CM = (37, 28)
 RESOLUTION = (1920, 1080)
 SCREEN_SIZE_CM = (54.4, 30.3)
 DISTANCE_CM = 60.0
-
-# PATHS ##########
-question_file_excel = "data/stimuli_he/multipleye_comprehension_questions_he.xlsx"
-participant_instruction_excel = "data/stimuli_he/multipleye_participant_instructions_he.xlsx"
-stimuli_file_excel = "data/stimuli_he/multipleye_stimuli_experiment_he.xlsx"
 
 # DIRECTORIES ##########
 question_image_dir = "data/stimuli_he/question_images_he/"

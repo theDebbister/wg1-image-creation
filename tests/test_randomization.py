@@ -101,7 +101,7 @@ class Test(TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_is_break_allowed_4(self):
+    def test_is_break_allowed_5(self):
         pages = [5, 11, 5, 5, 5, 5, 5, 5, 5, 5]
 
         actual = is_break_time_allowed(pages)

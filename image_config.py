@@ -1,6 +1,6 @@
-LANGUAGE = 'en'
+LANGUAGE = 'toy'
 FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'en'
+COUNTRY_CODE = 'toy'
 LAB_NUMBER = 1
 
 ################################################################
@@ -25,11 +25,13 @@ BACKGROUND_COLOR = (231, 230, 230)
 # vertical spacing between lines
 LINE_SPACING = 2.9
 
+NUM_PERMUTATIONS = 10
+
 OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimulithe_images_{LANGUAGE}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}/'
 AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}/'
 OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}/'
 
@@ -52,6 +54,8 @@ DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
 SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION']
 
 IMAGE_SIZE_CM = (37, 28)
+
+MAX_CHARS_PER_LINE = 82
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_CM[1] * RESOLUTION[1] / SCREEN_SIZE_CM[1])

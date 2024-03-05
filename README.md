@@ -9,6 +9,10 @@ refer to these as an examples.
 TBD --> for now just copy the files in the English folder and translate all the texts and questions. The title and ID
 columns need to stay the same!
 
+For RTL texts - when there are English chunks of the texts and they are displayed in the
+created images in wrong order, they order need to be changed in the xlsx file. For example:
+if the ":1" is displayed in the wrong order, it need to be changed to "1:". The program has a problem when changing from RTL to LTR texts.
+
 ## Create the images
 
 Steps to create the images:
@@ -45,3 +49,19 @@ PyCharm you can follow these [instructions](https://www.jetbrains.com/help/pycha
 Once you have the environment you can install the necessary packages using the `requirements.txt` file.
 
 In order to create images for right-to-left scripts, it is necessary to install more dependencies.
+
+
+
+## Page specifications
+For the default setting of `IMAGE_SIZE_CM = (37, 28)` the following applies:
+
+The maximum number of character per line is 79. And the maximum number of lines per page is 9. This means that the last
+line will be above the fixation dot in the corner of the screen.
+However, as we do not split the words, if a word, for example, makes the line 80 characters long, 
+this entire word will be moved to the next line. So the maximum number of chars per page is in theory 711, 
+but in reality this is rarely the case as the words usually don’t perfectly fit on the lines. 
+So, if you like to count by hand, how the pages fit, you can just determine the first word that exceeds the line 
+limit (>79 chars) and this word will then be the first word of the new line, until you reach 9 lines.
+
+> NOTE: this is different for the participant instructions screens, where more characters per line and lines are allowed.
+> The maximum number of characters per line is 85 and the maximum number of lines per page is 12.

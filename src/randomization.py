@@ -76,8 +76,14 @@ def create_permutations() -> None:
     block_1 = [2, 5, 6, 7, 11]
     block_2 = [4, 8, 9, 10, 3, 12]
 
-    all_perm_block_1 = len(list(itertools.permutations(block_1)))
-    all_perm_block_2 = len(list(itertools.permutations(block_2)))
+    all_perm_block_1 = list(itertools.permutations(block_1))
+    all_perm_block_2 = list(itertools.permutations(block_2))
+
+    all_block_combos = []
+    for b1 in all_perm_block_1:
+        for b2 in all_perm_block_2:
+            all_block_combos.append(b1 + b2)
+            all_block_combos.append(b2 + b1)
 
     stimuli_ids = [i for i in range(2, 13)]
 
@@ -120,7 +126,7 @@ def create_permutations() -> None:
 
     all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(not_two_consecutive_ins).intersection(not_two_consecutive_arg)
     all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(not_two_consecutive_ins).intersection(not_two_consecutive_arg)
-    minimal_criteria = not_two_consecutive_arg.intersection(not_two_consecutive_ins)
+    minimal_criteria = permutations
 
     print(f'1. All permutations: {len(permutations)}')
     print(f'2. Equal page split: {len(equal_page_split)}')

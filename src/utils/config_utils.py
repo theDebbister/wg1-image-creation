@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import image_config
 
 
 def write_final_config(
@@ -7,18 +8,17 @@ def write_final_config(
         config_values: dict,
 ) -> None:
 
-    open(config_path, 'w').close()
+    config_path = os.path.join(image_config.REPO_ROOT, config_path)
+
+    # create the config file if it does not exist
+    open(config_path, 'w', encoding='utf8').close()
 
     # write config values to config file under config header
-
-    with open(config_path, 'a') as configfile:
-
+    with open(config_path, 'a', encoding='utf8') as configfile:
         for header, configuration in config_values.items():
-
             configfile.write(f'\n# {header} {"#" * 10}\n')
 
             for key, value in configuration.items():
-
                 if isinstance(value, str):
                     configfile.write(f'{key} = "{value}"\n')
                 else:
@@ -27,20 +27,22 @@ def write_final_config(
 
 def read_image_configuration(config_path: Path) -> dict:
 
-    image_config = {}
+    lab_image_config = {}
+
+    config_path = os.path.join(image_config.REPO_ROOT, config_path)
 
     with open(config_path, 'r', encoding='utf8') as configfile:
         for line in configfile:
             if line.startswith('RESOLUTION'):
-                image_config['RESOLUTION'] = eval(line.split('=')[1])
+                lab_image_config['RESOLUTION'] = eval(line.split('=')[1])
             elif line.startswith('SCREEN_SIZE_CM'):
-                image_config['SCREEN_SIZE_CM'] = eval(line.split('=')[1])
+                lab_image_config['SCREEN_SIZE_CM'] = eval(line.split('=')[1])
             elif line.startswith('DISTANCE_CM'):
-                image_config['DISTANCE_CM'] = eval(line.split('=')[1])
+                lab_image_config['DISTANCE_CM'] = eval(line.split('=')[1])
             elif line.startswith('SCRIPT_DIRECTION'):
-                image_config['SCRIPT_DIRECTION'] = eval(line.split('=')[1])
+                lab_image_config['SCRIPT_DIRECTION'] = eval(line.split('=')[1])
             elif line.startswith('LAB_NUMBER'):
-                image_config['LAB_NUMBER'] = eval(line.split('=')[1])
+                lab_image_config['LAB_NUMBER'] = eval(line.split('=')[1])
 
-    return image_config
+    return lab_image_config
 

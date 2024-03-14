@@ -1,6 +1,6 @@
 LANGUAGE = 'toy'
 FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'toy'
+COUNTRY_CODE = 'x'
 LAB_NUMBER = 1
 
 ################################################################
@@ -9,7 +9,9 @@ LAB_NUMBER = 1
 from utils.config_utils import read_image_configuration
 from pathlib import Path
 
-this_file = Path(__file__).parent
+code_src = Path(__file__).parent
+
+REPO_ROOT = code_src.parent
 
 # set the font based on the language
 if LANGUAGE == 'he':
@@ -27,23 +29,23 @@ LINE_SPACING = 2.9
 
 NUM_PERMUTATIONS = 10
 
-OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}/'
-IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}/'
-QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}/'
-AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}/'
-AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}/'
+OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_stimuli_experiment_{LANGUAGE}.xlsx'
 QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
 
-BLOCK_CONFIG_PATH = this_file / "global_configs/stimulus_to_block_mapping.csv"
+BLOCK_CONFIG_PATH = code_src / "global_configs/stimulus_to_block_mapping.csv"
 
-SHUFFLED_ANSWER_OPTIONS = OUTPUT_TOP_DIR + f'config/shuffled_option_keys_{LANGUAGE}.json'
+SHUFFLED_ANSWER_OPTIONS = OUTPUT_TOP_DIR + f'config/shuffled_option_keys_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}.json'
 
-FINAL_CONFIG = f'data/stimuli_{LANGUAGE}/config/config_{LANGUAGE}.py'
+FINAL_CONFIG = f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/config/config_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}.py'
 
 LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + f'config/{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}_lab_configuration.txt'
 LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)

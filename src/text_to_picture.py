@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 import image_config
-from utils import config_utils
+from utils import config_utils, checks
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -32,10 +32,17 @@ def create_images(
     # initial_stimulus_df = pd.read_csv(stimuli_csv_file_name, sep=',', encoding='utf-8')
     initial_stimulus_df.dropna(subset=['stimulus_id'], inplace=True)
 
+    stimulus_types = initial_stimulus_df['stimulus_type'].unique()
+    checks.check_stimulus_types(stimulus_types)
+
     # check whether question excel exists as file, stimuli can be created independent of questions
     if os.path.isfile(question_csv_file_name):
         initial_question_df = pd.read_excel(question_csv_file_name)
         initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+
+        stimulus_types = initial_question_df['stimulus_type'].unique()
+        checks.check_stimulus_types(stimulus_types)
+
         cols = initial_question_df.columns.to_list().extend(
             ['question_img_path', 'question_img_file', 'target_key', 'distractor_a_key', 'distractor_b_key',
              'distractor_c_key'])
@@ -73,8 +80,6 @@ def create_images(
             f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} stimuli images for {stimulus_id}'
             f' {stimulus_name}')
 
-        practice = True if row['text_type'] == 'practice' else False
-
         # get block information from block config match stimulus id and name
         try:
             block_info = block_config[((block_config['stimulus_id'] == stimulus_id)
@@ -103,7 +108,7 @@ def create_images(
             for i in range(image_config.NUM_PERMUTATIONS):
 
                 # the answer options are shuffeled for each participant (each gets a new item version)
-                session_id = 'item_version_' + str(i + 1)
+                session_id = 'question_images_version_' + str(i + 1)
 
                 question_csv_filename_stem = Path(question_csv_file_name).stem
                 new_session_question_df_name = (f'{question_csv_filename_stem}{"_aoi" if draw_aoi else ""}_'
@@ -117,16 +122,14 @@ def create_images(
                     new_session_question_df = new_question_df
 
                 shuffeled_answer_options_path = os.path.join(
-                    question_aoi_dir if draw_aoi else question_dir, session_id,
-                    f'config/shuffled_option_keys_{image_config.LANGUAGE}_{session_id}.json'
+                    image_config.ANSWER_OPTION_FOLDER +
+                    f'shuffled_option_keys_{image_config.LANGUAGE}_{session_id}.json'
                 )
                 # if we have already once shuffeled some of the options for this item, we open the existing file
-                if os.path.isfile(shuffeled_answer_options_path):
-                    shuffle_answer_options = False
-                    with open(shuffeled_answer_options_path, 'r') as f:
+                if os.path.isfile(image_config.REPO_ROOT / shuffeled_answer_options_path):
+                    with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'r') as f:
                         shuffled_option_dict = json.load(f)
                 else:
-                    shuffle_answer_options = True
                     shuffled_option_dict = {}
 
                 question_sub_csv_copy = question_sub_df_stimulus.copy()
@@ -250,7 +253,7 @@ def create_images(
                         all_words.extend(words)
 
                     question_image_file = f"{stimulus_name}_id{stimulus_id}_question_{question_id}_{image_config.LANGUAGE}" \
-                                          f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                                          f"{'_aoi' if draw_aoi else ''}.png"
                     question_image_path = question_aoi_dir if draw_aoi else question_dir
 
                     if not os.path.isdir(os.path.join(question_image_path, session_id)):
@@ -275,16 +278,15 @@ def create_images(
                 new_session_question_df.to_csv(image_config.REPO_ROOT / full_path_questions,
                                                sep=',',
                                                index=False)
-                CONFIG.setdefault('PATHS', {}).update({
+                CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update({
                     f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_questions
                 })
 
-                if shuffle_answer_options:
-                    output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
-                    output_file.parent.mkdir(parents=True, exist_ok=True)
+                output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
 
-                    with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'a', encoding='utf8') as f:
-                        json.dump(shuffled_option_dict, f, indent=4)
+                with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'w', encoding='utf8') as f:
+                    json.dump(shuffled_option_dict, f, indent=4)
 
         empty_page = False
         empty_page_inbetween = False
@@ -324,7 +326,7 @@ def create_images(
                                         draw_aoi=draw_aoi)
 
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
-                           f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                           f"{'_aoi' if draw_aoi else ''}.png"
 
                 img_path = aoi_image_dir if draw_aoi else image_dir
                 img_path = os.path.join(img_path, filename)

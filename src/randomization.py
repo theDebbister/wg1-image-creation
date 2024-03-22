@@ -85,9 +85,9 @@ def create_permutations() -> None:
             all_block_combos.append(b1 + b2)
             all_block_combos.append(b2 + b1)
 
-    stimuli_ids = [i for i in range(2, 13)]
+    stimuli_ids = [i for i in range(1, 13)]
 
-    permutations = list(itertools.permutations(stimuli_ids))
+    permutations = itertools.permutations(stimuli_ids)
 
     # print("Number of permutations for different scenarios:")
     # print(f'1. All permutations: {len(permutations)}')
@@ -102,30 +102,31 @@ def create_permutations() -> None:
 
     for version in permutations:
 
-        temp_version = (1,) + version
-        pages = [STIMULUS_ENCODING[i]['pages'] for i in temp_version]
+        pages = [STIMULUS_ENCODING[i]['pages'] for i in version]
 
         _, is_break_allowed = is_break_time_allowed(pages)
         if is_break_allowed:
             equal_page_split.add(version)
+    #
+    #     # check if the two longest stimuli are separated in before and after break
+    #     if is_before_and_after_break(version, 5, 8):
+    #         two_long_separate.add(version)
+    #
+    #     # two ins (ids 4 and 5) or two arg (ids 12 and 13) should not be consecutive
+    #     if is_id_not_consecutive(version, 2, 3):
+    #         not_two_consecutive_ins.add(version)
+    #
+    #     if is_id_not_consecutive(version, 10, 11):
+    #         not_two_consecutive_arg.add(version)
+    #
+    #     # two longest stimuli should not be consecutive
+    #     if is_id_not_consecutive(version, 5, 8):
+    #         two_long_not_consecutive.add(version)
 
-        # check if the two longest stimuli are separated in before and after break
-        if is_before_and_after_break(temp_version, 5, 8):
-            two_long_separate.add(version)
-
-        # two ins (ids 4 and 5) or two arg (ids 12 and 13) should not be consecutive
-        if is_id_not_consecutive(temp_version, 2, 3):
-            not_two_consecutive_ins.add(version)
-
-        if is_id_not_consecutive(temp_version, 10, 11):
-            not_two_consecutive_arg.add(version)
-
-        # two longest stimuli should not be consecutive
-        if is_id_not_consecutive(temp_version, 5, 8):
-            two_long_not_consecutive.add(version)
-
-    all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(not_two_consecutive_ins).intersection(not_two_consecutive_arg)
-    all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(not_two_consecutive_ins).intersection(not_two_consecutive_arg)
+    all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(
+        not_two_consecutive_ins).intersection(not_two_consecutive_arg)
+    all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(
+        not_two_consecutive_ins).intersection(not_two_consecutive_arg)
     minimal_criteria = permutations
 
     print(f'1. All permutations: {len(permutations)}')
@@ -138,14 +139,15 @@ def create_permutations() -> None:
     print(f'8. All combined two longest stimuli not consecutive: {len(all_combined_two_long_not_consecutive)}')
     print(f'9. Minimal criteria: {len(minimal_criteria)}')
 
-    new_permutations = list(minimal_criteria)
-    temp_perms = sorted(new_permutations.copy())
+    # new_permutations = list(minimal_criteria)
+    # temp_perms = sorted(new_permutations.copy())
+    temp_perms = equal_page_split
     final_permutations = []
-    counts = [[0 for _ in range(11)] for _ in range(11)]
+    counts = [[0 for _ in range(12)] for _ in range(12)]
     max_count = 0
     found = 0
 
-    with open('../final_permutations.txt', 'w', encoding='utf-8') as f:
+    with open('stimulus_order_versions_break.txt', 'w', encoding='utf-8') as f:
 
         while len(final_permutations) < 200:
             print(f'Found: {len(final_permutations)}')
@@ -153,18 +155,18 @@ def create_permutations() -> None:
                 # if all values in all list of count are equal to max count, then max_count += 1
                 if all(max_count == c for count in counts for c in count):
                     max_count += 1
-                    print(f'All stimuli appear now {max_count-1} times. Found: {found} permutations.')
+                    print(f'All stimuli appear now {max_count - 1} times. Found: {found} permutations.')
 
                 for position, stimulus_id in enumerate(perms):
                     # update the count for the stimulus id in that position
-                    updated_count = counts[stimulus_id - 2][position] + 1
+                    updated_count = counts[stimulus_id - 1][position] + 1
                     if updated_count > max_count:
                         break
                 else:
                     if perms not in final_permutations:
                         found += 1
                         for i, stimulus_id in enumerate(perms):
-                            counts[stimulus_id - 2][i] += 1
+                            counts[stimulus_id - 1][i] += 1
 
                         f.write(f'{perms}\n')
                         final_permutations.append(perms)

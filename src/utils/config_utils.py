@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 from pathlib import Path
 import image_config
@@ -7,11 +9,15 @@ def write_final_config(
         config_path: str,
         config_values: dict,
 ) -> None:
-
     config_path = os.path.join(image_config.REPO_ROOT, config_path)
+    old_content = ''
 
     # create the config file if it does not exist
     open(config_path, 'w', encoding='utf8').close()
+
+    # read what is already in the file as we want to prepend the new values
+    with open(config_path, 'r', encoding='utf8') as configfile:
+        old_content = configfile.read()
 
     # write config values to config file under config header
     with open(config_path, 'a', encoding='utf8') as configfile:
@@ -24,9 +30,9 @@ def write_final_config(
                 else:
                     configfile.write(f'{key} = {value}\n')
 
+        configfile.write(old_content)
 
-def read_image_configuration(config_path: Path) -> dict:
-
+def read_image_configuration(config_path: Path | str) -> dict:
     lab_image_config = {}
 
     config_path = os.path.join(image_config.REPO_ROOT, config_path)
@@ -45,4 +51,3 @@ def read_image_configuration(config_path: Path) -> dict:
                 lab_image_config['LAB_NUMBER'] = eval(line.split('=')[1])
 
     return lab_image_config
-

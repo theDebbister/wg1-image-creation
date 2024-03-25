@@ -250,3 +250,5 @@ data/stimuli_*/*
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+.idea

@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 import image_config
-from utils import config_utils
+from utils import config_utils, checks
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -32,10 +32,17 @@ def create_images(
     # initial_stimulus_df = pd.read_csv(stimuli_csv_file_name, sep=',', encoding='utf-8')
     initial_stimulus_df.dropna(subset=['stimulus_id'], inplace=True)
 
+    stimulus_types = initial_stimulus_df['stimulus_type'].unique()
+    checks.check_stimulus_types(stimulus_types)
+
     # check whether question excel exists as file, stimuli can be created independent of questions
     if os.path.isfile(question_csv_file_name):
         initial_question_df = pd.read_excel(question_csv_file_name)
         initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+
+        stimulus_types = initial_question_df['stimulus_type'].unique()
+        checks.check_stimulus_types(stimulus_types)
+
         cols = initial_question_df.columns.to_list().extend(
             ['question_img_path', 'question_img_file', 'target_key', 'distractor_a_key', 'distractor_b_key',
              'distractor_c_key'])
@@ -43,7 +50,7 @@ def create_images(
     else:
         question_csv_file_name = None
 
-    block_config = pd.read_csv(image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
+    block_config = pd.read_csv(image_config.REPO_ROOT / image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
 
     if not os.path.isdir(image_dir):
         os.mkdir(image_dir)
@@ -65,13 +72,6 @@ def create_images(
     }
 
     # the answer options are shuffled once for each language, if they have been shuffled already, we don't shuffle again
-    if os.path.isfile(image_config.SHUFFLED_ANSWER_OPTIONS):
-        shuffle_answer_options = False
-        with open(image_config.SHUFFLED_ANSWER_OPTIONS, 'r') as f:
-            shuffled_option_dict = json.load(f)
-    else:
-        shuffle_answer_options = True
-        shuffled_option_dict = {}
 
     for row_index, row in (pbar := tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df))):
         stimulus_name = row[f"stimulus_name"]
@@ -79,8 +79,6 @@ def create_images(
         pbar.set_description(
             f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} stimuli images for {stimulus_id}'
             f' {stimulus_name}')
-
-        practice = True if row['text_type'] == 'practice' else False
 
         # get block information from block config match stimulus id and name
         try:
@@ -108,7 +106,9 @@ def create_images(
                 warnings.warn(f'No questions found for {stimulus_name} {stimulus_id}')
 
             for i in range(image_config.NUM_PERMUTATIONS):
-                session_id = 'session_' + str(i + 1)
+
+                # the answer options are shuffeled for each participant (each gets a new item version)
+                session_id = 'question_images_version_' + str(i + 1)
 
                 question_csv_filename_stem = Path(question_csv_file_name).stem
                 new_session_question_df_name = (f'{question_csv_filename_stem}{"_aoi" if draw_aoi else ""}_'
@@ -120,6 +120,17 @@ def create_images(
 
                 else:
                     new_session_question_df = new_question_df
+
+                shuffeled_answer_options_path = os.path.join(
+                    image_config.ANSWER_OPTION_FOLDER +
+                    f'shuffled_option_keys_{image_config.LANGUAGE}_{session_id}.json'
+                )
+                # if we have already once shuffeled some of the options for this item, we open the existing file
+                if os.path.isfile(image_config.REPO_ROOT / shuffeled_answer_options_path):
+                    with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'r') as f:
+                        shuffled_option_dict = json.load(f)
+                else:
+                    shuffled_option_dict = {}
 
                 question_sub_csv_copy = question_sub_df_stimulus.copy()
 
@@ -193,7 +204,9 @@ def create_images(
                         }
                     }
 
-                    if shuffle_answer_options:
+                    # if we already have the shuffled options file for this item version, but we have not yet
+                    # shuffled the options for this question
+                    if question_identifier not in shuffled_option_dict:
                         # shuffled_option_keys = list(option_keys.keys())
                         # shuffled_option_keys = ['left', 'up', 'right', 'down']
                         shuffled_option_keys = ['up', 'left', 'down', 'right']
@@ -240,7 +253,7 @@ def create_images(
                         all_words.extend(words)
 
                     question_image_file = f"{stimulus_name}_id{stimulus_id}_question_{question_id}_{image_config.LANGUAGE}" \
-                                          f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                                          f"{'_aoi' if draw_aoi else ''}.png"
                     question_image_path = question_aoi_dir if draw_aoi else question_dir
 
                     if not os.path.isdir(os.path.join(question_image_path, session_id)):
@@ -251,7 +264,7 @@ def create_images(
                     temp_paths.append(question_image_path)
                     temp_files_names.append(question_image_file)
 
-                    question_image.save(question_image_path)
+                    question_image.save(image_config.REPO_ROOT / question_image_path)
 
                 question_sub_csv_copy.loc[
                     question_sub_df_stimulus['stimulus_id'] == stimulus_id, 'question_img_path'] = temp_paths
@@ -262,12 +275,18 @@ def create_images(
                 question_sub_csv_copy['distractor_c_key'] = temp_distractor_c_keys
                 new_session_question_df = pd.concat([new_session_question_df, question_sub_csv_copy], axis=0)
 
-                new_session_question_df.to_csv(full_path_questions,
+                new_session_question_df.to_csv(image_config.REPO_ROOT / full_path_questions,
                                                sep=',',
                                                index=False)
-                CONFIG.setdefault('PATHS', {}).update({
+                CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update({
                     f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_questions
                 })
+
+                output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
+                output_file.parent.mkdir(parents=True, exist_ok=True)
+
+                with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'w', encoding='utf8') as f:
+                    json.dump(shuffled_option_dict, f, indent=4)
 
         empty_page = False
         empty_page_inbetween = False
@@ -307,7 +326,7 @@ def create_images(
                                         draw_aoi=draw_aoi)
 
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
-                           f"{'_practice' if practice else ''}{'_aoi' if draw_aoi else ''}.png"
+                           f"{'_aoi' if draw_aoi else ''}.png"
 
                 img_path = aoi_image_dir if draw_aoi else image_dir
                 img_path = os.path.join(img_path, filename)
@@ -326,21 +345,16 @@ def create_images(
         aoi_df_path = os.path.join(aoi_dir, aoi_file_name)
         aoi_df.to_csv(aoi_df_path, sep=',', index=False, encoding='UTF-8')
 
-
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)
     final_stimulus_df = initial_stimulus_df.join(image_df)
     stimuli_file_name_stem = Path(stimuli_csv_file_name).stem
-    full_output_file_name = f'{stimuli_file_name_stem}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
+    full_output_file_name = f'{stimuli_file_name_stem}_{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
     CONFIG.setdefault('PATHS', {}).update({f'stimuli_images{"_aoi" if draw_aoi else ""}_csv': full_path})
-    final_stimulus_df.to_csv(full_path,
+    final_stimulus_df.to_csv(image_config.REPO_ROOT / full_path,
                              sep=',',
                              index=False)
-
-    if shuffle_answer_options:
-        with open(image_config.SHUFFLED_ANSWER_OPTIONS, 'w') as f:
-            json.dump(shuffled_option_dict, f, indent=4)
 
 
 def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
@@ -357,25 +371,33 @@ def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
 
 
 def create_stimuli_images():
-    if os.path.isfile(image_config.STIMULI_FILE_PATH):
-        create_images(image_config.STIMULI_FILE_PATH, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
-                      image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
-                      image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=False)
+    if os.path.isfile(image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH):
+        create_images(image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH,
+                      image_config.REPO_ROOT / image_config.QUESTION_FILE_PATH,
+                      image_config.REPO_ROOT / image_config.IMAGE_DIR,
+                      image_config.REPO_ROOT / image_config.QUESTION_IMAGE_DIR,
+                      image_config.REPO_ROOT / image_config.AOI_DIR,
+                      image_config.REPO_ROOT / image_config.AOI_QUESTION_DIR,
+                      image_config.REPO_ROOT / image_config.AOI_IMG_DIR, draw_aoi=False)
 
-        create_images(image_config.STIMULI_FILE_PATH, image_config.QUESTION_FILE_PATH, image_config.IMAGE_DIR,
-                      image_config.QUESTION_IMAGE_DIR, image_config.AOI_DIR,
-                      image_config.AOI_QUESTION_DIR, image_config.AOI_IMG_DIR, draw_aoi=True)
+        create_images(image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH,
+                      image_config.REPO_ROOT / image_config.QUESTION_FILE_PATH,
+                      image_config.REPO_ROOT / image_config.IMAGE_DIR,
+                      image_config.REPO_ROOT / image_config.QUESTION_IMAGE_DIR,
+                      image_config.REPO_ROOT / image_config.AOI_DIR,
+                      image_config.REPO_ROOT / image_config.AOI_QUESTION_DIR,
+                      image_config.REPO_ROOT / image_config.AOI_IMG_DIR, draw_aoi=True)
     else:
-        warnings.warn(f'No excel file for stimuli found at {image_config.STIMULI_FILE_PATH}. '
+        warnings.warn(f'No excel file for stimuli found at {image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH}. '
                       f'No stimuli images will be created.')
 
     # check whether excel for other screens exists
-    if os.path.isfile(image_config.OTHER_SCREENS_FILE_PATH):
+    if os.path.isfile(image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH):
 
         create_other_screens(draw_aoi=False)
 
     else:
-        print(f'No excel file for other screens found at {image_config.OTHER_SCREENS_FILE_PATH}. '
+        print(f'No excel file for other screens found at {image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH}. '
               f'No other screens will be created.')
 
 
@@ -431,7 +453,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
 
-    font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
+    font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
 
     # TODO make sure this works for different scripts!
     try:
@@ -507,7 +529,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             for word_number, word in enumerate(words_in_line):
 
                 if word.startswith('**'):
-                    font = ImageFont.truetype(image_config.FONT_TYPE_BOLD, fontsize)
+                    font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize)
                     word = word[2:]
 
                 if word.endswith('**'):
@@ -568,7 +590,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     words.extend([word.strip() for _ in range(len(word))])
 
                 if stop_bold:
-                    font = ImageFont.truetype(image_config.FONT_TYPE, fontsize)
+                    font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
                     stop_bold = False
 
                 x_word = x_word + word_width if script_direction == 'ltr' else x_word - word_width
@@ -745,7 +767,7 @@ def create_rating_screens(image: Image, text: str):
     option_y_px = 3.1 * image_config.MIN_MARGIN_TOP_PX
     option_x_px = 1.2 * image_config.MIN_MARGIN_LEFT_PX
 
-    font = ImageFont.truetype(image_config.FONT_TYPE, image_config.FONT_SIZE_PX)
+    font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), image_config.FONT_SIZE_PX)
 
     for idx, option in enumerate(options):
         if option == '':
@@ -828,11 +850,11 @@ def write_final_image_config() -> None:
 
 
 def create_other_screens(draw_aoi=False):
-    other_screen_df = pd.read_excel(image_config.OTHER_SCREENS_FILE_PATH)
+    other_screen_df = pd.read_excel(image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH)
     other_screen_df.dropna(subset=['instruction_screen_id'], inplace=True)
 
-    if not os.path.isdir(image_config.OTHER_SCREENS_DIR):
-        os.mkdir(image_config.OTHER_SCREENS_DIR)
+    if not os.path.isdir(image_config.REPO_ROOT / image_config.OTHER_SCREENS_DIR):
+        os.mkdir(image_config.REPO_ROOT / image_config.OTHER_SCREENS_DIR)
 
     file_names = []
     file_paths = []
@@ -871,7 +893,7 @@ def create_other_screens(draw_aoi=False):
         file_names.append(file_name)
         file_paths.append(file_path)
 
-        final_image.save(image_config.OTHER_SCREENS_DIR + file_name)
+        final_image.save(image_config.REPO_ROOT / image_config.OTHER_SCREENS_DIR / file_name)
 
     other_screen_df['instruction_screen_img_name'] = file_names
     other_screen_df['instruction_screen_img_path'] = file_paths
@@ -882,7 +904,7 @@ def create_other_screens(draw_aoi=False):
     CONFIG.setdefault('PATHS', {}).update(
         {f'participant_instruction{"_aoi" if draw_aoi else ""}_csv': participant_instruction_csv_path})
 
-    other_screen_df.to_csv(participant_instruction_csv_path,
+    other_screen_df.to_csv(image_config.REPO_ROOT / participant_instruction_csv_path,
                            index=False)
 
 

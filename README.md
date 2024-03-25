@@ -21,12 +21,12 @@ Steps to create the images:
 2. Set the variable `LANGUAGE` on top of the file to the language you want to create the images for. Please use the
    two-character code from this list: [ISO 639-1 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
    Set also variables `FULL_LANGUAGE`, `COUNTRY_CODE` and `LAB_NUMBER`
-3. Create a new folder called `data/stimuli_[language]` where language is the same language code that you specified in the
+3. Create a new folder called `data/stimuli_[language]_[country_code]_[lab_number]` where language is the same language code that you specified in the
    config   
 4. Paste the Excel files for the stimuli texts, the questions and the instruction screens into that folder. For now it works
    also without questions.
-5. From `data/stimuli_toy/` copy the config folder into `data/stimuli_[language]` - there should be three files `config_toy.py`,
-   `shuffled_option_keys_toy.json` and `toy_toy_0_lab_configuration.txt`
+5. From `data/stimuli_toy_x_1/` copy the config folder into `data/stimuli_[language]_[country_code]_[lab_number]` - there should be three files `config_toy.py`,
+   `shuffled_option_keys_toy.json` and `toy_x_0_lab_configuration.txt`
 6. In the file `config_toy.py` change every occurrence of 'toy' to your language code (eg. en for english) - inside the file
    and also in the file name
 7. In the file `toy_toy_0_lab_configuration.txt` change the first part of the name so it will represent your language, country code

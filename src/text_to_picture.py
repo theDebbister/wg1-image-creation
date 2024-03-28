@@ -122,6 +122,12 @@ def create_images(
                     session_id,
                     new_session_question_df_name)
 
+                full_path_question_df = os.path.join(
+                    question_dir if not draw_aoi else question_aoi_dir,
+                    session_id,
+                    new_session_question_df_name
+                )
+
                 # if there already is a file and we did not start a new image creation, we open the existing file
                 if os.path.isfile(full_path_root_question_df) and not row_index == 0:
                     new_session_question_df = pd.read_csv(full_path_root_question_df)
@@ -284,11 +290,12 @@ def create_images(
                 question_sub_csv_copy['distractor_c_key'] = temp_distractor_c_keys
                 new_session_question_df = pd.concat([new_session_question_df, question_sub_csv_copy], axis=0)
 
-                new_session_question_df.to_csv(image_config.REPO_ROOT / full_path_root_question_df,
+                new_session_question_df.to_csv(full_path_root_question_df,
                                                sep=',',
                                                index=False)
+                # save relative path without root
                 CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update({
-                    f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_root_question_df
+                    f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_question_df
                 })
 
                 output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
@@ -355,7 +362,7 @@ def create_images(
         aoi_df = pd.DataFrame(all_aois, columns=aoi_header)
         aoi_df['word'] = all_words
         aoi_df_path = os.path.join(aoi_dir, aoi_file_name)
-        aoi_df.to_csv(aoi_df_path, sep=',', index=False, encoding='UTF-8')
+        aoi_df.to_csv(image_config.REPO_ROOT / aoi_df_path, sep=',', index=False, encoding='UTF-8')
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)

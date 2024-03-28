@@ -1,11 +1,11 @@
 
 # QUESTION_OPTION_BOXES ##########
-up = (193.52867647058824, 249.5, 1144.1, 419.16)
 down = (193.52867647058824, 748.5, 1144.1, 918.1600000000001)
 left = (75.34191176470588, 439.12, 635.5732352941176, 718.5600000000001)
 right = (705.0086764705883, 439.12, 1265.24, 718.5600000000001)
+up = (193.52867647058824, 249.5, 1144.1, 419.16)
 
-# PATHS ##########
+# QUESTION_CSV_PATHS ##########
 question_images_question_images_version_1_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_1/multipleye_comprehension_questions_toy_question_images_version_1_with_img_paths.csv"
 question_images_question_images_version_2_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_2/multipleye_comprehension_questions_toy_question_images_version_2_with_img_paths.csv"
 question_images_question_images_version_3_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_3/multipleye_comprehension_questions_toy_question_images_version_3_with_img_paths.csv"
@@ -16,7 +16,6 @@ question_images_question_images_version_7_csv = "/Users/debor/repos/wg1-image-cr
 question_images_question_images_version_8_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_8/multipleye_comprehension_questions_toy_question_images_version_8_with_img_paths.csv"
 question_images_question_images_version_9_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_9/multipleye_comprehension_questions_toy_question_images_version_9_with_img_paths.csv"
 question_images_question_images_version_10_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_10/multipleye_comprehension_questions_toy_question_images_version_10_with_img_paths.csv"
-stimuli_images_csv = "data/stimuli_toy_x_1/multipleye_stimuli_experiment_toy_x_1_with_img_paths.csv"
 question_images_question_images_version_1_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_1/multipleye_comprehension_questions_toy_aoi_question_images_version_1_with_img_paths.csv"
 question_images_question_images_version_2_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_2/multipleye_comprehension_questions_toy_aoi_question_images_version_2_with_img_paths.csv"
 question_images_question_images_version_3_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_3/multipleye_comprehension_questions_toy_aoi_question_images_version_3_with_img_paths.csv"
@@ -27,6 +26,9 @@ question_images_question_images_version_7_aoi_csv = "/Users/debor/repos/wg1-imag
 question_images_question_images_version_8_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_8/multipleye_comprehension_questions_toy_aoi_question_images_version_8_with_img_paths.csv"
 question_images_question_images_version_9_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_9/multipleye_comprehension_questions_toy_aoi_question_images_version_9_with_img_paths.csv"
 question_images_question_images_version_10_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_10/multipleye_comprehension_questions_toy_aoi_question_images_version_10_with_img_paths.csv"
+
+# PATHS ##########
+stimuli_images_csv = "data/stimuli_toy_x_1/multipleye_stimuli_experiment_toy_x_1_with_img_paths.csv"
 stimuli_images_aoi_csv = "data/stimuli_toy_x_1/multipleye_stimuli_experiment_toy_x_1_aoi_with_img_paths.csv"
 participant_instruction_csv = "data/stimuli_toy_x_1/multipleye_participant_instructions_toy_with_img_paths.csv"
 question_file_excel = "data/stimuli_toy_x_1/multipleye_comprehension_questions_toy.xlsx"

@@ -21,11 +21,11 @@ CONFIG = {}
 def create_images(
         stimuli_csv_file_name: str,
         question_csv_file_name: str,
-        image_dir: str,
-        question_dir: str,
-        aoi_dir: str,
-        question_aoi_dir: str,
-        aoi_image_dir: str,
+        image_dir: str = image_config.IMAGE_DIR,
+        question_dir: str = image_config.QUESTION_IMAGE_DIR,
+        aoi_dir: str = image_config.AOI_DIR,
+        question_aoi_dir: str = image_config.AOI_QUESTION_DIR,
+        aoi_image_dir: str = image_config.AOI_IMG_DIR,
         draw_aoi=False,
 ):
     initial_stimulus_df = pd.read_excel(stimuli_csv_file_name)
@@ -52,26 +52,30 @@ def create_images(
 
     block_config = pd.read_csv(image_config.REPO_ROOT / image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
 
-    if not os.path.isdir(image_dir):
-        os.mkdir(image_dir)
+    image_dir_with_root = image_config.REPO_ROOT / image_dir
+    aoi_dir_with_root = image_config.REPO_ROOT / aoi_dir
+    aoi_image_dir_with_root = image_config.REPO_ROOT / aoi_image_dir
+    question_dir_with_root = image_config.REPO_ROOT / question_dir
+    question_aoi_dir_with_root = image_config.REPO_ROOT / question_aoi_dir
 
-    if not os.path.isdir(aoi_dir):
-        os.mkdir(aoi_dir)
+    if not os.path.isdir(image_dir_with_root):
+        os.mkdir(image_dir_with_root)
 
-    if not os.path.isdir(aoi_image_dir):
-        os.mkdir(aoi_image_dir)
+    if not os.path.isdir(aoi_dir_with_root):
+        os.mkdir(aoi_dir_with_root)
 
-    if not os.path.isdir(question_dir):
-        os.mkdir(question_dir)
+    if not os.path.isdir(aoi_image_dir_with_root):
+        os.mkdir(aoi_image_dir_with_root)
 
-    if not os.path.isdir(question_aoi_dir):
-        os.mkdir(question_aoi_dir)
+    if not os.path.isdir(question_dir_with_root):
+        os.mkdir(question_dir_with_root)
+
+    if not os.path.isdir(question_aoi_dir_with_root):
+        os.mkdir(question_aoi_dir_with_root)
 
     stimulus_images = {
         'block': [],
     }
-
-    # the answer options are shuffled once for each language, if they have been shuffled already, we don't shuffle again
 
     for row_index, row in (pbar := tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df))):
         stimulus_name = row[f"stimulus_name"]
@@ -113,10 +117,14 @@ def create_images(
                 question_csv_filename_stem = Path(question_csv_file_name).stem
                 new_session_question_df_name = (f'{question_csv_filename_stem}{"_aoi" if draw_aoi else ""}_'
                                                 f'{session_id}_with_img_paths.csv')
-                full_path_questions = os.path.join(question_dir if not draw_aoi else question_aoi_dir, session_id,
-                                                   new_session_question_df_name)
-                if os.path.isfile(full_path_questions):
-                    new_session_question_df = pd.read_csv(full_path_questions)
+                full_path_root_question_df = os.path.join(
+                    question_dir_with_root if not draw_aoi else question_aoi_dir_with_root,
+                    session_id,
+                    new_session_question_df_name)
+
+                # if there already is a file and we did not start a new image creation, we open the existing file
+                if os.path.isfile(full_path_root_question_df) and not row_index == 0:
+                    new_session_question_df = pd.read_csv(full_path_root_question_df)
 
                 else:
                     new_session_question_df = new_question_df
@@ -254,17 +262,18 @@ def create_images(
 
                     question_image_file = f"{stimulus_name}_id{stimulus_id}_question_{question_id}_{image_config.LANGUAGE}" \
                                           f"{'_aoi' if draw_aoi else ''}.png"
+                    question_image_path_root = question_aoi_dir_with_root if draw_aoi else question_dir_with_root
+
+                    if not os.path.isdir(os.path.join(question_image_path_root, session_id)):
+                        os.mkdir(os.path.join(question_image_path_root, session_id))
+
+                    question_image.save(question_image_path_root / session_id / question_image_file)
+
                     question_image_path = question_aoi_dir if draw_aoi else question_dir
-
-                    if not os.path.isdir(os.path.join(question_image_path, session_id)):
-                        os.mkdir(os.path.join(question_image_path, session_id))
-
                     question_image_path = os.path.join(question_image_path, session_id, question_image_file)
 
                     temp_paths.append(question_image_path)
                     temp_files_names.append(question_image_file)
-
-                    question_image.save(image_config.REPO_ROOT / question_image_path)
 
                 question_sub_csv_copy.loc[
                     question_sub_df_stimulus['stimulus_id'] == stimulus_id, 'question_img_path'] = temp_paths
@@ -275,11 +284,11 @@ def create_images(
                 question_sub_csv_copy['distractor_c_key'] = temp_distractor_c_keys
                 new_session_question_df = pd.concat([new_session_question_df, question_sub_csv_copy], axis=0)
 
-                new_session_question_df.to_csv(image_config.REPO_ROOT / full_path_questions,
+                new_session_question_df.to_csv(image_config.REPO_ROOT / full_path_root_question_df,
                                                sep=',',
                                                index=False)
                 CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update({
-                    f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_questions
+                    f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_root_question_df
                 })
 
                 output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
@@ -328,9 +337,12 @@ def create_images(
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_aoi' if draw_aoi else ''}.png"
 
+                # save the image to paht with root, but save the path without only rela tive to the data folder
+                img_path_root = aoi_image_dir_with_root if draw_aoi else image_dir_with_root
                 img_path = aoi_image_dir if draw_aoi else image_dir
+                img_path_root = os.path.join(img_path_root, filename)
                 img_path = os.path.join(img_path, filename)
-                final_image.save(img_path)
+                final_image.save(img_path_root)
 
                 stimulus_images[new_col_name_path].append(img_path)
                 stimulus_images[new_col_name_file].append(filename)
@@ -374,19 +386,11 @@ def create_stimuli_images():
     if os.path.isfile(image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH):
         create_images(image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH,
                       image_config.REPO_ROOT / image_config.QUESTION_FILE_PATH,
-                      image_config.REPO_ROOT / image_config.IMAGE_DIR,
-                      image_config.REPO_ROOT / image_config.QUESTION_IMAGE_DIR,
-                      image_config.REPO_ROOT / image_config.AOI_DIR,
-                      image_config.REPO_ROOT / image_config.AOI_QUESTION_DIR,
-                      image_config.REPO_ROOT / image_config.AOI_IMG_DIR, draw_aoi=False)
+                      draw_aoi=False)
 
         create_images(image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH,
                       image_config.REPO_ROOT / image_config.QUESTION_FILE_PATH,
-                      image_config.REPO_ROOT / image_config.IMAGE_DIR,
-                      image_config.REPO_ROOT / image_config.QUESTION_IMAGE_DIR,
-                      image_config.REPO_ROOT / image_config.AOI_DIR,
-                      image_config.REPO_ROOT / image_config.AOI_QUESTION_DIR,
-                      image_config.REPO_ROOT / image_config.AOI_IMG_DIR, draw_aoi=True)
+                      draw_aoi=True)
     else:
         warnings.warn(f'No excel file for stimuli found at {image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH}. '
                       f'No stimuli images will be created.')
@@ -397,8 +401,9 @@ def create_stimuli_images():
         create_other_screens(draw_aoi=False)
 
     else:
-        print(f'No excel file for other screens found at {image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH}. '
-              f'No other screens will be created.')
+        print(
+            f'No excel file for other screens found at {image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH}. '
+            f'No other screens will be created.')
 
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,

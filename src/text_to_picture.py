@@ -769,7 +769,7 @@ def create_final_screen(image: Image, text: str):
         draw.text((text_x, text_y), paragraph, font=font, fill=our_blue)
 
 
-def create_rating_screens(image: Image, text: str):
+def create_rating_screens(image: Image, text: str, title: str):
     sentences = text.split('\n')
     question = sentences[0]
     options = sentences[1:]
@@ -785,7 +785,7 @@ def create_rating_screens(image: Image, text: str):
         if option == '':
             continue
         draw_text(option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
-                  anchor_x_px=option_x_px, anchor_y_px=option_y_px, text_width_px=500,
+                  anchor_x_px=option_x_px, anchor_y_px=option_y_px, text_width_px=image_config.IMAGE_WIDTH_PX * 0.4,
                   line_limit=12)
 
         draw = ImageDraw.Draw(image)
@@ -794,7 +794,7 @@ def create_rating_screens(image: Image, text: str):
         text_width, text_height = right - left, bottom - top
         text_height = font.getmetrics()[0] + font.getmetrics()[1]
         new_x = option_x_px - image_config.MIN_MARGIN_LEFT_PX * 0.1
-        new_width = text_width + image_config.MIN_MARGIN_LEFT_PX * 0.2
+        new_width = image_config.IMAGE_WIDTH_PX * 0.4
         box_coordinates = (
             new_x,
             option_y_px,
@@ -891,10 +891,10 @@ def create_other_screens(draw_aoi=False):
             create_final_screen(final_image, text)
 
         elif title == 'familiarity_rating_screen_1':
-            create_rating_screens(final_image, text)
+            create_rating_screens(final_image, text, title)
 
         elif title == 'subject_difficulty_screen' or title == 'familiarity_rating_screen_2':
-            create_rating_screens(final_image, text)
+            create_rating_screens(final_image, text, title)
 
         # for all other text screens
         elif title != 'empty_screen':

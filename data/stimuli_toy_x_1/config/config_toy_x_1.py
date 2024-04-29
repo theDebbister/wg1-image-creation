@@ -1,31 +1,31 @@
 
 # QUESTION_OPTION_BOXES ##########
-down = (193.52867647058824, 748.5, 1144.1, 918.1600000000001)
-left = (75.34191176470588, 439.12, 635.5732352941176, 718.5600000000001)
-right = (705.0086764705883, 439.12, 1265.24, 718.5600000000001)
-up = (193.52867647058824, 249.5, 1144.1, 419.16)
+down = (201.7258620689655, 774.0, 1192.55, 949.44)
+left = (78.51724137931035, 454.08, 662.4713793103449, 743.04)
+right = (734.8658620689655, 454.08, 1318.8200000000002, 743.04)
+up = (201.7258620689655, 258.0, 1192.55, 433.44000000000005)
 
 # QUESTION_CSV_PATHS ##########
-question_images_question_images_version_1_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_1/multipleye_comprehension_questions_toy_question_images_version_1_with_img_paths.csv"
-question_images_question_images_version_2_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_2/multipleye_comprehension_questions_toy_question_images_version_2_with_img_paths.csv"
-question_images_question_images_version_3_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_3/multipleye_comprehension_questions_toy_question_images_version_3_with_img_paths.csv"
-question_images_question_images_version_4_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_4/multipleye_comprehension_questions_toy_question_images_version_4_with_img_paths.csv"
-question_images_question_images_version_5_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_5/multipleye_comprehension_questions_toy_question_images_version_5_with_img_paths.csv"
-question_images_question_images_version_6_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_6/multipleye_comprehension_questions_toy_question_images_version_6_with_img_paths.csv"
-question_images_question_images_version_7_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_7/multipleye_comprehension_questions_toy_question_images_version_7_with_img_paths.csv"
-question_images_question_images_version_8_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_8/multipleye_comprehension_questions_toy_question_images_version_8_with_img_paths.csv"
-question_images_question_images_version_9_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_9/multipleye_comprehension_questions_toy_question_images_version_9_with_img_paths.csv"
-question_images_question_images_version_10_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_10/multipleye_comprehension_questions_toy_question_images_version_10_with_img_paths.csv"
-question_images_question_images_version_1_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_1/multipleye_comprehension_questions_toy_aoi_question_images_version_1_with_img_paths.csv"
-question_images_question_images_version_2_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_2/multipleye_comprehension_questions_toy_aoi_question_images_version_2_with_img_paths.csv"
-question_images_question_images_version_3_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_3/multipleye_comprehension_questions_toy_aoi_question_images_version_3_with_img_paths.csv"
-question_images_question_images_version_4_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_4/multipleye_comprehension_questions_toy_aoi_question_images_version_4_with_img_paths.csv"
-question_images_question_images_version_5_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_5/multipleye_comprehension_questions_toy_aoi_question_images_version_5_with_img_paths.csv"
-question_images_question_images_version_6_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_6/multipleye_comprehension_questions_toy_aoi_question_images_version_6_with_img_paths.csv"
-question_images_question_images_version_7_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_7/multipleye_comprehension_questions_toy_aoi_question_images_version_7_with_img_paths.csv"
-question_images_question_images_version_8_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_8/multipleye_comprehension_questions_toy_aoi_question_images_version_8_with_img_paths.csv"
-question_images_question_images_version_9_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_9/multipleye_comprehension_questions_toy_aoi_question_images_version_9_with_img_paths.csv"
-question_images_question_images_version_10_aoi_csv = "/Users/debor/repos/wg1-image-creation/data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_10/multipleye_comprehension_questions_toy_aoi_question_images_version_10_with_img_paths.csv"
+question_images_question_images_version_1_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_1/multipleye_comprehension_questions_toy_question_images_version_1_with_img_paths.csv"
+question_images_question_images_version_2_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_2/multipleye_comprehension_questions_toy_question_images_version_2_with_img_paths.csv"
+question_images_question_images_version_3_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_3/multipleye_comprehension_questions_toy_question_images_version_3_with_img_paths.csv"
+question_images_question_images_version_4_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_4/multipleye_comprehension_questions_toy_question_images_version_4_with_img_paths.csv"
+question_images_question_images_version_5_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_5/multipleye_comprehension_questions_toy_question_images_version_5_with_img_paths.csv"
+question_images_question_images_version_6_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_6/multipleye_comprehension_questions_toy_question_images_version_6_with_img_paths.csv"
+question_images_question_images_version_7_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_7/multipleye_comprehension_questions_toy_question_images_version_7_with_img_paths.csv"
+question_images_question_images_version_8_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_8/multipleye_comprehension_questions_toy_question_images_version_8_with_img_paths.csv"
+question_images_question_images_version_9_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_9/multipleye_comprehension_questions_toy_question_images_version_9_with_img_paths.csv"
+question_images_question_images_version_10_csv = "data/stimuli_toy_x_1/question_images_toy_x_1/question_images_version_10/multipleye_comprehension_questions_toy_question_images_version_10_with_img_paths.csv"
+question_images_question_images_version_1_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_1/multipleye_comprehension_questions_toy_aoi_question_images_version_1_with_img_paths.csv"
+question_images_question_images_version_2_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_2/multipleye_comprehension_questions_toy_aoi_question_images_version_2_with_img_paths.csv"
+question_images_question_images_version_3_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_3/multipleye_comprehension_questions_toy_aoi_question_images_version_3_with_img_paths.csv"
+question_images_question_images_version_4_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_4/multipleye_comprehension_questions_toy_aoi_question_images_version_4_with_img_paths.csv"
+question_images_question_images_version_5_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_5/multipleye_comprehension_questions_toy_aoi_question_images_version_5_with_img_paths.csv"
+question_images_question_images_version_6_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_6/multipleye_comprehension_questions_toy_aoi_question_images_version_6_with_img_paths.csv"
+question_images_question_images_version_7_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_7/multipleye_comprehension_questions_toy_aoi_question_images_version_7_with_img_paths.csv"
+question_images_question_images_version_8_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_8/multipleye_comprehension_questions_toy_aoi_question_images_version_8_with_img_paths.csv"
+question_images_question_images_version_9_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_9/multipleye_comprehension_questions_toy_aoi_question_images_version_9_with_img_paths.csv"
+question_images_question_images_version_10_aoi_csv = "data/stimuli_toy_x_1/aoi_question_images_toy_x_1/question_images_version_10/multipleye_comprehension_questions_toy_aoi_question_images_version_10_with_img_paths.csv"
 
 # PATHS ##########
 stimuli_images_csv = "data/stimuli_toy_x_1/multipleye_stimuli_experiment_toy_x_1_with_img_paths.csv"
@@ -36,31 +36,31 @@ participant_instruction_excel = "data/stimuli_toy_x_1/multipleye_participant_ins
 stimuli_file_excel = "data/stimuli_toy_x_1/multipleye_stimuli_experiment_toy.xlsx"
 
 # RATING_QUESTION_BOXES ##########
-option_1 = (92.0845588235294, 276.23762376237624, 193.82720588235293, 309.23762376237624)
-option_2 = (92.0845588235294, 365.34653465346537, 207.82720588235293, 398.34653465346537)
-option_3 = (92.0845588235294, 454.4554455445545, 207.82720588235293, 487.4554455445545)
-option_4 = (92.0845588235294, 543.5643564356436, 207.82720588235293, 576.5643564356436)
-option_5 = (92.0845588235294, 632.6732673267327, 234.82720588235293, 665.6732673267327)
+option_1 = (95.96551724137932, 285.6655290102389, 657.1655172413793, 319.6655290102389)
+option_2 = (95.96551724137932, 377.81569965870307, 657.1655172413793, 411.81569965870307)
+option_3 = (95.96551724137932, 469.9658703071672, 657.1655172413793, 503.9658703071672)
+option_4 = (95.96551724137932, 562.1160409556314, 657.1655172413793, 596.1160409556314)
+option_5 = (95.96551724137932, 654.2662116040956, 657.1655172413793, 688.2662116040956)
 
 # EXPERIMENT ##########
 LANGUAGE = "toy"
 
 # IMAGE ##########
-FONT_SIZE = 23.88118811881188
+FONT_SIZE = 24.696245733788395
 FONT = "fonts/JetBrainsMono-Regular.ttf"
 FGC = (0, 0, 0)
 IMAGE_BGC = (231, 230, 230)
-IMAGE_WIDTH_PX = 1346
-IMAGE_HEIGHT_PX = 998
-MIN_MARGIN_LEFT_PX = 83.71323529411765
-MIN_MARGIN_RIGHT_PX = 76.43382352941177
-MIN_MARGIN_TOP_PX = 89.10891089108911
-MIN_MARGIN_BOTTOM_PX = 117.62376237623762
+IMAGE_WIDTH_PX = 1403
+IMAGE_HEIGHT_PX = 1032
+MIN_MARGIN_LEFT_PX = 87.24137931034483
+MIN_MARGIN_RIGHT_PX = 79.6551724137931
+MIN_MARGIN_TOP_PX = 92.15017064846415
+MIN_MARGIN_BOTTOM_PX = 121.6382252559727
 IMAGE_SIZE_CM = (37, 28)
 
 # SCREEN ##########
 RESOLUTION = (1980, 1080)
-SCREEN_SIZE_CM = (54.4, 30.3)
+SCREEN_SIZE_CM = (52.2, 29.3)
 DISTANCE_CM = 60.0
 
 # DIRECTORIES ##########

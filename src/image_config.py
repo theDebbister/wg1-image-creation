@@ -1,6 +1,6 @@
-LANGUAGE = 'toy'
+LANGUAGE = 'en'
 FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'x'
+COUNTRY_CODE = 'gb'
 LAB_NUMBER = 1
 
 ################################################################
@@ -27,7 +27,7 @@ BACKGROUND_COLOR = (231, 230, 230)
 # vertical spacing between lines
 LINE_SPACING = 2.9
 
-NUM_PERMUTATIONS = 10
+NUM_PERMUTATIONS = 1
 
 OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'

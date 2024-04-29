@@ -185,7 +185,7 @@ def create_images(
                     aois, words = draw_text(question, question_image, image_config.FONT_SIZE_PX,
                                             spacing=image_config.LINE_SPACING,
                                             image_short_name=f'question_{question_id}',
-                                            draw_aoi=draw_aoi)
+                                            draw_aoi=draw_aoi, line_limit=2)
 
                     all_aois.extend(aois)
                     all_words.extend(words)
@@ -221,9 +221,9 @@ def create_images(
                     # if we already have the shuffled options file for this item version, but we have not yet
                     # shuffled the options for this question
                     if question_identifier not in shuffled_option_dict:
-                        # shuffled_option_keys = list(option_keys.keys())
-                        # shuffled_option_keys = ['left', 'up', 'right', 'down']
-                        shuffled_option_keys = ['up', 'left', 'down', 'right']
+                        # TESTING ANSWER OPTION LENGTH: refer to README.md
+                        shuffled_option_keys = ['left', 'up', 'right', 'down']
+                        # shuffled_option_keys = ['up', 'left', 'down', 'right']
                         random.shuffle(shuffled_option_keys)
                         shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
                         shuffled_option_dict[question_identifier] = shuffled_option_keys
@@ -619,12 +619,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             # count only the lines with text
             if num_lines > 3:
                 warnings.warn(
-                    f'Questions options that do not fit:\n{image_short_name},{num_lines},{num_words},{num_chars}')
+                    f'Questions options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars')
         else:
 
             if num_lines > 2:
                 warnings.warn(
-                    f'Questions options that do not fit:\n{image_short_name},{num_lines},{num_words},{num_chars}')
+                    f'Questions options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars')
 
     # draw fixation point
     r = 7

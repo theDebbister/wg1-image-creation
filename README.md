@@ -51,17 +51,47 @@ Once you have the environment you can install the necessary packages using the `
 In order to create images for right-to-left scripts, it is necessary to install more dependencies.
 
 
+## Text length requirements
 
-## Page specifications
+### Length of stimulus texts
 For the default setting of `IMAGE_SIZE_CM = (37, 28)` the following applies:
 
-The maximum number of character per line is 79. And the maximum number of lines per page is 9. This means that the last
+The maximum number of character per line is 82. And the maximum number of lines per page is 9. This means that the last
 line will be above the fixation dot in the corner of the screen.
 However, as we do not split the words, if a word, for example, makes the line 80 characters long, 
-this entire word will be moved to the next line. So the maximum number of chars per page is in theory 711, 
+this entire word will be moved to the next line. So the maximum number of chars per page is in theory 738, 
 but in reality this is rarely the case as the words usually don’t perfectly fit on the lines. 
 So, if you like to count by hand, how the pages fit, you can just determine the first word that exceeds the line 
-limit (>79 chars) and this word will then be the first word of the new line, until you reach 9 lines.
+limit (>82 chars) and this word will then be the first word of the new line, until you reach 9 lines.
+
+The maximum number of characters can be specified in the `image_config.py` file using the variable MAX_CHARS_PER_LINE.
+Changing this might cause the text to overflow the page!!
 
 > NOTE: this is different for the participant instructions screens, where more characters per line and lines are allowed.
 > The maximum number of characters per line is 85 and the maximum number of lines per page is 12.
+
+### Length of question-answer-options
+The answer options to the questions have a maximum length as well. There are two types of boxes that each answer option can appear in.
+This means we have to test for each option whether it fits in both boxes (and especially whether it fits in the smaller one).
+In order to test whether the answer options fit in the boxes
+you need to do the following steps:
+1. Set the variable `NUM_PERMUTATIONS` in the `image_config.py` file to 1
+2. Go to the file `text_to_picture.py` and change the following lines (line 224 ca.):
+```python
+# shuffled_option_keys = ['left', 'up', 'right', 'down']
+shuffled_option_keys = ['up', 'left', 'down', 'right']
+# random.shuffle(shuffled_option_keys)
+```
+You should comment the random shuffle step so it won't shuffle the answer options but will be hardcoded for each question.
+3. Run the script `text_to_picture.py`. If an option does not fit, it will show an error message. Please copy it once the script it through.
+4. Now you need to go to the `text_to_picture.py` file and change the hardcoded positions of the answer options. This way, you can test all box types for all options.
+```python
+shuffled_option_keys = ['left', 'up', 'right', 'down']
+# shuffled_option_keys = ['up', 'left', 'down', 'right']
+# random.shuffle(shuffled_option_keys)
+```
+5. Now you need to go to the config folder in the stimulus folder of the respective language. E.g. for the toy example 
+it is `data/stimuli_toy_x_1/config/` and delete the entire folder called `question_answer_option_shuffling_tox_x_1`.
+You need it to make sure that the script will not use the shuffled options but the hardcoded ones.
+6. Repeat step 3.
+7. If all options fit, you can now set the `NUM_PERMUTATIONS` back to its original value and the random shuffle back to the original state.

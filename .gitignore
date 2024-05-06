@@ -240,6 +240,7 @@ Temporary Items
 data/stimuli_*/*
 !data/stimuli_*/config
 #!data/stimuli_toy/*
+data/stimuli*/config/config*.py
 
 
 

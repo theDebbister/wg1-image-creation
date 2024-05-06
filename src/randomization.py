@@ -2,7 +2,10 @@ import itertools
 from collections import Counter, defaultdict
 import random
 
+import pandas as pd
 from tqdm import tqdm
+
+import image_config
 
 STIMULUS_ENCODING = {
     2: {
@@ -68,6 +71,8 @@ STIMULUS_ENCODING = {
 }
 
 TOTAL_PAGES = sum([STIMULUS_ENCODING[id]['pages'] for id in STIMULUS_ENCODING])
+RANDOM_SEED = 52
+random.seed(RANDOM_SEED)
 
 
 def create_permutations() -> None:
@@ -124,9 +129,11 @@ def create_permutations() -> None:
     #         two_long_not_consecutive.add(version)
 
     all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(
-        not_two_consecutive_ins).intersection(not_two_consecutive_arg)
+        not_two_consecutive_ins
+    ).intersection(not_two_consecutive_arg)
     all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(
-        not_two_consecutive_ins).intersection(not_two_consecutive_arg)
+        not_two_consecutive_ins
+    ).intersection(not_two_consecutive_arg)
     minimal_criteria = permutations
 
     print(f'1. All permutations: {len(permutations)}')
@@ -230,4 +237,5 @@ def is_id_not_consecutive(version: list, id_1: int, id_2: int) -> bool:
 
 
 if __name__ == '__main__':
-    create_permutations()
+    #create_permutations()
+    create_question_permutations()

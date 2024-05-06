@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.9 (wg1-image-creation)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (wg1-image-creation)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="wg1-image-creation" project-jdk-type="Python SDK" />
 </project>

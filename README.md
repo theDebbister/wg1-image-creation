@@ -26,10 +26,10 @@ Steps to create the images:
 4. Paste the Excel files for the stimuli texts, the questions and the instruction screens into that folder. For now it works
    also without questions.
 5. From `data/stimuli_toy_x_1/` copy the config folder into `data/stimuli_[language]_[country_code]_[lab_number]` - there should be three files `config_toy.py`,
-   `shuffled_option_keys_toy.json` and `toy_x_0_lab_configuration.txt`
-6. In the file `config_toy.py` change every occurrence of 'toy' to your language code (eg. en for english) - inside the file
+   `shuffled_option_keys_toy.json` and `toy_x_1_lab_configuration.txt`
+6. In the file `config_toy_x_1.py` change every occurrence of 'toy' to your language code (e.g. en for english) - inside the file
    and also in the file name
-7. In the file `toy_toy_0_lab_configuration.txt` change the first part of the name so it will represent your language, country code
+7. In the file `toy_x_1_lab_configuration.txt` change the first part of the name so it will represent your language, country code
    and lab number and inside the file change the variables 'RESOLUTION', 'SCREEN_SIZE_CM', 'DISTANCE_CM' and 'SCRIPT_DIRECTION'
    (not necessary for practice pictures)
 8. Go again to the `image_config.py` file (inside the folder wg1-image-creation)

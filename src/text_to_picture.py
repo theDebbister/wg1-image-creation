@@ -94,7 +94,7 @@ def create_images(
             raise ValueError(
                 f'Something is wrong with the stimulus id and name of : {stimulus_id} {stimulus_name}. '
                 f'Please check it is the same as in the English files.'
-                )
+            )
         stimulus_images['block'].append(block_info)
         stimulus_name = re.sub(' ', '_', stimulus_name)
 
@@ -114,10 +114,10 @@ def create_images(
             if len(question_sub_df_stimulus) == 0:
                 warnings.warn(f'No questions found for {stimulus_name} {stimulus_id}')
 
-            for i in range(image_config.NUM_PERMUTATIONS):
+            for i in range(image_config.VERSION_START, image_config.NUM_PERMUTATIONS + image_config.VERSION_START):
 
                 # the answer options are shuffeled for each participant (each gets a new item version)
-                session_id = 'question_images_version_' + str(i + 1)
+                session_id = 'question_images_version_' + str(i)
 
                 question_csv_filename_stem = Path(question_csv_file_name).stem
                 new_session_question_df_name = (f'{question_csv_filename_stem}{"_aoi" if draw_aoi else ""}_'
@@ -176,7 +176,7 @@ def create_images(
                          'distractor_a': question_row['distractor_a'],
                          'distractor_b': question_row['distractor_b'],
                          'distractor_c': question_row['distractor_c']}
-                        )
+                    )
 
                     annotated_text = question_row['stimulus_text_with_annotated_spans']
                     target_span_text = question_row['target_span_target_distractor_a_text']
@@ -196,7 +196,7 @@ def create_images(
                         spacing=image_config.LINE_SPACING,
                         image_short_name=f'question_{question_id}',
                         draw_aoi=draw_aoi, line_limit=2
-                        )
+                    )
 
                     all_aois.extend(aois)
                     all_words.extend(words)
@@ -258,7 +258,7 @@ def create_images(
                             anchor_y_px=option_keys[distractor_key]['y_px'],
                             text_width_px=option_keys[distractor_key]['text_width_px'],
                             question_option_type=distractor_key
-                            )
+                        )
 
                         draw = ImageDraw.Draw(question_image)
 
@@ -310,7 +310,7 @@ def create_images(
                     full_path_root_question_df,
                     sep=',',
                     index=False
-                    )
+                )
                 # save relative path without root
                 CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update(
                     {
@@ -362,7 +362,7 @@ def create_images(
                     text, final_image, image_config.FONT_SIZE_PX,
                     spacing=image_config.LINE_SPACING, image_short_name=column_name,
                     draw_aoi=draw_aoi
-                    )
+                )
 
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_aoi' if draw_aoi else ''}.png"
@@ -401,7 +401,7 @@ def create_images(
         image_config.REPO_ROOT / full_path,
         sep=',',
         index=False
-        )
+    )
 
 
 def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
@@ -423,18 +423,18 @@ def create_stimuli_images():
             image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH,
             image_config.REPO_ROOT / image_config.QUESTION_FILE_PATH,
             draw_aoi=False
-            )
+        )
 
         create_images(
             image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH,
             image_config.REPO_ROOT / image_config.QUESTION_FILE_PATH,
             draw_aoi=True
-            )
+        )
     else:
         warnings.warn(
             f'No excel file for stimuli found at {image_config.REPO_ROOT / image_config.STIMULI_FILE_PATH}. '
             f'No stimuli images will be created.'
-            )
+        )
 
     # check whether excel for other screens exists
     if os.path.isfile(image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH):
@@ -446,6 +446,24 @@ def create_stimuli_images():
             f'No excel file for other screens found at {image_config.REPO_ROOT / image_config.OTHER_SCREENS_FILE_PATH}. '
             f'No other screens will be created.'
         )
+
+    # create randomization file for the stimuli
+    # read the stimulus order version from the global config and select the versions ranging from
+    # image_config.VERSION_START to image_config.NUM_PERMUTATIONS + image_config.VERSION_START
+    all_versions_df = pd.read_csv(image_config.RANDOMIZATION_CSV, sep=',', encoding='UTF-8')
+    # get those entries between the version start and the number of permutations + version start
+    language_versions_df = all_versions_df[all_versions_df['version_number'].between(
+        image_config.VERSION_START, image_config.NUM_PERMUTATIONS + image_config.VERSION_START,
+        inclusive='left'
+    )]
+
+    language_versions_df.to_csv(
+        image_config.REPO_ROOT / image_config.OUTPUT_TOP_DIR / 'config' /
+        f'stimulus_order_versions_{image_config.LANGUAGE}_'
+        f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv',
+        sep=',',
+        index=False
+    )
 
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
@@ -563,7 +581,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             left, top, right, bottom = draw.multiline_textbbox(
                 (0, 0), line, font=font,
                 anchor='ra' if script_direction == 'rtl' else 'la'
-                )
+            )
             line_width = right - left
 
             # get metrics returns the ascent and descent of the font from the baseline
@@ -602,7 +620,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 draw.text(
                     (x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
                     font=font, anchor='ra' if script_direction == 'rtl' else 'la'
-                    )
+                )
 
                 for char_idx, char in enumerate(word):
 
@@ -619,7 +637,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                              aoi_x + letter_width,
                              aoi_y + line_height),
                             outline='red', width=1
-                            )
+                        )
 
                     # aoi_header = ['char_idx', 'char', 'x', 'y', 'width', 'height', 'char_idx_in_line',
                     # 'line_idx', 'page',
@@ -846,7 +864,7 @@ def create_rating_screens(image: Image, text: str, title: str):
             option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
             anchor_x_px=option_x_px, anchor_y_px=option_y_px, text_width_px=image_config.IMAGE_WIDTH_PX * 0.4,
             line_limit=12
-            )
+        )
 
         draw = ImageDraw.Draw(image)
         left, top, right, bottom = draw.multiline_textbbox(
@@ -880,7 +898,13 @@ def write_final_image_config() -> None:
     This function writes them to a language config file.
     """
 
-    CONFIG.setdefault('EXPERIMENT', {}).update({'LANGUAGE': image_config.LANGUAGE})
+    CONFIG.setdefault('EXPERIMENT', {}).update(
+        {
+            'LANGUAGE': image_config.LANGUAGE,
+            'NUM_PERMUTATIONS': image_config.NUM_PERMUTATIONS,
+            'VERSION_START': image_config.VERSION_START,
+        }
+    )
 
     CONFIG.setdefault('IMAGE', {}).update(
         {
@@ -911,7 +935,8 @@ def write_final_image_config() -> None:
         {
             'question_file_excel': image_config.QUESTION_FILE_PATH,
             'participant_instruction_excel': image_config.OTHER_SCREENS_FILE_PATH,
-            'stimuli_file_excel': image_config.STIMULI_FILE_PATH
+            'stimuli_file_excel': image_config.STIMULI_FILE_PATH,
+            'randomization_csv': image_config.RANDOMIZATION_CSV,
         }
     )
 
@@ -945,7 +970,7 @@ def create_other_screens(draw_aoi=False):
             other_screen_df.iterrows(),
             desc=f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} participant instruction images',
             total=len(other_screen_df)
-            ):
+    ):
 
         final_image = Image.new(
             'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR
@@ -993,7 +1018,7 @@ def create_other_screens(draw_aoi=False):
     other_screen_df.to_csv(
         image_config.REPO_ROOT / participant_instruction_csv_path,
         index=False
-        )
+    )
 
 
 if __name__ == '__main__':

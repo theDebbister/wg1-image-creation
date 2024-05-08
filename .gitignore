@@ -253,3 +253,4 @@ data/stimuli*/config/config*.py
 *.vsix
 
 .idea
+/data/stimuli_toy_x_1/config/stimulus_order_versions_toy_x_1.csv

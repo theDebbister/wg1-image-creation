@@ -27,7 +27,10 @@ BACKGROUND_COLOR = (231, 230, 230)
 # vertical spacing between lines
 LINE_SPACING = 2.9
 
-NUM_PERMUTATIONS = 250
+# number of permutations for the stimulus order, each participant will get a unique order
+# in case that a data collection is split on two devices we can specify the version start to avoid overlaps
+NUM_PERMUTATIONS = 10
+VERSION_START = 5
 
 OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
@@ -40,6 +43,8 @@ OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE
 OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
 STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_stimuli_experiment_{LANGUAGE}.xlsx'
 QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
+
+RANDOMIZATION_CSV = REPO_ROOT / 'src' / 'global_configs' / 'stimulus_order_versions.csv'
 
 BLOCK_CONFIG_PATH = CODE_SCR / "global_configs/stimulus_to_block_mapping.csv"
 

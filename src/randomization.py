@@ -24,41 +24,31 @@ STIMULUS_ENCODING = {
         'type': 'lit'
     },
     5: {
-        'name': 'Lit_EmperorClothes',
-        'pages': 18,
-        'type': 'lit'
-    },
-    6: {
         'name': 'Lit_MagicMountain',
         'pages': 6,
         'type': 'lit'
     },
-    7: {
-        'name': 'Lit_NorthWind',
-        'pages': 2,
-        'type': 'lit'
-    },
-    8: {
+    6: {
         'name': 'Lit_Solaris',
         'pages': 19,
         'type': 'lit'
     },
-    9: {
+    7: {
         'name': 'Lit_BrokenApril',
         'pages': 11,
         'type': 'lit'
     },
-    11: {
+    9: {
         'name': 'Arg_PISARapaNui',
         'pages': 15,
         'type': 'arg'
     },
-    10: {
+    8: {
         'name': 'Arg_PISACowsMilk',
         'pages': 14,
         'type': 'arg'
     },
-    12: {
+    10: {
         'name': 'PopSci_Caveman',
         'pages': 9,
         'type': 'popsci'
@@ -90,28 +80,29 @@ def create_permutations() -> None:
             all_block_combos.append(b1 + b2)
             all_block_combos.append(b2 + b1)
 
-    stimuli_ids = [i for i in range(1, 13)]
+    stimuli_ids = [i for i in range(1, 11)]
+    print(stimuli_ids)
 
     permutations = itertools.permutations(stimuli_ids)
 
     # print("Number of permutations for different scenarios:")
     # print(f'1. All permutations: {len(permutations)}')
 
-    new_permutations = []
-
-    equal_page_split = set()
-    two_long_separate = set()
-    not_two_consecutive_ins = set()
-    not_two_consecutive_arg = set()
-    two_long_not_consecutive = set()
-
-    for version in permutations:
-
-        pages = [STIMULUS_ENCODING[i]['pages'] for i in version]
-
-        _, is_break_allowed = is_break_time_allowed(pages)
-        if is_break_allowed:
-            equal_page_split.add(version)
+    # new_permutations = []
+    #
+    # equal_page_split = set()
+    # two_long_separate = set()
+    # not_two_consecutive_ins = set()
+    # not_two_consecutive_arg = set()
+    # two_long_not_consecutive = set()
+    #
+    # for version in permutations:
+    #
+    #     pages = [STIMULUS_ENCODING[i]['pages'] for i in version]
+    #
+    #     _, is_break_allowed = is_break_time_allowed(pages)
+    #     if is_break_allowed:
+    #         equal_page_split.add(version)
     #
     #     # check if the two longest stimuli are separated in before and after break
     #     if is_before_and_after_break(version, 5, 8):
@@ -127,36 +118,36 @@ def create_permutations() -> None:
     #     # two longest stimuli should not be consecutive
     #     if is_id_not_consecutive(version, 5, 8):
     #         two_long_not_consecutive.add(version)
-
-    all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(
-        not_two_consecutive_ins
-    ).intersection(not_two_consecutive_arg)
-    all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(
-        not_two_consecutive_ins
-    ).intersection(not_two_consecutive_arg)
-    minimal_criteria = permutations
-
-    print(f'1. All permutations: {len(permutations)}')
-    print(f'2. Equal page split: {len(equal_page_split)}')
-    print(f'3. Two longest stimuli separated: {len(two_long_separate)}')
-    print(f'4. Two ins not consecutive: {len(not_two_consecutive_ins)}')
-    print(f'5. Two arg not consecutive: {len(not_two_consecutive_arg)}')
-    print(f'6. Two longest stimuli not consecutive: {len(two_long_not_consecutive)}')
-    print(f'7. All combined two longest stimuli separated: {len(all_combined_two_long_separate)}')
-    print(f'8. All combined two longest stimuli not consecutive: {len(all_combined_two_long_not_consecutive)}')
-    print(f'9. Minimal criteria: {len(minimal_criteria)}')
+    #
+    # all_combined_two_long_separate = equal_page_split.intersection(two_long_separate).intersection(
+    #     not_two_consecutive_ins
+    # ).intersection(not_two_consecutive_arg)
+    # all_combined_two_long_not_consecutive = equal_page_split.intersection(two_long_not_consecutive).intersection(
+    #     not_two_consecutive_ins
+    # ).intersection(not_two_consecutive_arg)
+    # minimal_criteria = permutations
+    #
+    # print(f'1. All permutations: {len(permutations)}')
+    # print(f'2. Equal page split: {len(equal_page_split)}')
+    # print(f'3. Two longest stimuli separated: {len(two_long_separate)}')
+    # print(f'4. Two ins not consecutive: {len(not_two_consecutive_ins)}')
+    # print(f'5. Two arg not consecutive: {len(not_two_consecutive_arg)}')
+    # print(f'6. Two longest stimuli not consecutive: {len(two_long_not_consecutive)}')
+    # print(f'7. All combined two longest stimuli separated: {len(all_combined_two_long_separate)}')
+    # print(f'8. All combined two longest stimuli not consecutive: {len(all_combined_two_long_not_consecutive)}')
+    # print(f'9. Minimal criteria: {len(minimal_criteria)}')
 
     # new_permutations = list(minimal_criteria)
     # temp_perms = sorted(new_permutations.copy())
-    temp_perms = equal_page_split
+    temp_perms = sorted(permutations)
     final_permutations = []
-    counts = [[0 for _ in range(12)] for _ in range(12)]
+    counts = [[0 for _ in range(10)] for _ in range(10)]
     max_count = 0
     found = 0
 
-    with open('stimulus_order_versions_break.txt', 'w', encoding='utf-8') as f:
+    with open('stimulus_order_versions.txt', 'w', encoding='utf-8') as f:
 
-        while len(final_permutations) < 200:
+        while len(final_permutations) < 1000:
             print(f'Found: {len(final_permutations)}')
             for perm_index, perms in enumerate(temp_perms):
                 # if all values in all list of count are equal to max count, then max_count += 1
@@ -238,4 +229,20 @@ def is_id_not_consecutive(version: list, id_1: int, id_2: int) -> bool:
 
 if __name__ == '__main__':
     #create_permutations()
-    create_question_permutations()
+
+    with open('stimulus_order_versions.txt', 'r', encoding='utf-8') as f:
+        permutations = f.readlines()
+
+    permutations = [[11, 12] + list(eval(perm)) for perm in permutations]
+
+    version_numbers = [i for i in range(1, len(permutations) + 1)]
+    participant_ids = [pd.NA for _ in range(1, len(permutations) + 1)]
+
+    df = pd.DataFrame({'version_number': version_numbers, 'participant_id': participant_ids})
+
+    version_df = pd.DataFrame(permutations, columns=[f'trial_{i}' for i in range(1, 13)])
+
+    final_df = pd.concat([df, version_df], axis=1)
+
+    final_df.to_csv('stimulus_order_versions.csv', index=False)
+

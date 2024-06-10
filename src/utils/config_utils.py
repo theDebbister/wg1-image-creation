@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 import image_config
@@ -32,22 +33,36 @@ def write_final_config(
 
         configfile.write(old_content)
 
+
 def read_image_configuration(config_path: Path | str) -> dict:
     lab_image_config = {}
 
     config_path = os.path.join(image_config.REPO_ROOT, config_path)
 
     with open(config_path, 'r', encoding='utf8') as configfile:
-        for line in configfile:
-            if line.startswith('RESOLUTION'):
-                lab_image_config['RESOLUTION'] = eval(line.split('=')[1])
-            elif line.startswith('SCREEN_SIZE_CM'):
-                lab_image_config['SCREEN_SIZE_CM'] = eval(line.split('=')[1])
-            elif line.startswith('DISTANCE_CM'):
-                lab_image_config['DISTANCE_CM'] = eval(line.split('=')[1])
-            elif line.startswith('SCRIPT_DIRECTION'):
-                lab_image_config['SCRIPT_DIRECTION'] = eval(line.split('=')[1])
-            elif line.startswith('LAB_NUMBER'):
-                lab_image_config['LAB_NUMBER'] = eval(line.split('=')[1])
+        config_content = json.load(configfile)
+
+    # the contact information should be removed from the config file
+    # if it is still in there, it is deleted and the file written again
+    if 'contact information' in config_content:
+        config_content.pop('contact information')
+        json.dump(config_content, open(config_path, 'w', encoding='utf8'))
+
+    # check whether all necessary keys are in the config file
+    necessary_keys = [
+        'resolution in px', 'screen size in cm', 'script direction', 'use of multiple devices',
+    ]
+
+    for key in necessary_keys:
+        if key not in config_content:
+            raise ValueError(f'Key "{key}" is missing in the configuration file.')
+
+    lab_image_config = {
+        'RESOLUTION': eval(config_content['resolution in px']),
+        'SCREEN_SIZE_CM': eval(config_content['screen size in cm']),
+        'SCRIPT_DIRECTION': config_content['script direction'],
+        'MULTIPLE_DEVICES': config_content['use of multiple devices'],
+        'DISTANCE_CM': config_content['distance in cm'],
+    }
 
     return lab_image_config

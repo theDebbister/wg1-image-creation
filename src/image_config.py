@@ -1,6 +1,8 @@
 LANGUAGE = 'hr'
-FULL_LANGUAGE = 'Chinese'
+FULL_LANGUAGE = 'Croatian'
 COUNTRY_CODE = 'hr'
+CITY = 'Zagreb'
+YEAR = 2025
 LAB_NUMBER = 1
 
 ################################################################
@@ -37,7 +39,7 @@ LINE_SPACING = 2.9
 NUM_PERMUTATIONS = 1
 VERSION_START = 1
 
-OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
@@ -51,19 +53,28 @@ QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANG
 
 RANDOMIZATION_CSV = REPO_ROOT / 'src' / 'global_configs' / 'stimulus_order_versions.csv'
 
-BLOCK_CONFIG_PATH = CODE_SCR / "global_configs/stimulus_to_block_mapping.csv"
+BLOCK_CONFIG_PATH = CODE_SCR / "global_configs/stimulus_to_id_mapping.csv"
 
-FINAL_CONFIG = (f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/config/config_'
-                f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}.py')
+FINAL_CONFIG = OUTPUT_TOP_DIR + ('config/config_'
+                                 f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}_{CITY}_{LAB_NUMBER}_{YEAR}.py')
 
 ANSWER_OPTION_FOLDER = OUTPUT_TOP_DIR + (f'config/question_answer_option_shuffling_'
                                          f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/')
 
-LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + f'config/{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}_lab_configuration.txt'
+LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/MultiplEYE_{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}'
+                                           f'_lab_configuration.json')
 LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)
 
 RESOLUTION = LAB_CONFIGURATION['RESOLUTION']
+if len(RESOLUTION) != 2:
+    raise ValueError('RESOLUTION must be a tuple of two values separated by a comma. '
+                     'Please check the lab configuration file.')
+
 SCREEN_SIZE_CM = LAB_CONFIGURATION['SCREEN_SIZE_CM']
+if len(SCREEN_SIZE_CM) != 2:
+    raise ValueError('SCREEN_SIZE_CM must be a tuple of two values separated by a comma. '
+                     'Please check the lab configuration file.')
+
 DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
 SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION']
 
@@ -91,7 +102,6 @@ ANCHOR_POINT_Y_PX = MIN_MARGIN_TOP_PX
 
 MARGIN_LEFT_CM_RTL, MARGIN_RIGHT_CM_RTL = MARGIN_RIGHT_CM, MARGIN_LEFT_CM
 MIN_MARGIN_LEFT_PX_RTL, MIN_MARGIN_RIGHT_PX_RTL = MIN_MARGIN_RIGHT_PX, MIN_MARGIN_LEFT_PX
-
 
 TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
 POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else MIN_MARGIN_LEFT_PX

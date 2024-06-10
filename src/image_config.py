@@ -1,6 +1,6 @@
-LANGUAGE = 'toy'
-FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'x'
+LANGUAGE = 'hr'
+FULL_LANGUAGE = 'Chinese'
+COUNTRY_CODE = 'hr'
 LAB_NUMBER = 1
 
 ################################################################
@@ -14,9 +14,14 @@ CODE_SCR = Path(__file__).parent
 REPO_ROOT = CODE_SCR.parent
 
 # set the font based on the language
+WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
+elif LANGUAGE == 'zh':
+    FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
+    FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
+    WORD_SPLIT_CRITERION = ''
 else:
     FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"
@@ -29,8 +34,8 @@ LINE_SPACING = 2.9
 
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
-NUM_PERMUTATIONS = 10
-VERSION_START = 5
+NUM_PERMUTATIONS = 1
+VERSION_START = 1
 
 OUTPUT_TOP_DIR = f'data/stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'

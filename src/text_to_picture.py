@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import os
 import random
@@ -74,9 +76,7 @@ def create_images(
     if not os.path.isdir(question_aoi_dir_with_root):
         os.mkdir(question_aoi_dir_with_root)
 
-    stimulus_images = {
-        'block': [],
-    }
+    stimulus_images = {}
 
     for row_index, row in (pbar := tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df))):
         stimulus_name = row[f"stimulus_name"]
@@ -86,16 +86,15 @@ def create_images(
             f' {stimulus_name}'
         )
 
-        # get block information from block config match stimulus id and name
+        # check whether stimulus id and name exist
         try:
-            block_info = block_config[((block_config['stimulus_id'] == stimulus_id)
-                                       & (block_config['stimulus_name'] == stimulus_name))]['block_name'].values[0]
+            block_config[((block_config['stimulus_id'] == stimulus_id)
+                          & (block_config['stimulus_name'] == stimulus_name))]
         except IndexError:
             raise ValueError(
                 f'Something is wrong with the stimulus id and name of : {stimulus_id} {stimulus_name}. '
                 f'Please check it is the same as in the English files.'
             )
-        stimulus_images['block'].append(block_info)
         stimulus_name = re.sub(' ', '_', stimulus_name)
 
         aoi_file_name = f'{stimulus_name.lower()}_{stimulus_id}_aoi.csv'
@@ -189,13 +188,12 @@ def create_images(
                         color=image_config.BACKGROUND_COLOR
                     )
 
-                    # question_image.paste(arrow_img, (x_arrow, y_arrow), mask=arrow_img)
-
                     aois, words = draw_text(
                         question, question_image, image_config.FONT_SIZE_PX,
                         spacing=image_config.LINE_SPACING,
                         image_short_name=f'question_{question_id}',
-                        draw_aoi=draw_aoi, line_limit=2
+                        draw_aoi=draw_aoi, line_limit=2,
+                        word_split_criterion=image_config.WORD_SPLIT_CRITERION,
                     )
 
                     all_aois.extend(aois)
@@ -257,7 +255,8 @@ def create_images(
                             anchor_x_px=option_keys[distractor_key]['x_px'],
                             anchor_y_px=option_keys[distractor_key]['y_px'],
                             text_width_px=option_keys[distractor_key]['text_width_px'],
-                            question_option_type=distractor_key
+                            question_option_type=distractor_key,
+                            word_split_criterion=image_config.WORD_SPLIT_CRITERION,
                         )
 
                         draw = ImageDraw.Draw(question_image)
@@ -361,7 +360,8 @@ def create_images(
                 aois, words = draw_text(
                     text, final_image, image_config.FONT_SIZE_PX,
                     spacing=image_config.LINE_SPACING, image_short_name=column_name,
-                    draw_aoi=draw_aoi
+                    draw_aoi=draw_aoi,
+                    word_split_criterion=image_config.WORD_SPLIT_CRITERION,
                 )
 
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
@@ -472,7 +472,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
               text_width_px: int = None,
               script_direction: str = image_config.SCRIPT_DIRECTION,
-              question_option_type: str = None,
+              question_option_type: str | None = None,
+              word_split_criterion: str = '\\s',
               line_limit: int = 9, character_limit: int = None) -> (list[list], list):
     """
     Draws text on an image and creates aoi boxes for each letter
@@ -498,6 +499,9 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         the direction of the script, either 'ltr' or 'rtl'
     :param question_option_type: str
         if the text is a question option, the type of the question option, e.g. 'left', 'up', 'right', 'down'
+    :param word_split_criterion:
+        defines where to split words in the input text. Default '\\s' means split at white spaces. None will split each
+        character separately.
     :param line_limit: int
         how many lines are allowed on the image. If more, a warning will be raised but the image will still be created!
     :param character_limit: int
@@ -523,8 +527,9 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     # TODO make sure this works for different scripts!
     try:
         paragraphs = re.split(r'\n+', text.strip())
-    except AttributeError:
+    except AttributeError as e:
         print(text, image_short_name)
+        raise e
 
     aois = []
     all_words = []
@@ -536,7 +541,14 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     aoi_idx = 0
 
     for paragraph in paragraphs:
-        words_in_paragraph = paragraph.split()
+        if word_split_criterion == '':
+            words_in_paragraph = [char.strip() for char in paragraph]
+            character_limit = None
+            text_width_px = image_config.TEXT_WIDTH_PX
+        elif word_split_criterion == ' ':
+            words_in_paragraph = paragraph.split()
+        else:
+            words_in_paragraph = paragraph.split(word_split_criterion)
         line = ""
         lines = []
 
@@ -551,16 +563,16 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 if len(line) + len(word) > character_limit:
                     lines.append(line.strip())
                     num_text_lines += 1
-                    line = word + " "
+                    line = word + word_split_criterion
                 else:
-                    line += word.strip() + " "
+                    line += word.strip() + word_split_criterion
             else:
                 if text_width < text_width_px:
-                    line += word.strip() + " "
+                    line += word.strip() + word_split_criterion
                 else:
                     lines.append(line.strip())
                     num_text_lines += 1
-                    line = word + " "
+                    line = word + word_split_criterion
 
         lines.append(line.strip())
         num_text_lines += 1
@@ -588,7 +600,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             line_height = font.getmetrics()[0] + font.getmetrics()[1]
             # calculate aoi boxes for each letter
             top_left_corner_x_letter = anchor_x_px
-            letter_width = line_width / len(line)
             words = []
 
             char_idx_in_line = 0
@@ -607,9 +618,11 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     stop_bold = True
                     word = word[:-2]
 
+                # TODO: add case for Chinese, if word == '*'
+
                 # add a space if it is in the middle of a line
                 if word_number < num_words - 1:
-                    word = word + ' '
+                    word = word + word_split_criterion
 
                 word_left, word_top, word_right, word_bottom = draw.multiline_textbbox(
                     (0, 0), word, font=font
@@ -625,6 +638,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 for char_idx, char in enumerate(word):
 
                     aoi_y = anchor_y_px
+
+                    char_left, _, char_right, _ = draw.multiline_textbbox(
+                        (0, 0), char, font=font, anchor='ra' if script_direction == 'rtl' else 'la'
+                    )
+
+                    letter_width = char_right - char_left
 
                     if script_direction == 'rtl':
                         aoi_x = top_left_corner_x_letter - letter_width
@@ -850,9 +869,11 @@ def create_rating_screens(image: Image, text: str, title: str):
     question = sentences[0]
     options = sentences[1:]
 
-    draw_text(question, image, image_config.FONT_SIZE_PX, draw_aoi=False, line_limit=12)
+    draw_text(question, image, image_config.FONT_SIZE_PX, draw_aoi=False, line_limit=12,
+              word_split_criterion=image_config.WORD_SPLIT_CRITERION,)
 
     option_y_px = 3.1 * image_config.MIN_MARGIN_TOP_PX
+
     option_x_px = 1.2 * image_config.MIN_MARGIN_LEFT_PX
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), image_config.FONT_SIZE_PX)
@@ -863,14 +884,10 @@ def create_rating_screens(image: Image, text: str, title: str):
         draw_text(
             option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
             anchor_x_px=option_x_px, anchor_y_px=option_y_px, text_width_px=image_config.IMAGE_WIDTH_PX * 0.4,
-            line_limit=12
+            line_limit=12, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
         )
 
         draw = ImageDraw.Draw(image)
-        left, top, right, bottom = draw.multiline_textbbox(
-            (0, 0), option, anchor='la', font=font
-        )
-        text_width, text_height = right - left, bottom - top
         text_height = font.getmetrics()[0] + font.getmetrics()[1]
         new_x = option_x_px - image_config.MIN_MARGIN_LEFT_PX * 0.1
         new_width = image_config.IMAGE_WIDTH_PX * 0.4
@@ -884,11 +901,7 @@ def create_rating_screens(image: Image, text: str, title: str):
         # draw.rectangle(box_coordinates, outline='black', width=1)
 
         CONFIG.setdefault('RATING_QUESTION_BOXES', {}).update({f'option_{idx}': box_coordinates})
-        # draw.ellipse(
-        #     (option_x_px - 7, option_y_px - 7, option_x_px + 7, option_y_px + 7),
-        #     fill=image_config.TEXT_COLOR,
-        #     outline=image_config.TEXT_COLOR,
-        # )
+
         option_y_px += image_config.MIN_MARGIN_TOP_PX
 
 
@@ -996,7 +1009,8 @@ def create_other_screens(draw_aoi=False):
 
         # for all other text screens
         elif title != 'empty_screen':
-            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False, line_limit=12)
+            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False, line_limit=12,
+                      word_split_criterion=image_config.WORD_SPLIT_CRITERION)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name

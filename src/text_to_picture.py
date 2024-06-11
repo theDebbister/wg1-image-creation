@@ -450,7 +450,7 @@ def create_stimuli_images():
     # create randomization file for the stimuli
     # read the stimulus order version from the global config and select the versions ranging from
     # image_config.VERSION_START to image_config.NUM_PERMUTATIONS + image_config.VERSION_START
-    all_versions_df = pd.read_csv(image_config.RANDOMIZATION_CSV, sep=',', encoding='UTF-8')
+    all_versions_df = pd.read_csv(image_config.INITIAL_RANDOMIZATION_CSV, sep=',', encoding='UTF-8')
     # get those entries between the version start and the number of permutations + version start
     language_versions_df = all_versions_df[all_versions_df['version_number'].between(
         image_config.VERSION_START, image_config.NUM_PERMUTATIONS + image_config.VERSION_START,
@@ -463,6 +463,16 @@ def create_stimuli_images():
         f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv',
         sep=',',
         index=False
+    )
+
+    path_for_config = (image_config.OUTPUT_TOP_DIR + 'config' +
+                                 f'/stimulus_order_versions_{image_config.LANGUAGE}_'
+                                 f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv').replace('\\', '/')
+
+    CONFIG.setdefault('PATHS', {}).update(
+        {
+            'stimulus_order_versions_csv': path_for_config
+        }
     )
 
 
@@ -815,6 +825,8 @@ def create_fixation_screen(image: Image):
         width=5
     )
 
+    CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y})
+
 
 def create_final_screen(image: Image, text: str):
     """
@@ -870,7 +882,7 @@ def create_rating_screens(image: Image, text: str, title: str):
     options = sentences[1:]
 
     draw_text(question, image, image_config.FONT_SIZE_PX, draw_aoi=False, line_limit=12,
-              word_split_criterion=image_config.WORD_SPLIT_CRITERION,)
+              word_split_criterion=image_config.WORD_SPLIT_CRITERION, )
 
     option_y_px = 3.1 * image_config.MIN_MARGIN_TOP_PX
 
@@ -916,6 +928,7 @@ def write_final_image_config() -> None:
             'LANGUAGE': image_config.LANGUAGE,
             'NUM_PERMUTATIONS': image_config.NUM_PERMUTATIONS,
             'VERSION_START': image_config.VERSION_START,
+            'MULTIPLE_DEVICES': image_config.MULTIPLE_DEVICES,
         }
     )
 
@@ -949,7 +962,6 @@ def write_final_image_config() -> None:
             'question_file_excel': image_config.QUESTION_FILE_PATH,
             'participant_instruction_excel': image_config.OTHER_SCREENS_FILE_PATH,
             'stimuli_file_excel': image_config.STIMULI_FILE_PATH,
-            'randomization_csv': image_config.RANDOMIZATION_CSV,
         }
     )
 
@@ -967,6 +979,7 @@ def write_final_image_config() -> None:
 
     # probably need to refactor this method, but whatever
     config_utils.write_final_config(image_config.FINAL_CONFIG, CONFIG)
+    print(f'Final config written to {image_config.FINAL_CONFIG}')
 
 
 def create_other_screens(draw_aoi=False):

@@ -35,7 +35,6 @@ def write_final_config(
 
 
 def read_image_configuration(config_path: Path | str) -> dict:
-    lab_image_config = {}
 
     config_path = os.path.join(image_config.REPO_ROOT, config_path)
 
@@ -61,8 +60,8 @@ def read_image_configuration(config_path: Path | str) -> dict:
         'RESOLUTION': eval(config_content['resolution in px']),
         'SCREEN_SIZE_CM': eval(config_content['screen size in cm']),
         'SCRIPT_DIRECTION': config_content['script direction'],
-        'MULTIPLE_DEVICES': config_content['use of multiple devices'],
-        'DISTANCE_CM': config_content['distance in cm'],
+        'MULTIPLE_DEVICES': True if config_content['use of multiple devices'] else False,
+        'DISTANCE_CM': int(config_content['distance in cm']),
     }
 
     return lab_image_config

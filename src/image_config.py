@@ -1,8 +1,8 @@
-LANGUAGE = 'hr'
-FULL_LANGUAGE = 'Croatian'
-COUNTRY_CODE = 'hr'
-CITY = 'Zagreb'
-YEAR = 2025
+LANGUAGE = 'toy'
+FULL_LANGUAGE = 'English'
+COUNTRY_CODE = 'x'
+CITY = 'x'
+YEAR = 1
 LAB_NUMBER = 1
 
 ################################################################
@@ -36,7 +36,7 @@ LINE_SPACING = 2.9
 
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
-NUM_PERMUTATIONS = 1
+NUM_PERMUTATIONS = 10
 VERSION_START = 1
 
 OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}/'
@@ -51,12 +51,12 @@ OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions
 STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_stimuli_experiment_{LANGUAGE}.xlsx'
 QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
 
-RANDOMIZATION_CSV = REPO_ROOT / 'src' / 'global_configs' / 'stimulus_order_versions.csv'
+INITIAL_RANDOMIZATION_CSV = REPO_ROOT / 'src' / 'global_configs' / 'stimulus_order_versions.csv'
 
 BLOCK_CONFIG_PATH = CODE_SCR / "global_configs/stimulus_to_id_mapping.csv"
 
 FINAL_CONFIG = OUTPUT_TOP_DIR + ('config/config_'
-                                 f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}_{CITY}_{LAB_NUMBER}_{YEAR}.py')
+                                 f'{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}.py')
 
 ANSWER_OPTION_FOLDER = OUTPUT_TOP_DIR + (f'config/question_answer_option_shuffling_'
                                          f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/')
@@ -77,6 +77,7 @@ if len(SCREEN_SIZE_CM) != 2:
 
 DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
 SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION']
+MULTIPLE_DEVICES = LAB_CONFIGURATION['MULTIPLE_DEVICES']
 
 IMAGE_SIZE_CM = (36.5, 28)
 

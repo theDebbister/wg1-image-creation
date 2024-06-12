@@ -111,7 +111,9 @@ def create_images(
             question_sub_df_stimulus = initial_question_df.loc[(initial_question_df['stimulus_id'] == stimulus_id) &
                                                                (initial_question_df['stimulus_name'] == stimulus_name)]
             if len(question_sub_df_stimulus) == 0:
-                warnings.warn(f'No questions found for {stimulus_name} {stimulus_id}')
+                warnings.warn(f'No questions found for {stimulus_name} {stimulus_id}. Please check if the question '
+                              f'are there and all the spelling and IDs are correct in all files! Question files '
+                              f'and stimulus files.')
 
             for i in range(image_config.VERSION_START, image_config.NUM_PERMUTATIONS + image_config.VERSION_START):
 
@@ -274,7 +276,7 @@ def create_images(
 
                         draw.rectangle(box_coordinates, outline='black', width=1)
 
-                        CONFIG.setdefault('QUESTION_OPTION_BOXES', {}).update({distractor_key: box_coordinates})
+                        CONFIG.setdefault('QUESTION_OPTION_BOXES: TOP_X, TOP_Y, BOTTOM_X, BOTTOM_Y', {}).update({distractor_key: box_coordinates})
 
                         all_aois.extend(aois)
                         all_words.extend(words)
@@ -979,7 +981,6 @@ def write_final_image_config() -> None:
 
     # probably need to refactor this method, but whatever
     config_utils.write_final_config(image_config.FINAL_CONFIG, CONFIG)
-    print(f'Final config written to {image_config.FINAL_CONFIG}')
 
 
 def create_other_screens(draw_aoi=False):

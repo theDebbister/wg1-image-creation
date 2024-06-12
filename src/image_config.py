@@ -1,14 +1,13 @@
-LANGUAGE = 'toy'
-FULL_LANGUAGE = 'English'
-COUNTRY_CODE = 'x'
-CITY = 'x'
-YEAR = 1
+LANGUAGE = 'hr'
+COUNTRY_CODE = 'hr'
+CITY = 'Zagreb'
+YEAR = 2025
 LAB_NUMBER = 1
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
 ################################################################
-from utils.config_utils import read_image_configuration
+from utils.config_utils import read_image_configuration, calculate_font_size
 from pathlib import Path
 
 CODE_SCR = Path(__file__).parent
@@ -36,7 +35,7 @@ LINE_SPACING = 2.9
 
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
-NUM_PERMUTATIONS = 10
+NUM_PERMUTATIONS = 1
 VERSION_START = 1
 
 OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}/'
@@ -108,7 +107,7 @@ TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
 POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else MIN_MARGIN_LEFT_PX
 POS_BOTTOM_DOT_Y_PX = int(IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 
-FONT_SIZE_CM = 0.67
-FONT_SIZE_PX = int(FONT_SIZE_CM * RESOLUTION[1] / SCREEN_SIZE_CM[1])
+FONT_SIZE_PX = calculate_font_size()
+print(TEXT_WIDTH_PX, IMAGE_WIDTH_PX)
 
 ####################################################################

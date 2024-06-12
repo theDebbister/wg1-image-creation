@@ -4,6 +4,7 @@ import json
 import os
 from pathlib import Path
 import image_config
+from PIL import ImageFont
 
 
 def write_final_config(
@@ -65,3 +66,27 @@ def read_image_configuration(config_path: Path | str) -> dict:
     }
 
     return lab_image_config
+
+
+def calculate_font_size():
+
+    # one line on the image should fit approximately 82 latin characters
+    size = 0
+    text = 'a' * image_config.MAX_CHARS_PER_LINE
+    text_width = 0
+
+    while text_width < image_config.TEXT_WIDTH_PX:
+        size += 1
+        font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), size)
+        text_width = font.font.getsize(text)[0][0]
+        if text_width >= image_config.TEXT_WIDTH_PX:
+            size -= 1
+            break
+
+    return size
+
+
+
+
+
+

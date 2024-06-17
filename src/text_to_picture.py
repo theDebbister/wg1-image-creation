@@ -751,21 +751,26 @@ def create_welcome_screen(image: Image, text: str) -> None:
     # We have three different logos - load them and change the size if needed
     cost_logo = Image.open(root / "logo_imgs/cost_logo.jpg")
     cost_width, cost_height = cost_logo.size
-    cost_logo_new_size = (cost_width // 7, cost_height // 7)
+    cost_logo_new_size = (
+        int((cost_width // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
+        int((cost_height // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+    )
     cost_logo = cost_logo.resize(cost_logo_new_size)
 
     eu_logo = Image.open(root / "logo_imgs/eu_fund_logo.png")
     eu_width, eu_height = eu_logo.size
-    eu_logo_new_size = (eu_width // 7, eu_height // 7)
+    eu_logo_new_size = (
+        int((eu_width // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
+        int((eu_height // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+    )
     eu_logo = eu_logo.resize(eu_logo_new_size)
 
     multipleye_logo = Image.open(root / "logo_imgs/logo_multipleye.png")
 
     # Set the text
     our_blue = "#007baf"
-    our_red = "#b94128"
-    font_size_title = 38
-    font_size_text = 28
+    font_size_title = image_config.FONT_SIZE_PX * 1.8
+    font_size_text = image_config.FONT_SIZE_PX * 1.2
     font_type = str(root / "fonts/open-sans-bold.ttf")
 
     # Create a drawing object
@@ -775,11 +780,11 @@ def create_welcome_screen(image: Image, text: str) -> None:
     multipleye_logo_x = (image.width - multipleye_logo.width) // 2
     multipleye_logo_y = 10
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
-    eu_logo_x = (image.width - eu_logo.width) // 6
-    eu_logo_y = (image.height - eu_logo.height) - 18
+    eu_logo_x = image_config.MIN_MARGIN_LEFT_PX // 2
+    eu_logo_y = image.height - image_config.MIN_MARGIN_BOTTOM_PX // 2 - eu_logo.height
     eu_logo_position = (eu_logo_x, eu_logo_y)
-    cost_logo_x = ((image.width - eu_logo.width) // 6) + 580
-    cost_logo_y = image.height - cost_logo.height
+    cost_logo_x = image.width - image_config.MIN_MARGIN_LEFT_PX // 2 - cost_logo.width
+    cost_logo_y = image.height - image_config.MIN_MARGIN_BOTTOM_PX // 2 - cost_logo.height
     cost_logo_position = (cost_logo_x, cost_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates
@@ -1024,7 +1029,7 @@ def create_other_screens(draw_aoi=False):
         # for all other text screens
         elif title != 'empty_screen':
             draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False, line_limit=12,
-                      word_split_criterion=image_config.WORD_SPLIT_CRITERION)
+                      word_split_criterion=image_config.WORD_SPLIT_CRITERION, text_width_px=image_config.TEXT_WIDTH_PX)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name

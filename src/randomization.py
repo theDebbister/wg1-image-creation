@@ -80,6 +80,7 @@ def create_permutations() -> None:
             all_block_combos.append(b1 + b2)
             all_block_combos.append(b2 + b1)
 
+    # in total there are 10 stimuli
     stimuli_ids = [i for i in range(1, 11)]
     print(stimuli_ids)
 
@@ -147,7 +148,7 @@ def create_permutations() -> None:
 
     with open('stimulus_order_versions.txt', 'w', encoding='utf-8') as f:
 
-        while len(final_permutations) < 1000:
+        while len(final_permutations) < 680:
             print(f'Found: {len(final_permutations)}')
             for perm_index, perms in enumerate(temp_perms):
                 # if all values in all list of count are equal to max count, then max_count += 1
@@ -228,12 +229,17 @@ def is_id_not_consecutive(version: list, id_1: int, id_2: int) -> bool:
 
 
 if __name__ == '__main__':
-    #create_permutations()
+    create_permutations()
 
     with open('stimulus_order_versions.txt', 'r', encoding='utf-8') as f:
         permutations = f.readlines()
 
-    permutations = [[11, 12] + list(eval(perm)) for perm in permutations]
+    # we need to map the permutations to the correct stimulus ids, 5 is mapped to 11, and 7 to 12
+    for i, perm in enumerate(permutations):
+        permutations[i] = perm.replace('5', '11').replace('7', '12')
+
+    # stimuli with ids 7 and 13 are the two practice stimuli that always appear at the beginning in that order
+    permutations = [[13, 7] + list(eval(perm)) for perm in permutations]
 
     version_numbers = [i for i in range(1, len(permutations) + 1)]
     participant_ids = [pd.NA for _ in range(1, len(permutations) + 1)]
@@ -244,5 +250,5 @@ if __name__ == '__main__':
 
     final_df = pd.concat([df, version_df], axis=1)
 
-    final_df.to_csv('stimulus_order_versions.csv', index=False)
+    final_df.to_csv('global_configs/stimulus_order_versions.csv', index=False)
 

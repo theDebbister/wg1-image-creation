@@ -50,7 +50,8 @@ def read_image_configuration(config_path: Path | str) -> dict:
 
     # check whether all necessary keys are in the config file
     necessary_keys = [
-        'resolution in px', 'screen size in cm', 'script direction', 'use of multiple devices',
+        'Monitor_resolution_in_px', 'Screen_size_in_cm', 'Script_direction', 'Use_of_multiple_devices',
+        'Distance_in_cm',
     ]
 
     for key in necessary_keys:
@@ -58,11 +59,11 @@ def read_image_configuration(config_path: Path | str) -> dict:
             raise ValueError(f'Key "{key}" is missing in the configuration file.')
 
     lab_image_config = {
-        'RESOLUTION': eval(config_content['resolution in px']),
-        'SCREEN_SIZE_CM': eval(config_content['screen size in cm']),
-        'SCRIPT_DIRECTION': config_content['script direction'],
-        'MULTIPLE_DEVICES': True if config_content['use of multiple devices'] else False,
-        'DISTANCE_CM': int(config_content['distance in cm']),
+        'RESOLUTION': eval(config_content['Monitor_resolution_in_px']),
+        'SCREEN_SIZE_CM': eval(config_content['Screen_size_in_cm']),
+        'SCRIPT_DIRECTION': config_content['Script_direction'],
+        'MULTIPLE_DEVICES': True if config_content['Use_of_multiple_devices'] else False,
+        'DISTANCE_CM': 60 if not config_content['Distance_in_cm'] else int(config_content['Distance_in_cm']),
     }
 
     return lab_image_config

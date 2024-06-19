@@ -1,0 +1,38 @@
+{
+  "Contact_information":{
+    "First_name":"Lena",
+    "Last_name":"Jäger",
+    "Affiliation":"University of Zurich",
+    "Email":"jaeger@cl.uzh.ch",
+    "Phone":""
+  },
+  "Title": "MultiplEYE_ZH_CH_Zurich_1_2025",
+  "Preregistration_core_or_additional_data_collection" :  "Pre-registration for core dataset",
+  "Specification_additional_dataset_registration" : "",
+  "Name_eye-tracker": "SR Research Ltd",
+  "Specification_camera_system": "tower mount",
+  "Name_computer_operation_system": "Windows 10",
+  "Name_monitor": "HP Omen",
+  "Monitor_resolution_in_px": "(1920,1080)",
+"Distance_is_60_cm": "Please, confirm that the distance in your lab is 60 cm by checking the box.",
+  "Screen_size_in_cm": "(55.7,33)",
+  "Distance_in_cm": "",
+  "Script_direction": "LTR",
+  "Language_code": "ZH",
+  "Country_code": "CH",
+  "Lab_number": "1",
+  "City": "Zurich",
+  "Estimated_end_year_of_data_collection": "2025",
+  "Use_of_multiple_devices" : "Yes",
+   "Specification_of_multiple_devices" : "yes, we will use more than one Eyelink Portable Duo eye-trackers.",
+  "Psychometric_tests": {
+    "Are_tests_conducted": "Yes",
+    "LWMC": "Lewandowsky et al. Working Memory Capacity (LWMC) battery",
+    "PLAB": "Metalinguistic aptitude: PLAB",
+    "Flanker": "Cognitive control: Flanker task",
+    "Stroop": "Cognitive control: Stroop task",
+    "RAN": "Rapid automatized naming: RAN task",
+    "WikiVocab": "Vocabulary test: WikiVocab",
+    "No_psychometric_tests_reason" : ""
+    }
+}

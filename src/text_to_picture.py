@@ -523,6 +523,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         the first list contains a list for each character aoi together with the information about the size and position
         the second list contains all words in text order as many times as there are characters in the word
     """
+    script_direction = script_direction.lower()
     if script_direction not in ['ltr', 'rtl']:
         raise ValueError(f'Script direction must be either "ltr" or "rtl", not {script_direction}')
 
@@ -752,16 +753,16 @@ def create_welcome_screen(image: Image, text: str) -> None:
     cost_logo = Image.open(root / "logo_imgs/cost_logo.jpg")
     cost_width, cost_height = cost_logo.size
     cost_logo_new_size = (
-        int((cost_width // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
-        int((cost_height // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+        int((max(cost_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
+        int((max(cost_height // image_config.IMAGE_HEIGHT_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
     )
     cost_logo = cost_logo.resize(cost_logo_new_size)
 
     eu_logo = Image.open(root / "logo_imgs/eu_fund_logo.png")
     eu_width, eu_height = eu_logo.size
     eu_logo_new_size = (
-        int((eu_width // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
-        int((eu_height // image_config.IMAGE_WIDTH_PX) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+        int((max(eu_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
+        int((max(eu_height // image_config.IMAGE_HEIGHT_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
     )
     eu_logo = eu_logo.resize(eu_logo_new_size)
 

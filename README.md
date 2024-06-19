@@ -6,39 +6,57 @@ refer to these as an examples.
 
 ## Prepare stimulus files
 
-TBD --> for now just copy the files in the English folder and translate all the texts and questions. The title and ID
-columns need to stay the same!
+Please follow the instructions in the MultiplEYE guidelines linked on this page to prepare the stimulus files: 
+[MultiplEYE contribute](https://multipleye.eu/contribute/)
 
-For RTL texts - when there are English chunks of the texts and they are displayed in the
+### For RTL texts
+When there are English chunks of the texts and they are displayed in the
 created images in wrong order, they order need to be changed in the xlsx file. For example:
-if the ":1" is displayed in the wrong order, it need to be changed to "1:". The program has a problem when changing from RTL to LTR texts.
+if the ":1" is displayed in the wrong order, it needs to be changed to "1:". 
+The program has a problem when changing from RTL to LTR texts within one image.
 
 ## Create the images
 
-Steps to create the images:
+The readme gives a step by step explanation of what to do to create the images for the MultiplEYE experiment.
+The steps below are to be performed if the images are created to be tested and checked for typos etc.
 
-1. Go to the `image_config.py` file
-2. Set the variable `LANGUAGE` on top of the file to the language you want to create the images for. Please use the
-   two-character code from this list: [ISO 639-1 codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
-   Set also variables `FULL_LANGUAGE`, `COUNTRY_CODE` and `LAB_NUMBER`
-3. Create a new folder called `data/stimuli_[language]_[country_code]_[lab_number]` where language is the same language code that you specified in the
-   config   
-4. Paste the Excel files for the stimuli texts, the questions and the instruction screens into that folder. For now it works
-   also without questions.
-5. From `data/stimuli_toy_x_1/` copy the config folder into `data/stimuli_[language]_[country_code]_[lab_number]` - there should be three files `config_toy.py`,
-   `shuffled_option_keys_toy.json` and `toy_x_1_lab_configuration.txt`
-6. In the file `config_toy_x_1.py` change every occurrence of 'toy' to your language code (e.g. en for english) - inside the file
-   and also in the file name
-7. In the file `toy_x_1_lab_configuration.txt` change the first part of the name so it will represent your language, country code
-   and lab number and inside the file change the variables 'RESOLUTION', 'SCREEN_SIZE_CM', 'DISTANCE_CM' and 'SCRIPT_DIRECTION'
-   (not necessary for practice pictures)
-8. Go again to the `image_config.py` file (inside the folder wg1-image-creation)
-9. Set the variables `RESOLUTION` and `SCREEN SIZE`. Please make sure that both values reflect the size of the
-   presentation monitor
-   where you will present the screens to the participants.
-   The screen size needs to be measured without the frame of the monitor. Only the actual screen. Note that the screen
-   you use cannot be smaller than 37x28 cm.
-10. Run `text_to_picture.py`
+1. Please read the guidelines on the [MultiplEYE contribute](https://multipleye.eu/contribute/) page carefully before starting the image creation. 
+Make sure you have all the necessary files and the data collection has been preregistered. Make sure to have the preregistration file at hand.
+2. Create a new folder for the images of your lab that is called "stimuli_[dataset title]". The dataset title is specified in the preregistration file. 
+For example: "stimuli_MultiplEYE_DE_CH_Zurich_1_2025".
+3. Copy the Excel files for the stimuli texts, the questions and the instruction screens into that folder.
+4. Create a folder called "config" in the new folder. 
+5. In that config folder you create a file called "[dataset title]_lab_configuration.json".
+6. Now you copy the content of the preregistration file into the lab configuration file. Make sure that all the curly braces are included
+7. Go to the `image_config.py` file and set the variables `LANGUAGE`, `COUNTRY_CODE`, `CITY`, `LAB_NUMBER` and `YEAR` 
+on top of the file to the language you want to create the images for (the same values as in the preregistration form).
+8. If the images are created for testing purposes, set the variable `TESTING_IMAGES` to `True`. This is the case, when 
+you create the images for the first time and people are checking for typos etc.
+9. Run `text_to_picture.py`
+10. Upload the stimuli folder to the SwitchDrive folder of the respective language.
+11. Repeat the generation if necessary (i.e. if there are typos etc.). Make sure to upload a new folder each time and 
+put the other one in an archive folder on the Drive.
+
+
+### Creating the final images
+If the images have been checked and the lab decides to start with the piloting, the images need to be created again 
+one last time.
+
+1. Once the images have been checked according to the guidelines, set the variable `TESTING_IMAGES` to `False`. 
+Now, more version will be created which means the process can take a lot longer!
+2. If the lab uses multiple devices, please contact [multipleye@cl.uzh.ch](mailto:multipleye@cl.uzh.ch).
+2. As soon as the images have been generated, upload the entire folder to the SwitchDrive folder of the respective language.
+
+### What if the lab notices a typo after the piloting has started?
+In this case, it is very important to make a copy of the stimulus folder FROM THE EXPERIMENT (not the one on drive 
+nor the one here)!! Some files changes during the experiment,
+and we need to keep those. So:
+1. Copy the entire folder and save it on SwitchDrive in a folder that is clearly named: I.e.
+`stimuli_piloting_[dataset title]_participant_id_1_to_10`. 
+2. Now, go back to the original stimuli files and make the necessary changes and regenerate the images again.
+3. Go to the copy of the old stimulus images and copy this file: `config/stimulus_order_versions ... .csv`. This is the file
+that contains the information on what stimulus versions have been used for which participant.
+4. Replace the file in the newly created stimuli folder with the old one.
 
 ## Requirements
 

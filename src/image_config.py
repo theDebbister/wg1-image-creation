@@ -1,8 +1,10 @@
 LANGUAGE = 'hr'
-COUNTRY_CODE = 'hr'
-CITY = 'Zagreb'
+COUNTRY_CODE = 'ch'
+CITY = 'Zurich'
 YEAR = 2025
 LAB_NUMBER = 1
+
+TESTING_IMAGES = True
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
@@ -35,10 +37,13 @@ LINE_SPACING = 2.9
 
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
-NUM_PERMUTATIONS = 1
+NUM_PERMUTATIONS = 10 if TESTING_IMAGES else 250
 VERSION_START = 1
 
-OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}/'
+print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
+      f'{"For testing purposes only (not for piloting or running real experiments!!." if TESTING_IMAGES else ""}\n\n')
+
+OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
@@ -60,7 +65,7 @@ FINAL_CONFIG = OUTPUT_TOP_DIR + ('config/config_'
 ANSWER_OPTION_FOLDER = OUTPUT_TOP_DIR + (f'config/question_answer_option_shuffling_'
                                          f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/')
 
-LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/MultiplEYE_{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}'
+LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
                                            f'_lab_configuration.json')
 LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)
 
@@ -75,10 +80,13 @@ if len(SCREEN_SIZE_CM) != 2:
                      'Please check the lab configuration file.')
 
 DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
-SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION']
+SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION'].lower()
 MULTIPLE_DEVICES = LAB_CONFIGURATION['MULTIPLE_DEVICES']
+if MULTIPLE_DEVICES and not TESTING_IMAGES:
+    print('The experiment will be split on two devices. Please contact multipleye@cl.uzh.ch for further '
+          'instructions on how to handle this case.')
 
-IMAGE_SIZE_CM = (36.5, 28)
+IMAGE_SIZE_CM = (37, 28)
 
 MAX_CHARS_PER_LINE = 82
 
@@ -108,6 +116,5 @@ POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION =
 POS_BOTTOM_DOT_Y_PX = int(IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 
 FONT_SIZE_PX = calculate_font_size()
-print(TEXT_WIDTH_PX, IMAGE_WIDTH_PX)
 
 ####################################################################

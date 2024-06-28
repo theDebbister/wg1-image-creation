@@ -1,4 +1,4 @@
-LANGUAGE = 'hr'
+LANGUAGE = 'zh'
 COUNTRY_CODE = 'ch'
 CITY = 'Zurich'
 YEAR = 2025
@@ -38,10 +38,11 @@ LINE_SPACING = 2.9
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
 NUM_PERMUTATIONS = 10 if TESTING_IMAGES else 250
+#NUM_PERMUTATIONS = 1
 VERSION_START = 1
 
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
-      f'{"For testing purposes only (not for piloting or running real experiments!!." if TESTING_IMAGES else ""}\n\n')
+      f'{"For testing purposes only (not for piloting or running real experiments!!)." if TESTING_IMAGES else ""}\n\n')
 
 OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
@@ -71,12 +72,14 @@ LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)
 
 RESOLUTION = LAB_CONFIGURATION['RESOLUTION']
 if len(RESOLUTION) != 2:
-    raise ValueError('RESOLUTION must be a tuple of two values separated by a comma. '
+    raise ValueError('RESOLUTION must be a tuple of two values separated by a comma. The comma within the number '
+                     'should be represented as a dot. '
                      'Please check the lab configuration file.')
 
 SCREEN_SIZE_CM = LAB_CONFIGURATION['SCREEN_SIZE_CM']
 if len(SCREEN_SIZE_CM) != 2:
-    raise ValueError('SCREEN_SIZE_CM must be a tuple of two values separated by a comma. '
+    raise ValueError('SCREEN_SIZE_CM must be a tuple of two values separated by a comma. The comma within the number '
+                     'should be represented as a dot. '
                      'Please check the lab configuration file.')
 
 DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']

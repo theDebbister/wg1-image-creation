@@ -42,6 +42,10 @@ put the other one in an archive folder on the Drive.
 If the images have been checked and the lab decides to start with the piloting, the images need to be created again 
 one last time.
 
+> NOTE: there is a bug currently that causes the images to be blurry (ONLY when presented within the experiment, 
+> not visible here). Something that seems to help is to slightly reduce the image width, i.e. setting it to 36.5 instead of 
+> 37 in the `image_config.py` file. 
+
 1. Once the images have been checked according to the guidelines, set the variable `TESTING_IMAGES` to `False`. 
 Now, more version will be created which means the process can take a lot longer!
 2. If the lab uses multiple devices, please contact [multipleye@cl.uzh.ch](mailto:multipleye@cl.uzh.ch).
@@ -49,9 +53,9 @@ Now, more version will be created which means the process can take a lot longer!
 
 ### What if the lab notices a typo after the piloting has started?
 In this case, it is very important to make a copy of the stimulus folder FROM THE EXPERIMENT (not the one on drive 
-nor the one here)!! Some files changes during the experiment,
+nor the one here)!! Some files change during the experiment,
 and we need to keep those. So:
-1. Copy the entire folder and save it on SwitchDrive in a folder that is clearly named: I.e.
+1. Copy the entire stimuli folder and save it on SwitchDrive in a folder that is clearly named: I.e.
 `stimuli_piloting_[dataset title]_participant_id_1_to_10`. 
 2. Now, go back to the original stimuli files and make the necessary changes and regenerate the images again.
 3. Go to the copy of the old stimulus images and copy this file: `config/stimulus_order_versions ... .csv`. This is the file

@@ -168,6 +168,9 @@ def create_images(
                     condition_no = question_row['condition_no']
                     question_no = question_row['question_no']
                     question_id = str(stimulus_id) + str(snippet_no) + str(condition_no) + str(question_no)
+                    if len(question_id) == 4:
+                        question_id = '0' + question_id
+
                     # item_id = question_row['item_id']
 
                     question_identifier = f'question_{question_id}_stimulus_{stimulus_id}'
@@ -179,11 +182,12 @@ def create_images(
                          'distractor_c': question_row['distractor_c']}
                     )
 
+                    stimulus_text = question_row['stimulus_text_without_annotated_spans']
                     annotated_text = question_row['stimulus_text_with_annotated_spans']
                     target_span_text = question_row['target_span_target_distractor_a_text']
                     distractor_1_span_text = question_row['distractor_span_distractor_b_text']
 
-                    get_option_span_indices(annotated_text, target_span_text, distractor_1_span_text)
+                    get_option_span_indices(stimulus_text, annotated_text, target_span_text, distractor_1_span_text, question_id)
 
                     question_image = Image.new(
                         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
@@ -406,7 +410,7 @@ def create_images(
     )
 
 
-def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
+def get_option_span_indices(text: str, annotated_text: str, target_span: str, distractor_span: str, question_id: str) -> list:
     """
     Searches a text span in a text and returns the word and char indices in the text of the span.
     :param text: Text with annotated spans
@@ -416,7 +420,16 @@ def get_option_span_indices(text: str, span: str, span_marker: str) -> list:
 
     see: https://pynative.com/python-find-position-of-regex-match-using-span-start-end/
     """
-    pass
+
+    target_begin_marker = f'<t{question_id}b>'
+    target_end_marker = f'<t{question_id}e>'
+    distractor_begin_marker = f'<d{question_id}b>'
+    distractor_end_marker = f'<d{question_id}e>'
+
+    target_begin = annotated_text.find(target_begin_marker)
+    target_end = annotated_text.find(target_end_marker)
+
+
 
 
 def create_stimuli_images():
@@ -485,7 +498,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               text_width_px: int = None,
               script_direction: str = image_config.SCRIPT_DIRECTION,
               question_option_type: str | None = None,
-              word_split_criterion: str = '\\s',
+              word_split_criterion: str = ' ',
               line_limit: int = 9, character_limit: int = None) -> (list[list], list):
     """
     Draws text on an image and creates aoi boxes for each letter
@@ -557,7 +570,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         if word_split_criterion == '':
             words_in_paragraph = [char.strip() for char in paragraph]
             character_limit = None
-            text_width_px = image_config.TEXT_WIDTH_PX
+            if not text_width_px:
+                text_width_px = image_config.TEXT_WIDTH_PX
         elif word_split_criterion == ' ':
             words_in_paragraph = paragraph.split()
         else:
@@ -752,6 +766,8 @@ def create_welcome_screen(image: Image, text: str) -> None:
     # We have three different logos - load them and change the size if needed
     cost_logo = Image.open(root / "logo_imgs/cost_logo.jpg")
     cost_width, cost_height = cost_logo.size
+
+    # TODO fix this at some point (the logos are distorted)
     cost_logo_new_size = (
         int((max(cost_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
         int((max(cost_height // image_config.IMAGE_HEIGHT_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
@@ -772,7 +788,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
     our_blue = "#007baf"
     font_size_title = image_config.FONT_SIZE_PX * 1.8
     font_size_text = image_config.FONT_SIZE_PX * 1.2
-    font_type = str(root / "fonts/open-sans-bold.ttf")
+    font_type = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
 
     # Create a drawing object
     draw = ImageDraw.Draw(image)
@@ -797,8 +813,9 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
     texts = text.split('\n')
 
-    text_y = image_config.IMAGE_HEIGHT_PX // 3
+    text_y = image_config.IMAGE_HEIGHT_PX // 2
     for idx, t in enumerate(texts):
+        # title is bigger
         if idx == 0:
             font = ImageFont.truetype(font_type, font_size_title)
 
@@ -810,9 +827,41 @@ def create_welcome_screen(image: Image, text: str) -> None:
         )
 
         text_width, text_height = right - left, bottom - top
-        text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
-        text_y += text_height * 5
-        draw.text((text_x, text_y), t, font=font, fill=our_blue)
+
+        # if the text is too long for one line, split it into two lines
+        if text_width > image_config.IMAGE_WIDTH_PX:
+            lines = []
+            elements = t.split(image_config.WORD_SPLIT_CRITERION)
+
+            line = ''
+
+            for element in elements:
+                left, top, right, bottom = draw.multiline_textbbox(
+                    (0, 0), line + element, font=font
+                )
+                width = right - left
+
+                if width < image_config.IMAGE_WIDTH_PX:
+                    line += element + image_config.WORD_SPLIT_CRITERION
+                else:
+                    lines.append(line.strip())
+                    line = element + image_config.WORD_SPLIT_CRITERION
+            lines.append(line.strip())
+
+            for line in lines:
+                left, top, right, bottom = draw.multiline_textbbox(
+                    (0, 0), line, font=font
+                )
+                text_width, text_height = right - left, bottom - top
+
+                text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
+                draw.text((text_x, text_y), line, font=font, fill=our_blue)
+                text_y += text_height * 1.5
+
+        else:
+            text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
+            text_y += text_height * 5
+            draw.text((text_x, text_y), t, font=font, fill=our_blue)
 
 
 def create_fixation_screen(image: Image):
@@ -848,7 +897,7 @@ def create_final_screen(image: Image, text: str):
     our_blue = "#007baf"
     our_red = "#b94128"
     font_size = 38
-    font_type = str(root / "fonts/open-sans-bold.ttf")
+    font_type = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
 
     # Create a drawing object
     draw = ImageDraw.Draw(image)

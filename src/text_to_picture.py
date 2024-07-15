@@ -770,7 +770,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
     # TODO fix this at some point (the logos are distorted)
     cost_logo_new_size = (
         int((max(cost_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
-        int((max(cost_height // image_config.IMAGE_HEIGHT_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+        int((max(cost_height // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
     )
     cost_logo = cost_logo.resize(cost_logo_new_size)
 
@@ -778,7 +778,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
     eu_width, eu_height = eu_logo.size
     eu_logo_new_size = (
         int((max(eu_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
-        int((max(eu_height // image_config.IMAGE_HEIGHT_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+        int((max(eu_height // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
     )
     eu_logo = eu_logo.resize(eu_logo_new_size)
 
@@ -860,8 +860,8 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
         else:
             text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
-            text_y += text_height * 5
             draw.text((text_x, text_y), t, font=font, fill=our_blue)
+            text_y += text_height * 3
 
 
 def create_fixation_screen(image: Image):

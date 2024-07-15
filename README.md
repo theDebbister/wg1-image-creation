@@ -80,7 +80,7 @@ For the default setting of `IMAGE_SIZE_CM = (37, 28)` the following applies:
 
 The maximum number of character per line is 82. And the maximum number of lines per page is 9. This means that the last
 line will be above the fixation dot in the corner of the screen.
-However, as we do not split the words, if a word, for example, makes the line 80 characters long, 
+However, as we do not split the words, if a word, for example, makes the line 85 characters long, 
 this entire word will be moved to the next line. So the maximum number of chars per page is in theory 738, 
 but in reality this is rarely the case as the words usually don’t perfectly fit on the lines. 
 So, if you like to count by hand, how the pages fit, you can just determine the first word that exceeds the line 
@@ -90,11 +90,17 @@ The maximum number of characters can be specified in the `image_config.py` file 
 Changing this might cause the text to overflow the page!!
 
 > NOTE: this is different for the participant instructions screens, where more characters per line and lines are allowed.
-> The maximum number of characters per line is 85 and the maximum number of lines per page is 12.
+> It has not been a problem so far for any language that it would not fit. If it does not fit, one of the instructions screens
+> can simply be split into two screens in the Excel file.
 
 ### Length of question-answer-options
 The answer options to the questions have a maximum length as well. There are two types of boxes that each answer option can appear in.
 This means we have to test for each option whether it fits in both boxes (and especially whether it fits in the smaller one).
+As per default, 10 versions of the images with shuffled answer options will be created, all options should appear in each box type at least
+once across all versions. If an option does not, the script will show a warning message but continue. In addition, as people also check
+every screen manually, it will be noticed if an option does not fit.
+
+#### Manually testing the answer option lengths
 In order to test whether the answer options fit in the boxes
 you need to do the following steps:
 1. Set the variable `NUM_PERMUTATIONS` in the `image_config.py` file to 1

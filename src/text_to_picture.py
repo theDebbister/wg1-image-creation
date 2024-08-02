@@ -182,13 +182,6 @@ def create_images(
                          'distractor_c': question_row['distractor_c']}
                     )
 
-                    stimulus_text = question_row['stimulus_text_without_annotated_spans']
-                    annotated_text = question_row['stimulus_text_with_annotated_spans']
-                    target_span_text = question_row['target_span_target_distractor_a_text']
-                    distractor_1_span_text = question_row['distractor_span_distractor_b_text']
-
-                    get_option_span_indices(stimulus_text, annotated_text, target_span_text, distractor_1_span_text, question_id)
-
                     question_image = Image.new(
                         'RGB', (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
                         color=image_config.BACKGROUND_COLOR
@@ -280,7 +273,8 @@ def create_images(
 
                         draw.rectangle(box_coordinates, outline='black', width=1)
 
-                        CONFIG.setdefault('QUESTION_OPTION_BOXES: TOP_X, TOP_Y, BOTTOM_X, BOTTOM_Y', {}).update({distractor_key: box_coordinates})
+                        CONFIG.setdefault('QUESTION_OPTION_BOXES: TOP_X, TOP_Y, BOTTOM_X, BOTTOM_Y', {}).update(
+                            {distractor_key: box_coordinates})
 
                         all_aois.extend(aois)
                         all_words.extend(words)
@@ -331,6 +325,7 @@ def create_images(
 
         empty_page = False
         empty_page_inbetween = False
+
         for col_index, column_name in enumerate(initial_stimulus_df.columns):
 
             if column_name.startswith('page'):
@@ -373,7 +368,7 @@ def create_images(
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_aoi' if draw_aoi else ''}.png"
 
-                # save the image to paht with root, but save the path without only rela tive to the data folder
+                # save the image to path with root, but save the path without only rela tive to the data folder
                 img_path_root = aoi_image_dir_with_root if draw_aoi else image_dir_with_root
                 img_path = aoi_image_dir if draw_aoi else image_dir
                 img_path_root = os.path.join(img_path_root, filename)
@@ -410,26 +405,100 @@ def create_images(
     )
 
 
-def get_option_span_indices(text: str, annotated_text: str, target_span: str, distractor_span: str, question_id: str) -> list:
+def get_option_span_indices(text: str, annotated_text: str,
+                            target_span: str, distractor_span: str | None,
+                            question_id: str, aoi: bool) -> [list, list, list]:
     """
     Searches a text span in a text and returns the word and char indices in the text of the span.
-    :param text: Text with annotated spans
-    :param span: That span that is marked in the text
-    :param span_marker: The marker that is used to mark the span in the text
-    :return: Word and char indices of the span in the text
+    :param text: Stimulus text as-is
+    :param annotated_text: Stimulus text with annotated spans
+    :param target_span: That target span, beginning with the target begin marker and ending with the target end marker
+    :param distractor_span: The distractor span, beginning with the distractor begin marker
+        and ending with the distractor end marker. If none, there is no distractor span
+    :param question_id: The question id to identify the markers in the text
+    :param aoi: Whether we are drawing aois or not
+    :return: Three lists for all chars in the text. First contains whether and what part of target span the char is, second
+        same for distractor, third the chars in the text
 
     see: https://pynative.com/python-find-position-of-regex-match-using-span-start-end/
     """
+
+    target_span_marked, distractor_span_marked = [], []
 
     target_begin_marker = f'<t{question_id}b>'
     target_end_marker = f'<t{question_id}e>'
     distractor_begin_marker = f'<d{question_id}b>'
     distractor_end_marker = f'<d{question_id}e>'
 
-    target_begin = annotated_text.find(target_begin_marker)
-    target_end = annotated_text.find(target_end_marker)
+    # check whether the target span is annotated in the text
+    target_span_match = re.search(target_span, annotated_text)
 
+    if distractor_span is not None:
+        distractor_span = re.escape(distractor_span)
+        distractor_span_match = re.search(distractor_span, annotated_text)
+    else:
+        distractor_span_match = None
 
+    # not necessary to warn for drawing aoi images, as we have already warned for the normal ones
+    if not aoi:
+        if not target_span_match:
+            warnings.warn(
+                f'Target/distractor a span including markers not found in the annotated text for question {question_id}.'
+                f'Please check that the span has been copied correctly in the excel!', stacklevel=2)
+        if distractor_span and not distractor_span_match:
+            warnings.warn(
+                f'Distractor b span including marker not found in the annotated text for question {question_id}. '
+                f'Please check that the span has been copied correctly in the excel!', stacklevel=2)
+
+    # get the indice of the start and end character of both spans in the normal text, clean spans first
+    target_span_clean = target_span.replace(target_begin_marker, '').replace(target_end_marker, '')
+    target_span_clean = re.escape(target_span_clean)
+    target_span_match_clean = re.search(target_span_clean, text)
+
+    if distractor_span:
+        distractor_span_clean = distractor_span.replace(distractor_begin_marker, '').replace(distractor_end_marker, '')
+        distractor_span_match_clean = re.search(distractor_span_clean, text)
+    else:
+        distractor_span_match_clean = None
+
+    # in case the target span cannot be found, we warn and continue
+    if not target_span_match_clean:
+        if not aoi:
+            warnings.warn(f'Target/distractor a span without markers not found in the text for question {question_id}. '
+                          f'Please check that the span has been copied correctly in the excel!', stacklevel=2)
+            print(f'AOI file NOT annotated with target/distractor a spans for question {question_id}.')
+    else:
+        target_begin_index = target_span_match_clean.start()
+        target_end_index = target_span_match_clean.end()
+
+        before_span = ['x' for _ in range(target_begin_index)]
+        in_span = [i for i in range(target_end_index - target_begin_index)]
+        after_span = ['x' for _ in range(len(text) - target_end_index)]
+
+        target_span_marked = before_span + in_span + after_span
+
+    if distractor_span and not distractor_span_match_clean:
+        if not aoi:
+            warnings.warn(
+                f'Distractor b span without markers not found in the text without annotation for question {question_id}. '
+                f'Please check that the span has been copied correctly in the excel!', stacklevel=2)
+            print(f'AOI file NOT annotated with distractor b spans for question {question_id}.')
+    elif distractor_span and distractor_span_match_clean:
+        distractor_begin_index = distractor_span_match_clean.start()
+        distractor_end_index = distractor_span_match_clean.end()
+
+        before_span = ['x' for _ in range(distractor_begin_index)]
+        in_span = [i for i in range(distractor_end_index - distractor_begin_index)]
+        after_span = ['x' for _ in range(len(text) - distractor_end_index)]
+
+        distractor_span_marked = before_span + in_span + after_span
+
+    else:
+        distractor_span_marked = ['x' for _ in range(len(text))]
+
+    chars = [char for char in text]
+
+    return target_span_marked, distractor_span_marked, chars
 
 
 def create_stimuli_images():
@@ -481,8 +550,8 @@ def create_stimuli_images():
     )
 
     path_for_config = (image_config.OUTPUT_TOP_DIR + 'config' +
-                                 f'/stimulus_order_versions_{image_config.LANGUAGE}_'
-                                 f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv').replace('\\', '/')
+                       f'/stimulus_order_versions_{image_config.LANGUAGE}_'
+                       f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv').replace('\\', '/')
 
     CONFIG.setdefault('PATHS', {}).update(
         {
@@ -579,6 +648,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         line = ""
         lines = []
 
+        latin_word = ''
+        in_latin_word = False
         # create lines based on image margins
         for word in words_in_paragraph:
             left, top, right, bottom = draw.multiline_textbbox(
@@ -594,12 +665,56 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 else:
                     line += word.strip() + word_split_criterion
             else:
+                # chinese is a special case
+                if image_config.LANGUAGE == 'zh':
+                    # for chinese a word is a single character, if it is not a chinese character but a latin one,
+                    # we will treat it differently
+                    if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
+                        in_latin_word = True
+                        latin_word += word
+                        continue
+
+                if in_latin_word:
+
+                    # if the latin word is just one char, we treat it like the Chinese ones, happens for example with
+                    # semicolons or quotation marks
+                    if len(latin_word) > 1:
+                        # check whether we can append the latin word to the line
+                        left, top, right, bottom = draw.multiline_textbbox(
+                            (0, 0), line + ' ' + latin_word, font=font
+                        )
+                        text_width = right - left
+
+                        if text_width < text_width_px:
+                            line += ' ' + latin_word
+                        else:
+                            lines.append(line.strip())
+                            num_text_lines += 1
+                            line = latin_word + ' '
+
+                        in_latin_word = False
+                        latin_word = ' '
+
+                    else:
+                        word = latin_word + word
+                        latin_word = ''
+                        in_latin_word = False
+
+                    # check whether the current word can be appended
+                    left, top, right, bottom = draw.multiline_textbbox(
+                        (0, 0), line + ' ' + word, font=font
+                    )
+                    text_width = right - left
+
                 if text_width < text_width_px:
-                    line += word.strip() + word_split_criterion
+                    # if there is a latin word before the word latin word will be a space which is added after it
+                    line += latin_word + word.strip() + word_split_criterion
                 else:
                     lines.append(line.strip())
                     num_text_lines += 1
                     line = word + word_split_criterion
+
+                latin_word = ''
 
         lines.append(line.strip())
         num_text_lines += 1
@@ -614,14 +729,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
             all_lines.append(line)
 
-            words_in_line = line.split()
+            # for chinese we need to split the line into chars later and do not want to split at spaces
+            if image_config.LANGUAGE == 'zh':
+                words_in_line = [line]
+            else:
+                words_in_line = line.split()
             x_word = anchor_x_px
-
-            left, top, right, bottom = draw.multiline_textbbox(
-                (0, 0), line, font=font,
-                anchor='ra' if script_direction == 'rtl' else 'la'
-            )
-            line_width = right - left
 
             # get metrics returns the ascent and descent of the font from the baseline
             line_height = font.getmetrics()[0] + font.getmetrics()[1]
@@ -644,8 +757,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 if word.endswith('**'):
                     stop_bold = True
                     word = word[:-2]
-
-                # TODO: add case for Chinese, if word == '*'
 
                 # add a space if it is in the middle of a line
                 if word_number < num_words - 1:

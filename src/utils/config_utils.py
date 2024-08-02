@@ -58,6 +58,7 @@ def read_image_configuration(config_path: Path | str) -> dict:
         if key not in config_content:
             raise ValueError(f'Key "{key}" is missing in the configuration file.')
 
+    # the distance is only in the config if it is NOT 60 cm otherwise the field is empty
     lab_image_config = {
         'RESOLUTION': eval(config_content['Monitor_resolution_in_px']),
         'SCREEN_SIZE_CM': eval(config_content['Screen_size_in_cm']),

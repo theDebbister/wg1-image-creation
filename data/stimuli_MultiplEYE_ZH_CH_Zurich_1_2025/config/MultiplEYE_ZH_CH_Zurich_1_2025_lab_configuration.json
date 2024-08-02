@@ -1,11 +1,4 @@
 {
-  "Contact_information":{
-    "First_name":"Lena",
-    "Last_name":"Jäger",
-    "Affiliation":"University of Zurich",
-    "Email":"jaeger@cl.uzh.ch",
-    "Phone":""
-  },
   "Title": "MultiplEYE_ZH_CH_Zurich_1_2025",
   "Preregistration_core_or_additional_data_collection" :  "Pre-registration for core dataset",
   "Specification_additional_dataset_registration" : "",

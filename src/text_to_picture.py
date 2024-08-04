@@ -671,7 +671,10 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     # we will treat it differently
                     if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
                         in_latin_word = True
-                        latin_word += word
+                        if word == '':
+                            latin_word += ' '
+                        else:
+                            latin_word += word
                         continue
 
                 if in_latin_word:
@@ -681,28 +684,26 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     if len(latin_word) > 1:
                         # check whether we can append the latin word to the line
                         left, top, right, bottom = draw.multiline_textbbox(
-                            (0, 0), line + ' ' + latin_word, font=font
+                            (0, 0), line + latin_word, font=font
                         )
                         text_width = right - left
 
                         if text_width < text_width_px:
-                            line += ' ' + latin_word
+                            line += latin_word
                         else:
                             lines.append(line.strip())
                             num_text_lines += 1
-                            line = latin_word + ' '
-
+                            line = latin_word
                         in_latin_word = False
-                        latin_word = ' '
+                        latin_word = ''
 
                     else:
                         word = latin_word + word
                         latin_word = ''
                         in_latin_word = False
-
                     # check whether the current word can be appended
                     left, top, right, bottom = draw.multiline_textbbox(
-                        (0, 0), line + ' ' + word, font=font
+                        (0, 0), line + latin_word, font=font
                     )
                     text_width = right - left
 
@@ -716,6 +717,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                 latin_word = ''
 
+        if latin_word:
+            line += latin_word
         lines.append(line.strip())
         num_text_lines += 1
 
@@ -747,9 +750,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
             stop_bold = False
             num_words = len(words_in_line)
-
             for word_number, word in enumerate(words_in_line):
-
                 if word.startswith('**'):
                     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize)
                     word = word[2:]

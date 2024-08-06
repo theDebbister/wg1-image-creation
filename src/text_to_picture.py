@@ -769,20 +769,16 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                 word_width = word_right - word_left
 
-                draw.text(
-                    (x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
-                    font=font, anchor='ra' if script_direction == 'rtl' else 'la'
-                )
+                #draw.text(
+                #    (x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
+                #    font=font, anchor='ra' if script_direction == 'rtl' else 'la'
+                #)
 
                 for char_idx, char in enumerate(word):
 
                     aoi_y = anchor_y_px
 
-                    char_left, _, char_right, _ = draw.multiline_textbbox(
-                        (0, 0), char, font=font, anchor='ra' if script_direction == 'rtl' else 'la'
-                    )
-
-                    letter_width = char_right - char_left
+                    _, _, letter_width, _ = font.getbbox(char, anchor='ra' if script_direction == 'rtl' else 'la')
 
                     if script_direction == 'rtl':
                         aoi_x = top_left_corner_x_letter - letter_width
@@ -800,9 +796,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     # aoi_header = ['char_idx', 'char', 'x', 'y', 'width', 'height', 'char_idx_in_line',
                     # 'line_idx', 'page',
                     # 'word_idx', 'word_idx_in_line']
-                    # as the image is smaller than the actual screen we need to calculate the aoi boxes
-                    aoi_x = aoi_x  # + ((image_config.RESOLUTION[0] - image_config.IMAGE_WIDTH_PX) // 2)
-                    aoi_y = aoi_y  # + ((image_config.RESOLUTION[1] - image_config.IMAGE_HEIGHT_PX) // 2)
+                    aoi_x = aoi_x
+                    aoi_y = aoi_y
 
                     aoi_letter = [
                         aoi_idx, char, aoi_x, aoi_y,
@@ -820,6 +815,11 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                     char_idx_in_line += 1
                     aoi_idx += 1
+
+                    draw.text(
+                        (aoi_x, aoi_y), char, fill=image_config.TEXT_COLOR,
+                        font=font, anchor='ra' if script_direction == 'rtl' else 'la'
+                    )
 
                 word_idx_in_line += 1
                 word_idx += 1

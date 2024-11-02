@@ -41,6 +41,8 @@ def create_images(
     if os.path.isfile(question_csv_file_name):
         initial_question_df = pd.read_excel(question_csv_file_name)
         initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
+        # make sure in initial question df, stimulus_id is int
+        initial_question_df['stimulus_id'] = initial_question_df['stimulus_id'].astype(int)
 
         stimulus_types = initial_question_df['stimulus_type'].unique()
         checks.check_stimulus_types(stimulus_types)
@@ -670,12 +672,14 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     # for chinese a word is a single character, if it is not a chinese character but a latin one,
                     # we will treat it differently
                     if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
+                    # if not re.match(r'[\u4e00-\u9fff|\u3000-\u303f|0-9|\u2014]', word):
                         in_latin_word = True
                         if word == '':
                             latin_word += ' '
                         else:
                             latin_word += word
                         continue
+
 
                 if in_latin_word:
 
@@ -996,6 +1000,67 @@ def create_fixation_screen(image: Image):
 
     CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y})
 
+def create_camera_setup_screen(image: Image, text: str):
+    """
+    Creates a camera setup screen with a white background and five fixation dot in the center and the corners.
+    """
+    draw_text(text, image, image_config.FONT_SIZE_PX, draw_aoi=False, line_limit=12,
+              word_split_criterion=image_config.WORD_SPLIT_CRITERION, )
+
+    # # Create a drawing object
+    # draw = ImageDraw.Draw(image)
+    #
+    # # The fixation dot is positioned a bit left to the first char in the middle of the line
+    # r = 7
+    # fix_x_l = 0.75 * image_config.MIN_MARGIN_LEFT_PX
+    # fix_y_t = 0.75 * image_config.MIN_MARGIN_TOP_PX
+    # fix_x_r = image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX
+    # fix_y_b = image_config.POS_BOTTOM_DOT_Y_PX
+    # center_x = image_config.IMAGE_WIDTH_PX // 2
+    # center_y = image_config.IMAGE_HEIGHT_PX // 2
+    # draw.ellipse(
+    #     (fix_x_l - r, fix_y_t - r, fix_x_l + r, fix_y_t + r),
+    #     fill=None,
+    #     outline=image_config.TEXT_COLOR,
+    #     width=5
+    # )
+    # draw.ellipse(
+    #     (fix_x_r - r, fix_y_t - r, fix_x_r + r, fix_y_t + r),
+    #     fill=None,
+    #     outline=image_config.TEXT_COLOR,
+    #     width=5
+    # )
+    # draw.ellipse(
+    #     (fix_x_l - r, fix_y_b - r, fix_x_l + r, fix_y_b + r),
+    #     fill=None,
+    #     outline=image_config.TEXT_COLOR,
+    #     width=5
+    # )
+    # draw.ellipse(
+    #     (fix_x_r - r, fix_y_b - r, fix_x_r + r, fix_y_b + r),
+    #     fill=None,
+    #     outline=image_config.TEXT_COLOR,
+    #     width=5
+    # )
+    # # Draw the fixation cross in the center of the image
+    # cross_length = 20  # Length of the cross arms
+    # cross_width = 3  # Width of the cross arms
+    # draw.line(
+    #     (center_x - cross_length, center_y, center_x + cross_length, center_y),
+    #     fill=image_config.TEXT_COLOR,
+    #     width=cross_width
+    # )
+    # draw.line(
+    #     (center_x, center_y - cross_length, center_x, center_y + cross_length),
+    #     fill=image_config.TEXT_COLOR,
+    #     width=cross_width
+    # )
+    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_LEFT_TOP': fix_x_l, 'CAMERA_SETUPy_LEFT_TOP': fix_y_t})
+    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_RIGHT_TOP': fix_x_r, 'CAMERA_SETUPy_RIGHT_TOP': fix_y_t})
+    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_LEFT_BOTTOM': fix_x_l, 'CAMERA_SETUPy_LEFT_BOTTOM': fix_y_b})
+    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_RIGHT_BOTTOM': fix_x_r, 'CAMERA_SETUPy_RIGHT_BOTTOM': fix_y_b})
+    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_CENTER': center_x, 'CAMERA_SETUPy_CENTER': center_y})
+
 
 def create_final_screen(image: Image, text: str):
     """
@@ -1178,6 +1243,9 @@ def create_other_screens(draw_aoi=False):
 
         elif title == "fixation_screen":
             create_fixation_screen(final_image)
+
+        elif title == "camera_setup_screen":
+            create_camera_setup_screen(final_image, text)
 
         elif title == "final_screen":
             create_final_screen(final_image, text)

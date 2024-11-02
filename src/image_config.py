@@ -89,7 +89,7 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
     print('The experiment will be split on two devices. Please contact multipleye@cl.uzh.ch for further '
           'instructions on how to handle this case.')
 
-IMAGE_SIZE_CM = (37, 28)
+IMAGE_SIZE_CM = (36.5, 28)
 
 MAX_CHARS_PER_LINE = 82
 

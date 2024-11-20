@@ -1,7 +1,7 @@
-LANGUAGE = 'zh'
-COUNTRY_CODE = 'ch'
-CITY = 'Zurich'
-YEAR = 2025
+LANGUAGE = 'nl'
+COUNTRY_CODE = 'nl'
+CITY = 'Nijmegen'
+YEAR = 2024
 LAB_NUMBER = 1
 
 TESTING_IMAGES = True
@@ -89,7 +89,7 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
     print('The experiment will be split on two devices. Please contact multipleye@cl.uzh.ch for further '
           'instructions on how to handle this case.')
 
-IMAGE_SIZE_CM = (36.5, 28)
+IMAGE_SIZE_CM = (37, 28)
 
 MAX_CHARS_PER_LINE = 82
 
@@ -117,6 +117,10 @@ MIN_MARGIN_LEFT_PX_RTL, MIN_MARGIN_RIGHT_PX_RTL = MIN_MARGIN_RIGHT_PX, MIN_MARGI
 TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
 POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else MIN_MARGIN_LEFT_PX
 POS_BOTTOM_DOT_Y_PX = int(IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1])
+POS_TOP_DOT_X_PX = 0.75 * MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_RIGHT_PX
+POS_TOP_DOT_Y_PX = 1.25 * MIN_MARGIN_TOP_PX
+FIX_DOT_RADIUS_PX = int(0.1 * MIN_MARGIN_LEFT_PX) if int(0.1 * MIN_MARGIN_LEFT_PX) > 7 else 7  # original values is 7
+FIX_DOT_WIDTH_PX = int(FIX_DOT_RADIUS_PX * 5 // 7)   # original value is 5
 
 FONT_SIZE_PX = calculate_font_size()
 

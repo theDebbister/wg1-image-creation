@@ -680,7 +680,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                             latin_word += word
                         continue
 
-
                 if in_latin_word:
 
                     # if the latin word is just one char, we treat it like the Chinese ones, happens for example with
@@ -861,14 +860,14 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 )
 
     # draw fixation point
-    r = 7
+    r = image_config.FIX_DOT_RADIUS_PX
     fix_x = image_config.POS_BOTTOM_DOT_X_PX
     fix_y = image_config.POS_BOTTOM_DOT_Y_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
         outline=image_config.TEXT_COLOR,
-        width=5
+        width=image_config.FIX_DOT_WIDTH_PX
     )
 
     return aois, all_words
@@ -882,20 +881,32 @@ def create_welcome_screen(image: Image, text: str) -> None:
     # We have three different logos - load them and change the size if needed
     cost_logo = Image.open(root / "logo_imgs/cost_logo.jpg")
     cost_width, cost_height = cost_logo.size
-
+    cost_ratio = cost_height / cost_width
     # TODO fix this at some point (the logos are distorted)
+    # cost_logo_new_size = (
+    #     int((max(cost_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
+    #     int((max(cost_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5 * cost_ratio)
+    # )
     cost_logo_new_size = (
-        int((max(cost_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
-        int((max(cost_height // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+        int(image_config.MIN_MARGIN_LEFT_PX * 2.5),
+        int(image_config.MIN_MARGIN_LEFT_PX * 2.5 * cost_ratio)
     )
+
     cost_logo = cost_logo.resize(cost_logo_new_size)
 
     eu_logo = Image.open(root / "logo_imgs/eu_fund_logo.png")
     eu_width, eu_height = eu_logo.size
+    eu_ratio = eu_height / eu_width
+
+    # eu_logo_new_size = (
+    #     int((max(eu_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 2),
+    #     int((max(eu_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 2 * eu_ratio)
+    # )
     eu_logo_new_size = (
-        int((max(eu_width // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5),
-        int((max(eu_height // image_config.IMAGE_WIDTH_PX, 1)) * image_config.MIN_MARGIN_LEFT_PX * 1.5)
+        int(image_config.MIN_MARGIN_LEFT_PX * 5),
+        int(image_config.MIN_MARGIN_LEFT_PX * 5 * eu_ratio)
     )
+
     eu_logo = eu_logo.resize(eu_logo_new_size)
 
     multipleye_logo = Image.open(root / "logo_imgs/logo_multipleye.png")
@@ -911,7 +922,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
     # Create coordinates for three different logos
     multipleye_logo_x = (image.width - multipleye_logo.width) // 2
-    multipleye_logo_y = 10
+    multipleye_logo_y = image_config.ANCHOR_POINT_Y_PX // 7
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
     eu_logo_x = image_config.MIN_MARGIN_LEFT_PX // 2
     eu_logo_y = image.height - image_config.MIN_MARGIN_BOTTOM_PX // 2 - eu_logo.height
@@ -988,14 +999,14 @@ def create_fixation_screen(image: Image):
     draw = ImageDraw.Draw(image)
 
     # The fixation dot is positioned a bit left to the first char in the middle of the line
-    r = 7
-    fix_x = 0.75 * image_config.MIN_MARGIN_LEFT_PX if image_config.SCRIPT_DIRECTION == 'ltr' else image_config.IMAGE_WIDTH_PX - 0.75 * image_config.MIN_MARGIN_RIGHT_PX
-    fix_y = 1.25 * image_config.MIN_MARGIN_TOP_PX
+    r = image_config.FIX_DOT_RADIUS_PX
+    fix_x = image_config.POS_TOP_DOT_X_PX
+    fix_y = image_config.POS_TOP_DOT_Y_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
         outline=image_config.TEXT_COLOR,
-        width=5
+        width=image_config.FIX_DOT_WIDTH_PX
     )
 
     CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y})
@@ -1006,60 +1017,6 @@ def create_camera_setup_screen(image: Image, text: str):
     """
     draw_text(text, image, image_config.FONT_SIZE_PX, draw_aoi=False, line_limit=12,
               word_split_criterion=image_config.WORD_SPLIT_CRITERION, )
-
-    # # Create a drawing object
-    # draw = ImageDraw.Draw(image)
-    #
-    # # The fixation dot is positioned a bit left to the first char in the middle of the line
-    # r = 7
-    # fix_x_l = 0.75 * image_config.MIN_MARGIN_LEFT_PX
-    # fix_y_t = 0.75 * image_config.MIN_MARGIN_TOP_PX
-    # fix_x_r = image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX
-    # fix_y_b = image_config.POS_BOTTOM_DOT_Y_PX
-    # center_x = image_config.IMAGE_WIDTH_PX // 2
-    # center_y = image_config.IMAGE_HEIGHT_PX // 2
-    # draw.ellipse(
-    #     (fix_x_l - r, fix_y_t - r, fix_x_l + r, fix_y_t + r),
-    #     fill=None,
-    #     outline=image_config.TEXT_COLOR,
-    #     width=5
-    # )
-    # draw.ellipse(
-    #     (fix_x_r - r, fix_y_t - r, fix_x_r + r, fix_y_t + r),
-    #     fill=None,
-    #     outline=image_config.TEXT_COLOR,
-    #     width=5
-    # )
-    # draw.ellipse(
-    #     (fix_x_l - r, fix_y_b - r, fix_x_l + r, fix_y_b + r),
-    #     fill=None,
-    #     outline=image_config.TEXT_COLOR,
-    #     width=5
-    # )
-    # draw.ellipse(
-    #     (fix_x_r - r, fix_y_b - r, fix_x_r + r, fix_y_b + r),
-    #     fill=None,
-    #     outline=image_config.TEXT_COLOR,
-    #     width=5
-    # )
-    # # Draw the fixation cross in the center of the image
-    # cross_length = 20  # Length of the cross arms
-    # cross_width = 3  # Width of the cross arms
-    # draw.line(
-    #     (center_x - cross_length, center_y, center_x + cross_length, center_y),
-    #     fill=image_config.TEXT_COLOR,
-    #     width=cross_width
-    # )
-    # draw.line(
-    #     (center_x, center_y - cross_length, center_x, center_y + cross_length),
-    #     fill=image_config.TEXT_COLOR,
-    #     width=cross_width
-    # )
-    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_LEFT_TOP': fix_x_l, 'CAMERA_SETUPy_LEFT_TOP': fix_y_t})
-    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_RIGHT_TOP': fix_x_r, 'CAMERA_SETUPy_RIGHT_TOP': fix_y_t})
-    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_LEFT_BOTTOM': fix_x_l, 'CAMERA_SETUPy_LEFT_BOTTOM': fix_y_b})
-    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_RIGHT_BOTTOM': fix_x_r, 'CAMERA_SETUPy_RIGHT_BOTTOM': fix_y_b})
-    # CONFIG.setdefault('IMAGE', {}).update({'CAMERA_SETUPx_CENTER': center_x, 'CAMERA_SETUPy_CENTER': center_y})
 
 
 def create_final_screen(image: Image, text: str):
@@ -1073,7 +1030,9 @@ def create_final_screen(image: Image, text: str):
 
     our_blue = "#007baf"
     our_red = "#b94128"
-    font_size = 38
+    # font_size = 38
+    font_size = image_config.FONT_SIZE_PX * 1.4
+
     font_type = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
 
     # Create a drawing object
@@ -1081,7 +1040,7 @@ def create_final_screen(image: Image, text: str):
 
     # Create coordinates for three different logos
     multipleye_logo_x = (image.width - multipleye_logo.width) // 2
-    multipleye_logo_y = 10
+    multipleye_logo_y = image_config.ANCHOR_POINT_Y_PX // 7
     multipleye_logo_position = (multipleye_logo_x, multipleye_logo_y)
 
     # Paste the logos onto the final image at the calculated coordinates

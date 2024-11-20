@@ -1,8 +1,41 @@
 {
-  "Use_of_multiple_devices": "",
-  "Title": "MultiplEYE_HR_HR_Zagreb_1_2025",
-  "Monitor_resolution_in_px": "(1024, 768)",
-  "Screen_size_in_cm": "(47.5, 29.7)",
-  "Distance_in_cm": "60",
-  "Script_direction": "ltr"
+"Contact_information":{
+"First_name":"Marijan",
+"Last_name":"Palmović",
+"Affiliation":"University of Zagreb, Faculty of Education and Rehabilitation Sciences, Department of Speech and Language Pathology",
+"Email":"marijan.palmovic@erf.unizg.hr",
+"Phone":"00385915094945"
+},
+"Data_collection_name": "MultiplEYE_HR_HR_Zagreb_1_2025",
+"Preregistration_core_or_additional_data_collection" : "Pre-registration for core dataset",
+"Name_eye-tracker": "EyeLink Portable Duo",
+"Name_eye-tracker_manufacturer": "SR Research Ltd.",
+"Specification_camera_system": "Desktop Mount",
+"Name_computer_operation_system": "Windows 10",
+"Name_monitor": [
+"T220",
+"Samsung"
+],
+"Monitor_resolution_in_px": "(1024,768)",
+"Screen_size_in_cm": "(47,30)",
+"Distance_in_cm": "60",
+"Script_direction": "ltr",
+"Language_code": "HR",
+"Country_code": "HR",
+"Lab_number": "1",
+"City": "Zagreb",
+"Estimated_end_year_of_data_collection": "2025",
+"Use_of_multiple_devices" : "No",
+"Stimuli_preparation": [
+"Stimuli will be or has been prepared by our own lab"
+],
+"Psychometric_tests": {
+"Are_tests_conducted": "Yes",
+"LWMC": "Lewandowsky et al. Working Memory Capacity (LWMC) battery",
+"PLAB": "Metalinguistic aptitude: PLAB",
+"Flanker": "Cognitive control: Flanker task",
+"Stroop": "Cognitive control: Stroop task",
+"RAN": "Rapid automatized naming: RAN task",
+"WikiVocab":"Vocabulary test: WikiVocab"
+}
 }

@@ -237,10 +237,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-data/stimuli_*/*
-!data/stimuli_*/config
-#!data/stimuli_toy/*
-data/stimuli*/config/config*.py
 
 
 
@@ -253,6 +249,8 @@ data/stimuli*/config/config*.py
 *.vsix
 
 .idea/*
-/data/stimuli_MultiplEYE_TOY_X_x_1_1/config/stimulus_order_versions_toy_x_1.csv
-/data/stimuli_*/config/question_answer_option_shuffling_*/shuffled_option_keys_*.json
-/data/stimuli_MultiplEYE_*/config/stimulus_order_versions_*.csv
+
+/data/stimuli_MultiplEYE_*/
+
+!/data/stimuli_MultiplEYE_TOY_X_x_1_1/
+

@@ -1084,7 +1084,7 @@ def create_rating_screens(image: Image, text: str, title: str):
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), image_config.FONT_SIZE_PX)
 
     for idx, option in enumerate(options):
-        if option == '':
+        if option.isspace():
             continue
         draw_text(
             option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
@@ -1105,7 +1105,7 @@ def create_rating_screens(image: Image, text: str, title: str):
 
         # draw.rectangle(box_coordinates, outline='black', width=1)
 
-        CONFIG.setdefault('RATING_QUESTION_BOXES', {}).update({f'option_{idx+1}': box_coordinates})
+        CONFIG.setdefault('RATING_QUESTION_BOXES', {}).update({f'option_{idx}': box_coordinates})
 
         option_y_px += image_config.MIN_MARGIN_TOP_PX
 

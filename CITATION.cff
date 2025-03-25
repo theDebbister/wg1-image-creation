@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Jakobi"
+  given-names: "Deborah N."
+  orcid: "https://orcid.org/0000-0002-9719-6673"
+- family-names: "Filip"
+  given-names: "Maroš"
+  orcid: "https://orcid.org/0000-0003-2117-7115"
+- family-names: "J\"ager"
+  given-names: "Lena A."
+  orcid: "https://orcid.org/0000-0001-9018-9713"
+title: "MultiplEYE Image Generation Software"
+date-released: 2025-03-25
+url: "https://github.com/theDebbister/wg1-image-creation/"

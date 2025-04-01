@@ -35,6 +35,15 @@ def write_final_config(
         configfile.write(old_content)
 
 
+def parse_true_false(value: str) -> bool:
+    if value.lower() in {'true', 'yes', '1', 'on'}:
+        return True
+    elif value.lower() in {'false', 'no', '0', 'off'}:
+        return False
+    else:
+        raise ValueError(f'Invalid boolean value: {value}. Expected "true", "false", "yes", "no", "1", "0", "on", or "off".')
+
+
 def read_image_configuration(config_path: Path | str) -> dict:
 
     config_path = os.path.join(image_config.REPO_ROOT, config_path)
@@ -63,7 +72,7 @@ def read_image_configuration(config_path: Path | str) -> dict:
         'RESOLUTION': eval(config_content['Monitor_resolution_in_px']),
         'SCREEN_SIZE_CM': eval(config_content['Screen_size_in_cm']),
         'SCRIPT_DIRECTION': config_content['Script_direction'],
-        'MULTIPLE_DEVICES': True if config_content['Use_of_multiple_devices'] else False,
+        'MULTIPLE_DEVICES': parse_true_false(config_content['Use_of_multiple_devices']),
         'DISTANCE_CM': 60 if not config_content['Distance_in_cm'] else int(config_content['Distance_in_cm']),
     }
 

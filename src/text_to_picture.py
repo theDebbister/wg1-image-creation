@@ -570,7 +570,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               script_direction: str = image_config.SCRIPT_DIRECTION,
               question_option_type: str | None = None,
               word_split_criterion: str = ' ',
-              line_limit: int = 9, character_limit: int = None) -> (list[list], list):
+              line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None) -> (list[list], list):
     """
     Draws text on an image and creates aoi boxes for each letter
     :param text: str

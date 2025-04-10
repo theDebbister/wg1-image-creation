@@ -1,7 +1,9 @@
-LANGUAGE = 'toy'
-COUNTRY_CODE = 'x'
-CITY = 'x'
-YEAR = 1
+import numpy as np
+
+LANGUAGE = 'si'
+COUNTRY_CODE = 'sl'
+CITY = 'Ljubljana'
+YEAR = 2025
 LAB_NUMBER = 1
 
 TESTING_IMAGES = True
@@ -38,7 +40,7 @@ LINE_SPACING = 2.9
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
 NUM_PERMUTATIONS = 10 if TESTING_IMAGES else 250
-# NUM_PERMUTATIONS = 1
+#NUM_PERMUTATIONS = 1
 VERSION_START = 1
 
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
@@ -123,5 +125,9 @@ FIX_DOT_RADIUS_PX = int(0.1 * MIN_MARGIN_LEFT_PX) if int(0.1 * MIN_MARGIN_LEFT_P
 FIX_DOT_WIDTH_PX = int(FIX_DOT_RADIUS_PX * 5 // 7)   # original value is 5
 
 FONT_SIZE_PX = calculate_font_size()
+
+# the number of lines per stimulus page need to be determined based on the font size
+# (i.e., based on the resolution and the screen size)
+NUM_LINES_PER_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING))
 
 ####################################################################

@@ -53,6 +53,7 @@ def create_images(
         )
         new_question_df = pd.DataFrame(columns=cols)
     else:
+        warnings.warn("No question file found. Question images will not be created.")
         question_csv_file_name = None
 
     block_config = pd.read_csv(image_config.REPO_ROOT / image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
@@ -201,33 +202,64 @@ def create_images(
                     all_words.extend(words)
                     question_image_versions.extend([session_id for _ in range(len(aois))])
 
-                    option_keys = {
-                        'left': {
-                            'x_px': image_config.MIN_MARGIN_LEFT_PX,
-                            'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                            'text_width_px': image_config.IMAGE_WIDTH_PX * 0.41,
-                            'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
-                        },
-                        'up': {
-                            'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
-                            'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
-                            'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
-                            'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+                    # greenlandic needs a different layout as it has very long words and the boxes are too small
+                    if image_config.LANGUAGE == 'kl': # or image_config.LANGUAGE == 'toy':
+                        option_keys = {
+                            'left': {
+                                'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.41,
+                                'text_width_px': image_config.TEXT_WIDTH_PX * 0.49,
+                                'text_height_px': (4.5 + 3 * image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                            },
+                            'up': {
+                                'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
+                                'text_width_px': image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX - image_config.MIN_MARGIN_LEFT_PX,
+                                'text_height_px': (2.5 + image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
 
-                        },
-                        'right': {
-                            'x_px': image_config.IMAGE_WIDTH_PX * 0.53,
-                            'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
-                            'text_width_px': image_config.IMAGE_WIDTH_PX * 0.41,
-                            'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
-                        },
-                        'down': {
-                            'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
-                            'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
-                            'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
-                            'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+                            },
+                            'right': {
+                                'x_px': image_config.IMAGE_WIDTH_PX * 0.51,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.41,
+                                'text_width_px': image_config.TEXT_WIDTH_PX * 0.49,
+                                'text_height_px': (4.5 + 3 * image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                            },
+                            'down': {
+                                'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
+                                'text_width_px': image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX - image_config.MIN_MARGIN_LEFT_PX,
+                                'text_height_px': (2.5 + image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                            }
                         }
-                    }
+
+                    else:
+                        option_keys = {
+                            'left': {
+                                'x_px': image_config.MIN_MARGIN_LEFT_PX,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                                'text_width_px': image_config.IMAGE_WIDTH_PX * 0.41,
+                                'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                            },
+                            'up': {
+                                'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
+                                'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                                'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+
+                            },
+                            'right': {
+                                'x_px': image_config.IMAGE_WIDTH_PX * 0.53,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.44,
+                                'text_width_px': image_config.IMAGE_WIDTH_PX * 0.41,
+                                'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.28,
+                            },
+                            'down': {
+                                'x_px': image_config.IMAGE_WIDTH_PX * 0.15,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
+                                'text_width_px': image_config.IMAGE_WIDTH_PX * 0.7,
+                                'text_height_px': image_config.IMAGE_HEIGHT_PX * 0.17,
+                            }
+                        }
 
                     # if we already have the shuffled options file for this item version, but we have not yet
                     # shuffled the options for this question
@@ -248,8 +280,15 @@ def create_images(
                     temp_distractor_c_keys.append(shuffled_option_keys['distractor_c'])
 
                     for option, distractor_key in shuffled_option_keys.items():
+                        # for greenlandic (kl), we reduce the font size for the options a bit as
+                        # the words are so long that they do not fit
+                        if image_config.LANGUAGE == 'kl':
+                            font_size = image_config.FONT_SIZE_PX * 0.8
+                        else:
+                            font_size = image_config.FONT_SIZE_PX
+
                         aois, words = draw_text(
-                            answer_options[option], question_image, image_config.FONT_SIZE_PX,
+                            answer_options[option], question_image, font_size,
                             spacing=image_config.LINE_SPACING,
                             image_short_name=f'{stimulus_name}_{stimulus_id}_question_{question_id}_{option}',
                             draw_aoi=draw_aoi,
@@ -672,7 +711,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     # for chinese a word is a single character, if it is not a chinese character but a latin one,
                     # we will treat it differently
                     if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
-                    # if not re.match(r'[\u4e00-\u9fff|\u3000-\u303f|0-9|\u2014]', word):
+                        # if not re.match(r'[\u4e00-\u9fff|\u3000-\u303f|0-9|\u2014]', word):
                         in_latin_word = True
                         if word == '':
                             latin_word += ' '
@@ -772,10 +811,10 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                 word_width = word_right - word_left
 
-                #draw.text(
+                # draw.text(
                 #    (x_word, anchor_y_px), word, fill=image_config.TEXT_COLOR,
                 #    font=font, anchor='ra' if script_direction == 'rtl' else 'la'
-                #)
+                # )
 
                 for char_idx, char in enumerate(word):
 
@@ -843,21 +882,32 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             line_idx += 1
 
     if question_option_type and not draw_aoi:
-        num_lines = len(all_lines)
-        num_words = len(text.split())
-        num_chars = len(text.strip())
-        if question_option_type == 'left' or 'right':
-            # count only the lines with text
-            if num_lines > 3:
-                warnings.warn(
-                    f'Questions options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
-                )
-        else:
+        # add too long question options to file
+        with open(image_config.REPO_ROOT / image_config.OUTPUT_TOP_DIR / 'overlong_question_options.txt', 'a',
+                  encoding='utf8') as f:
 
-            if num_lines > 2:
-                warnings.warn(
-                    f'Questions options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
-                )
+            num_lines = len(all_lines)
+            num_words = len(text.split())
+            num_chars = len(text.strip())
+            if question_option_type == 'left' or 'right':
+                # count only the lines with text
+                if image_config.LANGUAGE == 'kl' and num_lines > 4:
+                    warnings.warn(
+                        f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
+                    )
+                    f.write(f'Question option too long for left/right box for {image_short_name}\n\n')
+
+                elif image_config.LANGUAGE != 'kl' and num_lines > 3:
+                    warnings.warn(
+                        f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
+                    )
+                    f.write(f'Question option too long for left/right box for {image_short_name}\n\n')
+            else:
+                if num_lines > 2:
+                    warnings.warn(
+                        f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
+                    )
+                    f.write(f'Question option too long for top/bottom box for {image_short_name}\n\n')
 
     # draw fixation point
     r = image_config.FIX_DOT_RADIUS_PX
@@ -1010,6 +1060,7 @@ def create_fixation_screen(image: Image):
     )
 
     CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y})
+
 
 def create_camera_setup_screen(image: Image, text: str):
     """

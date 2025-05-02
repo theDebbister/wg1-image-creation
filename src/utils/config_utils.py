@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import warnings
 from pathlib import Path
 import image_config
 from PIL import ImageFont
@@ -41,11 +42,21 @@ def parse_true_false(value: str) -> bool:
     elif value.lower() in {'false', 'no', '0', 'off'}:
         return False
     else:
-        raise ValueError(f'Invalid boolean value: {value}. Expected "true", "false", "yes", "no", "1", "0", "on", or "off".')
+        if image_config.TESTING_IMAGES:
+            warnings.warn(
+                f'Please clarify whether or not you want to test with multiple devices. '
+                f'Invalid boolean value for testing with multiple devices: {value}. Expected "true", "false", '
+                f'"yes", "no", "1", "0", "on", or "off".'
+            )
+        else:
+            raise ValueError(f'Please clarify whether or not you want to test with multiple devices. '
+                             f'Real images cannot be generated. '
+                             f'Invalid boolean value for testing with multiple devices: {value}. Expected "true", '
+                             f'"false", "yes", "no", "1", "0", "on", or "off".'
+                             )
 
 
 def read_image_configuration(config_path: Path | str) -> dict:
-
     config_path = os.path.join(image_config.REPO_ROOT, config_path)
 
     with open(config_path, 'r', encoding='utf8') as configfile:
@@ -80,7 +91,6 @@ def read_image_configuration(config_path: Path | str) -> dict:
 
 
 def calculate_font_size():
-
     # one line on the image should fit approximately 82 latin characters
     size = 0
     text = 'a' * image_config.MAX_CHARS_PER_LINE
@@ -95,9 +105,3 @@ def calculate_font_size():
             break
 
     return size
-
-
-
-
-
-

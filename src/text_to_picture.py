@@ -203,32 +203,32 @@ def create_images(
                     question_image_versions.extend([session_id for _ in range(len(aois))])
 
                     # greenlandic needs a different layout as it has very long words and the boxes are too small
-                    if image_config.LANGUAGE == 'kl': # or image_config.LANGUAGE == 'toy':
+                    if image_config.LANGUAGE == 'kl':
                         option_keys = {
                             'left': {
                                 'x_px': image_config.MIN_MARGIN_LEFT_PX,
-                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.41,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.39,
                                 'text_width_px': image_config.TEXT_WIDTH_PX * 0.49,
-                                'text_height_px': (4.5 + 3 * image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                                'text_height_px': (5.0 + 3 * image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
                             },
                             'up': {
                                 'x_px': image_config.MIN_MARGIN_LEFT_PX,
                                 'y_px': image_config.IMAGE_HEIGHT_PX * 0.25,
                                 'text_width_px': image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX - image_config.MIN_MARGIN_LEFT_PX,
-                                'text_height_px': (2.5 + image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                                'text_height_px': (2.1 + image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
 
                             },
                             'right': {
                                 'x_px': image_config.IMAGE_WIDTH_PX * 0.51,
-                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.41,
+                                'y_px': image_config.IMAGE_HEIGHT_PX * 0.39,
                                 'text_width_px': image_config.TEXT_WIDTH_PX * 0.49,
-                                'text_height_px': (4.5 + 3 * image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                                'text_height_px': (5.0 + 3 * image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
                             },
                             'down': {
                                 'x_px': image_config.MIN_MARGIN_LEFT_PX,
                                 'y_px': image_config.IMAGE_HEIGHT_PX * 0.75,
                                 'text_width_px': image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX - image_config.MIN_MARGIN_LEFT_PX,
-                                'text_height_px': (2.5 + image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
+                                'text_height_px': (2.1 + image_config.LINE_SPACING) * image_config.FONT_SIZE_PX,
                             }
                         }
 
@@ -1272,8 +1272,15 @@ def create_other_screens(draw_aoi=False):
 
         # for all other text screens
         elif title != 'empty_screen':
-            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=2, draw_aoi=False, line_limit=12,
-                      word_split_criterion=image_config.WORD_SPLIT_CRITERION, text_width_px=image_config.TEXT_WIDTH_PX)
+            if image_config.LANGUAGE == 'kl':
+                spacing = 1.7
+            else:
+                spacing = image_config.LINE_SPACING_INSTRUCTION
+
+            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=spacing, draw_aoi=False,
+                      line_limit=image_config.NUM_LINES_PER_INSTRUCTION_PAGE,
+                      word_split_criterion=image_config.WORD_SPLIT_CRITERION, text_width_px=image_config.TEXT_WIDTH_PX,
+                      image_short_name=title)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name

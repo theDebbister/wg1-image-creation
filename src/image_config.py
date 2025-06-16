@@ -36,6 +36,7 @@ BACKGROUND_COLOR = (231, 230, 230)
 
 # vertical spacing between lines
 LINE_SPACING = 2.9
+LINE_SPACING_INSTRUCTION = 2
 
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
@@ -93,6 +94,7 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
 
 IMAGE_SIZE_CM = (37, 28)
 
+# not needed but leave it still
 MAX_CHARS_PER_LINE = 82
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
@@ -129,5 +131,7 @@ FONT_SIZE_PX = calculate_font_size()
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)
 NUM_LINES_PER_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING))
+
+NUM_LINES_PER_INSTRUCTION_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING_INSTRUCTION))
 
 ####################################################################

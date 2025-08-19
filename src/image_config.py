@@ -1,8 +1,6 @@
-import numpy as np
-
-LANGUAGE = 'si'
-COUNTRY_CODE = 'sl'
-CITY = 'Ljubljana'
+LANGUAGE = 'pl'
+COUNTRY_CODE = 'pl'
+CITY = 'Wroclaw'
 YEAR = 2025
 LAB_NUMBER = 1
 
@@ -41,7 +39,7 @@ LINE_SPACING_INSTRUCTION = 2
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
 NUM_PERMUTATIONS = 10 if TESTING_IMAGES else 250
-#NUM_PERMUTATIONS = 1
+NUM_PERMUTATIONS = 1
 VERSION_START = 1
 
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '

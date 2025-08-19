@@ -101,6 +101,7 @@ def create_images(
         stimulus_name = re.sub(' ', '_', stimulus_name)
 
         aoi_file_name = f'{stimulus_name.lower()}_{stimulus_id}_aoi.csv'
+        aoi_file_name_questions = f'{stimulus_name.lower()}_{stimulus_id}_aoi_questions.csv'
         aoi_header = ['char_idx', 'char', 'top_left_x', 'top_left_y', 'width', 'height',
                       'char_idx_in_line', 'line_idx', 'page', 'word_idx', 'word_idx_in_line']
         all_aois = []
@@ -304,7 +305,7 @@ def create_images(
                         # draw a box around the answer options: x, y, x + width, y + height, x must be a bit smaller
                         # otherwise it is too close to the letters
                         new_x = option_keys[distractor_key]['x_px'] - image_config.MIN_MARGIN_LEFT_PX * 0.1
-                        new_width = option_keys[distractor_key]['text_width_px'] + image_config.MIN_MARGIN_LEFT_PX * 0.1
+                        new_width = option_keys[distractor_key]['text_width_px'] + image_config.MIN_MARGIN_LEFT_PX * 0.15
                         box_coordinates = (
                             new_x,
                             option_keys[distractor_key]['y_px'],
@@ -430,7 +431,15 @@ def create_images(
         aoi_df['word'] = all_words
         aoi_df['question_image_version'] = question_image_versions
         aoi_df_path = os.path.join(aoi_dir, aoi_file_name)
-        aoi_df.to_csv(image_config.REPO_ROOT / aoi_df_path, sep=',', index=False, encoding='UTF-8')
+        aoi_df_path_questions = os.path.join(aoi_dir, aoi_file_name_questions)
+
+        # split the aoi_df into two parts, one for the stimulus and one for the questions
+        aoi_df_texts = aoi_df[~aoi_df['page'].str.contains('question', na=False)]
+        aoi_df_texts.drop(columns=['question_image_version'], inplace=True, errors='ignore')
+        aoi_df_questions = aoi_df[aoi_df['page'].str.contains('question', na=False)]
+
+        aoi_df_texts.to_csv(image_config.REPO_ROOT / aoi_df_path, sep=',', index=False, encoding='UTF-8')
+        aoi_df_questions.to_csv(image_config.REPO_ROOT / aoi_df_path_questions, sep=',', index=False, encoding='UTF-8')
 
     # Create a new csv file with the names of the pictures in the first column and their paths in the second
     image_df = pd.DataFrame(stimulus_images)

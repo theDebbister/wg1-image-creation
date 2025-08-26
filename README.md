@@ -61,7 +61,7 @@ and we need to keep those. So:
 3. Replace the stimulus folder in the experiment by the new one. Run a test session to see that it works.
 4. Go to the copy of the old stimulus images and copy this file: `stimuli.../config/stimulus_order_versions ... .csv`. This is the file
 that contains the information on what stimulus versions have been used for which participant.
-5. Go to the newley generated stimuli that you have copied to the experiment. Search for the file with the same name and paste the content of the old file into that file.
+5. Go to the newley generated stimuli that you have copied to the experiment. Search for the file with the same name and epalce the new file with the old one. There should only exist one version of this file. To check that it is correct you can check the column "participant_id" in the file. It should contain all participant numbers that you have used so far.
 6. This process makes sure we store the information about which stimuli versions have been used already by which participant in the new stimuli images.
 
 ## Requirements

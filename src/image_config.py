@@ -21,7 +21,7 @@ WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
-elif LANGUAGE == 'zh':
+elif LANGUAGE in  ('zh', 'yu'):
     FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
     FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
     WORD_SPLIT_CRITERION = ''

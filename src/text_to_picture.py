@@ -890,33 +890,44 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             anchor_y_px += line_height * spacing
             line_idx += 1
 
+    overlong_questions = []
     if question_option_type and not draw_aoi:
         # add too long question options to file
         with open(image_config.REPO_ROOT / image_config.OUTPUT_TOP_DIR / 'overlong_question_options.txt', 'a',
                   encoding='utf8') as f:
+
+            # check if the options contain a line break. If yes, we need to include it first
+            if text.count('\n') > 0:
+                raise ValueError(f'Question option contains line break: {image_short_name}, please remove it.')
 
             num_lines = len(all_lines)
             num_words = len(text.split())
             num_chars = len(text.strip())
             if question_option_type == 'left' or 'right':
                 # count only the lines with text
-                if image_config.LANGUAGE == 'kl' and num_lines > 4:
-                    warnings.warn(
-                        f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
-                    )
-                    f.write(f'Question option too long for left/right box for {image_short_name}\n\n')
+                if image_config.LANGUAGE == 'kl' and num_lines > 5:
+                    if not image_short_name in overlong_questions:
+                        overlong_questions.append(image_short_name)
+                        warnings.warn(
+                            f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
+                        )
+                        f.write(f'Question option too long for left/right box for {image_short_name}\n\n')
 
                 elif image_config.LANGUAGE != 'kl' and num_lines > 3:
-                    warnings.warn(
-                        f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
-                    )
-                    f.write(f'Question option too long for left/right box for {image_short_name}\n\n')
+                    if not image_short_name in overlong_questions:
+                        overlong_questions.append(image_short_name)
+                        warnings.warn(
+                            f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
+                        )
+                        f.write(f'Question option too long for left/right box for {image_short_name}\n\n')
             else:
                 if num_lines > 2:
-                    warnings.warn(
-                        f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
-                    )
-                    f.write(f'Question option too long for top/bottom box for {image_short_name}\n\n')
+                    if not image_short_name in overlong_questions:
+                        overlong_questions.append(image_short_name)
+                        warnings.warn(
+                            f'Question options that do not fit:\n{image_short_name},{num_lines} lines,{num_words} words,{num_chars} chars'
+                        )
+                        f.write(f'Question option too long for top/bottom box for {image_short_name}\n\n')
 
     # draw fixation point
     r = image_config.FIX_DOT_RADIUS_PX

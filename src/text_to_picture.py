@@ -37,6 +37,9 @@ def create_images(
     stimulus_types = initial_stimulus_df['stimulus_type'].unique()
     checks.check_stimulus_types(stimulus_types)
 
+    open(image_config.REPO_ROOT / image_config.OUTPUT_TOP_DIR / 'overlong_question_options.txt', 'w',
+         encoding='utf8').close()
+
     # check whether question excel exists as file, stimuli can be created independent of questions
     if os.path.isfile(question_csv_file_name):
         initial_question_df = pd.read_excel(question_csv_file_name)

@@ -1,10 +1,10 @@
-LANGUAGE = 'kl'
-COUNTRY_CODE = 'DK'
-CITY = 'Copenhagen'
+LANGUAGE = 'zd'
+COUNTRY_CODE = 'ch'
+CITY = 'Zurich'
 YEAR = 2026
 LAB_NUMBER = 1
 
-TESTING_IMAGES = False
+TESTING_IMAGES = True
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
@@ -96,7 +96,10 @@ IMAGE_SIZE_CM = (37, 28)
 MAX_CHARS_PER_LINE = 82
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
+IMAGE_WIDTH_PX = IMAGE_WIDTH_PX if IMAGE_WIDTH_PX % 2 == 0 else IMAGE_WIDTH_PX + 1  # make sure it is even
+
 IMAGE_HEIGHT_PX = int(IMAGE_SIZE_CM[1] * RESOLUTION[1] / SCREEN_SIZE_CM[1])
+IMAGE_HEIGHT_PX = IMAGE_HEIGHT_PX if IMAGE_HEIGHT_PX % 2 == 0 else IMAGE_HEIGHT_PX + 1  # make sure it is even
 
 MARGIN_LEFT_CM = 2.3
 MARGIN_RIGHT_CM = 2.1

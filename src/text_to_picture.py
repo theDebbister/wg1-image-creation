@@ -271,6 +271,7 @@ def create_images(
                         # TESTING ANSWER OPTION LENGTH: refer to README.md
                         shuffled_option_keys = ['left', 'up', 'right', 'down']
                         # shuffled_option_keys = ['up', 'left', 'down', 'right']
+                        random.seed(question_identifier)
                         random.shuffle(shuffled_option_keys)
                         shuffled_option_keys = {k: v for k, v in zip(answer_options, shuffled_option_keys)}
                         shuffled_option_dict[question_identifier] = shuffled_option_keys

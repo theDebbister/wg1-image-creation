@@ -1,0 +1,5 @@
+- questionnaire: is it different from the one from the multipleye experiment? Are there additional questions for
+the add-on data set?
+- when is the workflow relative to the Multipleye exp (right before, after, is there a break?)? does the welcome screen start right after the multipleye pq?
+also if the pq is before the exp, they have to fill in the pq with overlapping questions directly after one another
+-

@@ -1,8 +1,6 @@
-LANGUAGE = 'zd'
-COUNTRY_CODE = 'ch'
-CITY = 'Zurich'
-YEAR = 2026
-LAB_NUMBER = 1
+DATA_COLLECTION_NAME = 'neologism_it'
+# specify the stimulus language iso code
+LANGUAGE = 'it'
 
 TESTING_IMAGES = True
 
@@ -45,29 +43,28 @@ VERSION_START = 1
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
       f'{"For testing purposes only (not for piloting or running real experiments!!)." if TESTING_IMAGES else ""}\n\n')
 
-OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
-IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+OUTPUT_TOP_DIR = f'data/stimuli_{DATA_COLLECTION_NAME}/'
+QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{DATA_COLLECTION_NAME}/'
+AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{DATA_COLLECTION_NAME}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{DATA_COLLECTION_NAME}/'
+AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{DATA_COLLECTION_NAME}/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{DATA_COLLECTION_NAME}/'
 
-OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
-STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_stimuli_experiment_{LANGUAGE}.xlsx'
-QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'{DATA_COLLECTION_NAME}_participant_instructions.xlsx'
+STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'{DATA_COLLECTION_NAME}_stimuli_experiment.xlsx'
+QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'{DATA_COLLECTION_NAME}_comprehension_questions.xlsx'
 
 INITIAL_RANDOMIZATION_CSV = REPO_ROOT / 'src' / 'global_configs' / 'stimulus_order_versions.csv'
 
 BLOCK_CONFIG_PATH = CODE_SCR / "global_configs/stimulus_to_id_mapping.csv"
 
 FINAL_CONFIG = OUTPUT_TOP_DIR + ('config/config_'
-                                 f'{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}.py')
+                                 f'{DATA_COLLECTION_NAME}.py')
 
 ANSWER_OPTION_FOLDER = OUTPUT_TOP_DIR + (f'config/question_answer_option_shuffling_'
-                                         f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/')
+                                         f'{DATA_COLLECTION_NAME}/')
 
-LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
+LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/{DATA_COLLECTION_NAME}'
                                            f'_lab_configuration.json')
 LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)
 

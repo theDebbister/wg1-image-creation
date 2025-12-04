@@ -44,6 +44,7 @@ print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
       f'{"For testing purposes only (not for piloting or running real experiments!!)." if TESTING_IMAGES else ""}\n\n')
 
 OUTPUT_TOP_DIR = f'data/stimuli_{DATA_COLLECTION_NAME}/'
+IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{DATA_COLLECTION_NAME}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{DATA_COLLECTION_NAME}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{DATA_COLLECTION_NAME}/'
 AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{DATA_COLLECTION_NAME}/'

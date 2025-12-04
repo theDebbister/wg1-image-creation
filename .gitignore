@@ -250,7 +250,7 @@ Temporary Items
 
 .idea/*
 
-/data/stimuli_MultiplEYE_*/
+/data/stimuli_*/
 
 !/data/stimuli_MultiplEYE_TOY_X_x_1_1/
 

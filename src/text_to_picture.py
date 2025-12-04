@@ -45,7 +45,7 @@ def create_images(
         initial_question_df = pd.read_excel(question_csv_file_name)
         initial_question_df.dropna(subset=['stimulus_id'], inplace=True)
         # make sure in initial question df, stimulus_id is int
-        initial_question_df['stimulus_id'] = initial_question_df['stimulus_id'].astype(int)
+        initial_question_df['stimulus_id'] = initial_question_df['stimulus_id']
 
         stimulus_types = initial_question_df['stimulus_type'].unique()
         checks.check_stimulus_types(stimulus_types)
@@ -58,6 +58,7 @@ def create_images(
     else:
         warnings.warn("No question file found. Question images will not be created.")
         question_csv_file_name = None
+        initial_stimulus_df = pd.DataFrame()
 
     block_config = pd.read_csv(image_config.REPO_ROOT / image_config.BLOCK_CONFIG_PATH, sep=',', encoding='UTF-8')
 
@@ -86,9 +87,9 @@ def create_images(
 
     for row_index, row in (pbar := tqdm(initial_stimulus_df.iterrows(), total=len(initial_stimulus_df))):
         stimulus_name = row[f"stimulus_name"]
-        stimulus_id = int(row[f"stimulus_id"])
+        stimulus_id = row[f"stimulus_id"]
         pbar.set_description(
-            f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} stimuli images for {stimulus_id}'
+            f'Creating {image_config.DATA_COLLECTION_NAME}{" aoi" if draw_aoi else ""} stimuli images for {stimulus_id}'
             f' {stimulus_name}'
         )
 
@@ -115,9 +116,8 @@ def create_images(
         if question_csv_file_name:
 
             # get all questions for that text
-            question_sub_df_stimulus = initial_question_df.loc[(initial_question_df['stimulus_id'] == stimulus_id) &
-                                                               (initial_question_df['stimulus_name'] == stimulus_name)]
-            if len(question_sub_df_stimulus) == 0:
+            question_sub_df_stimulus = initial_question_df.loc[initial_question_df['stimulus_name'] == stimulus_name]
+            if question_sub_df_stimulus.empty:
                 warnings.warn(f'No questions found for {stimulus_name} {stimulus_id}. Please check if the question '
                               f'are there and all the spelling and IDs are correct in all files! Question files '
                               f'and stimulus files.')
@@ -151,7 +151,7 @@ def create_images(
 
                 shuffeled_answer_options_path = os.path.join(
                     image_config.ANSWER_OPTION_FOLDER +
-                    f'shuffled_option_keys_{image_config.LANGUAGE}_{session_id}.json'
+                    f'shuffled_option_keys_{image_config.DATA_COLLECTION_NAME}_{session_id}.json'
                 )
                 # if we have already once shuffeled some of the options for this item, we open the existing file
                 if os.path.isfile(image_config.REPO_ROOT / shuffeled_answer_options_path):
@@ -171,10 +171,11 @@ def create_images(
                 for question_row_index, question_row in question_sub_df_stimulus.iterrows():
 
                     question = question_row['question']
-                    snippet_no = question_row['snippet_no']
-                    condition_no = question_row['condition_no']
+                    #condition_no = question_row['condition_no']
                     question_no = question_row['question_no']
-                    question_id = str(stimulus_id) + str(snippet_no) + str(condition_no) + str(question_no)
+                    question_id = (str(stimulus_id)
+                                   #+ str(condition_no)
+                                   + str(question_no))
                     if len(question_id) == 4:
                         question_id = '0' + question_id
 
@@ -326,7 +327,7 @@ def create_images(
                         all_words.extend(words)
                         question_image_versions.extend([session_id for _ in range(len(aois))])
 
-                    question_image_file = f"{stimulus_name}_id{stimulus_id}_question_{question_id}_{image_config.LANGUAGE}" \
+                    question_image_file = f"{stimulus_name}_id{stimulus_id}_question_{question_id}_{image_config.DATA_COLLECTION_NAME}" \
                                           f"{'_aoi' if draw_aoi else ''}.png"
                     question_image_path_root = question_aoi_dir_with_root if draw_aoi else question_dir_with_root
 
@@ -351,23 +352,24 @@ def create_images(
                 question_sub_csv_copy['distractor_c_key'] = temp_distractor_c_keys
                 new_session_question_df = pd.concat([new_session_question_df, question_sub_csv_copy], axis=0)
 
-                new_session_question_df.to_csv(
-                    full_path_root_question_df,
-                    sep=',',
-                    index=False
-                )
-                # save relative path without root
-                CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update(
-                    {
-                        f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_question_df
-                    }
-                )
+                if not question_sub_df_stimulus.empty:
+                    new_session_question_df.to_csv(
+                        full_path_root_question_df,
+                        sep=',',
+                        index=False
+                    )
+                    # save relative path without root
+                    CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update(
+                        {
+                            f'question_images_{session_id}{"_aoi" if draw_aoi else ""}_csv': full_path_question_df
+                        }
+                    )
 
-                output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
-                output_file.parent.mkdir(parents=True, exist_ok=True)
+                    output_file = Path(image_config.REPO_ROOT / shuffeled_answer_options_path)
+                    output_file.parent.mkdir(parents=True, exist_ok=True)
 
-                with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'w', encoding='utf8') as f:
-                    json.dump(shuffled_option_dict, f, indent=4)
+                    with open(image_config.REPO_ROOT / shuffeled_answer_options_path, 'w', encoding='utf8') as f:
+                        json.dump(shuffled_option_dict, f, indent=4)
 
         empty_page = False
         empty_page_inbetween = False
@@ -411,7 +413,7 @@ def create_images(
                     word_split_criterion=image_config.WORD_SPLIT_CRITERION,
                 )
 
-                filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
+                filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.DATA_COLLECTION_NAME}" \
                            f"{'_aoi' if draw_aoi else ''}.png"
 
                 # save the image to path with root, but save the path without only rela tive to the data folder
@@ -449,7 +451,7 @@ def create_images(
     image_df = pd.DataFrame(stimulus_images)
     final_stimulus_df = initial_stimulus_df.join(image_df)
     stimuli_file_name_stem = Path(stimuli_csv_file_name).stem
-    full_output_file_name = f'{stimuli_file_name_stem}_{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
+    full_output_file_name = f'{stimuli_file_name_stem}_{"_aoi" if draw_aoi else ""}_with_img_paths.csv'
     full_path = os.path.join(image_config.OUTPUT_TOP_DIR, full_output_file_name)
     CONFIG.setdefault('PATHS', {}).update({f'stimuli_images{"_aoi" if draw_aoi else ""}_csv': full_path})
     final_stimulus_df.to_csv(
@@ -518,7 +520,7 @@ def get_option_span_indices(text: str, annotated_text: str,
     # in case the target span cannot be found, we warn and continue
     if not target_span_match_clean:
         if not aoi:
-            warnings.warn(f'Target/distractor a span without markers not found in the text for question {question_id}. '
+            warnings.warn(f'Target/distractor span markers not found in the text for question {question_id}. '
                           f'Please check that the span has been copied correctly in the excel!', stacklevel=2)
             print(f'AOI file NOT annotated with target/distractor a spans for question {question_id}.')
     else:
@@ -597,15 +599,15 @@ def create_stimuli_images():
 
     language_versions_df.to_csv(
         image_config.REPO_ROOT / image_config.OUTPUT_TOP_DIR / 'config' /
-        f'stimulus_order_versions_{image_config.LANGUAGE}_'
-        f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv',
+        f'stimulus_order_versions_'
+        f'{image_config.DATA_COLLECTION_NAME}.csv',
         sep=',',
         index=False
     )
 
     path_for_config = (image_config.OUTPUT_TOP_DIR + 'config' +
-                       f'/stimulus_order_versions_{image_config.LANGUAGE}_'
-                       f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv').replace('\\', '/')
+                       f'/stimulus_order_versions_'
+                       f'{image_config.DATA_COLLECTION_NAME}.csv').replace('\\', '/')
 
     CONFIG.setdefault('PATHS', {}).update(
         {
@@ -615,7 +617,7 @@ def create_stimuli_images():
 
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
-              spacing: int = image_config.LINE_SPACING, image_short_name: str = None,
+              spacing: float = image_config.LINE_SPACING, image_short_name: str = None,
               anchor_x_px: int = image_config.ANCHOR_POINT_X_PX,
               anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
               text_width_px: int = None,
@@ -1265,7 +1267,7 @@ def create_other_screens(draw_aoi=False):
 
     for idx, row in tqdm(
             other_screen_df.iterrows(),
-            desc=f'Creating {image_config.LANGUAGE}{" aoi" if draw_aoi else ""} participant instruction images',
+            desc=f'Creating {image_config.DATA_COLLECTION_NAME}{" aoi" if draw_aoi else ""} participant instruction images',
             total=len(other_screen_df)
     ):
 
@@ -1306,7 +1308,7 @@ def create_other_screens(draw_aoi=False):
                       word_split_criterion=image_config.WORD_SPLIT_CRITERION, text_width_px=image_config.TEXT_WIDTH_PX,
                       image_short_name=title)
 
-        file_name = f'{title}_{image_config.LANGUAGE}.png'
+        file_name = f'{title}_{image_config.DATA_COLLECTION_NAME}.png'
         file_path = image_config.OTHER_SCREENS_DIR + file_name
         file_names.append(file_name)
         file_paths.append(file_path)

@@ -64,8 +64,8 @@ def read_image_configuration(config_path: Path | str) -> dict:
 
     # the contact information should be removed from the config file
     # if it is still in there, it is deleted and the file written again
-    if 'contact information' in config_content:
-        config_content.pop('contact information')
+    if 'Contact_information' in config_content:
+        config_content.pop('Contact_information')
         json.dump(config_content, open(config_path, 'w', encoding='utf8'))
 
     # check whether all necessary keys are in the config file

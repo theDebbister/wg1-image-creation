@@ -1,4 +1,4 @@
-LANGUAGE = 'zd'
+LANGUAGE = 'fa'
 COUNTRY_CODE = 'ch'
 CITY = 'Zurich'
 YEAR = 2026
@@ -25,6 +25,9 @@ elif LANGUAGE in  ('zh', 'yu'):
     FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
     FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
     WORD_SPLIT_CRITERION = ''
+elif LANGUAGE in ('ar', 'fa'):
+    FONT_TYPE = 'fonts/Vazirmatn-Regular.ttf'
+    FONT_TYPE_BOLD = 'fonts/Vazirmatn-Bold.ttf'
 else:
     FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"

@@ -13,3 +13,5 @@ six==1.16.0
 tqdm==4.65.0
 ipywidgets==8.1.2
 uharfbuzz>=0.23.0
+arabic-reshaper>=3.0.0
+python-bidi>=0.4.2

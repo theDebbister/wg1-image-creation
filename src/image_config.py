@@ -26,8 +26,8 @@ elif LANGUAGE in  ('zh', 'yu'):
     FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
     WORD_SPLIT_CRITERION = ''
 elif LANGUAGE in ('ar', 'fa'):
-    FONT_TYPE = 'fonts/Vazirmatn-Regular.ttf'
-    FONT_TYPE_BOLD = 'fonts/Vazirmatn-Bold.ttf'
+    FONT_TYPE = 'fonts/FreeFarsi-Mono.ttf'
+    FONT_TYPE_BOLD = 'fonts/FreeFarsi-Mono.ttf'
 else:
     FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"

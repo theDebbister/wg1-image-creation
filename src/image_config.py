@@ -1,6 +1,6 @@
-LANGUAGE = 'fa'
-COUNTRY_CODE = 'ch'
-CITY = 'Zurich'
+LANGUAGE = 'ar'
+COUNTRY_CODE = 'ae'
+CITY = 'AbuDhabi'
 YEAR = 2026
 LAB_NUMBER = 1
 
@@ -95,8 +95,7 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
 
 IMAGE_SIZE_CM = (37, 28)
 
-# not needed but leave it still
-MAX_CHARS_PER_LINE = 82
+MAX_CHARS_PER_LINE = 72 if LANGUAGE in ('ar', 'fa') else 82
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 IMAGE_WIDTH_PX = IMAGE_WIDTH_PX if IMAGE_WIDTH_PX % 2 == 0 else IMAGE_WIDTH_PX + 1  # make sure it is even

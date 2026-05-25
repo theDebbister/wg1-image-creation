@@ -57,7 +57,7 @@ nor the one here)!! Some files change during the experiment,
 and we need to keep those. So:
 1. Copy the entire data folder and save it on SwitchDrive in a folder that is clearly named: I.e.
 `data_piloting_[dataset title]_participant_id_1_to_10`. 
-2. Now, go back to the original stimuli files and make the necessary changes (i.e. correct typos) and regenerate the images again.
+2. Now, go back to the original stimuli files and make the necessary changes (i.e. correct typos) and regenerate the ALL images again. It is very important to regenerate the entire set of images again and not just single images!!!
 3. Replace the stimulus folder in the experiment by the new one. Run a test session to see that it works.
 4. Go to the copy of the old stimulus images and copy this file: `stimuli.../config/stimulus_order_versions ... .csv`. This is the file
 that contains the information on what stimulus versions have been used for which participant.

@@ -1,0 +1,61 @@
+Farsi/Arabic integration: solutions summary
+
+1. Letter shaping and connections
+
+Problem: Drawing characters individually breaks letter connections (Arabic letters only join when rendered in context).
+
+Solution: Draw each word as a single string using arabic_reshaper.reshape(word) + get_display(reshaped, base_dir='R'), then render the entire shaped word at once with PIL anchor 'la'. AOI widths are derived from draw.textlength() on
+the shaped string, not from individual character renders.
+
+---
+2. RTL rendering architecture
+
+Problem: PIL has no native RTL support.
+
+Solution: A custom RTL rendering loop: current_x starts at the right margin and decrements leftward for each word. Each word is placed at (current_x - word_width, y). Space AOIs are placed to the RIGHT of each word (not left), so no
+trailing space appears at the left edge of lines.
+
+---
+3. En dash rendering as tofu box (□)
+
+Problem: FreeFarsi-Mono lacks U+2013 (en dash).
+
+Solution: In create_other_screens(), replace \u2013 with - when language is fa or ar, guarded by isinstance(text, str) to handle pandas NaN from empty Excel cells.
+
+---
+4. Punctuation on wrong side of Eastern Arabic digits
+
+Problem: Commas and periods appeared to the RIGHT of digits like ۱۲ instead of the left — because Eastern Arabic digits have BiDi class EN (European Number), not a strong RTL class, so get_display() defaulted to LTR base direction.
+
+Solution: Pass base_dir='R' explicitly to every get_display() call in the Arabic rendering path.
+
+---
+5. Parenthesis mirroring for single-word cases
+
+Problem: A closing ) at the end of an LTR word (e.g. MultiplEYE)) ended up visually on the wrong side in RTL context.
+
+Solution: For LTR words with trailing closing brackets, strip the bracket, mirror it via _BIDI_MIRROR, and prepend it to the render string — so ) becomes ( at the left edge of the word. Also handles a trailing . before the bracket
+(e.g. word).).
+
+---
+6. Multi-word English phrase word order
+
+Problem: Multi-word English phrases embedded in Farsi (e.g. "European Cooperation in Science and Technology") appeared in reversed word order because each word was placed individually right-to-left.
+
+Solution: Before the word rendering loop, detect runs of consecutive Latin-alpha words in words_in_line and reverse them in-place. When placed right-to-left, the reversed run renders in correct left-to-right reading order.
+
+---
+7. Parentheses in multi-word English phrases
+
+Problem: After reversing the LTR run (fix 6), a closing bracket on the last English word (e.g. Technology)) ended up in the middle of the phrase instead of at the left edge.
+
+Solution: During the LTR-run pre-processing (before reversal), detect a trailing closing bracket on the last word of the run, strip it, mirror it, and prepend the mirrored bracket to the first word of the run. After reversal, the
+mirrored bracket lands on the leftmost word — the correct visual position for a closing bracket in RTL context.
+
+---
+8. Equal-size AOI boxes with ligature handling
+
+Problem: The لا (lam-alef) ligature collapses 2 original characters into 1 glyph of 1 standard character width, so dividing total word width by character count gave misaligned boxes (≈12px instead of the 15px monospaced standard).
+
+Solution: Each original character always gets a box of std_char_w (= draw.textlength('م', font=font) = 15px). When actual_word_width ≠ n_chars × std_char_w (due to a ligature), a separate _LIGA_SPACE_ (or _EXTRA_SPACE_) AOI is added
+for the difference, drawn in blue in the overlay image and labeled distinctly in the AOI CSV.

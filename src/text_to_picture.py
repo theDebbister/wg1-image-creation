@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import random
-import unicodedata
 import warnings
 import re
 from collections import OrderedDict
@@ -13,28 +12,14 @@ import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
-import uharfbuzz as hb
-import arabic_reshaper
-from bidi.algorithm import get_display
-
 import image_config
 from utils import config_utils, checks
+from languages import arabic_farsi, hebrew
+from languages.arabic_farsi import rtl_display
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
 CONFIG = {}
-
-# Unicode BiDi mirroring pairs: in RTL context these characters are visually swapped.
-_BIDI_MIRROR = {'(': ')', ')': '(', '[': ']', ']': '[', '{': '}', '}': '{',
-                '<': '>', '>': '<', '«': '»', '»': '«', '‹': '›', '›': '‹'}
-
-
-def _rtl_display(text: str) -> str:
-    """Reshape and BiDi-order text for RTL languages so PIL renders it correctly."""
-    if image_config.LANGUAGE not in ('fa', 'ar'):
-        return text
-    return get_display(arabic_reshaper.reshape(text))
-
 
 
 def create_images(
@@ -155,6 +140,9 @@ def create_images(
                     session_id,
                     new_session_question_df_name
                 )
+
+                if not os.path.exists(Path(full_path_root_question_df).parent):
+                    os.mkdir(Path(full_path_root_question_df).parent)
 
                 full_path_question_df = os.path.join(
                     question_dir if not draw_aoi else question_aoi_dir,
@@ -285,6 +273,14 @@ def create_images(
                             }
                         }
 
+                        if image_config.LANGUAGE == 'ca' and image_config.CITY == 'Zurich':
+                            # for the catalan data collection in zurich two options are too large.
+                            # To ensure comparability across the data collection sites, the left and right box are made
+                            # slightly bigger instead of shortening the text
+                            option_keys['right']['text_width_px'] = image_config.IMAGE_WIDTH_PX * 0.42
+                            option_keys['left']['text_width_px'] = image_config.IMAGE_WIDTH_PX * 0.42
+
+
                     # if we already have the shuffled options file for this item version, but we have not yet
                     # shuffled the options for this question
                     if question_identifier not in shuffled_option_dict:
@@ -376,7 +372,7 @@ def create_images(
                 new_session_question_df.to_csv(
                     full_path_root_question_df,
                     sep=',',
-                    index=False
+                    index=False,
                 )
                 # save relative path without root
                 CONFIG.setdefault('QUESTION_CSV_PATHS', {}).update(
@@ -695,6 +691,10 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
 
+    # openpyxl encodes \r (U+000D) as the literal string '_x000D_' when reading
+    # XLSX files; strip these before splitting into paragraphs.
+    text = text.replace('_x000D_', '')
+
     try:
         paragraphs = re.split(r'\n+', text.strip())
     except AttributeError as e:
@@ -709,6 +709,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     num_text_lines = 0
     word_idx = 0
     aoi_idx = 0
+    quote_open = False  # tracks open/close quote state across paragraphs on this page
 
     for paragraph in paragraphs:
         if word_split_criterion == '':
@@ -720,6 +721,14 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             words_in_paragraph = paragraph.split()
         else:
             words_in_paragraph = paragraph.split(word_split_criterion)
+
+        if image_config.LANGUAGE in ('fa', 'ar'):
+            words_in_paragraph, quote_open = arabic_farsi.normalize_quote_pairing(
+                words_in_paragraph, quote_open
+            )
+            arabic_farsi.reverse_ltr_runs(words_in_paragraph)
+        elif image_config.LANGUAGE == 'he':
+            hebrew.reorder_ltr_runs(words_in_paragraph)
         line = ""
         lines = []
 
@@ -813,57 +822,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 words_in_line = [line]
             else:
                 words_in_line = line.split()
-                # For RTL languages: consecutive Latin/English words appear in
-                # reversed order when placed one-by-one from right to left.
-                # Reverse each run of adjacent Latin-alpha words so they end up
-                # in correct LTR reading order within the RTL stream.
-                if image_config.LANGUAGE in ('fa', 'ar'):
-                    def _has_latin_alpha(w):
-                        return any(c.isalpha() and ord(c) < 128 for c in w)
-                    i = 0
-                    while i < len(words_in_line):
-                        if _has_latin_alpha(words_in_line[i]):
-                            j = i + 1
-                            while j < len(words_in_line) and _has_latin_alpha(words_in_line[j]):
-                                j += 1
-                            if j - i > 1:
-                                # Before reversing, move any trailing closing bracket
-                                # from the last word to the front of the first word
-                                # (mirrored). After reversal, the bracket ends up at
-                                # the left edge of the rendered LTR group — the
-                                # correct visual position for a closing bracket in RTL.
-                                _last = words_in_line[j - 1]
-                                _trail_sent_p = ''
-                                while _last and _last[-1] == '.':
-                                    _trail_sent_p = _last[-1] + _trail_sent_p
-                                    _last = _last[:-1]
-                                _core_last = _last.rstrip(')]}>»›')
-                                _closing_bracket = _last[len(_core_last):]
-                                if _closing_bracket:
-                                    _mirrored_cb = ''.join(_BIDI_MIRROR.get(c, c) for c in _closing_bracket)
-                                    # AR only: only move the bracket when the first word of the
-                                    # run itself starts with a matching opening bracket (e.g.
-                                    # "(multiple languages)").  When the opening bracket belongs
-                                    # to an inner word (e.g. "COST (Cooperation…)"), leave the
-                                    # closing bracket in place so it stays on the right after
-                                    # reversal, giving the correct visual "COST (…)".
-                                    if image_config.LANGUAGE != 'ar' or words_in_line[i][0] in '([{<«‹':
-                                        words_in_line[j - 1] = _core_last + _trail_sent_p
-                                        words_in_line[i] = _mirrored_cb + words_in_line[i]
-                                        # AR only: strip double bracket and move mirror to last word.
-                                        if image_config.LANGUAGE == 'ar':
-                                            _first = words_in_line[i]
-                                            _first_core = _first.lstrip('([{<«‹')
-                                            _first_prefix = _first[:len(_first) - len(_first_core)]
-                                            if len(_first_prefix) > len(_mirrored_cb):
-                                                _extra = _first_prefix[len(_mirrored_cb):]
-                                                _mirrored_extra = ''.join(_BIDI_MIRROR.get(c, c) for c in _extra)
-                                                words_in_line[i] = _mirrored_cb + _first_core
-                                                words_in_line[j - 1] = _core_last + _mirrored_extra + _trail_sent_p
-                                words_in_line[i:j] = words_in_line[i:j][::-1]
-                            i = j
-                        else:
-                            i += 1
             x_word = anchor_x_px
 
             # get metrics returns the ascent and descent of the font from the baseline
@@ -876,7 +834,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             word_idx_in_line = 0
 
             stop_bold = False
-            num_words = len(words_in_line)
             for word_number, word in enumerate(words_in_line):
                 if word.startswith('**'):
                     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize)
@@ -898,326 +855,21 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 word_width = word_right - word_left
 
                 if image_config.LANGUAGE in ('fa', 'ar'):
-                    # Render each shaped character individually using PIL metrics so that
-                    # rendering positions and AOI boxes use exactly the same widths.
-                    word_stripped = word.strip()
-                    _reshaped = arabic_reshaper.reshape(word_stripped)
-                    # Always use the fully reshaped form for rendering (preserves ligatures
-                    # like لا). AOI tracking uses word_stripped char count, so length
-                    # mismatch is fine — width is distributed evenly across original chars.
-                    reshaped_word = _reshaped
-                    # Fallback font for non-Arabic characters (e.g. en-dash, digits) that
-                    # fa / ar fonts may not have glyphs for.
-                    fallback_font = ImageFont.truetype(
-                        str(image_config.REPO_ROOT / 'fonts/JetBrainsMono-Regular.ttf'), fontsize
+                    # put this in functions to keep the code here more legible
+                    (current_x, aoi_idx, char_idx_in_line, word_idx_in_line,
+                     chars_added, word_stripped) = arabic_farsi.render_rtl_word(
+                        draw, word, word_number, words_in_line, x_word,
+                        anchor_y_px, font, fontsize, line_height,
+                        aoi_idx, char_idx_in_line, line_idx, image_short_name,
+                        word_idx, word_idx_in_line, draw_aoi, aois,
                     )
-
-                    aoi_y = anchor_y_px
-                    current_x = x_word  # right edge; moves leftward for RTL
-
-                    # Space between this word and the previous one: goes to the RIGHT of this
-                    # word's characters (between it and the preceding word visually).
-                    # Add it first so there is no trailing space at the left edge of a line.
-                    if word_number != 0:
-                        space_width = int(draw.textlength(' ', font=font))
-                        if space_width == 0:
-                            space_width = max(1, int(font.getbbox(' ')[2]))
-                        aoi_x = current_x - space_width
-                        aoi_space = [
-                            aoi_idx, ' ', aoi_x, aoi_y,
-                            space_width, line_height,
-                            char_idx_in_line, line_idx, image_short_name, word_idx, word_idx_in_line
-                        ]
-                        if draw_aoi:
-                            draw.rectangle(
-                                (aoi_x, aoi_y, aoi_x + space_width, aoi_y + line_height),
-                                outline='red', width=1
-                            )
-                        aois.append(aoi_space)
-                        aoi_idx += 1
-                        char_idx_in_line += 1
-                        current_x -= space_width
-
-                    # Determine if this word contains any Arabic-script characters.
-                    # Pure Latin/English words embedded in RTL text must be rendered LTR.
-                    def _is_arabic_cp(cp):
-                        return (
-                            0x0600 <= cp <= 0x06FF or
-                            0x0750 <= cp <= 0x077F or
-                            0x08A0 <= cp <= 0x08FF or
-                            0xFB50 <= cp <= 0xFDFF or
-                            0xFE70 <= cp <= 0xFEFF
-                        )
-
-                    # Decimal digits (category 'Nd') in Arabic/Farsi script are treated
-                    # as LTR — they should be rendered left-to-right like EN numbers.
-                    has_arabic_chars = any(
-                        _is_arabic_cp(ord(c)) and unicodedata.category(c) != 'Nd'
-                        for c in word_stripped
-                        if unicodedata.category(c) not in ('Cf', 'Cc')
-                    )
-
-                    # Punctuation-only words (e.g. standalone '(' or ')') should be
-                    # BiDi-mirrored when placed in the RTL stream.
-                    is_punct_only = not has_arabic_chars and not any(
-                        c.isalpha() for c in word_stripped
-                    )
-
-                    chars_added = 0
-
-                    if not has_arabic_chars:
-                        # ── LTR word inside RTL text (e.g. "MultiplEYE") ──────────────────
-                        # In RTL context, trailing closing brackets (e.g. ')' in 'MultiplEYE)')
-                        # would visually end up on the wrong side of the word.  Move them to
-                        # the front so they appear on the left of the rendered word.
-                        if not is_punct_only:
-                            # Strip trailing sentence-end punctuation (e.g. "word).") so
-                            # that a closing bracket before it is detected and mirrored.
-                            _w = word_stripped
-                            _trailing_sent_punct = ''
-                            while _w and _w[-1] == '.':
-                                _trailing_sent_punct = _w[-1] + _trailing_sent_punct
-                                _w = _w[:-1]
-                            _core_inner = _w.rstrip(')]}>»›')
-                            _bracket_suffix = _w[len(_core_inner):]
-                            if _bracket_suffix:
-                                _mirrored_bracket = ''.join(_BIDI_MIRROR.get(c, c) for c in _bracket_suffix)
-                                # AR only: only move the closing bracket when this same word
-                                # also has a matching opening bracket (e.g. "(multilingualism)").
-                                # If the word only has a trailing bracket without a leading one
-                                # (e.g. "languages)" whose "(" is on a different word), leave
-                                # the word as-is so the ")" renders at the correct right side.
-                                if image_config.LANGUAGE == 'ar':
-                                    _ci_core = _core_inner.lstrip('([{<«‹')
-                                    _ci_prefix = _core_inner[:len(_core_inner) - len(_ci_core)]
-                                    if _ci_prefix:
-                                        _mirrored_ci_prefix = ''.join(_BIDI_MIRROR.get(c, c) for c in _ci_prefix)
-                                        render_word_ltr = _trailing_sent_punct + _mirrored_bracket + _ci_core + _mirrored_ci_prefix
-                                    else:
-                                        # No matching opening bracket on this word — keep as-is.
-                                        render_word_ltr = word_stripped
-                                else:
-                                    render_word_ltr = _trailing_sent_punct + _mirrored_bracket + _core_inner
-                            else:
-                                _core = word_stripped.rstrip(')]}>»›')
-                                _suffix = word_stripped[len(_core):]
-                                _mirrored_suffix = ''.join(_BIDI_MIRROR.get(c, c) for c in _suffix)
-                                render_word_ltr = _mirrored_suffix + _core if _suffix else word_stripped
-                        else:
-                            render_word_ltr = word_stripped
-
-                        # Split on hyphens so each part can be drawn with the right font.
-                        # Hyphens use fallback_font (FreeFarsi-Mono renders '-' as '_').
-                        # AOI tracking is still per-character regardless of segments.
-                        ltr_segments = re.split(r'(-)', render_word_ltr)
-
-                        # Baseline alignment: 'la' anchor places the font's ascender at
-                        # anchor_y_px. The two fonts have different ascent metrics so their
-                        # baselines would land at different y positions.  Shift fallback_font
-                        # upward so its baseline matches the primary font's baseline.
-                        primary_ascent = font.getmetrics()[0]
-                        fallback_ascent = fallback_font.getmetrics()[0]
-                        fallback_y_anchor = anchor_y_px + (primary_ascent - fallback_ascent)
-
-                        # Compute total pixel width first so we can place the left edge.
-                        total_ltr_width = 0
-                        for seg in ltr_segments:
-                            if not seg:
-                                continue
-                            seg_font = fallback_font if seg == '-' else font
-                            seg_w = int(draw.textlength(seg, font=seg_font))
-                            if seg_w == 0:
-                                seg_w = int(seg_font.getbbox(seg)[2])
-                            total_ltr_width += seg_w
-
-                        # The word occupies [current_x - total_ltr_width, current_x].
-                        char_x = current_x - total_ltr_width  # left edge, moves rightward
-                        for seg in ltr_segments:
-                            if not seg:
-                                continue
-                            seg_font = fallback_font if seg == '-' else font
-                            seg_y = fallback_y_anchor if seg_font is fallback_font else anchor_y_px
-                            # Punctuation-only words need BiDi mirroring per character.
-                            shaped_seg = (
-                                ''.join(_BIDI_MIRROR.get(c, c) for c in seg)
-                                if is_punct_only else seg
-                            )
-                            # Draw the whole segment at once with the appropriate font.
-                            draw.text(
-                                (char_x, seg_y), shaped_seg,
-                                fill=image_config.TEXT_COLOR, font=seg_font, anchor='la'
-                            )
-                            # AOI: one entry per character within this segment.
-                            for char_orig in seg:
-                                if unicodedata.category(char_orig) in ('Cf', 'Cc'):
-                                    continue
-                                shaped_char = _BIDI_MIRROR.get(char_orig, char_orig) if is_punct_only else char_orig
-                                char_width = int(draw.textlength(shaped_char, font=seg_font))
-                                if char_width == 0:
-                                    char_width = int(seg_font.getbbox(shaped_char)[2])
-                                if char_width == 0:
-                                    continue
-                                aoi_x = char_x
-                                aoi_letter = [
-                                    aoi_idx, char_orig, aoi_x, aoi_y,
-                                    char_width, line_height,
-                                    char_idx_in_line, line_idx, image_short_name, word_idx, word_idx_in_line
-                                ]
-                                if draw_aoi:
-                                    draw.rectangle(
-                                        (aoi_x, aoi_y, aoi_x + char_width, aoi_y + line_height),
-                                        outline='red', width=1
-                                    )
-                                aois.append(aoi_letter)
-                                aoi_idx += 1
-                                char_idx_in_line += 1
-                                word_idx_in_line += 1
-                                chars_added += 1
-                                char_x += char_width
-                        current_x -= total_ltr_width
-
-                    else:
-                        # ── Arabic/Farsi word: render as whole string ────────────────────────
-                        # Drawing char-by-char causes FreeType to render each glyph in
-                        # isolation, breaking the connection strokes between letters.
-                        # Drawing the whole shaped+BiDi-reordered word at once lets FreeType
-                        # render the word as a unit, preserving joins.
-
-                        # AR only: get_display() BiDi-mirrors trailing ')' to '(' on the
-                        # left, placing it on the wrong side. Strip trailing closing brackets,
-                        # re-reshape without them, and render them as literal characters at
-                        # the RIGHT edge of the word slot (physically before the Arabic text).
-                        _ar_right_bracket = ''
-                        if image_config.LANGUAGE == 'ar':
-                            _ar_word_core = word_stripped.rstrip(')]}>»›')
-                            _ar_right_bracket = word_stripped[len(_ar_word_core):]
-                            if _ar_right_bracket:
-                                word_stripped = _ar_word_core
-                                reshaped_word = arabic_reshaper.reshape(word_stripped)
-
-                        visual_word = get_display(reshaped_word, base_dir='R')
-                        total_width = round(draw.textlength(visual_word, font=font))
-                        if total_width == 0:
-                            total_width = round(font.getbbox(visual_word)[2])
-
-                        # Draw trailing closing bracket(s) at the right edge first.
-                        if _ar_right_bracket:
-                            _rb_w = round(draw.textlength(_ar_right_bracket, font=font))
-                            if _rb_w == 0:
-                                _rb_w = max(1, round(font.getbbox(_ar_right_bracket)[2]))
-                            draw.text(
-                                (current_x - _rb_w, anchor_y_px), _ar_right_bracket,
-                                fill=image_config.TEXT_COLOR, font=font, anchor='la'
-                            )
-                            _rb_x = current_x - _rb_w
-                            for _rbc in _ar_right_bracket:
-                                if unicodedata.category(_rbc) in ('Cf', 'Cc'):
-                                    continue
-                                _rbc_w = round(draw.textlength(_rbc, font=font))
-                                if _rbc_w == 0:
-                                    _rbc_w = max(1, round(font.getbbox(_rbc)[2]))
-                                aois.append([
-                                    aoi_idx, _rbc, _rb_x, aoi_y, _rbc_w, line_height,
-                                    char_idx_in_line, line_idx, image_short_name,
-                                    word_idx, word_idx_in_line
-                                ])
-                                if draw_aoi:
-                                    draw.rectangle(
-                                        (_rb_x, aoi_y, _rb_x + _rbc_w, aoi_y + line_height),
-                                        outline='red', width=1
-                                    )
-                                aoi_idx += 1
-                                char_idx_in_line += 1
-                                chars_added += 1
-                                _rb_x += _rbc_w
-                            current_x -= _rb_w
-
-                        draw.text(
-                            (current_x - total_width, anchor_y_px), visual_word,
-                            fill=image_config.TEXT_COLOR, font=font, anchor='la'
-                        )
-
-                        # AOI: each original visible character gets a box of the standard
-                        # monospaced character width (std_char_w).  When a ligature
-                        # substitution compresses two original chars into one glyph (e.g.
-                        # ل + ا → U+FEFC), the actual word advance is less than
-                        # n_chars × std_char_w.  The difference is recorded as a
-                        # '_LIGA_SPACE_' AOI placed to the left of the letter boxes.
-                        # Conversely, if the word is wider than expected, an
-                        # '_EXTRA_SPACE_' AOI appears at the left edge of the word.
-                        # Both space AOIs are drawn in blue in the AOI overlay image.
-                        visible_orig = [
-                            c for c in word_stripped
-                            if unicodedata.category(c) not in ('Cf', 'Cc')
-                        ]
-                        n_vis = len(visible_orig)
-                        if n_vis > 0:
-                            # Standard advance of one character in this (monospaced) font.
-                            std_char_w = round(draw.textlength('م', font=font))
-                            if std_char_w == 0:
-                                std_char_w = max(1, round(font.getbbox('م')[2]))
-
-                            expected_w = n_vis * std_char_w
-                            diff = total_width - expected_w  # >0: extra; <0: ligature gap
-
-                            aoi_x_right = current_x
-                            for vi, char_orig in enumerate(visible_orig):
-                                aoi_x = aoi_x_right - std_char_w
-                                aoi_letter = [
-                                    aoi_idx, char_orig, aoi_x, aoi_y,
-                                    std_char_w, line_height,
-                                    char_idx_in_line, line_idx, image_short_name, word_idx, word_idx_in_line
-                                ]
-                                if draw_aoi:
-                                    draw.rectangle(
-                                        (aoi_x, aoi_y, aoi_x + std_char_w, aoi_y + line_height),
-                                        outline='red', width=1
-                                    )
-                                aois.append(aoi_letter)
-                                aoi_idx += 1
-                                char_idx_in_line += 1
-                                word_idx_in_line += 1
-                                chars_added += 1
-                                aoi_x_right -= std_char_w
-
-                            # Add space AOI if the actual word width differs from the
-                            # sum of standard-width letter boxes.
-                            if diff != 0:
-                                space_label = '_EXTRA_SPACE_' if diff > 0 else '_LIGA_SPACE_'
-                                space_w = abs(diff)
-                                if diff > 0:
-                                    # Word wider than boxes: space at the actual left edge
-                                    space_x = current_x - total_width
-                                else:
-                                    # Ligature gap: space sits left of the letter-box range
-                                    space_x = current_x - expected_w
-                                space_aoi = [
-                                    aoi_idx, space_label, space_x, aoi_y,
-                                    space_w, line_height,
-                                    char_idx_in_line, line_idx, image_short_name, word_idx, word_idx_in_line
-                                ]
-                                if draw_aoi:
-                                    draw.rectangle(
-                                        (space_x, aoi_y, space_x + space_w, aoi_y + line_height),
-                                        outline='blue', width=2
-                                    )
-                                aois.append(space_aoi)
-                                aoi_idx += 1
-                                char_idx_in_line += 1
-                                chars_added += 1
-                        current_x -= total_width
-
                     top_left_corner_x_letter = current_x
                     word_idx += 1
-                    x_word = current_x  # left edge of this word = right edge of next word
-
-                    # Per-character words list: space (pd.NA) first, then one entry per
-                    # visible character (zero-width chars like ZWNJ are excluded above).
+                    x_word = current_x
                     if word_number == 0:
                         words.extend([word_stripped for _ in range(chars_added)])
                     else:
                         words.extend([pd.NA] + [word_stripped for _ in range(chars_added)])
-
                     if stop_bold:
                         font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
                         stop_bold = False
@@ -1228,7 +880,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                         aoi_y = anchor_y_px
 
-                        _, _, letter_width, _ = font.getbbox(char, anchor='ra' if script_direction == 'rtl' else 'la')
+                        _, _, letter_width, _ = font.getbbox(char, anchor='la')
                         if script_direction == 'rtl':
                             aoi_x = top_left_corner_x_letter - letter_width
                         else:
@@ -1267,7 +919,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
                         draw.text(
                             (aoi_x, aoi_y), char, fill=image_config.TEXT_COLOR,
-                            font=font, anchor='ra' if script_direction == 'rtl' else 'la'
+                            font=font, anchor='la'
                         )
 
                     word_idx_in_line += 1
@@ -1418,7 +1070,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
             font = ImageFont.truetype(font_type, font_size_text)
 
         left, top, right, bottom = draw.multiline_textbbox(
-            (0, 0), _rtl_display(t), font=font
+            (0, 0), rtl_display(t), font=font
         )
 
         text_width, text_height = right - left, bottom - top
@@ -1432,7 +1084,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
             for element in elements:
                 left, top, right, bottom = draw.multiline_textbbox(
-                    (0, 0), _rtl_display(line + element), font=font
+                    (0, 0), rtl_display(line + element), font=font
                 )
                 width = right - left
 
@@ -1445,17 +1097,17 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
             for line in lines:
                 left, top, right, bottom = draw.multiline_textbbox(
-                    (0, 0), _rtl_display(line), font=font
+                    (0, 0), rtl_display(line), font=font
                 )
                 text_width, text_height = right - left, bottom - top
 
                 text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
-                draw.text((text_x, text_y), _rtl_display(line), font=font, fill=our_blue)
+                draw.text((text_x, text_y), rtl_display(line), font=font, fill=our_blue)
                 text_y += text_height * 1.5
 
         else:
             text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
-            draw.text((text_x, text_y), _rtl_display(t), font=font, fill=our_blue)
+            draw.text((text_x, text_y), rtl_display(t), font=font, fill=our_blue)
             text_y += text_height * 3
 
 
@@ -1525,7 +1177,7 @@ def create_final_screen(image: Image, text: str):
     text_x = 0
     for paragraph in final_text:
         left, top, right, bottom = draw.multiline_textbbox(
-            (0, 0), _rtl_display(paragraph), font=font
+            (0, 0), rtl_display(paragraph), font=font
         )
         text_width, text_height = right - left, bottom - top
         if not text_x:
@@ -1535,7 +1187,7 @@ def create_final_screen(image: Image, text: str):
             text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
             text_y += text_width
 
-        draw.text((text_x, text_y), _rtl_display(paragraph), font=font, fill=our_blue)
+        draw.text((text_x, text_y), rtl_display(paragraph), font=font, fill=our_blue)
 
 
 def create_rating_screens(image: Image, text: str, title: str):

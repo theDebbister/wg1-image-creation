@@ -90,10 +90,21 @@ def read_image_configuration(config_path: Path | str) -> dict:
     return lab_image_config
 
 
-def calculate_font_size():
+def calculate_font_size(lang: str):
     # one line on the image should fit approximately 82 latin characters
     size = 0
-    text = 'a' * image_config.MAX_CHARS_PER_LINE
+    if lang in ('ar', 'fa'):
+        char = 'د'
+    elif lang in ('zh', 'yu'):
+        warnings.warn('Please be aware that for Cantonese and Mandarin the font size may need to be decided manually '
+                      'as the characters are very different from other languages. '
+                      'Check if the size is good.')
+        char = '大'
+    elif lang == 'he':
+        char = 'ה'
+    else:
+        char = 'a'
+    text = char * image_config.MAX_CHARS_PER_LINE
     text_width = 0
 
     while text_width < image_config.TEXT_WIDTH_PX:

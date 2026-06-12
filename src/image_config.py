@@ -1,8 +1,11 @@
-LANGUAGE = 'ar'
-COUNTRY_CODE = 'ae'
-CITY = 'AbuDhabi'
+LANGUAGE = 'fa'
+COUNTRY_CODE = 'ch'
+CITY = 'Zurich'
 YEAR = 2026
 LAB_NUMBER = 1
+# if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise leave empty.
+# e.g., 'aging'
+SUBCORPUS = ''
 
 TESTING_IMAGES = True
 
@@ -11,6 +14,7 @@ TESTING_IMAGES = True
 ################################################################
 from utils.config_utils import read_image_configuration, calculate_font_size
 from pathlib import Path
+from PIL import ImageFont
 
 CODE_SCR = Path(__file__).parent
 
@@ -25,9 +29,15 @@ elif LANGUAGE in  ('zh', 'yu'):
     FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
     FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
     WORD_SPLIT_CRITERION = ''
-elif LANGUAGE in ('ar', 'fa'):
-    FONT_TYPE = 'fonts/FreeFarsi-Mono.ttf'
-    FONT_TYPE_BOLD = 'fonts/FreeFarsi-Mono.ttf'
+elif LANGUAGE == 'fa':
+    FONT_TYPE = 'fonts/KawkabMono-Regular.ttf'
+    FONT_TYPE_BOLD = 'fonts/KawkabMono-Bold.ttf'
+elif LANGUAGE == 'ar':
+    FONT_TYPE = 'fonts/KawkabMono-Regular.ttf'
+    FONT_TYPE_BOLD = 'fonts/KawkabMono-Bold.ttf'
+elif LANGUAGE == 'ha':
+    FONT_TYPE = "fonts/NotoSansMono-Regular.ttf"
+    FONT_TYPE_BOLD = 'fonts/NotoSansMono-Bold.ttf'
 else:
     FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"
@@ -37,40 +47,42 @@ BACKGROUND_COLOR = (231, 230, 230)
 
 # vertical spacing between lines
 LINE_SPACING = 2.9
+
 LINE_SPACING_INSTRUCTION = 2
 
 # number of permutations for the stimulus order, each participant will get a unique order
 # in case that a data collection is split on two devices we can specify the version start to avoid overlaps
 NUM_PERMUTATIONS = 10 if TESTING_IMAGES else 250
 # NUM_PERMUTATIONS = 1
+
 VERSION_START = 1
 
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
       f'{"For testing purposes only (not for piloting or running real experiments!!)." if TESTING_IMAGES else ""}\n\n')
 
-OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
-IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
-OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
+IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+AOI_IMG_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+AOI_QUESTION_DIR = OUTPUT_TOP_DIR + f'aoi_question_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
+OTHER_SCREENS_DIR = OUTPUT_TOP_DIR + f'participant_instructions_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 
-OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_participant_instructions_{LANGUAGE}.xlsx'
-STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_stimuli_experiment_{LANGUAGE}.xlsx'
-QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_comprehension_questions_{LANGUAGE}.xlsx'
+OTHER_SCREENS_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_{SUBCORPUS + "_" if SUBCORPUS else ""}participant_instructions_{LANGUAGE}.xlsx'
+STIMULI_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_{SUBCORPUS + "_" if SUBCORPUS else ""}stimuli_experiment_{LANGUAGE}.xlsx'
+QUESTION_FILE_PATH = OUTPUT_TOP_DIR + f'multipleye_{SUBCORPUS + "_" if SUBCORPUS else ""}comprehension_questions_{LANGUAGE}.xlsx'
 
 INITIAL_RANDOMIZATION_CSV = REPO_ROOT / 'src' / 'global_configs' / 'stimulus_order_versions.csv'
 
 BLOCK_CONFIG_PATH = CODE_SCR / "global_configs/stimulus_to_id_mapping.csv"
 
 FINAL_CONFIG = OUTPUT_TOP_DIR + ('config/config_'
-                                 f'{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}.py')
+                                 f'{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{CITY}_{LAB_NUMBER}_{YEAR}.py')
 
 ANSWER_OPTION_FOLDER = OUTPUT_TOP_DIR + (f'config/question_answer_option_shuffling_'
-                                         f'{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/')
+                                         f'{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/')
 
-LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/MultiplEYE_{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
+LAB_CONFIGURATION_PATH = OUTPUT_TOP_DIR + (f'config/MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
                                            f'_lab_configuration.json')
 LAB_CONFIGURATION = read_image_configuration(LAB_CONFIGURATION_PATH)
 
@@ -95,7 +107,7 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
 
 IMAGE_SIZE_CM = (37, 28)
 
-MAX_CHARS_PER_LINE = 72 if LANGUAGE in ('ar', 'fa') else 82
+MAX_CHARS_PER_LINE =  82
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 IMAGE_WIDTH_PX = IMAGE_WIDTH_PX if IMAGE_WIDTH_PX % 2 == 0 else IMAGE_WIDTH_PX + 1  # make sure it is even
@@ -129,12 +141,15 @@ POS_TOP_DOT_Y_PX = 1.25 * MIN_MARGIN_TOP_PX
 FIX_DOT_RADIUS_PX = int(0.1 * MIN_MARGIN_LEFT_PX) if int(0.1 * MIN_MARGIN_LEFT_PX) > 7 else 7  # original values is 7
 FIX_DOT_WIDTH_PX = int(FIX_DOT_RADIUS_PX * 5 // 7)   # original value is 5
 
-FONT_SIZE_PX = calculate_font_size()
+FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
+
+font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
+LINE_HEIGHT_PX = sum(font_metrics.getmetrics())  # ascent + descent
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)
-NUM_LINES_PER_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING))
+NUM_LINES_PER_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT_PX * LINE_SPACING), 0)
 
-NUM_LINES_PER_INSTRUCTION_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING_INSTRUCTION))
+NUM_LINES_PER_INSTRUCTION_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT_PX * LINE_SPACING_INSTRUCTION), 0)
 
 ####################################################################

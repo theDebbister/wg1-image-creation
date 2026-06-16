@@ -3,11 +3,11 @@ COUNTRY_CODE = 'ch'
 CITY = 'Zurich'
 YEAR = 2026
 LAB_NUMBER = 1
-# if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise leave empty.
+# if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
 # e.g., 'aging'
 SUBCORPUS = ''
 
-TESTING_IMAGES = True
+TESTING_IMAGES = False
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############

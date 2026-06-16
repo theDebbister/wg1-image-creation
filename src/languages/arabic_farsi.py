@@ -32,6 +32,18 @@ def rtl_display(text: str) -> str:
     return get_display(arabic_reshaper.reshape(text))
 
 
+def rtl_draw_kwargs() -> dict:
+    """Extra draw.text()/textbbox() kwargs needed to shape RTL text via libraqm.
+
+    Passing direction='rtl' lets Pillow's libraqm/HarfBuzz backend shape the text
+    using the font's own glyph tables, instead of arabic_reshaper's presentation-form
+    substitution (which produces codepoints KawkabMono doesn't contain, i.e. tofu boxes).
+    """
+    if image_config.LANGUAGE not in ('fa', 'ar'):
+        return {}
+    return {'direction': 'rtl', 'language': image_config.LANGUAGE}
+
+
 def is_arabic_codepoint(cp: int) -> bool:
     """Return True if the Unicode codepoint belongs to an Arabic script block."""
     return (
@@ -340,7 +352,18 @@ def render_rtl_word(
         # (e.g. ل + ا → لا), the actual advance is less than n_chars × std_char_w;
         # the deficit is recorded as a '_LIGA_SPACE_' AOI.  An '_EXTRA_SPACE_' AOI
         # is added when the word is wider than expected.
-        visible_chars = [c for c in word_stripped if unicodedata.category(c) not in ('Cf', 'Cc')]
+        # Combining marks (e.g. U+0654 hamza above, used for 'ه' + hamza above as a
+        # substitute for the precomposed 'ۀ' which KawkabMono lacks) have zero advance
+        # width and merge visually into the preceding base character, so they share
+        # its AOI box rather than getting one of their own.
+        visible_chars = []
+        for c in word_stripped:
+            if unicodedata.category(c) in ('Cf', 'Cc'):
+                continue
+            if unicodedata.category(c) == 'Mn' and visible_chars:
+                visible_chars[-1] += c
+            else:
+                visible_chars.append(c)
         n_visible = len(visible_chars)
         if n_visible > 0:
             std_char_w = round(draw.textlength('م', font=font, **raqm_opts))

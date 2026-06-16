@@ -15,7 +15,7 @@ from tqdm import tqdm
 import image_config
 from utils import config_utils, checks
 from languages import arabic_farsi, hebrew
-from languages.arabic_farsi import rtl_display
+from languages.arabic_farsi import rtl_draw_kwargs
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -695,6 +695,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     # XLSX files; strip these before splitting into paragraphs.
     text = text.replace('_x000D_', '')
 
+    # KawkabMono lacks the precomposed Persian heh-ye U+06C0 (ۀ); replace it
+    # with the equivalent heh + combining hamza above (U+0647 U+0654), which
+    # the font does support, to avoid tofu boxes.
+    if image_config.LANGUAGE == 'fa':
+        text = text.replace('ۀ', 'هٔ')
+
     try:
         paragraphs = re.split(r'\n+', text.strip())
     except AttributeError as e:
@@ -1031,6 +1037,12 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
     multipleye_logo = Image.open(root / "logo_imgs/logo_multipleye.png")
 
+    # KawkabMono lacks the precomposed Persian heh-ye U+06C0 (ۀ); replace it
+    # with the equivalent heh + combining hamza above (U+0647 U+0654), which
+    # the font does support, to avoid tofu boxes.
+    if image_config.LANGUAGE == 'fa':
+        text = text.replace('ۀ', 'هٔ')
+
     # Set the text
     our_blue = "#007baf"
     font_size_title = image_config.FONT_SIZE_PX * 1.8
@@ -1059,6 +1071,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
     image.paste(cost_logo, cost_logo_position)
 
     texts = text.split('\n')
+    rtl_kwargs = rtl_draw_kwargs()
 
     text_y = image_config.IMAGE_HEIGHT_PX // 2
     for idx, t in enumerate(texts):
@@ -1070,7 +1083,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
             font = ImageFont.truetype(font_type, font_size_text)
 
         left, top, right, bottom = draw.multiline_textbbox(
-            (0, 0), rtl_display(t), font=font
+            (0, 0), t, font=font, **rtl_kwargs
         )
 
         text_width, text_height = right - left, bottom - top
@@ -1084,7 +1097,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
             for element in elements:
                 left, top, right, bottom = draw.multiline_textbbox(
-                    (0, 0), rtl_display(line + element), font=font
+                    (0, 0), line + element, font=font, **rtl_kwargs
                 )
                 width = right - left
 
@@ -1097,17 +1110,17 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
             for line in lines:
                 left, top, right, bottom = draw.multiline_textbbox(
-                    (0, 0), rtl_display(line), font=font
+                    (0, 0), line, font=font, **rtl_kwargs
                 )
                 text_width, text_height = right - left, bottom - top
 
                 text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
-                draw.text((text_x, text_y), rtl_display(line), font=font, fill=our_blue)
+                draw.text((text_x, text_y), line, font=font, fill=our_blue, **rtl_kwargs)
                 text_y += text_height * 1.5
 
         else:
             text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
-            draw.text((text_x, text_y), rtl_display(t), font=font, fill=our_blue)
+            draw.text((text_x, text_y), t, font=font, fill=our_blue, **rtl_kwargs)
             text_y += text_height * 3
 
 
@@ -1147,6 +1160,12 @@ def create_final_screen(image: Image, text: str):
     root = Path(__file__).parent.parent
     multipleye_logo = Image.open(root / "logo_imgs/logo_multipleye.png")
 
+    # KawkabMono lacks the precomposed Persian heh-ye U+06C0 (ۀ); replace it
+    # with the equivalent heh + combining hamza above (U+0647 U+0654), which
+    # the font does support, to avoid tofu boxes.
+    if image_config.LANGUAGE == 'fa':
+        text = text.replace('ۀ', 'هٔ')
+
     final_text = text.split('\n')
 
     our_blue = "#007baf"
@@ -1173,11 +1192,12 @@ def create_final_screen(image: Image, text: str):
 
     # Paste the texts onto the final image
     font = ImageFont.truetype(font_type, font_size)
+    rtl_kwargs = rtl_draw_kwargs()
     text_y = 0
     text_x = 0
     for paragraph in final_text:
         left, top, right, bottom = draw.multiline_textbbox(
-            (0, 0), rtl_display(paragraph), font=font
+            (0, 0), paragraph, font=font, **rtl_kwargs
         )
         text_width, text_height = right - left, bottom - top
         if not text_x:
@@ -1187,7 +1207,7 @@ def create_final_screen(image: Image, text: str):
             text_x = (image_config.IMAGE_WIDTH_PX - text_width) // 2
             text_y += text_width
 
-        draw.text((text_x, text_y), rtl_display(paragraph), font=font, fill=our_blue)
+        draw.text((text_x, text_y), paragraph, font=font, fill=our_blue, **rtl_kwargs)
 
 
 def create_rating_screens(image: Image, text: str, title: str):

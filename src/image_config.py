@@ -1,7 +1,7 @@
-LANGUAGE = 'fa'
+LANGUAGE = 'ca'
 COUNTRY_CODE = 'ch'
 CITY = 'Zurich'
-YEAR = 2026
+YEAR = 2025
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
 # e.g., 'aging'

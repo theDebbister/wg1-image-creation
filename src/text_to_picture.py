@@ -615,7 +615,7 @@ def create_stimuli_images():
     # if there are not enough versions in the initial randomization csv, copy and append the df and increase the version
     # number until we have num permutations
     while len(all_versions_df) <= image_config.NUM_PERMUTATIONS:
-        all_versions_df.append(all_versions_df.assign(version_number=all_versions_df['version_number'] + len(all_versions_df)))
+        pd.concat([all_versions_df, all_versions_df.assign(version_number=all_versions_df['version_number'] + len(all_versions_df))])
 
     # get those entries between the version start and the number of permutations + version start
     language_versions_df = all_versions_df[all_versions_df['version_number'].between(

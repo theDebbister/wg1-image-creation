@@ -617,8 +617,6 @@ def create_stimuli_images():
     while len(all_versions_df) <= image_config.NUM_PERMUTATIONS:
         all_versions_df.append(all_versions_df.assign(version_number=all_versions_df['version_number'] + len(all_versions_df)))
 
-    print(len(all_versions_df))
-
     # get those entries between the version start and the number of permutations + version start
     language_versions_df = all_versions_df[all_versions_df['version_number'].between(
         image_config.VERSION_START, image_config.NUM_PERMUTATIONS + image_config.VERSION_START,

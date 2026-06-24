@@ -1,13 +1,13 @@
-LANGUAGE = 'ca'
-COUNTRY_CODE = 'ch'
-CITY = 'Zurich'
-YEAR = 2025
+LANGUAGE = 'en'
+COUNTRY_CODE = 'us'
+CITY = 'NewYork'
+YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
 # e.g., 'aging'
-SUBCORPUS = ''
+SUBCORPUS = 'aging'
 
-TESTING_IMAGES = False
+TESTING_IMAGES = True
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############

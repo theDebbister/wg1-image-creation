@@ -13,6 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 import image_config
+from src.subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
 from languages import arabic_farsi, hebrew
 from languages.arabic_farsi import rtl_draw_kwargs
@@ -607,6 +608,17 @@ def create_stimuli_images():
     # read the stimulus order version from the global config and select the versions ranging from
     # image_config.VERSION_START to image_config.NUM_PERMUTATIONS + image_config.VERSION_START
     all_versions_df = pd.read_csv(image_config.INITIAL_RANDOMIZATION_CSV, sep=',', encoding='UTF-8')
+
+    if image_config.SUBCORPUS == 'aging':
+        all_versions_df = get_stimulus_randomization_orders(all_versions_df)
+
+    # if there are not enough versions in the initial randomization csv, copy and append the df and increase the version
+    # number until we have num permutations
+    while len(all_versions_df) <= image_config.NUM_PERMUTATIONS:
+        all_versions_df.append(all_versions_df.assign(version_number=all_versions_df['version_number'] + len(all_versions_df)))
+
+    print(len(all_versions_df))
+
     # get those entries between the version start and the number of permutations + version start
     language_versions_df = all_versions_df[all_versions_df['version_number'].between(
         image_config.VERSION_START, image_config.NUM_PERMUTATIONS + image_config.VERSION_START,
@@ -615,14 +627,14 @@ def create_stimuli_images():
 
     language_versions_df.to_csv(
         image_config.REPO_ROOT / image_config.OUTPUT_TOP_DIR / 'config' /
-        f'stimulus_order_versions_{image_config.LANGUAGE}_'
+        f'stimulus_order_versions_{image_config.SUBCORPUS + "_" if image_config.SUBCORPUS else ""}{image_config.LANGUAGE}_'
         f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv',
         sep=',',
         index=False
     )
 
     path_for_config = (image_config.OUTPUT_TOP_DIR + 'config' +
-                       f'/stimulus_order_versions_{image_config.LANGUAGE}_'
+                       f'/stimulus_order_versions_{image_config.SUBCORPUS + "_" if image_config.SUBCORPUS else ""}{image_config.LANGUAGE}_'
                        f'{image_config.COUNTRY_CODE}_{image_config.LAB_NUMBER}.csv').replace('\\', '/')
 
     CONFIG.setdefault('PATHS', {}).update(
@@ -845,9 +857,10 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize)
                     word = word[2:]
 
-                if word.endswith('**'):
+                bold_close = re.search(r'\*\*(\W*)$', word)
+                if bold_close:
                     stop_bold = True
-                    word = word[:-2]
+                    word = word[:bold_close.start()] + bold_close.group(1)
 
                 # add a space before the word if it is in the middle of a line or the last word
                 # this is to make sure that white space belong to the following word in reading order
@@ -882,7 +895,15 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
 
                 else:
-                    for char_idx, char in enumerate(word):
+                    # For Hebrew, combine each base character with its following niqqud/diacritics
+                    # into a grapheme cluster before rendering. Drawing combining marks as standalone
+                    # characters causes the font to insert a dotted-circle placeholder.
+                    if image_config.LANGUAGE == 'he':
+                        chars_to_render = hebrew.split_grapheme_clusters(word)
+                    else:
+                        chars_to_render = list(word)
+
+                    for char_idx, char in enumerate(chars_to_render):
 
                         aoi_y = anchor_y_px
 
@@ -899,12 +920,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                                  aoi_y + line_height),
                                 outline='red', width=1
                             )
-
-                        # aoi_header = ['char_idx', 'char', 'x', 'y', 'width', 'height', 'char_idx_in_line',
-                        # 'line_idx', 'page',
-                        # 'word_idx', 'word_idx_in_line']
-                        aoi_x = aoi_x
-                        aoi_y = aoi_y
 
                         aoi_letter = [
                             aoi_idx, char, aoi_x, aoi_y,
@@ -923,18 +938,26 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                         char_idx_in_line += 1
                         aoi_idx += 1
 
+                        # In RTL context, bracket/paren glyphs must be visually mirrored
+                        # so they open toward the content (e.g. '(' → ')' when drawn RTL).
+                        glyph = arabic_farsi.BIDI_MIRROR.get(char, char) if script_direction == 'rtl' else char
                         draw.text(
-                            (aoi_x, aoi_y), char, fill=image_config.TEXT_COLOR,
+                            (aoi_x, aoi_y), glyph, fill=image_config.TEXT_COLOR,
                             font=font, anchor='la'
                         )
 
                     word_idx_in_line += 1
                     word_idx += 1
 
-                    if word_number == 0:
-                        words.extend([word.strip() for _ in range(len(word.strip()))])
+                    stripped = word.strip()
+                    if image_config.LANGUAGE == 'he':
+                        n_chars = len(hebrew.split_grapheme_clusters(stripped))
                     else:
-                        words.extend([pd.NA] + [word.strip() for _ in range(len(word.strip()))])
+                        n_chars = len(stripped)
+                    if word_number == 0:
+                        words.extend([stripped for _ in range(n_chars)])
+                    else:
+                        words.extend([pd.NA] + [stripped for _ in range(n_chars)])
 
                     if stop_bold:
                         font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)

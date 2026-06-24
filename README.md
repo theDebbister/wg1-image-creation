@@ -4,16 +4,18 @@ This repository contains the code to create the images for the MultiplEYE experi
 examples of all input files that are necessary and the output files that will eventually be generated. You can always
 refer to these as an examples.
 
+* [Prepare MultiplEYE stimulus files](#prepare-stimulus-files)
+* [Create the images](#create-the-images)
+* [What to do about typos in the final images?](#what-if-the-lab-notices-a-typo-after-the-piloting-has-started)
+* [Requirements to run the scripts](#requirements)
+* [Text length requirements](#text-length-requirements)
+* [MultiplEYE Subcorpora](#generating-the-images-for-multipleye-subcorpora)
+
+
 ## Prepare stimulus files
 
 Please follow the instructions in the MultiplEYE guidelines linked on this page to prepare the stimulus files: 
 [MultiplEYE contribute](https://multipleye.eu/contribute/)
-
-### For RTL texts
-When there are English chunks of the texts and they are displayed in the
-created images in wrong order, they order need to be changed in the xlsx file. For example:
-if the ":1" is displayed in the wrong order, it needs to be changed to "1:". 
-The program has a problem when changing from RTL to LTR texts within one image.
 
 ## Create the images
 
@@ -51,7 +53,7 @@ Now, more version will be created which means the process can take a lot longer!
 2. If the lab uses multiple devices, please contact [multipleye@cl.uzh.ch](mailto:multipleye@cl.uzh.ch).
 2. As soon as the images have been generated, upload the entire folder to the SwitchDrive folder of the respective language.
 
-### What if the lab notices a typo after the piloting has started?
+## What if the lab notices a typo after the piloting has started?
 In this case, it is very important to make a copy of the stimulus folder FROM THE EXPERIMENT (not the one on drive 
 nor the one here)!! Some files change during the experiment,
 and we need to keep those. So:
@@ -80,13 +82,14 @@ In order to create images for right-to-left scripts, it is necessary to install 
 ### Length of stimulus texts
 For the default setting of `IMAGE_SIZE_CM = (37, 28)` the following applies:
 
-The maximum number of character per line is 82. And the maximum number of lines per page is 9. This means that the last
-line will be above the fixation dot in the corner of the screen.
+The maximum number of character per line is 82. And the maximum number of lines per page is around 9, 
+but it depends on the exact monitor size and resolution. This means that the last
+line will be above the fixation dot in the corner of the screen. **This needs to be checked for each page**
 However, as we do not split the words, if a word, for example, makes the line 85 characters long, 
-this entire word will be moved to the next line. So the maximum number of chars per page is in theory 738, 
+this entire word will be moved to the next line. So the maximum number of chars per page is in theory around 738 (for 9 lines), 
 but in reality this is rarely the case as the words usually don’t perfectly fit on the lines. 
-So, if you like to count by hand, how the pages fit, you can just determine the first word that exceeds the line 
-limit (>82 chars) and this word will then be the first word of the new line, until you reach 9 lines.
+So, if you like to count by hand how the pages fit, you can just determine the first word that exceeds the line 
+limit (>82 chars) and this word will then be the first word of the new line.
 
 The maximum number of characters can be specified in the `image_config.py` file using the variable MAX_CHARS_PER_LINE.
 Changing this might cause the text to overflow the page!!
@@ -101,4 +104,14 @@ This means we have to test for each option whether it fits in both boxes (and es
 As per default, 10 versions of the images with shuffled answer options will be created, all options should appear in each box type at least
 once across all versions. If an option does not fit, the script will show a warning message but continue. In addition, as people also check
 every screen manually, it will be noticed if an option does not fit.
+
+## Generating the images for MultiplEYE Subcorpora
+
+It is possible to generate images for Corpora using a subset of the MultiplEYE stimuli or changing the stimuli (e.g., shortening them).
+In this case, the data collectors need to define a name for the corpus. This name can then be specified in the `image_config.py` file
+using the argument `SUBCORPUS`. Please note that the stimuli files need to contain this name in the correct position.
+Very importantly, it needs to be defined which stimuli IDs should be used of the original IDs in order to generate the correct randomization file. 
+If it is a subset only. E.g., for the `aging` corpus this has been defined here: `src/subcorpus/aging.py`.
+
+In order to set up the generation for a new subcorpus, please contact [multipleye.project@gmail.com](mailto:multipleye.project@gmail.com).
 

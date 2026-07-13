@@ -23,6 +23,11 @@ pd.options.mode.chained_assignment = None  # default='warn'
 CONFIG = {}
 
 
+def normalize_render_text(text: str) -> str:
+    """Expand ligatures that the configured font may not contain."""
+    return text.replace('ﬁ', 'fi')
+
+
 def create_images(
         stimuli_xlsx_file_name: str,
         question_xlsx_file_name: str,
@@ -615,7 +620,7 @@ def create_stimuli_images():
     # if there are not enough versions in the initial randomization csv, copy and append the df and increase the version
     # number until we have num permutations
     while len(all_versions_df) <= image_config.NUM_PERMUTATIONS:
-        pd.concat([all_versions_df, all_versions_df.assign(version_number=all_versions_df['version_number'] + len(all_versions_df))])
+        all_versions_df = pd.concat([all_versions_df, all_versions_df.assign(version_number=all_versions_df['version_number'] + len(all_versions_df))])
 
     # get those entries between the version start and the number of permutations + version start
     language_versions_df = all_versions_df[all_versions_df['version_number'].between(
@@ -701,15 +706,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
 
-    # openpyxl encodes \r (U+000D) as the literal string '_x000D_' when reading
-    # XLSX files; strip these before splitting into paragraphs.
-    text = text.replace('_x000D_', '')
-
-    # KawkabMono lacks the precomposed Persian heh-ye U+06C0 (ۀ); replace it
-    # with the equivalent heh + combining hamza above (U+0647 U+0654), which
-    # the font does support, to avoid tofu boxes.
-    if image_config.LANGUAGE == 'fa':
-        text = text.replace('ۀ', 'هٔ')
+    text = normalize_render_text(text)
 
     try:
         paragraphs = re.split(r'\n+', text.strip())
@@ -1058,11 +1055,7 @@ def create_welcome_screen(image: Image, text: str) -> None:
 
     multipleye_logo = Image.open(root / "logo_imgs/logo_multipleye.png")
 
-    # KawkabMono lacks the precomposed Persian heh-ye U+06C0 (ۀ); replace it
-    # with the equivalent heh + combining hamza above (U+0647 U+0654), which
-    # the font does support, to avoid tofu boxes.
-    if image_config.LANGUAGE == 'fa':
-        text = text.replace('ۀ', 'هٔ')
+    text = normalize_render_text(text)
 
     # Set the text
     our_blue = "#007baf"
@@ -1181,11 +1174,7 @@ def create_final_screen(image: Image, text: str):
     root = Path(__file__).parent.parent
     multipleye_logo = Image.open(root / "logo_imgs/logo_multipleye.png")
 
-    # KawkabMono lacks the precomposed Persian heh-ye U+06C0 (ۀ); replace it
-    # with the equivalent heh + combining hamza above (U+0647 U+0654), which
-    # the font does support, to avoid tofu boxes.
-    if image_config.LANGUAGE == 'fa':
-        text = text.replace('ۀ', 'هٔ')
+    text = normalize_render_text(text)
 
     final_text = text.split('\n')
 

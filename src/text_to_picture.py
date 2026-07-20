@@ -1004,14 +1004,14 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                         f.write(f'Question option too long for top/bottom box for {image_short_name}\n\n')
 
     # draw fixation point
-    r = image_config.FIX_DOT_RADIUS_PX
+    r = image_config.TOP_FIX_DOT_RADIUS_PX
     fix_x = image_config.POS_BOTTOM_DOT_X_PX
     fix_y = image_config.POS_BOTTOM_DOT_Y_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
         outline=image_config.TEXT_COLOR,
-        width=image_config.FIX_DOT_WIDTH_PX
+        width=image_config.BOTTOM_FIX_DOT_WIDTH_PX
     )
 
     return aois, all_words
@@ -1146,17 +1146,17 @@ def create_fixation_screen(image: Image):
     draw = ImageDraw.Draw(image)
 
     # The fixation dot is positioned a bit left to the first char in the middle of the line
-    r = image_config.FIX_DOT_RADIUS_PX
+    r = image_config.TOP_FIX_DOT_RADIUS_PX
     fix_x = image_config.POS_TOP_DOT_X_PX
     fix_y = image_config.POS_TOP_DOT_Y_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
         outline=image_config.TEXT_COLOR,
-        width=image_config.FIX_DOT_WIDTH_PX
+        width=image_config.BOTTOM_FIX_DOT_WIDTH_PX
     )
 
-    CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y})
+    CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y, 'FIX_DOT_RADIUS': r})
 
 
 def create_camera_setup_screen(image: Image, text: str):
@@ -1304,7 +1304,9 @@ def write_final_image_config() -> None:
             'MIN_MARGIN_TOP_PX': image_config.MIN_MARGIN_TOP_PX,
             'MIN_MARGIN_BOTTOM_PX': image_config.MIN_MARGIN_BOTTOM_PX,
             'IMAGE_SIZE_CM': image_config.IMAGE_SIZE_CM,
-            'MAX_CHARS_PER_LINE': image_config.MAX_CHARS_PER_LINE
+            'MAX_CHARS_PER_LINE': image_config.MAX_CHARS_PER_LINE,
+            'POS_BOTTOM_DOT_X_PX': image_config.POS_BOTTOM_DOT_X_PX,
+            'POS_BOTTOM_DOT_Y_PX': image_config.POS_BOTTOM_DOT_Y_PX,
         }
     )
 

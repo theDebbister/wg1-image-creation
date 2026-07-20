@@ -145,12 +145,15 @@ FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
 
 if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
-    FONT_SIZE_PX = sum(font_metrics.getmetrics())  # ascent + descent
+    LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
+
+else:
+    LINE_HEIGHT = FONT_SIZE_PX
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)
-NUM_LINES_PER_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING), 0)
+NUM_LINES_PER_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING))
 
-NUM_LINES_PER_INSTRUCTION_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING_INSTRUCTION), 0)
+NUM_LINES_PER_INSTRUCTION_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING_INSTRUCTION))
 
 ####################################################################

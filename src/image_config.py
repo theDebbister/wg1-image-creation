@@ -1,11 +1,11 @@
-LANGUAGE = 'en'
-COUNTRY_CODE = 'us'
-CITY = 'NewYork'
+LANGUAGE = 'ja'
+COUNTRY_CODE = 'ja'
+CITY = 'Tokyo'
 YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
 # e.g., 'aging'
-SUBCORPUS = 'aging'
+SUBCORPUS = ''
 
 TESTING_IMAGES = True
 
@@ -152,7 +152,11 @@ else:
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)
-NUM_LINES_PER_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING))
+# A page needs (N - 1) full line pitches between lines plus one final line's height, not N
+# full pitches -- the latter reserves a trailing gap after the last line that is never drawn,
+# undercounting capacity by nearly one line.
+_AVAILABLE_TEXT_HEIGHT_PX = IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX
+NUM_LINES_PER_PAGE = int((_AVAILABLE_TEXT_HEIGHT_PX - LINE_HEIGHT) / (LINE_HEIGHT * LINE_SPACING)) + 1
 
 NUM_LINES_PER_INSTRUCTION_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING_INSTRUCTION))
 

@@ -192,6 +192,21 @@ def create_images(
                     if len(question_id) == 4:
                         question_id = '0' + question_id
 
+                    # Hardcoded fix for Arg_PISACowsMilk (stimulus_id 10) question 10212 in
+                    # Hebrew only: 'ה-British' is a mixed Hebrew+Latin token directly glued to
+                    # the following pure-Latin run 'Medical Journal'. reorder_ltr_runs merges
+                    # the three into one run and reverses their order, which is correct for a
+                    # pure-Latin-led run (verified against the Unicode Bidi Algorithm) but wrong
+                    # when a mixed word leads the run: it produces 'Journal Medical British-ה'
+                    # instead of 'ה-British Medical Journal'. A general fix for mixed-word-led
+                    # runs was tried and reverted -- it broke the (unrelated, already-correct)
+                    # 'תוכניותCOST (Cooperation in Science and Technology)' case. Splitting off
+                    # the 'ה-' prefix with a space keeps it out of the run entirely, which
+                    # matches the desired order (verified against the Unicode Bidi Algorithm).
+                    if (image_config.LANGUAGE == 'he' and question_id == '10212'
+                            and image_config.CITY == 'Haifa'):
+                        question = question.replace('ה-British', 'ה- British')
+
                     # item_id = question_row['item_id']
 
                     question_identifier = f'question_{question_id}_stimulus_{stimulus_id}'
@@ -421,6 +436,28 @@ def create_images(
                     empty_page = False
 
                 text = str(initial_stimulus_df.iloc[row_index, col_index])
+
+                # Hardcoded fix for PopSci_MultiplEYE (stimulus_id 1) page_1 in Hebrew only:
+                # '(eye-tracking). MultiplEYE' is a run of English words long enough to wrap
+                # across a line break. Because '(eye-tracking).' isn't self-bracketed (the
+                # closing ')' is followed by a period), it gets merged into one multi-word run
+                # with 'MultiplEYE' and reordered as a unit, which corrupts the layout when the
+                # run is split across the wrap. Reviewers confirmed this can't be fixed
+                # automatically and asked for this exact occurrence to be handled by hand: the
+                # period belongs to the 'eye-tracking' sentence and must stay glued to it, while
+                # 'MultiplEYE' (a new sentence) starts on the next row. Forcing a paragraph break
+                # right there keeps '(eye-tracking).' intact as its own line (rendered correctly
+                # since it's no longer merged with 'MultiplEYE') and starts 'MultiplEYE' fresh.
+                if (image_config.LANGUAGE == 'he' and stimulus_id == 1
+                        and column_name == 'page_1' and image_config.CITY == 'Haifa'):
+                    text = text.replace('(eye-tracking). MultiplEYE', '(eye-tracking).\nMultiplEYE')
+
+                # Hardcoded fix for Arg_PISACowsMilk (stimulus_id 10) page_11 in Hebrew only:
+                # same 'ה-British' issue as the question_10212 fix above (see that comment for
+                # the full explanation) -- this is the stimulus-page occurrence of the same text.
+                if (image_config.LANGUAGE == 'he' and stimulus_id == 10
+                        and column_name == 'page_11' and image_config.CITY == 'Haifa'):
+                    text = text.replace('ה-British', 'ה- British')
 
                 # Create a new image with a previously defined color background and size
                 final_image = Image.new(
@@ -719,10 +756,15 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
     line_idx = 0
     all_lines = []
 
-    num_text_lines = 0
     word_idx = 0
     aoi_idx = 0
     quote_open = False  # tracks open/close quote state across paragraphs on this page
+
+    # Tracks how far down the page the text actually reaches, so we can warn only if it
+    # really crosses into the bottom margin, instead of predicting from a line count.
+    text_start_y_px = anchor_y_px
+    line_height = sum(font.getmetrics())
+    last_line_bottom_px = text_start_y_px
 
     for paragraph in paragraphs:
         if word_split_criterion == '':
@@ -742,6 +784,8 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             arabic_farsi.reverse_ltr_runs(words_in_paragraph)
         elif image_config.LANGUAGE == 'he':
             hebrew.reorder_ltr_runs(words_in_paragraph)
+            hebrew.merge_prefix_gap(words_in_paragraph)
+            hebrew.fix_cost_parens(words_in_paragraph)
         line = ""
         lines = []
 
@@ -758,7 +802,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             if character_limit:
                 if len(line) + len(word) > character_limit:
                     lines.append(line.strip())
-                    num_text_lines += 1
                     line = word + word_split_criterion
                 else:
                     line += word.strip() + word_split_criterion
@@ -790,7 +833,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                             line += latin_word
                         else:
                             lines.append(line.strip())
-                            num_text_lines += 1
                             line = latin_word
                         in_latin_word = False
                         latin_word = ''
@@ -810,7 +852,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     line += latin_word + word.strip() + word_split_criterion
                 else:
                     lines.append(line.strip())
-                    num_text_lines += 1
                     line = word + word_split_criterion
 
                 latin_word = ''
@@ -818,10 +859,6 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         if latin_word:
             line += latin_word
         lines.append(line.strip())
-        num_text_lines += 1
-
-        if num_text_lines > line_limit and not draw_aoi:
-            warnings.warn(f'Too many lines for {image_short_name}: {num_text_lines}')
 
         for line in lines:
 
@@ -845,6 +882,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
             char_idx_in_line = 0
             word_idx_in_line = 0
+            prev_word_left_overflow = 0
 
             stop_bold = False
             for word_number, word in enumerate(words_in_line):
@@ -857,10 +895,22 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     stop_bold = True
                     word = word[:bold_close.start()] + bold_close.group(1)
 
+                # A prefix glued directly onto a bold-marked word (e.g. Hebrew 'ה**word**'
+                # with no space between the prefix and the marker) leaves one '**' marker
+                # in the middle of the token, since the checks above only look at the
+                # token's edges. Split it out so the prefix and the bold word can each be
+                # drawn in their own font.
+                mid_bold_split = None
+                if image_config.LANGUAGE not in ('fa', 'ar') and '**' in word:
+                    mid_bold_split = word.index('**')
+                    word = word[:mid_bold_split] + word[mid_bold_split + 2:]
+
                 # add a space before the word if it is in the middle of a line or the last word
                 # this is to make sure that white space belong to the following word in reading order
                 if word_number != 0:
                     word = word_split_criterion + word
+                    if mid_bold_split is not None:
+                        mid_bold_split += len(word_split_criterion)
 
                 word_left, word_top, word_right, word_bottom = draw.multiline_textbbox(
                     (0, 0), word, font=font
@@ -871,11 +921,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                 if image_config.LANGUAGE in ('fa', 'ar'):
                     # put this in functions to keep the code here more legible
                     (current_x, aoi_idx, char_idx_in_line, word_idx_in_line,
-                     chars_added, word_stripped) = arabic_farsi.render_rtl_word(
+                     chars_added, word_stripped, prev_word_left_overflow) = arabic_farsi.render_rtl_word(
                         draw, word, word_number, words_in_line, x_word,
                         anchor_y_px, font, fontsize, line_height,
                         aoi_idx, char_idx_in_line, line_idx, image_short_name,
                         word_idx, word_idx_in_line, draw_aoi, aois,
+                        prev_word_left_overflow,
                     )
                     top_left_corner_x_letter = current_x
                     word_idx += 1
@@ -890,19 +941,53 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
 
                 else:
-                    # For Hebrew, combine each base character with its following niqqud/diacritics
-                    # into a grapheme cluster before rendering. Drawing combining marks as standalone
-                    # characters causes the font to insert a dotted-circle placeholder.
-                    if image_config.LANGUAGE == 'he':
-                        chars_to_render = hebrew.split_grapheme_clusters(word)
+                    chars_to_render = list(word)
+
+                    if mid_bold_split is not None:
+                        bold_font = ImageFont.truetype(
+                            str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize
+                        )
+                        prefix_char_count = mid_bold_split
+                        char_fonts = (
+                            [font] * prefix_char_count
+                            + [bold_font] * (len(chars_to_render) - prefix_char_count)
+                        )
+                        font = bold_font
                     else:
-                        chars_to_render = list(word)
+                        char_fonts = [font] * len(chars_to_render)
+
+                    # Tracks the most recently drawn non-mark character, so a Hebrew
+                    # niqqud mark (see hebrew.is_combining_mark) can be positioned
+                    # against it instead of occupying a cell of its own.
+                    prev_base_char = None
+                    prev_base_x = None
+                    prev_base_y = None
+                    prev_base_font = None
 
                     for char_idx, char in enumerate(chars_to_render):
+                        char_font = char_fonts[char_idx]
 
                         aoi_y = anchor_y_px
 
-                        _, _, letter_width, _ = font.getbbox(char, anchor='la')
+                        # In RTL context, bracket/paren glyphs must be visually mirrored
+                        # so they open toward the content (e.g. '(' → ')' when drawn RTL).
+                        glyph = arabic_farsi.BIDI_MIRROR.get(char, char) if script_direction == 'rtl' else char
+
+                        # A Hebrew niqqud mark attaches to the previously drawn letter
+                        # rather than occupying its own cell: no AOI box, no cursor
+                        # advance, no width measurement -- the font's own mark
+                        # positioning is unreliable for several base letters (see
+                        # hebrew.draw_mark), so it's drawn separately using plain
+                        # pixel measurements against that letter's ink instead.
+                        if image_config.LANGUAGE == 'he' and hebrew.is_combining_mark(char):
+                            if prev_base_char is not None:
+                                hebrew.draw_mark(
+                                    draw, glyph, prev_base_char, prev_base_x, prev_base_y,
+                                    prev_base_font, image_config.TEXT_COLOR
+                                )
+                            continue
+
+                        _, _, letter_width, _ = char_font.getbbox(char, anchor='la')
                         if script_direction == 'rtl':
                             aoi_x = top_left_corner_x_letter - letter_width
                         else:
@@ -933,20 +1018,23 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                         char_idx_in_line += 1
                         aoi_idx += 1
 
-                        # In RTL context, bracket/paren glyphs must be visually mirrored
-                        # so they open toward the content (e.g. '(' → ')' when drawn RTL).
-                        glyph = arabic_farsi.BIDI_MIRROR.get(char, char) if script_direction == 'rtl' else char
                         draw.text(
                             (aoi_x, aoi_y), glyph, fill=image_config.TEXT_COLOR,
-                            font=font, anchor='la'
+                            font=char_font, anchor='la'
                         )
+                        if image_config.LANGUAGE == 'he':
+                            prev_base_char, prev_base_x, prev_base_y, prev_base_font = (
+                                glyph, aoi_x, aoi_y, char_font
+                            )
 
                     word_idx_in_line += 1
                     word_idx += 1
 
                     stripped = word.strip()
                     if image_config.LANGUAGE == 'he':
-                        n_chars = len(hebrew.split_grapheme_clusters(stripped))
+                        # Niqqud marks don't get their own AOI entry (see the
+                        # per-character loop above), so only count characters that do.
+                        n_chars = sum(1 for c in stripped if not hebrew.is_combining_mark(c))
                     else:
                         n_chars = len(stripped)
                     if word_number == 0:
@@ -961,8 +1049,19 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     x_word = x_word + word_width if script_direction == 'ltr' else x_word - word_width
 
             all_words.extend(words)
+            last_line_bottom_px = anchor_y_px + line_height
             anchor_y_px += line_height * spacing
             line_idx += 1
+
+    # line_limit lines means (line_limit - 1) full line pitches between lines, plus the
+    # last line's own height -- not line_limit full pitches, which would reserve an unused
+    # trailing gap and warn a line too early.
+    allowed_bottom_px = text_start_y_px + (line_limit - 1) * line_height * spacing + line_height
+    if last_line_bottom_px > allowed_bottom_px and not draw_aoi:
+        warnings.warn(
+            f'Text for {image_short_name} extends past its {line_limit}-line allotment: '
+            f'ends at {last_line_bottom_px:.0f}px, allotted up to {allowed_bottom_px:.0f}px'
+        )
 
     overlong_questions = []
     if question_option_type and not draw_aoi:
@@ -1004,14 +1103,14 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                         f.write(f'Question option too long for top/bottom box for {image_short_name}\n\n')
 
     # draw fixation point
-    r = image_config.TOP_FIX_DOT_RADIUS_PX
+    r = image_config.FIX_DOT_RADIUS_PX
     fix_x = image_config.POS_BOTTOM_DOT_X_PX
     fix_y = image_config.POS_BOTTOM_DOT_Y_PX
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
         outline=image_config.TEXT_COLOR,
-        width=image_config.BOTTOM_FIX_DOT_WIDTH_PX
+        width=image_config.FIX_DOT_WIDTH_PX
     )
 
     return aois, all_words
@@ -1146,14 +1245,15 @@ def create_fixation_screen(image: Image):
     draw = ImageDraw.Draw(image)
 
     # The fixation dot is positioned a bit left to the first char in the middle of the line
-    r = image_config.TOP_FIX_DOT_RADIUS_PX
+    r = image_config.FIX_DOT_RADIUS_PX
     fix_x = image_config.POS_TOP_DOT_X_PX
     fix_y = image_config.POS_TOP_DOT_Y_PX
+
     draw.ellipse(
         (fix_x - r, fix_y - r, fix_x + r, fix_y + r),
         fill=None,
         outline=image_config.TEXT_COLOR,
-        width=image_config.BOTTOM_FIX_DOT_WIDTH_PX
+        width=image_config.FIX_DOT_WIDTH_PX
     )
 
     CONFIG.setdefault('IMAGE', {}).update({'FIX_DOT_X': fix_x, 'FIX_DOT_Y': fix_y, 'FIX_DOT_RADIUS': r})

@@ -208,12 +208,17 @@ def render_rtl_word(
     draw, word, word_number, words_in_line, x_word, anchor_y_px,
     font, fontsize, line_height, aoi_idx, char_idx_in_line,
     line_idx, image_short_name, word_idx, word_idx_in_line,
-    draw_aoi, aois,
+    draw_aoi, aois, prev_word_left_overflow=0,
 ):
     """Render one word of RTL (Arabic/Farsi) text and collect AOI entries.
 
-    Returns (current_x, aoi_idx, char_idx_in_line, word_idx_in_line, chars_added, word_stripped).
+    Returns (current_x, aoi_idx, char_idx_in_line, word_idx_in_line, chars_added,
+    word_stripped, word_left_overflow).
     current_x is the updated right-edge position for the next word (moves leftward).
+    word_left_overflow is how far this word's leftmost character box was extended
+    past the word's true left edge (see ALWAYS_OVERFLOW etc. below); the caller
+    passes it back in as prev_word_left_overflow so the following inter-word space
+    box can be trimmed to it, instead of overlapping that character's box.
     """
     word_stripped = word.strip()
     reshaped_word = arabic_reshaper.reshape(word_stripped)  # noqa: F841 — kept for ligature info
@@ -232,14 +237,18 @@ def render_rtl_word(
         if space_width == 0:
             space_width = max(1, int(font.getbbox(' ')[2]))
         space_x = current_x - space_width
+        # The previous word's last character box may have been widened past
+        # current_x to fix its visual overflow (see word_left_overflow below).
+        # Trim the space box to that boundary so the two boxes don't overlap.
+        space_right = current_x - prev_word_left_overflow
         aoi_space = [
             aoi_idx, ' ', space_x, aoi_y,
-            space_width, line_height,
+            space_right - space_x, line_height,
             char_idx_in_line, line_idx, image_short_name, word_idx, word_idx_in_line,
         ]
         if draw_aoi:
             draw.rectangle(
-                (space_x, aoi_y, space_x + space_width, aoi_y + line_height),
+                (space_x, aoi_y, space_right, aoi_y + line_height),
                 outline='red', width=1,
             )
         aois.append(aoi_space)
@@ -256,6 +265,8 @@ def render_rtl_word(
     # Pure punctuation/digit words (no Arabic script, no alphabetic chars)
     # need BiDi mirroring when placed in the RTL stream.
     is_punct_only = not has_arabic_chars and not any(c.isalpha() for c in word_stripped)
+
+    word_left_overflow = 0
 
     if not has_arabic_chars:
         # ── LTR word inside RTL text (e.g. "MultiplEYE") ──────────────────────
@@ -380,9 +391,13 @@ def render_rtl_word(
                 left_overflow = ALWAYS_OVERFLOW.get(char, 0)
 
                 if char in ('ر', 'ز'):
-                    # Overflow only when connected to the right (bilateral connector).
+                    # Overflow only at the end of the word (nothing drawn further left
+                    # to conflict with), and only when connected to the right (bilateral
+                    # connector). Mid-word, another letter's glyph sits right where this
+                    # extension would go, so no overflow is applied there.
+                    is_last_char = vi == len(visible_chars) - 1
                     prev_char = visible_chars[vi - 1] if vi > 0 else None
-                    if prev_char is not None and prev_char not in RIGHT_JOINING_ONLY:
+                    if is_last_char and prev_char is not None and prev_char not in RIGHT_JOINING_ONLY:
                         left_overflow = 4
                 elif char == 'ك':
                     # The كا combination causes ك to overflow leftward.
@@ -411,6 +426,11 @@ def render_rtl_word(
                 prev_left_overflow = left_overflow
                 aoi_x_right -= std_char_w
 
+            # The last character drawn (leftmost) is the one adjacent to the next
+            # word's inter-word space; its overflow, if any, needs to be subtracted
+            # from that space box so the two don't overlap.
+            word_left_overflow = left_overflow
+
             if width_diff != 0 and word_number != len(words_in_line) - 1:
                 space_label = '_EXTRA_SPACE_' if width_diff > 0 else '_LIGA_SPACE_'
                 space_w = abs(width_diff)
@@ -433,6 +453,9 @@ def render_rtl_word(
 
         # Draw the mirrored trailing bracket to the left of the Arabic word.
         if trailing_bracket:
+            # The bracket becomes the new leftmost content, drawn at its exact
+            # width with no overflow correction, so it defines the true edge.
+            word_left_overflow = 0
             mirrored_bracket = ''.join(BIDI_MIRROR.get(c, c) for c in trailing_bracket)
             bracket_width = round(draw.textlength(mirrored_bracket, font=font))
             if bracket_width == 0:
@@ -464,4 +487,5 @@ def render_rtl_word(
                 bracket_x += bracket_char_w
             current_x -= bracket_width
 
-    return current_x, aoi_idx, char_idx_in_line, word_idx_in_line, chars_added, word_stripped
+    return (current_x, aoi_idx, char_idx_in_line, word_idx_in_line, chars_added,
+            word_stripped, word_left_overflow)

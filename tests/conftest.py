@@ -116,7 +116,7 @@ def toy_image_config():
     # Patch to TOY
     ic.LANGUAGE = "toy"
     ic.COUNTRY_CODE = "X"
-    ic.CITY = "X"
+    ic.CITY = "x"
     ic.YEAR = 1
     ic.LAB_NUMBER = 1
     ic.SUBCORPUS = ""

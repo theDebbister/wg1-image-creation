@@ -44,10 +44,6 @@ put the other one in an archive folder on the Drive.
 If the images have been checked and the lab decides to start with the piloting, the images need to be created again 
 one last time.
 
-> NOTE: there is a bug currently that causes the images to be blurry (ONLY when presented within the experiment, 
-> not visible here). Something that seems to help is to slightly reduce the image width, i.e. setting it to 36.5 instead of 
-> 37 in the `image_config.py` file. 
-
 1. Once the images have been checked according to the guidelines, set the variable `TESTING_IMAGES` to `False`. 
 Now, more version will be created which means the process can take a lot longer!
 2. If the lab uses multiple devices, please contact [multipleye@cl.uzh.ch](mailto:multipleye@cl.uzh.ch).

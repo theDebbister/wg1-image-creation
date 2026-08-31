@@ -1,0 +1,52 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          uv sync --group dev
+          uv pip install fonttools
+
+      - name: Run unit tests
+        run: |
+          .venv/bin/python -m pytest tests/ -v -m "not integration and not visual" --tb=short
+
+      - name: Run integration tests
+        run: |
+          .venv/bin/python -m pytest tests/ -v -m integration --tb=short
+        continue-on-error: true
+
+      - name: Run visual regression tests
+        run: |
+          .venv/bin/python -m pytest tests/ -v -m visual --tb=short
+        continue-on-error: true
+
+      - name: Upload visual diffs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: data/_visual_diffs/
+          retention-days: 30

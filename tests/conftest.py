@@ -108,7 +108,7 @@ def toy_image_config():
         "NUM_PERMUTATIONS", "VERSION_START", "FONT_SIZE_PX",
         "NUM_LINES_PER_PAGE", "NUM_LINES_PER_INSTRUCTION_PAGE",
         "POS_BOTTOM_DOT_X_PX", "POS_BOTTOM_DOT_Y_PX",
-        "POS_TOP_DOT_X_PX", "POS_TOP_DOT_Y_PY",
+        "POS_TOP_DOT_X_PX", "POS_TOP_DOT_Y_PX",
         "FIX_DOT_RADIUS_PX", "FIX_DOT_WIDTH_PX",
     ]
     orig = {k: getattr(ic, k) for k in _PATCH_KEYS if hasattr(ic, k)}
@@ -206,7 +206,7 @@ def toy_image_config():
     ic.POS_BOTTOM_DOT_X_PX = ic.IMAGE_WIDTH_PX - ic.MIN_MARGIN_RIGHT_PX if ic.SCRIPT_DIRECTION == 'ltr' else ic.MIN_MARGIN_LEFT_PX
     ic.POS_BOTTOM_DOT_Y_PX = int(ic.IMAGE_HEIGHT_PX - 2 * ic.RESOLUTION[1] / ic.SCREEN_SIZE_CM[1])
     ic.POS_TOP_DOT_X_PX = 0.75 * ic.MIN_MARGIN_RIGHT_PX if ic.SCRIPT_DIRECTION == 'ltr' else ic.IMAGE_WIDTH_PX - 0.75 * ic.MIN_MARGIN_RIGHT_PX
-    ic.POS_TOP_DOT_Y_PY = 1.25 * ic.MIN_MARGIN_TOP_PX
+    ic.POS_TOP_DOT_Y_PX = 1.25 * ic.MIN_MARGIN_TOP_PX
     ic.FIX_DOT_RADIUS_PX = int(0.1 * ic.MIN_MARGIN_LEFT_PX) if int(0.1 * ic.MIN_MARGIN_LEFT_PX) > 7 else 7
     ic.FIX_DOT_WIDTH_PX = int(ic.FIX_DOT_RADIUS_PX * 5 // 7)
 

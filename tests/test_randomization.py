@@ -7,15 +7,32 @@ cover edge cases efficiently.
 """
 from __future__ import annotations
 
+import sys
+from unittest.mock import MagicMock
+
 import pytest
 
+# randomization.py imports image_config at module level, which reads a lab
+# configuration file that may not exist (e.g. in CI).  The functions we test
+# are pure and never read image_config, so we inject a harmless stub before
+# importing the module, then remove it so other test modules get the real one.
+if "image_config" not in sys.modules:
+    sys.modules["image_config"] = MagicMock()
+    _mocked = True
+else:
+    _mocked = False
+
 from randomization import is_break_time_allowed, is_before_and_after_break, is_id_not_consecutive
+
+if _mocked:
+    del sys.modules["image_config"]
 
 
 # ---------------------------------------------------------------------------
 # is_break_time_allowed
 # ---------------------------------------------------------------------------
 
+@pytest.mark.unit
 class TestIsBreakTimeAllowed:
     """is_break_time_allowed(pages) -> (num_stimuli, break_allowed: bool)
 
@@ -53,6 +70,7 @@ class TestIsBreakTimeAllowed:
 # is_before_and_after_break
 # ---------------------------------------------------------------------------
 
+@pytest.mark.unit
 class TestIsBeforeAndAfterBreak:
 
     @pytest.mark.parametrize("id_1, id_2, expected", [
@@ -76,6 +94,7 @@ class TestIsBeforeAndAfterBreak:
 # is_id_not_consecutive
 # ---------------------------------------------------------------------------
 
+@pytest.mark.unit
 class TestIsIdNotConsecutive:
 
     @pytest.mark.parametrize("id_1, id_2, expected", [

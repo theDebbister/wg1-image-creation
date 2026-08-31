@@ -35,7 +35,8 @@ jobs:
       - name: Generate baselines from main
         if: github.event_name == 'pull_request'
         run: |
-          git worktree add _main main
+          git fetch origin main
+          git worktree add _main origin/main
           cd _main
           uv sync --group dev
           .venv/bin/python -m pytest tests/ -v -m visual --update-baselines --tb=short

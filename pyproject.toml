@@ -1,0 +1,41 @@
+[project]
+name = "wg1-image-creation"
+version = "0.1.0"
+description = "MultiplEYE stimulus image creation"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "Cython==3.0.2",
+    "et-xmlfile==1.1.0",
+    "numpy==1.24.2",
+    "openpyxl==3.1.2",
+    "pandas==1.5.3",
+    "Pillow>=10.1.0",
+    "pyobjc-core==9.1.1",
+    "pyobjc-framework-Cocoa==9.1.1",
+    "python-dateutil==2.8.2",
+    "pytz==2022.7.1",
+    "screeninfo==0.8.1",
+    "six==1.16.0",
+    "tqdm==4.65.0",
+    "ipywidgets==8.1.2",
+    "uharfbuzz>=0.23.0",
+    "arabic-reshaper>=3.0.0",
+    "python-bidi>=0.4.2",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pytest>=7.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "unit: pure unit tests (no data/ or font dependencies)",
+    "integration: tests that need data/ + fonts",
+    "visual: image regression tests (slow, need full env)",
+]
+pythonpath = ["src"]

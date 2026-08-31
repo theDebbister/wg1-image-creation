@@ -256,3 +256,13 @@ Temporary Items
 
 .claude
 
+# Test artifacts
+data/_visual_baselines/
+data/_visual_diffs/
+
+# Fonts (local install)
+fonts/*.ttf
+
+# Source data zips
+*.zip
+

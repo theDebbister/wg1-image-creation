@@ -807,7 +807,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
                     line += word.strip() + word_split_criterion
             else:
                 # chinese is a special case
-                if image_config.LANGUAGE == 'zh':
+                if image_config.LANGUAGE == 'zh' or 'ja':
                     # for chinese a word is a single character, if it is not a chinese character but a latin one,
                     # we will treat it differently
                     if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
@@ -868,7 +868,7 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
             all_lines.append(line)
 
             # for chinese we need to split the line into chars later and do not want to split at spaces
-            if image_config.LANGUAGE == 'zh':
+            if image_config.LANGUAGE == 'zh' or 'ja':
                 words_in_line = [line]
             else:
                 words_in_line = line.split()

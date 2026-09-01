@@ -31,7 +31,7 @@ class TestReadImageConfiguration:
         assert "DISTANCE_CM" in config
 
         assert config["RESOLUTION"] == (1920, 1080)
-        assert config["SCRIPT_DIRECTION"] == "LTR"
+        assert config["SCRIPT_DIRECTION"] == "ltr"
         assert config["MULTIPLE_DEVICES"] is False
         assert config["DISTANCE_CM"] == 60
 

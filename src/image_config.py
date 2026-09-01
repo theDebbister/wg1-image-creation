@@ -151,16 +151,23 @@ MARGIN_LEFT_CM_RTL, MARGIN_RIGHT_CM_RTL = MARGIN_RIGHT_CM, MARGIN_LEFT_CM
 MIN_MARGIN_LEFT_PX_RTL, MIN_MARGIN_RIGHT_PX_RTL = MIN_MARGIN_RIGHT_PX, MIN_MARGIN_LEFT_PX
 
 TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
+TEXT_HEIGHT_PX = IMAGE_HEIGHT_PX - MIN_MARGIN_TOP_PX - MIN_MARGIN_BOTTOM_PX
 POS_BOTTOM_DOT_Y_PX = int(IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 POS_TOP_DOT_Y_PX = 1.25 * MIN_MARGIN_TOP_PX
-# Optional debug overlay for labs: green genkoyoshi grid per cell, spike verified programmatically
+# Debug overlays for lab review, optional and not in final stimuli
 DEBUG_GRID = False
-# For ttb, text flows in columns. Reuse line metrics as column metrics, column advance is FONT_SIZE_PX
-COLUMN_ADVANCE_PX = FONT_SIZE_PX if SCRIPT_DIRECTION == 'ttb' else None
+DEBUG_MARGIN = False
 FIX_DOT_RADIUS_PX = int(0.1 * MIN_MARGIN_LEFT_PX) if int(0.1 * MIN_MARGIN_LEFT_PX) > 7 else 7  # original values is 7
 FIX_DOT_WIDTH_PX = int(FIX_DOT_RADIUS_PX * 5 // 7)   # original value is 5
 
 FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
+# For ttb, column advance reuses LINE_SPACING as gap factor: column gap = unit * spacing
+# Decision: LINE_SPACING 2.9 is horizontal-specific, for vertical we reuse it so
+# columns are spaced like lines, giving ~28 cols per page at 20px. Tight grid
+# would be unit (20px) giving 82 cols per page, too dense. Gap is configurable
+# via COLUMN_GAP_FACTOR if colleagues want widening of Japanese square.
+COLUMN_GAP_FACTOR = LINE_SPACING
+COLUMN_ADVANCE_PX = int(FONT_SIZE_PX * COLUMN_GAP_FACTOR) if SCRIPT_DIRECTION == 'ttb' else None
 
 if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)

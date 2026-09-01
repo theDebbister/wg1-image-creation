@@ -156,6 +156,15 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     aoi_idx = 0
     col_idx = 0
 
+    # Margin overlay for review
+    if getattr(image_config, 'DEBUG_MARGIN', False):
+        m = image_config
+        # paint margins as semi transparent, draw border lines
+        draw.rectangle([0, 0, m.MIN_MARGIN_LEFT_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([m.IMAGE_WIDTH_PX - m.MIN_MARGIN_RIGHT_PX, 0, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([0, 0, m.IMAGE_WIDTH_PX, m.MIN_MARGIN_TOP_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+        draw.rectangle([0, m.IMAGE_HEIGHT_PX - m.MIN_MARGIN_BOTTOM_PX, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+
     # Green genkoyoshi grid colors
     grid_light = (183, 216, 176)
     grid_mid = (150, 190, 150)
@@ -959,6 +968,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
+    if getattr(image_config, 'DEBUG_MARGIN', False):
+        m = image_config
+        draw.rectangle([0, 0, m.MIN_MARGIN_LEFT_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([m.IMAGE_WIDTH_PX - m.MIN_MARGIN_RIGHT_PX, 0, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([0, 0, m.IMAGE_WIDTH_PX, m.MIN_MARGIN_TOP_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+        draw.rectangle([0, m.IMAGE_HEIGHT_PX - m.MIN_MARGIN_BOTTOM_PX, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
 

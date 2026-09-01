@@ -32,7 +32,7 @@ elif LANGUAGE in ('zh', 'yu', 'ja'):
         WORD_SPLIT_CRITERION = ''
     else:
         # Use static instance to avoid Pillow variable font boxes with X
-        FONT_TYPE = "fonts/NotoSansSC-Regular-static.ttf"
+        FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
         FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
         WORD_SPLIT_CRITERION = ''
 elif LANGUAGE == 'fa':

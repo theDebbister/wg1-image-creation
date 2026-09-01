@@ -36,17 +36,28 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           git fetch origin main
-          git worktree add _main origin/main
-          cd _main
-          uv sync --group dev
-          uv run pytest tests/ -v -m visual --update-baselines --tb=short
-          cp -r data/_visual_baselines $GITHUB_WORKSPACE/data/_visual_baselines
-          cd $GITHUB_WORKSPACE
-          git worktree remove _main
+          git show origin/main:src/text_to_picture.py > /tmp/text_to_picture_main.py
+          cp src/text_to_picture.py /tmp/text_to_picture_pr.py
+          cp /tmp/text_to_picture_main.py src/text_to_picture.py
+          .venv/bin/python -m pytest tests/ -v -m visual --update-baselines --tb=short
+          cp /tmp/text_to_picture_pr.py src/text_to_picture.py
 
       - name: Run visual regression tests
         if: github.event_name == 'pull_request'
         run: .venv/bin/python -m pytest tests/ -v -m visual --tb=short
+
+      - name: Comment on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const run_url = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Visual Regression Failed\n\nImages differ from main. Download the **visual-diffs** artifact from the [workflow run](${run_url}) to inspect (available 30 days).`
+            });
 
       - name: Upload visual diffs
         if: failure() && github.event_name == 'pull_request'

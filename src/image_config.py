@@ -31,7 +31,8 @@ elif LANGUAGE in ('zh', 'yu', 'ja'):
         FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
         WORD_SPLIT_CRITERION = ''
     else:
-        FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
+        # Use static instance to avoid Pillow variable font boxes with X
+        FONT_TYPE = "fonts/NotoSansSC-Regular-static.ttf"
         FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
         WORD_SPLIT_CRITERION = ''
 elif LANGUAGE == 'fa':

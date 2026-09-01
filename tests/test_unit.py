@@ -107,11 +107,15 @@ def _import_checks():
 def _import_config_utils_pure():
     """Import parse_true_false without image_config side effects."""
     import sys, types
+    created_fake = False
     if "image_config" not in sys.modules:
         fake_ic = types.ModuleType("image_config")
         fake_ic.TESTING_IMAGES = True
         sys.modules["image_config"] = fake_ic
+        created_fake = True
     from utils.config_utils import parse_true_false
+    if created_fake:
+        sys.modules.pop("image_config", None)
     return parse_true_false
 
 

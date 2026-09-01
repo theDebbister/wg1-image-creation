@@ -210,6 +210,16 @@ def toy_image_config():
     ic.FIX_DOT_RADIUS_PX = int(0.1 * ic.MIN_MARGIN_LEFT_PX) if int(0.1 * ic.MIN_MARGIN_LEFT_PX) > 7 else 7
     ic.FIX_DOT_WIDTH_PX = int(ic.FIX_DOT_RADIUS_PX * 5 // 7)
 
+    # Reload text_to_picture so its import-time defaults (draw_text signature)
+    # capture the patched image_config values, not stale ones from unit tests
+    import importlib
+    if "text_to_picture" in sys.modules:
+        importlib.reload(sys.modules["text_to_picture"])
+
+    # Ensure paths that unit-test fakes might have overwritten are correct
+    ic.BLOCK_CONFIG_PATH = SRC_DIR / "global_configs" / "stimulus_to_id_mapping.csv"
+    ic.INITIAL_RANDOMIZATION_CSV = SRC_DIR / "global_configs" / "stimulus_order_versions.csv"
+
     yield ic
 
     # Restore originals

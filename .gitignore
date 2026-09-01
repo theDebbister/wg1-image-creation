@@ -260,6 +260,18 @@ Temporary Items
 data/_visual_baselines/
 data/_visual_diffs/
 
+# Generated pipeline outputs inside TOY dataset
+data/stimuli_MultiplEYE_TOY_X_x_1_1/stimuli_images_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/question_images_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/aoi_stimuli_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/aoi_stimuli_images_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/aoi_question_images_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/participant_instructions_images_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/config/question_answer_option_shuffling_*/
+data/stimuli_MultiplEYE_TOY_X_x_1_1/config/stimulus_order_versions_*
+data/stimuli_MultiplEYE_TOY_X_x_1_1/*_with_img_paths.csv
+data/stimuli_MultiplEYE_TOY_X_x_1_1/overlong_question_options.txt
+
 # Fonts (local install)
 fonts/*.ttf
 

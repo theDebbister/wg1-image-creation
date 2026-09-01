@@ -13,10 +13,22 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 import image_config
-from src.subcorpus.aging import get_stimulus_randomization_orders
+try:
+    from src.subcorpus.aging import get_stimulus_randomization_orders
+except ImportError:
+    from subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
 from languages import arabic_farsi, hebrew
 from languages.arabic_farsi import rtl_draw_kwargs
+
+try:
+    import uharfbuzz as hb
+    import freetype
+    _HAS_VERTICAL = True
+except Exception:
+    hb = None
+    freetype = None
+    _HAS_VERTICAL = False
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -26,6 +38,201 @@ CONFIG = {}
 def normalize_render_text(text: str) -> str:
     """Expand ligatures that the configured font may not contain."""
     return text.replace('ﬁ', 'fi')
+
+
+# Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi
+_TTB_CANNOT_START = set('、。，．」』）］｝〕〉》】〙〗〞”“’）」』〜ー々ヽゝゞっゃゅょゎぁぃぅぇぉァィゥェォッャュョヮ\u30fd\u30fe')
+_TTB_CANNOT_END = set('「『（［｛〔〈《【〘〖〝‘“「『（')
+
+
+def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
+                   spacing: float = image_config.LINE_SPACING, image_short_name: str = None,
+                   anchor_x_px: int = None, anchor_y_px: int = None,
+                   text_width_px: int = None, script_direction: str = 'ttb',
+                   word_split_criterion: str = ' ', line_limit: int = None,
+                   character_limit: int = None):
+    """Vertical ttb column renderer via uharfbuzz plus freetype.
+
+    Layout respects genkoyoshi grid and w3.org/TR/jlreq minimal kinsoku.
+    Each cell is fontsize x fontsize. Char advance is +y, column advance is -x.
+    AOI boxes are the uniform cells, not ink bboxes. Optional green grid when
+    image_config.DEBUG_GRID is True, for lab review.
+    """
+    # For ttb the anchor is always top-right, ignore ltr default passed by callers
+    if script_direction == 'ttb':
+        anchor_x_px = image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX
+        anchor_y_px = image_config.MIN_MARGIN_TOP_PX
+    else:
+        if anchor_x_px is None:
+            anchor_x_px = image_config.ANCHOR_POINT_X_PX
+        if anchor_y_px is None:
+            anchor_y_px = image_config.ANCHOR_POINT_Y_PX
+    if line_limit is None:
+        line_limit = image_config.NUM_LINES_PER_PAGE
+
+    draw = ImageDraw.Draw(image)
+    text = normalize_render_text(text)
+    paragraphs = re.split(r'\n+', text.strip()) if text.strip() else []
+
+    # Build flat char sequence, preserving paragraph breaks as column breaks
+    chars: list[str] = []
+    for pi, para in enumerate(paragraphs):
+        if word_split_criterion == '':
+            seq = [c for c in para]
+        else:
+            # for ttb with spaces, keep chars including spaces as cells
+            seq = list(para)
+        chars.extend(seq)
+        if pi < len(paragraphs) - 1:
+            chars.append('\n')
+
+    # Remove spaces that are not meaningful for ttb, keep explicit newline markers
+    # For ja the sequence is already per char, spaces would be rare
+    filtered: list[str] = []
+    for c in chars:
+        if c == ' ' and word_split_criterion == '':
+            continue
+        filtered.append(c)
+    chars = filtered
+
+    # Column packing for vertical: rows are tight cells, columns are spaced
+    # Height gives rows per column, line_limit caps columns per page for compat
+    text_height_px = image_config.IMAGE_HEIGHT_PX - image_config.MIN_MARGIN_TOP_PX - image_config.MIN_MARGIN_BOTTOM_PX
+    rows_per_col = max(1, text_height_px // fontsize)
+    col_advance = int(fontsize * spacing) if spacing else fontsize
+    max_cols = line_limit if line_limit else max(1, image_config.TEXT_WIDTH_PX // col_advance)
+
+    cols: list[list[str]] = []
+    cur: list[str] = []
+    for ch in chars:
+        if ch == '\n':
+            if cur:
+                cols.append(cur)
+                cur = []
+            continue
+        cur.append(ch)
+        if len(cur) >= rows_per_col:
+            cols.append(cur)
+            cur = []
+    if cur:
+        cols.append(cur)
+
+    # Minimal kinsoku: never start a column with cannot_start, never end with cannot_end
+    for idx in range(len(cols)):
+        if not cols[idx]:
+            continue
+        if cols[idx][0] in _TTB_CANNOT_START and idx > 0 and cols[idx - 1]:
+            moved = cols[idx - 1].pop()
+            cols[idx].insert(0, moved)
+            if not cols[idx - 1]:
+                cols[idx - 1] = cols[idx]
+                cols[idx] = []
+        if cols[idx] and cols[idx][-1] in _TTB_CANNOT_END:
+            moved = cols[idx].pop()
+            if idx + 1 < len(cols):
+                cols[idx + 1].insert(0, moved)
+            else:
+                cols.append([moved])
+
+    cols = [c for c in cols if c]
+
+    if len(cols) > max_cols:
+        warnings.warn(
+            f'Text for {image_short_name} exceeds {max_cols} columns: has {len(cols)} cols'
+        )
+
+    # Shaping and rendering per column
+    font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
+    blob = hb.Blob.from_file_path(font_path)
+    face = hb.Face(blob)
+    hb_font = hb.Font(face)
+    hb_font.scale = (face.upem, face.upem)
+    ft_face = freetype.Face(font_path)
+    ft_face.set_char_size(fontsize * 64)
+    scale = fontsize / face.upem
+
+    aois = []
+    all_words: list[str] = []
+    aoi_idx = 0
+    col_idx = 0
+
+    # Green genkoyoshi grid colors
+    grid_light = (183, 216, 176)
+    grid_mid = (150, 190, 150)
+    grid_dark = (110, 160, 110)
+
+    for col in cols:
+        col_text = ''.join(col)
+        # Shape whole column as one ttb run
+        buf = hb.Buffer()
+        buf.add_str(col_text)
+        buf.direction = 'ttb'
+        buf.language = image_config.LANGUAGE
+        # script guess, ja uses hani
+        buf.guess_segment_properties()
+        # Force ttb
+        buf.direction = 'ttb'
+        hb.shape(hb_font, buf)
+        infos = buf.glyph_infos
+        positions = buf.glyph_positions
+
+        # Pen for this column: top-right anchor moving left per column
+        pen_x_center = anchor_x_px - fontsize // 2 - col_idx * col_advance
+        pen_y_top = anchor_y_px
+
+        for row_idx, (ch, info, pos) in enumerate(zip(col, infos, positions)):
+            # AOI cell rectangle
+            aoi_x = pen_x_center - fontsize // 2
+            aoi_y = pen_y_top + row_idx * fontsize
+            aoi_w = fontsize
+            aoi_h = fontsize
+
+            # Grid overlay for review when DEBUG_GRID
+            if getattr(image_config, 'DEBUG_GRID', False):
+                y0 = aoi_y
+                y1 = aoi_y + fontsize
+                x0 = aoi_x
+                x1 = aoi_x + fontsize
+                draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+
+            if draw_aoi:
+                draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+
+            # Render glyph via freetype at HarfBuzz position
+            gid = info.codepoint
+            x_off_px = pos.x_offset * scale
+            y_off_px = -pos.y_offset * scale
+            ft_face.load_glyph(gid, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_NORMAL)
+            bitmap = ft_face.glyph.bitmap
+            w, h = bitmap.width, bitmap.rows
+            left = ft_face.glyph.bitmap_left
+            top = ft_face.glyph.bitmap_top
+            # pen for this char: x center, y top
+            pen_x = pen_x_center
+            pen_y = pen_y_top + row_idx * fontsize
+            glyph_x = int(pen_x + x_off_px + left)
+            glyph_y = int(pen_y + y_off_px - top)
+            if w > 0 and h > 0:
+                glyph_img = Image.frombytes('L', (w, h), bytes(bitmap.buffer))
+                # paste as black on image
+                image.paste(Image.new('RGB', (w, h), image_config.TEXT_COLOR), (glyph_x, glyph_y), glyph_img)
+
+            aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+            all_words.append(ch)
+            aoi_idx += 1
+
+        col_idx += 1
+
+    # Fixation dot
+    r = image_config.FIX_DOT_RADIUS_PX
+    fix_x = image_config.POS_BOTTOM_DOT_X_PX
+    fix_y = image_config.POS_BOTTOM_DOT_Y_PX
+    draw.ellipse((fix_x - r, fix_y - r, fix_x + r, fix_y + r), fill=None, outline=image_config.TEXT_COLOR, width=image_config.FIX_DOT_WIDTH_PX)
+
+    return aois, all_words
 
 
 def create_images(
@@ -730,8 +937,20 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         the second list contains all words in text order as many times as there are characters in the word
     """
     script_direction = script_direction.lower()
-    if script_direction not in ['ltr', 'rtl']:
-        raise ValueError(f'Script direction must be either "ltr" or "rtl", not {script_direction}')
+    if script_direction not in ['ltr', 'rtl', 'ttb']:
+        raise ValueError(f'Script direction must be one of ltr, rtl, ttb, not {script_direction}')
+
+    if script_direction == 'ttb':
+        if not _HAS_VERTICAL:
+            raise RuntimeError('ttb rendering requires uharfbuzz and freetype-py')
+        return _draw_text_ttb(
+            text=text, image=image, fontsize=fontsize, draw_aoi=draw_aoi,
+            spacing=spacing, image_short_name=image_short_name,
+            anchor_x_px=anchor_x_px, anchor_y_px=anchor_y_px,
+            text_width_px=text_width_px, script_direction=script_direction,
+            word_split_criterion=word_split_criterion, line_limit=line_limit,
+            character_limit=character_limit,
+        )
 
     if not text_width_px and not character_limit:
         character_limit = image_config.MAX_CHARS_PER_LINE

@@ -375,6 +375,7 @@ class TestVisualRegression:
                     f"See data/_visual_diffs/{name}_side_by_side.png"
                 )
 
+    @pytest.mark.filterwarnings("ignore:No questions found for toy_text_4:UserWarning")
     def test_full_pipeline_toy(self, toy_image_config, request):
         """Run the full pipeline on TOY data and check generated images exist."""
         import image_config

@@ -77,6 +77,7 @@ class TestCalculateFontSize:
             image_config.LANGUAGE = old_lang
             image_config.FONT_TYPE = old_font
 
+    @pytest.mark.filterwarnings("ignore:Please be aware that for Cantonese:UserWarning")
     def test_cjk_language(self, toy_image_config):
         """CJK uses '大' as the reference character."""
         import image_config

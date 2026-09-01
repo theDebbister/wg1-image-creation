@@ -216,3 +216,193 @@ class TestVisualRegression:
                     f"Visual diff detected: {diff_pixels} pixels changed. "
                     f"See data/_visual_diffs/{name}_side_by_side.png"
                 )
+
+    def test_stimulus_page_rtl(self, toy_image_config, request):
+        """Render an Arabic (RTL) stimulus page and compare."""
+        from text_to_picture import draw_text
+        import image_config
+
+        img = Image.new(
+            "RGB",
+            (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+            color=image_config.BACKGROUND_COLOR,
+        )
+        draw_text(
+            "\u0627\u0644\u0639\u0631\u0628\u064a\u0629 \u0644\u063a\u0629 \u0645\u0647\u0645\u0629 \u0641\u064a \u0627\u0644\u0639\u0627\u0644\u0645",
+            img, image_config.FONT_SIZE_PX,
+            draw_aoi=False, line_limit=image_config.NUM_LINES_PER_PAGE,
+            word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+            anchor_x_px=image_config.ANCHOR_POINT_X_PX,
+            anchor_y_px=image_config.ANCHOR_POINT_Y_PX,
+            spacing=image_config.LINE_SPACING,
+            script_direction=image_config.SCRIPT_DIRECTION,
+        )
+
+        name = "stimulus_page_rtl"
+        if request.config.getoption("--update-baselines", default=False):
+            _save_baseline(name, img)
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, img)
+                pytest.skip("Baseline created (first run)")
+            diff_pixels = _image_diff_pixels(baseline, img)
+            if diff_pixels > 0:
+                _save_diff_report(name, baseline, img, diff_pixels)
+                assert False, (
+                    f"Visual diff detected: {diff_pixels} pixels changed. "
+                    f"See data/_visual_diffs/{name}_side_by_side.png"
+                )
+
+    def test_stimulus_page_multiline(self, toy_image_config, request):
+        """Render a long text that wraps across multiple lines."""
+        from text_to_picture import draw_text
+        import image_config
+
+        img = Image.new(
+            "RGB",
+            (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+            color=image_config.BACKGROUND_COLOR,
+        )
+        long_text = (
+            "This is a very long sentence designed to test the line wrapping "
+            "behaviour of the renderer. It should span multiple lines and "
+            "demonstrate that the text does not overflow the margins or get "
+            "cut off at the bottom of the image. The quick brown fox jumps "
+            "over the lazy dog and then runs away into the forest."
+        )
+        draw_text(
+            long_text,
+            img, image_config.FONT_SIZE_PX,
+            draw_aoi=False, line_limit=image_config.NUM_LINES_PER_PAGE,
+            word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+            anchor_x_px=image_config.ANCHOR_POINT_X_PX,
+            anchor_y_px=image_config.ANCHOR_POINT_Y_PX,
+            spacing=image_config.LINE_SPACING,
+            script_direction=image_config.SCRIPT_DIRECTION,
+        )
+
+        name = "stimulus_page_multiline"
+        if request.config.getoption("--update-baselines", default=False):
+            _save_baseline(name, img)
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, img)
+                pytest.skip("Baseline created (first run)")
+            diff_pixels = _image_diff_pixels(baseline, img)
+            if diff_pixels > 0:
+                _save_diff_report(name, baseline, img, diff_pixels)
+                assert False, (
+                    f"Visual diff detected: {diff_pixels} pixels changed. "
+                    f"See data/_visual_diffs/{name}_side_by_side.png"
+                )
+
+    def test_stimulus_page_aoi_boxes(self, toy_image_config, request):
+        """Render text with AOI bounding boxes drawn around characters."""
+        from text_to_picture import draw_text
+        import image_config
+
+        img = Image.new(
+            "RGB",
+            (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+            color=image_config.BACKGROUND_COLOR,
+        )
+        draw_text(
+            "The quick brown fox",
+            img, image_config.FONT_SIZE_PX,
+            draw_aoi=True, line_limit=image_config.NUM_LINES_PER_PAGE,
+            word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+            anchor_x_px=image_config.ANCHOR_POINT_X_PX,
+            anchor_y_px=image_config.ANCHOR_POINT_Y_PX,
+            spacing=image_config.LINE_SPACING,
+            script_direction=image_config.SCRIPT_DIRECTION,
+        )
+
+        name = "stimulus_page_aoi_boxes"
+        if request.config.getoption("--update-baselines", default=False):
+            _save_baseline(name, img)
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, img)
+                pytest.skip("Baseline created (first run)")
+            diff_pixels = _image_diff_pixels(baseline, img)
+            if diff_pixels > 0:
+                _save_diff_report(name, baseline, img, diff_pixels)
+                assert False, (
+                    f"Visual diff detected: {diff_pixels} pixels changed. "
+                    f"See data/_visual_diffs/{name}_side_by_side.png"
+                )
+
+    def test_rating_screen(self, toy_image_config, request):
+        """Render a rating screen with question and answer options."""
+        from text_to_picture import create_rating_screens
+        import image_config
+
+        img = Image.new(
+            "RGB",
+            (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+            color=image_config.BACKGROUND_COLOR,
+        )
+        rating_text = (
+            "How difficult was this text?\n"
+            "Very easy\n"
+            "Easy\n"
+            "Neutral\n"
+            "Difficult\n"
+            "Very difficult"
+        )
+        create_rating_screens(img, rating_text, "Rating")
+
+        name = "rating_screen"
+        if request.config.getoption("--update-baselines", default=False):
+            _save_baseline(name, img)
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, img)
+                pytest.skip("Baseline created (first run)")
+            diff_pixels = _image_diff_pixels(baseline, img)
+            if diff_pixels > 0:
+                _save_diff_report(name, baseline, img, diff_pixels)
+                assert False, (
+                    f"Visual diff detected: {diff_pixels} pixels changed. "
+                    f"See data/_visual_diffs/{name}_side_by_side.png"
+                )
+
+    @pytest.mark.filterwarnings("ignore:No questions found for toy_text_4:UserWarning")
+    def test_full_pipeline_toy(self, toy_image_config, request):
+        """Run the full pipeline on TOY data and check generated images exist."""
+        import image_config
+        from text_to_picture import create_stimuli_images
+
+        create_stimuli_images()
+
+        image_dir = image_config.REPO_ROOT / image_config.IMAGE_DIR
+
+        stimulus_images = list(image_dir.glob("*.png")) if image_dir.is_dir() else []
+
+        assert len(stimulus_images) > 0, f"No stimulus images generated in {image_dir}"
+
+        name = "full_pipeline_first_stimulus"
+        first = Image.open(stimulus_images[0]).convert("RGB")
+        if request.config.getoption("--update-baselines", default=False):
+            _save_baseline(name, first)
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, first)
+                pytest.skip("Baseline created (first run)")
+            diff_pixels = _image_diff_pixels(baseline, first)
+            if diff_pixels > 0:
+                _save_diff_report(name, baseline, first, diff_pixels)
+                assert False, (
+                    f"Visual diff detected: {diff_pixels} pixels changed. "
+                    f"See data/_visual_diffs/{name}_side_by_side.png"
+                )

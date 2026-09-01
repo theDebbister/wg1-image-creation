@@ -39,7 +39,7 @@ jobs:
           git worktree add _main origin/main
           cd _main
           uv sync --group dev
-          .venv/bin/python -m pytest tests/ -v -m visual --update-baselines --tb=short
+          uv run pytest tests/ -v -m visual --update-baselines --tb=short
           cp -r data/_visual_baselines $GITHUB_WORKSPACE/data/_visual_baselines
           cd $GITHUB_WORKSPACE
           git worktree remove _main

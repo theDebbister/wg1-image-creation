@@ -98,22 +98,32 @@ def read_image_configuration(config_path: Path | str) -> dict:
 def calculate_font_size(lang: str):
     # one line on the image should fit approximately 82 latin characters
     # JA unit square must equal zh unit square per decisions, same reference char for visual angle
+    # For ttb, use TEXT_HEIGHT_PX with MAX_CHARS_PER_COLUMN instead of width
     size = 0
     if lang in ('ar', 'fa'):
         char = 'د'
     elif lang in ('zh', 'yu', 'ja'):
-        if lang == 'ja':
-            # ja reuses the zh reference char so the square matches, warning not needed
-            char = '大'
-        else:
-            warnings.warn('Please be aware that for Cantonese and Mandarin the font size may need to be decided manually '
-                          'as the characters are very different from other languages. '
-                          'Check if the size is good.')
-            char = '大'
+        warnings.warn('Please be aware that for Japanese, Cantonese and Mandarin the font size may need to be decided manually '
+                      'as the characters are very different from other languages. '
+                      'Check if the size is good.')
+        char = '大'
     elif lang == 'he':
         char = 'ה'
     else:
         char = 'a'
+    # Vertical ttb uses height as constraint
+    if getattr(image_config, 'SCRIPT_DIRECTION', 'ltr') == 'ttb':
+        target = getattr(image_config, 'MAX_CHARS_PER_COLUMN', 28)
+        text = char * target
+        text_width = 0
+        while text_width < image_config.TEXT_HEIGHT_PX:
+            size += 1
+            font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), size)
+            text_width = font.font.getsize(text)[0][0]
+            if text_width >= image_config.TEXT_HEIGHT_PX:
+                size -= 1
+                break
+        return size
     text = char * image_config.MAX_CHARS_PER_LINE
     text_width = 0
 

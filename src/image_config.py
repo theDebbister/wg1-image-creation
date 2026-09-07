@@ -117,6 +117,8 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
 IMAGE_SIZE_CM = (37, 28)
 
 MAX_CHARS_PER_LINE =  82
+# For vertical ttb, chars per column instead of per line, height is the constraint
+MAX_CHARS_PER_COLUMN = 28
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 IMAGE_WIDTH_PX = IMAGE_WIDTH_PX if IMAGE_WIDTH_PX % 2 == 0 else IMAGE_WIDTH_PX + 1  # make sure it is even
@@ -173,6 +175,15 @@ COLUMN_ADVANCE_PX = int(FONT_SIZE_PX * COLUMN_GAP_FACTOR) if SCRIPT_DIRECTION ==
 if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
     FONT_SIZE_PX = sum(font_metrics.getmetrics())  # ascent + descent
+
+# Latin handling for vertical writing: JetBrains Mono tight
+# tight = per-char AOI 39x~23, whole word pulled together
+if SCRIPT_DIRECTION == 'ttb':
+    LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    LATIN_BOX_TYPE = "tight"
+else:
+    LATIN_FONT_TYPE = None
+    LATIN_BOX_TYPE = "square"
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)

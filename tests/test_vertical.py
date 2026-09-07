@@ -100,46 +100,48 @@ class TestVisualTTB:
         from test_visual import _load_baseline, _save_baseline, _image_diff_pixels, _save_diff_report
 
         image_config.DEBUG_GRID = with_grid
-        img = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-        text = "テスト、。「」ー〜っゃ大３A 二段落目です。\n次の段落は別のカラムへ。"
-        draw_text(
-            text, img, image_config.FONT_SIZE_PX,
-            draw_aoi=False,
-            word_split_criterion="",
-            script_direction="ttb",
-            line_limit=image_config.NUM_LINES_PER_PAGE,
-            image_short_name=f"ttb_grid_{with_grid}",
-        )
-        img_aoi = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
-        aois, _ = draw_text(
-            text, img_aoi, image_config.FONT_SIZE_PX,
-            draw_aoi=True,
-            word_split_criterion="",
-            script_direction="ttb",
-            line_limit=image_config.NUM_LINES_PER_PAGE,
-            image_short_name="ttb_aoi_check",
-        )
-        for aoi in aois:
-            _, ch, x, y, w, h, *_ = aoi
-            assert 0 <= x < image_config.IMAGE_WIDTH_PX
-            assert 0 <= y < image_config.IMAGE_HEIGHT_PX
-            assert x + w <= image_config.IMAGE_WIDTH_PX
-            assert y + h <= image_config.IMAGE_HEIGHT_PX
+        try:
+            img = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+            text = "テスト、。「」ー〜っゃ大３A 二段落目です。\n次の段落は別のカラムへ。"
+            draw_text(
+                text, img, image_config.FONT_SIZE_PX,
+                draw_aoi=False,
+                word_split_criterion="",
+                script_direction="ttb",
+                line_limit=image_config.NUM_LINES_PER_PAGE,
+                image_short_name=f"ttb_grid_{with_grid}",
+            )
+            img_aoi = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+            aois, _ = draw_text(
+                text, img_aoi, image_config.FONT_SIZE_PX,
+                draw_aoi=True,
+                word_split_criterion="",
+                script_direction="ttb",
+                line_limit=image_config.NUM_LINES_PER_PAGE,
+                image_short_name="ttb_aoi_check",
+            )
+            for aoi in aois:
+                _, ch, x, y, w, h, *_ = aoi
+                assert 0 <= x < image_config.IMAGE_WIDTH_PX
+                assert 0 <= y < image_config.IMAGE_HEIGHT_PX
+                assert x + w <= image_config.IMAGE_WIDTH_PX
+                assert y + h <= image_config.IMAGE_HEIGHT_PX
 
-        name = f"ttb_{'grid' if with_grid else 'nogrid'}"
-        if request.config.getoption("--update-baselines", default=False):
-            _save_baseline(name, img)
-            pytest.skip("Baseline updated")
-        else:
-            baseline = _load_baseline(name)
-            if baseline is None:
+            name = f"ttb_{'grid' if with_grid else 'nogrid'}"
+            if request.config.getoption("--update-baselines", default=False):
                 _save_baseline(name, img)
-                pytest.skip("Baseline created (first run)")
-            diff_pixels = _image_diff_pixels(baseline, img)
-            if diff_pixels > 0:
-                _save_diff_report(name, baseline, img, diff_pixels)
-                assert False, f"Visual diff {diff_pixels} pixels for {name}"
-        image_config.DEBUG_GRID = False
+                pytest.skip("Baseline updated")
+            else:
+                baseline = _load_baseline(name)
+                if baseline is None:
+                    _save_baseline(name, img)
+                    pytest.skip("Baseline created (first run)")
+                diff_pixels = _image_diff_pixels(baseline, img)
+                if diff_pixels > 0:
+                    _save_diff_report(name, baseline, img, diff_pixels)
+                    assert False, f"Visual diff {diff_pixels} pixels for {name}"
+        finally:
+            image_config.DEBUG_GRID = False
 
     @pytest.mark.parametrize("lang", ["ja", "zh", "yu"])
     def test_cjk_ttb_visual_per_lang(self, toy_image_config, request, lang):

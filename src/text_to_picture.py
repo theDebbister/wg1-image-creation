@@ -1258,8 +1258,8 @@ def create_stimuli_images():
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               spacing: int = image_config.LINE_SPACING, image_short_name: str = None,
-              anchor_x_px: int = image_config.ANCHOR_POINT_X_PX,
-              anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
+              anchor_x_px: int = None,
+              anchor_y_px: int = None,
               text_width_px: int = None,
               text_height_px: int = None,
               script_direction: str = image_config.SCRIPT_DIRECTION,
@@ -1307,6 +1307,16 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
     script_direction = script_direction.lower()
     if script_direction not in ['ltr', 'rtl', 'ttb']:
         raise ValueError(f'Script direction must be one of ltr, rtl, ttb, not {script_direction}')
+
+    # Anchor default depends on the requested script direction, not on the
+    # lab config (which may describe a different direction in tests).
+    if anchor_x_px is None:
+        anchor_x_px = (
+            image.width - image_config.MIN_MARGIN_RIGHT_PX if script_direction == 'ttb'
+            else image_config.ANCHOR_POINT_X_PX
+        )
+    if anchor_y_px is None:
+        anchor_y_px = image_config.ANCHOR_POINT_Y_PX
 
     if script_direction == 'ttb':
         if not _HAS_VERTICAL:

@@ -47,22 +47,24 @@ def test_margin_painting_visual(toy_image_config, request, with_margin):
     import image_config
     from test_visual import _load_baseline, _save_baseline, _image_diff_pixels, _save_diff_report
     image_config.DEBUG_MARGIN = with_margin
-    img = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), image_config.BACKGROUND_COLOR)
-    draw_text("Hello world", img, image_config.FONT_SIZE_PX, draw_aoi=False, script_direction="ltr", image_short_name="margin_vis")
-    name = f"margin_{'on' if with_margin else 'off'}"
-    if request.config.getoption("--update-baselines", default=False):
-        _save_baseline(name, img)
-        pytest.skip("Baseline updated")
-    else:
-        baseline = _load_baseline(name)
-        if baseline is None:
+    try:
+        img = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), image_config.BACKGROUND_COLOR)
+        draw_text("Hello world", img, image_config.FONT_SIZE_PX, draw_aoi=False, script_direction="ltr", image_short_name="margin_vis")
+        name = f"margin_{'on' if with_margin else 'off'}"
+        if request.config.getoption("--update-baselines", default=False):
             _save_baseline(name, img)
-            pytest.skip("Baseline created")
-        diff = _image_diff_pixels(baseline, img)
-        if diff > 0:
-            _save_diff_report(name, baseline, img, diff)
-            assert False, f"Margin visual diff {diff}"
-    image_config.DEBUG_MARGIN = False
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, img)
+                pytest.skip("Baseline created")
+            diff = _image_diff_pixels(baseline, img)
+            if diff > 0:
+                _save_diff_report(name, baseline, img, diff)
+                assert False, f"Margin visual diff {diff}"
+    finally:
+        image_config.DEBUG_MARGIN = False
 
 
 @pytest.mark.visual
@@ -72,20 +74,22 @@ def test_ttb_margin_grid_visual(toy_image_config, request):
     from test_visual import _load_baseline, _save_baseline, _image_diff_pixels, _save_diff_report
     image_config.DEBUG_MARGIN = True
     image_config.DEBUG_GRID = True
-    img = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), image_config.BACKGROUND_COLOR)
-    draw_text("テスト、。「」ー〜っゃ大３A", img, image_config.FONT_SIZE_PX, draw_aoi=False, script_direction="ttb", word_split_criterion="", line_limit=image_config.NUM_LINES_PER_PAGE, image_short_name="ttb_both")
-    name = "ttb_margin_grid"
-    if request.config.getoption("--update-baselines", default=False):
-        _save_baseline(name, img)
-        pytest.skip("Baseline updated")
-    else:
-        baseline = _load_baseline(name)
-        if baseline is None:
+    try:
+        img = Image.new("RGB", (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX), image_config.BACKGROUND_COLOR)
+        draw_text("テスト、。「」ー〜っゃ大３A", img, image_config.FONT_SIZE_PX, draw_aoi=False, script_direction="ttb", word_split_criterion="", line_limit=image_config.NUM_LINES_PER_PAGE, image_short_name="ttb_both")
+        name = "ttb_margin_grid"
+        if request.config.getoption("--update-baselines", default=False):
             _save_baseline(name, img)
-            pytest.skip("Baseline created")
-        diff = _image_diff_pixels(baseline, img)
-        if diff > 0:
-            _save_diff_report(name, baseline, img, diff)
-            assert False, f"Diff {diff}"
-    image_config.DEBUG_MARGIN = False
-    image_config.DEBUG_GRID = False
+            pytest.skip("Baseline updated")
+        else:
+            baseline = _load_baseline(name)
+            if baseline is None:
+                _save_baseline(name, img)
+                pytest.skip("Baseline created")
+            diff = _image_diff_pixels(baseline, img)
+            if diff > 0:
+                _save_diff_report(name, baseline, img, diff)
+                assert False, f"Diff {diff}"
+    finally:
+        image_config.DEBUG_MARGIN = False
+        image_config.DEBUG_GRID = False

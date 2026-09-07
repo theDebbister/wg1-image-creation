@@ -1957,13 +1957,59 @@ def create_rating_screens(image: Image, text: str, title: str):
         if image_config.SCRIPT_DIRECTION == 'ttb':
             col_left = block_right - (ttb_col_idx + 1) * image_config.FONT_SIZE_PX - ttb_col_idx * gap
             col_anchor = col_left + image_config.FONT_SIZE_PX  # right edge for ttb
-            draw_text(
-                option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
-                anchor_x_px=col_anchor, anchor_y_px=option_y_px,
-                text_width_px=image_config.FONT_SIZE_PX, text_height_px=avail_h,
-                line_limit=1, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
-                center_in_box=False,
-            )
+            # Rating options are "1 – 0%" (prefix, dash, suffix). The prefix digit is set
+            # upright. the numeric/percentage suffix (0%, 25%, 100%) is set horizontally.
+            # The dash comes from the input file and is rendered as-is (its optimal form in
+            # vertical text is still under discussion).
+            m = re.search(f"[{re.escape('–—-')}]", option)
+            if m and title in ("familiarity_rating_screen_1", "familiarity_rating_screen_2", "subject_difficulty_screen"):
+                dash_idx = m.start()
+                dash_char = option[dash_idx]
+                prefix = option[:dash_idx].strip()
+                suffix = option[dash_idx + 1:].strip()
+                pen_y = option_y_px
+                font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
+                pil_font = ImageFont.truetype(font_path, image_config.FONT_SIZE_PX)
+                draw = ImageDraw.Draw(image)
+                # prefix (e.g. "1") upright, one cell per character
+                for ch in prefix:
+                    if ch == ' ':
+                        pen_y += image_config.FONT_SIZE_PX // 3
+                        continue
+                    draw.text((col_left + image_config.FONT_SIZE_PX // 2, pen_y + image_config.FONT_SIZE_PX // 2),
+                              ch, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
+                    pen_y += image_config.FONT_SIZE_PX
+                # dash as in the input file
+                if dash_char:
+                    draw.text((col_left + image_config.FONT_SIZE_PX // 2, pen_y + image_config.FONT_SIZE_PX // 2),
+                              dash_char, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
+                    pen_y += image_config.FONT_SIZE_PX
+                # suffix: numeric/percentage -> horizontal; otherwise vertical Japanese
+                if suffix:
+                    is_numeric_suffix = bool(re.fullmatch(r"[0-9%％\s]+", suffix)) and any(c.isdigit() for c in suffix)
+                    if is_numeric_suffix:
+                        w = pil_font.getlength(suffix)
+                        x0 = col_left + (image_config.FONT_SIZE_PX - w) / 2
+                        y0 = pen_y + image_config.FONT_SIZE_PX // 2
+                        draw.text((x0 + w / 2, y0), suffix, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
+                    else:
+                        remaining_h = avail_h - (pen_y - option_y_px)
+                        if remaining_h > 0:
+                            draw_text(
+                                suffix, image, image_config.FONT_SIZE_PX, draw_aoi=False,
+                                anchor_x_px=col_anchor, anchor_y_px=pen_y,
+                                text_width_px=image_config.FONT_SIZE_PX, text_height_px=remaining_h,
+                                line_limit=1, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+                                center_in_box=False,
+                            )
+            else:
+                draw_text(
+                    option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
+                    anchor_x_px=col_anchor, anchor_y_px=option_y_px,
+                    text_width_px=image_config.FONT_SIZE_PX, text_height_px=avail_h,
+                    line_limit=1, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+                    center_in_box=False,
+                )
             box_coordinates = (
                 col_left - image_config.MIN_MARGIN_LEFT_PX * 0.1,
                 option_y_px,

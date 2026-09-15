@@ -36,8 +36,12 @@ CONFIG = {}
 
 
 def normalize_render_text(text: str) -> str:
-    """Expand ligatures that the configured font may not contain."""
-    return text.replace('ﬁ', 'fi')
+    """Expand ligatures that the configured font may not contain, and replace
+    control whitespace that has no glyph in the fonts (it would otherwise be
+    drawn as a missing-glyph box)."""
+    text = text.replace('ﬁ', 'fi')
+    text = re.sub(r'[\t\r\f\v\x00-\x08\x0e-\x1f]', ' ', text)
+    return text
 
 
 # Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi

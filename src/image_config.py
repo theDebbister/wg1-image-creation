@@ -181,9 +181,14 @@ if LANGUAGE in ('fa', 'ar'):
 if SCRIPT_DIRECTION == 'ttb':
     LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     LATIN_BOX_TYPE = "tight"
+    # Width of the mono half-space AOI placed around Latin words. None = use the
+    # Latin letter advance (current default); a lab can set a tighter half-width
+    # (e.g. FONT_SIZE_PX // 2) here.
+    LATIN_SPACE_WIDTH_PX = None
 else:
     LATIN_FONT_TYPE = None
     LATIN_BOX_TYPE = "square"
+    LATIN_SPACE_WIDTH_PX = None
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)

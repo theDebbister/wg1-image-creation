@@ -41,7 +41,7 @@ def normalize_render_text(text: str) -> str:
 
 
 # Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi
-_TTB_CANNOT_START = set('、。，．」』）］｝〕〉》】〙〗〞”“’）」』〜ー々ヽゝゞっゃゅょゎぁぃぅぇぉァィゥェォッャュョヮ\u30fd\u30fe')
+_TTB_CANNOT_START = set('、。，．・：；！？…‥」』）］｝〕〉》】〙〗〞”“’」』〜ー々ヽヾゞっゃゅょゎぁぃぅぇぉヵヶァィゥェォッャュョヮヷヸヹヺ\u30fd\u30fe')
 _TTB_CANNOT_END = set('「『（［｛〔〈《【〘〖〝‘“「『（')
 
 
@@ -105,11 +105,26 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     # For ja the sequence is already per char, spaces would be rare
     # Keep spaces for ttb to separate western words, skip only for non-ttb
     filtered: list[str] = []
+    bold_flags: list[bool] = []
+    in_bold = False
     for c in chars:
         if c == ' ' and word_split_criterion == '' and script_direction != 'ttb':
             continue
+        if c == '*' and len(filtered) and filtered[-1] == '*':
+            # closing ** of a bold span
+            filtered.pop()
+            bold_flags.pop()
+            in_bold = not in_bold
+            continue
+        if c == '*' and not in_bold:
+            # opening ** of a bold span
+            in_bold = True
+            continue
         filtered.append(c)
+        bold_flags.append(in_bold)
     chars = filtered
+    # Index (in chars) of chars inside a **…** span.
+    bold_chars = {i for i, b in enumerate(bold_flags) if b}
 
     def _is_halfwidth_digit(c: str) -> bool:
         return '0' <= c <= '9'
@@ -146,15 +161,34 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                 cells.append(seq[i:j])
                 i = j
                 continue
+            # Group a run of digits (and an immediately-following %) into one
+            # atomic cell so a number is not split across two columns; each
+            # digit is still rendered upright.
+            if _is_halfwidth_digit(seq[i]):
+                j = i
+                while j < len(seq) and _is_halfwidth_digit(seq[j]):
+                    j += 1
+                if j < len(seq) and seq[j] in ('%', '％'):
+                    j += 1
+                cells.append(seq[i:j])
+                i = j
+                continue
             cells.append([seq[i]])
             i += 1
         return cells
 
     cell_seq = _group_into_cells(chars)
+    # Bold flag per cell (chars inside a **…** span), aligned with cell_seq.
+    cell_bold: list[bool] = []
+    _ci = 0
+    for _cell in cell_seq:
+        cell_bold.append(any((_ci + _k) in bold_chars for _k in range(len(_cell))))
+        _ci += len(_cell)
     # Insert w3 spaces before/after latin words with monospace AOI, but no space before if punctuation/bracket
     # Simplified: one space before and after each latin word, unless already present or preceded by punct/bracket
     punct_bracket = set('、。，．・：；！？…‥—–-〜「」『』（）［］｛｝〈〉《》【】〔〕〖〗〘〙〝〞‘’“”\"\'()[]{}<>.,!?;:')
     new_seq: list[list[str]] = []
+    new_bold: list[bool] = []
     for idx, cell in enumerate(cell_seq):
         is_latin = cell and all(_is_latin_rotated(c) for c in cell)
         if is_latin:
@@ -166,25 +200,33 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                     if prev_char not in punct_bracket:
                         # Avoid duplicate if original had space before (handled by prev == [' '])
                         new_seq.append([' '])
+                        new_bold.append(False)
             # latin itself
             new_seq.append(cell)
+            new_bold.append(cell_bold[idx])
             # Check after: look ahead to original next cell
             nxt = cell_seq[idx+1] if idx+1 < len(cell_seq) else None
             if nxt is not None and nxt != [' '] and nxt != ['\n']:
                 nxt_char = nxt[0] if len(nxt)==1 else ''
                 if nxt_char not in punct_bracket:
                     new_seq.append([' '])
+                    new_bold.append(False)
             elif nxt is None:
                 new_seq.append([' '])
+                new_bold.append(False)
         else:
             new_seq.append(cell)
+            new_bold.append(cell_bold[idx])
     # Remove duplicate spaces (if original already had space and we added one, we'd have two - collapse)
     dedup: list[list[str]] = []
-    for c in new_seq:
+    dedup_bold: list[bool] = []
+    for c, b in zip(new_seq, new_bold):
         if c == [' '] and dedup and dedup[-1] == [' ']:
             continue
         dedup.append(c)
+        dedup_bold.append(b)
     cell_seq = dedup
+    cell_bold = dedup_bold
     # Column packing for vertical: pixel height budget, variable for western words
     # For answer boxes (ttb with box constraints) use box dimensions, not full page
     col_advance = int(fontsize * spacing) if spacing else fontsize
@@ -209,10 +251,16 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
             _pil_tmp = ImageFont.truetype(fp, fontsize)
         return max(1, _pil_tmp.font.getsize(' ')[0][0])
 
+    def _latin_space_w() -> int:
+        # Width of the mono half-space AOI around Latin words; configurable.
+        return getattr(image_config, 'LATIN_SPACE_WIDTH_PX', None) or _latin_mono_w()
+
     def _cell_height_px(cell: list[str]) -> int:
         nonlocal _pil_tmp
         if cell == [' ']:
-            return _latin_mono_w()
+            return _latin_space_w()
+        if cell and all(_is_halfwidth_digit(c) for c in cell) or cell and all(_is_halfwidth_digit(c) or c in ('%', '％') for c in cell) and len(cell) > 1:
+            return fontsize * len(cell)
         if cell and all(_is_latin_rotated(c) for c in cell):
             if latin_box == 'tight':
                 return _latin_mono_w() * len(cell)
@@ -220,60 +268,70 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         return fontsize
 
     cols: list[list[list[str]]] = []  # list of columns, each column is list of cells
+    col_bold: list[list[bool]] = []   # parallel bold flags per column
+    # Column packing with minimal kinsoku (JLREQ 3.1.7):
+    #   - no column starts with a cannot_start char (、。」』） ー ・ small kana …)
+    #   - no column ends with a cannot_end char (「『（)
+    # Columns are filled to the height limit; at a break boundary the trailing
+    # cells are carried to the next column so it starts with a char that may
+    # start a line, and the current column does not end with an opening bracket.
     cur: list[list[str]] = []
+    cur_bold: list[bool] = []
     cur_h = 0
-    for cell in cell_seq:
+    i = 0
+    n = len(cell_seq)
+    while i < n:
+        cell = cell_seq[i]
+        bold = cell_bold[i]
         if cell == ['\n']:
             if cur:
                 cols.append(cur)
+                col_bold.append(cur_bold)
                 cur = []
+                cur_bold = []
                 cur_h = 0
+            i += 1
             continue
         h = _cell_height_px(cell)
-        if cur_h + h > text_height_px and cur:
-            cols.append(cur)
-            cur = []
-            cur_h = 0
+        if cur and cur_h + h > text_height_px:
+            carry: list[list[str]] = []
+            carry_bold: list[bool] = []
+            # If the next cell cannot start a line, carry trailing cells down so
+            # the next column starts with a char allowed to start a line.
+            if cell[0] in _TTB_CANNOT_START:
+                while cur and (not carry or carry[0][0] in _TTB_CANNOT_START):
+                    moved = cur.pop()
+                    mb = cur_bold.pop()
+                    cur_h -= _cell_height_px(moved)
+                    carry.insert(0, moved)
+                    carry_bold.insert(0, mb)
+            # Do not end a column with an opening bracket.
+            if cur and cur[-1][0] in _TTB_CANNOT_END:
+                moved = cur.pop()
+                mb = cur_bold.pop()
+                cur_h -= _cell_height_px(moved)
+                carry.insert(0, moved)
+                carry_bold.insert(0, mb)
+            if cur:
+                cols.append(cur)
+                col_bold.append(cur_bold)
+            cur = carry
+            cur_bold = carry_bold
+            cur_h = sum(_cell_height_px(c) for c in cur)
+            if not cur:
+                # Could not resolve (e.g. very first char); start a new column.
+                cur.append(cell)
+                cur_bold.append(bold)
+                cur_h += h
+                i += 1
+            continue
         cur.append(cell)
+        cur_bold.append(bold)
         cur_h += h
+        i += 1
     if cur:
         cols.append(cur)
-
-    # Minimal kinsoku: never start a column with cannot_start, never end with cannot_end
-    for _ in range(5):
-        changed = False
-        for idx in range(len(cols)):
-            if not cols[idx]:
-                continue
-            first_char = cols[idx][0][0]
-            if first_char in _TTB_CANNOT_START and idx > 0 and cols[idx - 1]:
-                moved = cols[idx - 1].pop()
-                # Clamp to height: if target would overflow, create new column for the pair
-                if sum(_cell_height_px(c) for c in cols[idx]) + _cell_height_px(moved) > text_height_px:
-                    # Keep pair 語」 together in a new column to avoid bottom overflow
-                    first = cols[idx].pop(0)
-                    cols.insert(idx, [moved, first])
-                else:
-                    cols[idx].insert(0, moved)
-                if not cols[idx - 1]:
-                    cols[idx - 1] = cols[idx]
-                    cols[idx] = []
-                changed = True
-            if cols[idx] and cols[idx][-1][0] in _TTB_CANNOT_END:
-                moved = cols[idx].pop()
-                target_idx = idx + 1
-                if target_idx < len(cols):
-                    if sum(_cell_height_px(c) for c in cols[target_idx]) + _cell_height_px(moved) > text_height_px:
-                        cols.insert(target_idx, [moved])
-                    else:
-                        cols[target_idx].insert(0, moved)
-                else:
-                    cols.append([moved])
-                changed = True
-        if not changed:
-            break
-
-    cols = [c for c in cols if c]
+        col_bold.append(cur_bold)
 
     if len(cols) > max_cols:
         warnings.warn(
@@ -282,6 +340,7 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
 
     # Shaping and rendering per column
     font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
+    pil_bold_font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize)
     blob = hb.Blob.from_file_path(font_path)
     face = hb.Face(blob)
     hb_font = hb.Font(face)
@@ -343,7 +402,8 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         # Latin, digits and %/dash are rendered via PIL, exclude them from the ttb run.
         # Spaces are rendered as empty boxes (no glyph), so they must also be excluded to
         # keep the shaped-run indices aligned with the cells that consume single_idx.
-        single_chars = [cell[0] for cell in col if len(cell) == 1 and cell[0] != ' ' and not _is_latin_rotated(cell[0]) and not _is_halfwidth_digit(cell[0]) and not _is_punct_via_pil(cell[0])]
+        # Bold cells are rendered separately with the bold font, so exclude them too.
+        single_chars = [cell[0] for cell, b in zip(col, col_bold[col_idx]) if len(cell) == 1 and cell[0] != ' ' and not b and not _is_latin_rotated(cell[0]) and not _is_halfwidth_digit(cell[0]) and not _is_punct_via_pil(cell[0])]
         single_text = ''.join(single_chars)
         # Shape singles
         if single_chars:
@@ -363,9 +423,9 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         y_px = 0
         row_idx = 0
 
-        for cell in col:
+        for cell, is_bold in zip(col, col_bold[col_idx]):
             if cell == [' ']:
-                mono_w = _latin_mono_w()
+                mono_w = _latin_space_w()
                 aoi_x = pen_x_center - fontsize // 2
                 aoi_y = pen_y_top + y_px
                 aoi_w = fontsize
@@ -458,6 +518,32 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                 y_px += total_aoi_h
                 # row_idx counts as one row per word for grid purposes, but AOIs are per char
                 row_idx += len(cell) - 1
+            elif len(cell) > 1 and all(_is_halfwidth_digit(c) or c in ('%', '％') for c in cell) and any(_is_halfwidth_digit(c) for c in cell):
+                # Atomic number run (e.g. 2011, 7,000%, 20%): each digit upright,
+                # but the whole run stays together so it is not split across columns.
+                pil_font_single = ImageFont.truetype(font_path, fontsize)
+                for k, ch in enumerate(cell):
+                    aoi_x = pen_x_center - fontsize // 2
+                    aoi_y = pen_y_top + y_px + k * fontsize
+                    aoi_w = fontsize
+                    aoi_h = fontsize
+                    if getattr(image_config, 'DEBUG_GRID', False):
+                        y0 = aoi_y
+                        y1 = aoi_y + fontsize
+                        x0 = aoi_x
+                        x1 = aoi_x + fontsize
+                        draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                        draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                        draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                        draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                    if draw_aoi:
+                        draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                    draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
+                    aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx + k, col_idx, image_short_name, aoi_idx, col_idx])
+                    all_words.append(ch)
+                    aoi_idx += 1
+                y_px += fontsize * len(cell)
+                row_idx += len(cell) - 1
             elif len(cell) == 1 and (_is_halfwidth_digit(cell[0]) or _is_punct_via_pil(cell[0])):
                 # Single halfwidth digit or %/dash: render centered via PIL; dash is turned (rotated 90° for vertical)
                 ch = cell[0]
@@ -478,6 +564,30 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                     draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
                 pil_font_single = ImageFont.truetype(font_path, fontsize)
                 draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
+                aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(ch)
+                aoi_idx += 1
+                y_px += fontsize
+            elif len(cell) == 1 and is_bold:
+                # Bold kana (from a **…** span): render via PIL with the bold font,
+                # upright and centred, so no HarfBuzz glyph index is consumed.
+                ch = cell[0]
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = fontsize
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + fontsize
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_bold_font, anchor='mm')
                 aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
                 all_words.append(ch)
                 aoi_idx += 1
@@ -1989,10 +2099,21 @@ def create_rating_screens(image: Image, text: str, title: str):
                     draw.text((col_left + image_config.FONT_SIZE_PX // 2, pen_y + image_config.FONT_SIZE_PX // 2),
                               ch, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
                     pen_y += image_config.FONT_SIZE_PX
-                # dash as in the input file
+                # dash as in the input file, rendered vertically (rotated 90 degrees)
                 if dash_char:
-                    draw.text((col_left + image_config.FONT_SIZE_PX // 2, pen_y + image_config.FONT_SIZE_PX // 2),
-                              dash_char, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
+                    tmp_w = image_config.FONT_SIZE_PX + 10
+                    tmp_h = image_config.FONT_SIZE_PX + 10
+                    tmp_img = Image.new('L', (tmp_w, tmp_h), 0)
+                    tmp_draw = ImageDraw.Draw(tmp_img)
+                    tmp_draw.text((tmp_w // 2, tmp_h // 2), dash_char, fill=255, font=pil_font, anchor='mm')
+                    rot = tmp_img.rotate(90, expand=True, resample=Image.BICUBIC)
+                    bbox = rot.getbbox()
+                    if bbox:
+                        rot_c = rot.crop(bbox)
+                        rw, rh = rot_c.size
+                        gx = col_left + (image_config.FONT_SIZE_PX - rw) // 2
+                        gy = pen_y + (image_config.FONT_SIZE_PX - rh) // 2
+                        image.paste(Image.new('RGB', (rw, rh), image_config.TEXT_COLOR), (gx, gy), rot_c)
                     pen_y += image_config.FONT_SIZE_PX
                 # suffix: numeric/percentage -> horizontal; otherwise vertical Japanese
                 if suffix:

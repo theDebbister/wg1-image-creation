@@ -82,8 +82,11 @@ Japanese (`ttb`) images are laid out as tategaki: characters run top-to-bottom, 
 
 - **Fonts.** Japanese text uses `Noto Sans JP` (`fonts/NotoSansJP-Regular.ttf` / `-Bold.ttf`, OFL licensed). Latin words use
   `JetBrains Mono` rendered "tight": each letter is its own AOI, the whole word pulled together.
-- **Latin spacing.** A monospaced half-space (same width as a Latin letter) is placed before, between, and after Latin
-  words, and is itself an AOI; no space is added when the neighbour is punctuation or a bracket.
+- **Spaces.** Only the spaces present in the input are rendered (none are inserted automatically). A space between two
+  Japanese characters is one full Japanese cell wide; a space that touches Latin text (or digits/symbols) keeps the
+  monospaced half-width. Every space is its own AOI.
+- **Bold.** `**…**` marks a bold span (as in Markdown); the markers are stripped and the enclosed text is drawn with the
+  bold font, shaped vertically so `ー` and `、。` keep their vertical forms.
 - **Numbers.** Each digit is its own upright cell (no tate-chū-yoko). On rating screens the numeric suffix (e.g. `0%`,
   `100%`) is set horizontally.
 - **Punctuation.** Vertical forms come from the font; a minimal kinsoku rule prevents columns starting with `、。」』）`

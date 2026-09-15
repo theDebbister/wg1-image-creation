@@ -44,6 +44,12 @@ def normalize_render_text(text: str) -> str:
     return text
 
 
+def clean_option(text):
+    """Strip leading/trailing whitespace from an answer option; a space left in
+    the source would otherwise render as an empty (full-width) cell."""
+    return text.strip() if isinstance(text, str) else text
+
+
 # Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi
 _TTB_CANNOT_START = set('、。，．・：；！？…‥」』）］｝〕〉》】〙〗〞”“’」』〜ー々ヽヾゞっゃゅょゎぁぃぅぇぉヵヶァィゥェォッャュョヮヷヸヹヺ\u30fd\u30fe')
 _TTB_CANNOT_END = set('「『（［｛〔〈《【〘〖〝‘“「『（')
@@ -111,21 +117,24 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     filtered: list[str] = []
     bold_flags: list[bool] = []
     in_bold = False
-    for c in chars:
+    _k = 0
+    while _k < len(chars):
+        c = chars[_k]
         if c == ' ' and word_split_criterion == '' and script_direction != 'ttb':
+            _k += 1
             continue
-        if c == '*' and len(filtered) and filtered[-1] == '*':
-            # closing ** of a bold span
-            filtered.pop()
-            bold_flags.pop()
+        if c == '*' and _k + 1 < len(chars) and chars[_k + 1] == '*':
+            # **…** bold marker pair: toggle bold, emit neither star
             in_bold = not in_bold
+            _k += 2
             continue
-        if c == '*' and not in_bold:
-            # opening ** of a bold span
-            in_bold = True
+        if c == '*':
+            # stray single star (never part of a ** pair): drop it
+            _k += 1
             continue
         filtered.append(c)
         bold_flags.append(in_bold)
+        _k += 1
     chars = filtered
     # Index (in chars) of chars inside a **…** span.
     bold_chars = {i for i, b in enumerate(bold_flags) if b}
@@ -188,49 +197,9 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     for _cell in cell_seq:
         cell_bold.append(any((_ci + _k) in bold_chars for _k in range(len(_cell))))
         _ci += len(_cell)
-    # Insert w3 spaces before/after latin words with monospace AOI, but no space before if punctuation/bracket
-    # Simplified: one space before and after each latin word, unless already present or preceded by punct/bracket
-    punct_bracket = set('、。，．・：；！？…‥—–-〜「」『』（）［］｛｝〈〉《》【】〔〕〖〗〘〙〝〞‘’“”\"\'()[]{}<>.,!?;:')
-    new_seq: list[list[str]] = []
-    new_bold: list[bool] = []
-    for idx, cell in enumerate(cell_seq):
-        is_latin = cell and all(_is_latin_rotated(c) for c in cell)
-        if is_latin:
-            # Check before
-            if new_seq:
-                prev = new_seq[-1]
-                if prev != [' '] and prev != ['\n']:
-                    prev_char = prev[0] if len(prev)==1 else ''
-                    if prev_char not in punct_bracket:
-                        # Avoid duplicate if original had space before (handled by prev == [' '])
-                        new_seq.append([' '])
-                        new_bold.append(False)
-            # latin itself
-            new_seq.append(cell)
-            new_bold.append(cell_bold[idx])
-            # Check after: look ahead to original next cell
-            nxt = cell_seq[idx+1] if idx+1 < len(cell_seq) else None
-            if nxt is not None and nxt != [' '] and nxt != ['\n']:
-                nxt_char = nxt[0] if len(nxt)==1 else ''
-                if nxt_char not in punct_bracket:
-                    new_seq.append([' '])
-                    new_bold.append(False)
-            elif nxt is None:
-                new_seq.append([' '])
-                new_bold.append(False)
-        else:
-            new_seq.append(cell)
-            new_bold.append(cell_bold[idx])
-    # Remove duplicate spaces (if original already had space and we added one, we'd have two - collapse)
-    dedup: list[list[str]] = []
-    dedup_bold: list[bool] = []
-    for c, b in zip(new_seq, new_bold):
-        if c == [' '] and dedup and dedup[-1] == [' ']:
-            continue
-        dedup.append(c)
-        dedup_bold.append(b)
-    cell_seq = dedup
-    cell_bold = dedup_bold
+    # No automatic spacing around Latin words: only spaces present in the input
+    # are rendered. Their width is decided per space below (mono half-width when
+    # touching western text, full Japanese width between Japanese characters).
     # Column packing for vertical: pixel height budget, variable for western words
     # For answer boxes (ttb with box constraints) use box dimensions, not full page
     col_advance = int(fontsize * spacing) if spacing else fontsize
@@ -259,10 +228,33 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         # Width of the mono half-space AOI around Latin words; configurable.
         return getattr(image_config, 'LATIN_SPACE_WIDTH_PX', None) or _latin_mono_w()
 
-    def _cell_height_px(cell: list[str]) -> int:
+    def _is_japanese_char(c: str) -> bool:
+        o = ord(c)
+        return (
+            0x3000 <= o <= 0x303F      # CJK symbols and punctuation (、。「」〜・々)
+            or 0x3040 <= o <= 0x309F   # hiragana
+            or 0x30A0 <= o <= 0x30FF   # katakana (incl. ー)
+            or 0x3400 <= o <= 0x4DBF   # CJK ext A
+            or 0x4E00 <= o <= 0x9FFF   # CJK unified ideographs
+            or 0xF900 <= o <= 0xFAFF   # CJK compatibility ideographs
+        )
+
+    def _space_width_at(idx: int) -> int:
+        # A manual space is full Japanese width only when it sits between two
+        # Japanese characters. When it touches western text (or digits/other
+        # symbols) it keeps the monospace half-width used around Latin words.
+        def _is_jp(nb: list[str] | None) -> bool:
+            return bool(nb) and nb not in (['\n'], [' ']) and all(_is_japanese_char(c) for c in nb)
+        prev = cell_seq[idx - 1] if idx > 0 else None
+        nxt = cell_seq[idx + 1] if idx + 1 < len(cell_seq) else None
+        if _is_jp(prev) and _is_jp(nxt):
+            return fontsize
+        return _latin_space_w()
+
+    def _cell_height_px(cell: list[str], idx: int) -> int:
         nonlocal _pil_tmp
         if cell == [' ']:
-            return _latin_space_w()
+            return _space_width_at(idx)
         if cell and all(_is_halfwidth_digit(c) for c in cell) or cell and all(_is_halfwidth_digit(c) or c in ('%', '％') for c in cell) and len(cell) > 1:
             return fontsize * len(cell)
         if cell and all(_is_latin_rotated(c) for c in cell):
@@ -271,8 +263,13 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
             return fontsize * len(cell)
         return fontsize
 
+    # Precompute each cell's height once (spaces depend on their neighbours, and
+    # kinsoku carry must move the precomputed height with the cell).
+    cell_h: list[int] = [_cell_height_px(c, i) for i, c in enumerate(cell_seq)]
+
     cols: list[list[list[str]]] = []  # list of columns, each column is list of cells
     col_bold: list[list[bool]] = []   # parallel bold flags per column
+    col_h: list[list[int]] = []       # parallel precomputed cell heights per column
     # Column packing with minimal kinsoku (JLREQ 3.1.7):
     #   - no column starts with a cannot_start char (、。」』） ー ・ small kana …)
     #   - no column ends with a cannot_end char (「『（)
@@ -281,61 +278,74 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     # start a line, and the current column does not end with an opening bracket.
     cur: list[list[str]] = []
     cur_bold: list[bool] = []
+    cur_heights: list[int] = []
     cur_h = 0
     i = 0
     n = len(cell_seq)
     while i < n:
         cell = cell_seq[i]
         bold = cell_bold[i]
+        h = cell_h[i]
         if cell == ['\n']:
             if cur:
                 cols.append(cur)
                 col_bold.append(cur_bold)
+                col_h.append(cur_heights)
                 cur = []
                 cur_bold = []
+                cur_heights = []
                 cur_h = 0
             i += 1
             continue
-        h = _cell_height_px(cell)
         if cur and cur_h + h > text_height_px:
             carry: list[list[str]] = []
             carry_bold: list[bool] = []
+            carry_heights: list[int] = []
             # If the next cell cannot start a line, carry trailing cells down so
             # the next column starts with a char allowed to start a line.
             if cell[0] in _TTB_CANNOT_START:
                 while cur and (not carry or carry[0][0] in _TTB_CANNOT_START):
                     moved = cur.pop()
                     mb = cur_bold.pop()
-                    cur_h -= _cell_height_px(moved)
+                    mh = cur_heights.pop()
+                    cur_h -= mh
                     carry.insert(0, moved)
                     carry_bold.insert(0, mb)
+                    carry_heights.insert(0, mh)
             # Do not end a column with an opening bracket.
             if cur and cur[-1][0] in _TTB_CANNOT_END:
                 moved = cur.pop()
                 mb = cur_bold.pop()
-                cur_h -= _cell_height_px(moved)
+                mh = cur_heights.pop()
+                cur_h -= mh
                 carry.insert(0, moved)
                 carry_bold.insert(0, mb)
+                carry_heights.insert(0, mh)
             if cur:
                 cols.append(cur)
                 col_bold.append(cur_bold)
+                col_h.append(cur_heights)
             cur = carry
             cur_bold = carry_bold
-            cur_h = sum(_cell_height_px(c) for c in cur)
+            cur_heights = carry_heights
+            cur_h = sum(cur_heights)
             if not cur:
                 # Could not resolve (e.g. very first char); start a new column.
                 cur.append(cell)
                 cur_bold.append(bold)
+                cur_heights.append(h)
                 cur_h += h
                 i += 1
             continue
         cur.append(cell)
         cur_bold.append(bold)
+        cur_heights.append(h)
         cur_h += h
         i += 1
     if cur:
         cols.append(cur)
         col_bold.append(cur_bold)
+        col_h.append(cur_heights)
 
     if len(cols) > max_cols:
         warnings.warn(
@@ -344,7 +354,6 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
 
     # Shaping and rendering per column
     font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
-    pil_bold_font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize)
     blob = hb.Blob.from_file_path(font_path)
     face = hb.Face(blob)
     hb_font = hb.Font(face)
@@ -352,6 +361,16 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     ft_face = freetype.Face(font_path)
     ft_face.set_char_size(fontsize * 64)
     scale = fontsize / face.upem
+    # Bold face for **…** spans: shaped through HarfBuzz in ttb direction as well
+    # so vertical variants (、。ー) are applied just like regular text.
+    bold_font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD)
+    bold_blob = hb.Blob.from_file_path(bold_font_path)
+    bold_face = hb.Face(bold_blob)
+    hb_font_bold = hb.Font(bold_face)
+    hb_font_bold.scale = (bold_face.upem, bold_face.upem)
+    ft_face_bold = freetype.Face(bold_font_path)
+    ft_face_bold.set_char_size(fontsize * 64)
+    scale_bold = fontsize / bold_face.upem
 
     aois = []
     all_words: list[str] = []
@@ -427,9 +446,9 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         y_px = 0
         row_idx = 0
 
-        for cell, is_bold in zip(col, col_bold[col_idx]):
+        for cell, is_bold, cell_h_px in zip(col, col_bold[col_idx], col_h[col_idx]):
             if cell == [' ']:
-                mono_w = _latin_space_w()
+                mono_w = cell_h_px
                 aoi_x = pen_x_center - fontsize // 2
                 aoi_y = pen_y_top + y_px
                 aoi_w = fontsize
@@ -525,7 +544,10 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
             elif len(cell) > 1 and all(_is_halfwidth_digit(c) or c in ('%', '％') for c in cell) and any(_is_halfwidth_digit(c) for c in cell):
                 # Atomic number run (e.g. 2011, 7,000%, 20%): each digit upright,
                 # but the whole run stays together so it is not split across columns.
-                pil_font_single = ImageFont.truetype(font_path, fontsize)
+                pil_font_single = ImageFont.truetype(
+                    str(image_config.REPO_ROOT / (image_config.FONT_TYPE_BOLD if is_bold else image_config.FONT_TYPE)),
+                    fontsize,
+                )
                 for k, ch in enumerate(cell):
                     aoi_x = pen_x_center - fontsize // 2
                     aoi_y = pen_y_top + y_px + k * fontsize
@@ -566,15 +588,19 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                     draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
                 if draw_aoi:
                     draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
-                pil_font_single = ImageFont.truetype(font_path, fontsize)
+                pil_font_single = ImageFont.truetype(
+                    str(image_config.REPO_ROOT / (image_config.FONT_TYPE_BOLD if is_bold else image_config.FONT_TYPE)),
+                    fontsize,
+                )
                 draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
                 aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
                 all_words.append(ch)
                 aoi_idx += 1
                 y_px += fontsize
             elif len(cell) == 1 and is_bold:
-                # Bold kana (from a **…** span): render via PIL with the bold font,
-                # upright and centred, so no HarfBuzz glyph index is consumed.
+                # Bold char (from a **…** span): shape with the bold font in ttb
+                # direction so vertical variants (、。ー) are applied, exactly like
+                # the regular single-char path.
                 ch = cell[0]
                 aoi_x = pen_x_center - fontsize // 2
                 aoi_y = pen_y_top + y_px
@@ -591,7 +617,28 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                     draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
                 if draw_aoi:
                     draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
-                draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_bold_font, anchor='mm')
+                bbuf = hb.Buffer()
+                bbuf.add_str(ch)
+                bbuf.direction = 'ttb'
+                bbuf.language = image_config.LANGUAGE
+                bbuf.guess_segment_properties()
+                bbuf.direction = 'ttb'
+                hb.shape(hb_font_bold, bbuf)
+                binfo = bbuf.glyph_infos[0]
+                bpos = bbuf.glyph_positions[0]
+                gid = binfo.codepoint
+                x_off_px = bpos.x_offset * scale_bold
+                y_off_px = -bpos.y_offset * scale_bold
+                ft_face_bold.load_glyph(gid, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_NORMAL)
+                bitmap = ft_face_bold.glyph.bitmap
+                w, h = bitmap.width, bitmap.rows
+                left = ft_face_bold.glyph.bitmap_left
+                top = ft_face_bold.glyph.bitmap_top
+                glyph_x = int(pen_x_center + x_off_px + left)
+                glyph_y = int(pen_y_top + y_px + y_off_px - top)
+                if w > 0 and h > 0:
+                    glyph_img = Image.frombytes('L', (w, h), bytes(bitmap.buffer))
+                    image.paste(Image.new('RGB', (w, h), image_config.TEXT_COLOR), (glyph_x, glyph_y), glyph_img)
                 aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
                 all_words.append(ch)
                 aoi_idx += 1
@@ -839,10 +886,10 @@ def create_images(
                     question_identifier = f'question_{question_id}_stimulus_{stimulus_id}'
 
                     answer_options = OrderedDict(
-                        {'target': question_row['target'],
-                         'distractor_a': question_row['distractor_a'],
-                         'distractor_b': question_row['distractor_b'],
-                         'distractor_c': question_row['distractor_c']}
+                        {'target': clean_option(question_row['target']),
+                         'distractor_a': clean_option(question_row['distractor_a']),
+                         'distractor_b': clean_option(question_row['distractor_b']),
+                         'distractor_c': clean_option(question_row['distractor_c'])}
                     )
 
                     question_image = Image.new(

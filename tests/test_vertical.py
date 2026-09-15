@@ -177,3 +177,46 @@ class TestVisualTTB:
             image_config.LANGUAGE = orig_lang
             image_config.FONT_TYPE = orig_font
             image_config.FONT_TYPE_BOLD = orig_bold
+
+
+class TestTTBBoldAndSpaces:
+    def _draw(self, text, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+        img = Image.new(
+            "RGB",
+            (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+            color=image_config.BACKGROUND_COLOR,
+        )
+        aois, _ = draw_text(
+            text, img, image_config.FONT_SIZE_PX, draw_aoi=True,
+            word_split_criterion="", script_direction="ttb",
+            line_limit=image_config.NUM_LINES_PER_PAGE,
+            image_short_name="ttb_bold_space",
+        )
+        return aois, image_config
+
+    def test_bold_markers_are_consumed(self, toy_image_config):
+        """**…** toggles bold; neither star may survive as a rendered AOI."""
+        aois, _ = self._draw("あ**黒い点**い **。**", toy_image_config)
+        chars = [a[1] for a in aois]
+        assert "*" not in chars
+        assert "黒" in chars and "。" in chars
+
+    def test_bold_uses_bold_glyph_vertical_variant(self, toy_image_config):
+        """A bold 、 must be shaped like regular text, not centred by PIL."""
+        aois_plain, _ = self._draw("あ、い", toy_image_config)
+        aois_bold, _ = self._draw("あ**、**い", toy_image_config)
+        plain = next(a for a in aois_plain if a[1] == "、")
+        bold = next(a for a in aois_bold if a[1] == "、")
+        # Same cell geometry whether or not the char is bold.
+        assert plain[3:6] == bold[3:6]
+
+    def test_space_width_full_between_cjk_mono_next_to_latin(self, toy_image_config):
+        aois, ic = self._draw("あ いA B", toy_image_config)
+        spaces = [a for a in aois if a[1] == " "]
+        # Exactly the two literal spaces: no automatic insertion around Latin.
+        assert len(spaces) == 2
+        # CJK/CJK space is a full Japanese cell; Latin-adjacent space is half width.
+        assert spaces[0][5] == ic.FONT_SIZE_PX
+        assert spaces[1][5] < ic.FONT_SIZE_PX

@@ -470,7 +470,39 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
                 y_px += mono_w
                 row_idx += 1
                 continue
-            if cell and all(_is_latin_rotated(c) for c in cell):
+            if len(cell) == 1 and _is_latin_alpha(cell[0]):
+                # A standalone single Latin letter (e.g. the D in ビタミンD, or an
+                # initial like R・ガルザ) is set upright in its own square rather
+                # than rotated, so it matches the upright digits next to it. Words
+                # of two or more Latin characters still rotate (see below).
+                ch = cell[0]
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = fontsize
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + fontsize
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                single_font_path = (
+                    str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD) if is_bold
+                    else (latin_font_path or font_path)
+                )
+                pil_font_single = ImageFont.truetype(single_font_path, fontsize)
+                draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch,
+                          fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
+                aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(ch)
+                aoi_idx += 1
+                y_px += fontsize
+            elif cell and all(_is_latin_rotated(c) for c in cell):
                 # Western word (monospaced): AOIs per character, rendering differs by box
                 word = ''.join(cell)
                 lfp = latin_font_path or font_path

@@ -220,3 +220,44 @@ class TestTTBBoldAndSpaces:
         # CJK/CJK space is a full Japanese cell; Latin-adjacent space is half width.
         assert spaces[0][5] == ic.FONT_SIZE_PX
         assert spaces[1][5] < ic.FONT_SIZE_PX
+
+    def _draw_img(self, text, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+        img = Image.new(
+            "RGB",
+            (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+            color=image_config.BACKGROUND_COLOR,
+        )
+        aois, _ = draw_text(
+            text, img, image_config.FONT_SIZE_PX, draw_aoi=True,
+            word_split_criterion="", script_direction="ttb",
+            line_limit=image_config.NUM_LINES_PER_PAGE,
+            image_short_name="ttb_single_letter",
+        )
+        return img, aois, image_config
+
+    @staticmethod
+    def _ink_bbox(img, aoi):
+        import numpy as np
+        _, _, x, y, w, h, *_ = aoi
+        crop = np.array(img.crop((int(x), int(y), int(x + w), int(y + h))).convert("L"))
+        ys, xs = np.where(crop < 128)
+        assert ys.size > 0, "AOI has no ink"
+        return int(xs.max() - xs.min()) + 1, int(ys.max() - ys.min()) + 1
+
+    def test_single_latin_letter_is_upright(self, toy_image_config):
+        """A standalone Latin letter (e.g. the D in ビタミンD) is upright, not
+        rotated: for a tall/narrow 'I' the ink is taller than it is wide."""
+        img, aois, ic = self._draw_img("あIい", toy_image_config)
+        a = next(x for x in aois if x[1] == "I")
+        # full square cell, not the tight mono box used for rotated words
+        assert a[4] == ic.FONT_SIZE_PX and a[5] == ic.FONT_SIZE_PX
+        iw, ih = self._ink_bbox(img, a)
+        assert ih >= iw, f"'I' should read upright, got ink {iw}x{ih}"
+
+    def test_multi_letter_latin_word_stays_rotated(self, toy_image_config):
+        img, aois, ic = self._draw_img("あIIい", toy_image_config)
+        a = aois[[x[1] for x in aois].index("I")]
+        iw, ih = self._ink_bbox(img, a)
+        assert iw >= ih, f"rotated 'II' should read sideways, got ink {iw}x{ih}"

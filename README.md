@@ -89,6 +89,8 @@ Japanese (`ttb`) images are laid out as tategaki: characters run top-to-bottom, 
   bold font, shaped vertically so `ー` and `、。` keep their vertical forms.
 - **Numbers.** Each digit is its own upright cell (no tate-chū-yoko). On rating screens the numeric suffix (e.g. `0%`,
   `100%`) is set horizontally.
+- **Single Latin letters.** A lone Latin letter (e.g. the `D` in ビタミンD, or an initial like `R・ガルザ`) is set
+  upright in its own square so it matches the upright digits; Latin words of two or more characters are still rotated.
 - **Punctuation.** Vertical forms come from the font; a minimal kinsoku rule prevents columns starting with `、。」』）`
   etc. and ending with `「『（`.
 - **Question/answer pages.** The question sits in the rightmost two columns; the four answer options are up/left/right/down

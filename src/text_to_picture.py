@@ -86,6 +86,11 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         latin_box = getattr(image_config, 'LATIN_BOX_TYPE', 'square')
     if latin_font_path is None:
         latin_font_path = getattr(image_config, 'LATIN_FONT_TYPE', None)
+    # LATIN_FONT_TYPE is stored relative to the repo root (so the generated config
+    # can list it as-is). Resolve it here so the script works whether it is run
+    # from the repo root or from src/.
+    if latin_font_path and not os.path.isabs(latin_font_path):
+        latin_font_path = str(image_config.REPO_ROOT / latin_font_path)
 
     if line_limit is None:
         if script_direction == 'ttb':

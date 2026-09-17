@@ -2138,9 +2138,17 @@ def create_rating_screens(image: Image, text: str, title: str):
         gap = int(col_advance * 1.35)  # a bit more than usual
         valid_options = [o for o in options if not (o.isspace() or o == '')]
         n = len(valid_options)
+        # Options are laid out as columns from a FIXED right edge, so option_1
+        # (rightmost) sits at the same x on every rating screen, whatever the
+        # number of options. The experiment highlights the chosen option from a
+        # single shared RATING_QUESTION_BOXES set (option_1..option_5), so a
+        # screen with fewer options must occupy the rightmost columns instead of
+        # being re-centred (otherwise its highlight is shifted).
+        ref_n = max(5, n)
+        ref_width = ref_n * image_config.FONT_SIZE_PX + (ref_n - 1) * gap if ref_n else 0
+        block_right = image_config.MIN_MARGIN_LEFT_PX + (image_config.TEXT_WIDTH_PX - ref_width) // 2 + ref_width
         total_width = n * image_config.FONT_SIZE_PX + (n - 1) * gap if n else 0
-        block_left = image_config.MIN_MARGIN_LEFT_PX + (image_config.TEXT_WIDTH_PX - total_width) // 2
-        block_right = block_left + total_width
+        block_left = block_right - total_width
         option_y_px = image_config.MIN_MARGIN_TOP_PX
         avail_h = image_config.IMAGE_HEIGHT_PX - option_y_px - image_config.MIN_MARGIN_BOTTOM_PX
         option_width = image_config.FONT_SIZE_PX  # single column width

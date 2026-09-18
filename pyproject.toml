@@ -21,6 +21,8 @@ dependencies = [
     "uharfbuzz>=0.23.0",
     "arabic-reshaper>=3.0.0",
     "python-bidi>=0.4.2",
+    "freetype-py>=2.5.1",
+    "fonttools>=4.64.0",
 ]
 
 [tool.uv]

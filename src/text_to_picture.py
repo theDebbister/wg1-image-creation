@@ -13,10 +13,22 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 import image_config
-from src.subcorpus.aging import get_stimulus_randomization_orders
+try:
+    from src.subcorpus.aging import get_stimulus_randomization_orders
+except ImportError:
+    from subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
 from languages import arabic_farsi, hebrew
 from languages.arabic_farsi import rtl_draw_kwargs
+
+try:
+    import uharfbuzz as hb
+    import freetype
+    _HAS_VERTICAL = True
+except Exception:
+    hb = None
+    freetype = None
+    _HAS_VERTICAL = False
 
 pd.options.mode.chained_assignment = None  # default='warn'
 
@@ -24,8 +36,713 @@ CONFIG = {}
 
 
 def normalize_render_text(text: str) -> str:
-    """Expand ligatures that the configured font may not contain."""
-    return text.replace('ﬁ', 'fi')
+    """Expand ligatures that the configured font may not contain, and replace
+    control whitespace that has no glyph in the fonts (it would otherwise be
+    drawn as a missing-glyph box)."""
+    text = text.replace('ﬁ', 'fi')
+    text = re.sub(r'[\t\r\f\v\x00-\x08\x0e-\x1f]', ' ', text)
+    return text
+
+
+def clean_option(text):
+    """Strip leading/trailing whitespace from an answer option; a space left in
+    the source would otherwise render as an empty (full-width) cell."""
+    return text.strip() if isinstance(text, str) else text
+
+
+# Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi
+_TTB_CANNOT_START = set('、。，．・：；！？…‥」』）］｝〕〉》】〙〗〞”“’」』〜ー々ヽヾゞっゃゅょゎぁぃぅぇぉヵヶァィゥェォッャュョヮヷヸヹヺ\u30fd\u30fe')
+_TTB_CANNOT_END = set('「『（［｛〔〈《【〘〖〝‘“「『（')
+
+
+def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
+                   spacing: float = image_config.LINE_SPACING, image_short_name: str = None,
+                   anchor_x_px: int = None, anchor_y_px: int = None,
+                   text_width_px: int = None, text_height_px: int = None, script_direction: str = 'ttb',
+                   word_split_criterion: str = ' ', line_limit: int = None,
+                   latin_font_path: str = None, latin_box: str = None,
+                   center_in_box: bool = False):
+    """Vertical ttb column renderer via uharfbuzz plus freetype.
+
+    Layout respects genkoyoshi grid and w3.org/TR/jlreq minimal kinsoku.
+    Each cell is fontsize x fontsize. Char advance is +y, column advance is -x.
+    AOI boxes are the uniform cells, not ink bboxes. Optional green grid when
+    image_config.DEBUG_GRID is True, for lab review.
+    """
+    # For ttb: default anchor is top-right, but respect caller-provided anchors (e.g. answer boxes)
+    if script_direction == 'ttb':
+        if anchor_x_px is None:
+            # Use image.width for extended pages so page-1 stays right-aligned and overflow extends left
+            anchor_x_px = image.width - image_config.MIN_MARGIN_RIGHT_PX
+        if anchor_y_px is None:
+            anchor_y_px = image_config.MIN_MARGIN_TOP_PX
+    else:
+        if anchor_x_px is None:
+            anchor_x_px = image_config.ANCHOR_POINT_X_PX
+        if anchor_y_px is None:
+            anchor_y_px = image_config.ANCHOR_POINT_Y_PX
+    # Apply Japanese vertical defaults (JetBrains tight) if not overridden
+    if latin_box is None:
+        latin_box = getattr(image_config, 'LATIN_BOX_TYPE', 'square')
+    if latin_font_path is None:
+        latin_font_path = getattr(image_config, 'LATIN_FONT_TYPE', None)
+    # LATIN_FONT_TYPE is stored relative to the repo root (so the generated config
+    # can list it as-is). Resolve it here so the script works whether it is run
+    # from the repo root or from src/.
+    if latin_font_path and not os.path.isabs(latin_font_path):
+        latin_font_path = str(image_config.REPO_ROOT / latin_font_path)
+
+    if line_limit is None:
+        if script_direction == 'ttb':
+            # Width-derived column limit for vertical, not horizontal NUM_LINES_PER_PAGE
+            col_adv_tmp = int(fontsize * spacing) if spacing else fontsize
+            line_limit = max(1, image_config.TEXT_WIDTH_PX // col_adv_tmp)
+        else:
+            line_limit = image_config.NUM_LINES_PER_PAGE
+
+    draw = ImageDraw.Draw(image)
+    text = normalize_render_text(text)
+    paragraphs = re.split(r'\n+', text.strip()) if text.strip() else []
+
+    # Build flat char sequence, preserving paragraph breaks as column breaks
+    chars: list[str] = []
+    for pi, para in enumerate(paragraphs):
+        if word_split_criterion == '':
+            seq = [c for c in para]
+        else:
+            # for ttb with spaces, keep chars including spaces as cells
+            seq = list(para)
+        chars.extend(seq)
+        if pi < len(paragraphs) - 1:
+            chars.append('\n')
+
+    # Remove spaces that are not meaningful for ttb, keep explicit newline markers
+    # For ja the sequence is already per char, spaces would be rare
+    # Keep spaces for ttb to separate western words, skip only for non-ttb
+    filtered: list[str] = []
+    bold_flags: list[bool] = []
+    in_bold = False
+    _k = 0
+    while _k < len(chars):
+        c = chars[_k]
+        if c == ' ' and word_split_criterion == '' and script_direction != 'ttb':
+            _k += 1
+            continue
+        if c == '*' and _k + 1 < len(chars) and chars[_k + 1] == '*':
+            # **…** bold marker pair: toggle bold, emit neither star
+            in_bold = not in_bold
+            _k += 2
+            continue
+        if c == '*':
+            # stray single star (never part of a ** pair): drop it
+            _k += 1
+            continue
+        filtered.append(c)
+        bold_flags.append(in_bold)
+        _k += 1
+    chars = filtered
+    # Index (in chars) of chars inside a **…** span.
+    bold_chars = {i for i, b in enumerate(bold_flags) if b}
+
+    def _is_halfwidth_digit(c: str) -> bool:
+        return '0' <= c <= '9'
+
+    def _is_latin_alpha(c: str) -> bool:
+        return ('A' <= c <= 'Z') or ('a' <= c <= 'z')
+
+    def _is_latin_rotated(c: str) -> bool:
+        # Include URL characters . / : @ # ? & = % + for single Latin token (e.g. www.example.com/path)
+        return _is_latin_alpha(c) or c in "-'.:/#@?&=%+_'\""
+
+    def _is_punct_via_pil(c: str) -> bool:
+        return c in "%％"
+
+    def _group_into_cells(seq: list[str]) -> list[list[str]]:
+        # returns list of cells, each cell is list of 1 or more chars
+        # For Latin (monospaced): consecutive Latin letters are grouped into one word cell,
+        # rendered as a whole word but AOIs are per-character at fixed intervals
+        cells: list[list[str]] = []
+        i = 0
+        while i < len(seq):
+            if seq[i] == '\n':
+                cells.append(['\n'])
+                i += 1
+                continue
+            if seq[i] == ' ':
+                cells.append([' '])
+                i += 1
+                continue
+            if _is_latin_rotated(seq[i]):
+                j = i
+                while j < len(seq) and _is_latin_rotated(seq[j]):
+                    j += 1
+                cells.append(seq[i:j])
+                i = j
+                continue
+            # Group a run of digits (and an immediately-following %) into one
+            # atomic cell so a number is not split across two columns; each
+            # digit is still rendered upright.
+            if _is_halfwidth_digit(seq[i]):
+                j = i
+                while j < len(seq) and _is_halfwidth_digit(seq[j]):
+                    j += 1
+                if j < len(seq) and seq[j] in ('%', '％'):
+                    j += 1
+                cells.append(seq[i:j])
+                i = j
+                continue
+            cells.append([seq[i]])
+            i += 1
+        return cells
+
+    cell_seq = _group_into_cells(chars)
+    # Bold flag per cell (chars inside a **…** span), aligned with cell_seq.
+    cell_bold: list[bool] = []
+    _ci = 0
+    for _cell in cell_seq:
+        cell_bold.append(any((_ci + _k) in bold_chars for _k in range(len(_cell))))
+        _ci += len(_cell)
+    # No automatic spacing around Latin words: only spaces present in the input
+    # are rendered. Their width is decided per space below (mono half-width when
+    # touching western text, full Japanese width between Japanese characters).
+    # Column packing for vertical: pixel height budget, variable for western words
+    # For answer boxes (ttb with box constraints) use box dimensions, not full page
+    col_advance = int(fontsize * spacing) if spacing else fontsize
+    if script_direction == 'ttb' and text_width_px is not None and text_height_px is not None:
+        # box-constrained: width = columns, height = chars per column
+        text_height_px_local = text_height_px
+        max_cols = max(1, text_width_px // col_advance)
+    else:
+        text_height_px_local = image_config.IMAGE_HEIGHT_PX - image_config.MIN_MARGIN_TOP_PX - image_config.MIN_MARGIN_BOTTOM_PX
+        max_cols = line_limit if line_limit else max(1, image_config.TEXT_WIDTH_PX // col_advance)
+    # alias for rest of function (uses text_height_px_local)
+    text_height_px = text_height_px_local
+
+    # helper to estimate cell height in pixels
+    _pil_tmp = None
+
+    def _latin_mono_w() -> int:
+        # Monospace advance width of a Latin letter (and of a space), same size for both
+        nonlocal _pil_tmp
+        if _pil_tmp is None:
+            fp = latin_font_path or str(image_config.REPO_ROOT / image_config.FONT_TYPE)
+            _pil_tmp = ImageFont.truetype(fp, fontsize)
+        return max(1, _pil_tmp.font.getsize(' ')[0][0])
+
+    def _latin_space_w() -> int:
+        # Width of the mono half-space AOI around Latin words; configurable.
+        return getattr(image_config, 'LATIN_SPACE_WIDTH_PX', None) or _latin_mono_w()
+
+    def _is_japanese_char(c: str) -> bool:
+        o = ord(c)
+        return (
+            0x3000 <= o <= 0x303F      # CJK symbols and punctuation (、。「」〜・々)
+            or 0x3040 <= o <= 0x309F   # hiragana
+            or 0x30A0 <= o <= 0x30FF   # katakana (incl. ー)
+            or 0x3400 <= o <= 0x4DBF   # CJK ext A
+            or 0x4E00 <= o <= 0x9FFF   # CJK unified ideographs
+            or 0xF900 <= o <= 0xFAFF   # CJK compatibility ideographs
+        )
+
+    def _space_width_at(idx: int) -> int:
+        # A manual space is full Japanese width only when it sits between two
+        # Japanese characters. When it touches western text (or digits/other
+        # symbols) it keeps the monospace half-width used around Latin words.
+        def _is_jp(nb: list[str] | None) -> bool:
+            return bool(nb) and nb not in (['\n'], [' ']) and all(_is_japanese_char(c) for c in nb)
+        prev = cell_seq[idx - 1] if idx > 0 else None
+        nxt = cell_seq[idx + 1] if idx + 1 < len(cell_seq) else None
+        if _is_jp(prev) and _is_jp(nxt):
+            return fontsize
+        return _latin_space_w()
+
+    def _cell_height_px(cell: list[str], idx: int) -> int:
+        nonlocal _pil_tmp
+        if cell == [' ']:
+            return _space_width_at(idx)
+        if cell and all(_is_halfwidth_digit(c) for c in cell) or cell and all(_is_halfwidth_digit(c) or c in ('%', '％') for c in cell) and len(cell) > 1:
+            return fontsize * len(cell)
+        if cell and all(_is_latin_rotated(c) for c in cell):
+            if latin_box == 'tight':
+                return _latin_mono_w() * len(cell)
+            return fontsize * len(cell)
+        return fontsize
+
+    # Precompute each cell's height once (spaces depend on their neighbours, and
+    # kinsoku carry must move the precomputed height with the cell).
+    cell_h: list[int] = [_cell_height_px(c, i) for i, c in enumerate(cell_seq)]
+
+    cols: list[list[list[str]]] = []  # list of columns, each column is list of cells
+    col_bold: list[list[bool]] = []   # parallel bold flags per column
+    col_h: list[list[int]] = []       # parallel precomputed cell heights per column
+    # Column packing with minimal kinsoku (JLREQ 3.1.7):
+    #   - no column starts with a cannot_start char (、。」』） ー ・ small kana …)
+    #   - no column ends with a cannot_end char (「『（)
+    # Columns are filled to the height limit; at a break boundary the trailing
+    # cells are carried to the next column so it starts with a char that may
+    # start a line, and the current column does not end with an opening bracket.
+    cur: list[list[str]] = []
+    cur_bold: list[bool] = []
+    cur_heights: list[int] = []
+    cur_h = 0
+    i = 0
+    n = len(cell_seq)
+    while i < n:
+        cell = cell_seq[i]
+        bold = cell_bold[i]
+        h = cell_h[i]
+        if cell == ['\n']:
+            if cur:
+                cols.append(cur)
+                col_bold.append(cur_bold)
+                col_h.append(cur_heights)
+                cur = []
+                cur_bold = []
+                cur_heights = []
+                cur_h = 0
+            i += 1
+            continue
+        if cur and cur_h + h > text_height_px:
+            carry: list[list[str]] = []
+            carry_bold: list[bool] = []
+            carry_heights: list[int] = []
+            # If the next cell cannot start a line, carry trailing cells down so
+            # the next column starts with a char allowed to start a line.
+            if cell[0] in _TTB_CANNOT_START:
+                while cur and (not carry or carry[0][0] in _TTB_CANNOT_START):
+                    moved = cur.pop()
+                    mb = cur_bold.pop()
+                    mh = cur_heights.pop()
+                    cur_h -= mh
+                    carry.insert(0, moved)
+                    carry_bold.insert(0, mb)
+                    carry_heights.insert(0, mh)
+            # Do not end a column with an opening bracket.
+            if cur and cur[-1][0] in _TTB_CANNOT_END:
+                moved = cur.pop()
+                mb = cur_bold.pop()
+                mh = cur_heights.pop()
+                cur_h -= mh
+                carry.insert(0, moved)
+                carry_bold.insert(0, mb)
+                carry_heights.insert(0, mh)
+            if cur:
+                cols.append(cur)
+                col_bold.append(cur_bold)
+                col_h.append(cur_heights)
+            cur = carry
+            cur_bold = carry_bold
+            cur_heights = carry_heights
+            cur_h = sum(cur_heights)
+            if not cur:
+                # Could not resolve (e.g. very first char); start a new column.
+                cur.append(cell)
+                cur_bold.append(bold)
+                cur_heights.append(h)
+                cur_h += h
+                i += 1
+            continue
+        cur.append(cell)
+        cur_bold.append(bold)
+        cur_heights.append(h)
+        cur_h += h
+        i += 1
+    if cur:
+        cols.append(cur)
+        col_bold.append(cur_bold)
+        col_h.append(cur_heights)
+
+    if len(cols) > max_cols:
+        warnings.warn(
+            f'Text for {image_short_name} exceeds {max_cols} columns: has {len(cols)} cols'
+        )
+
+    # Shaping and rendering per column
+    font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
+    blob = hb.Blob.from_file_path(font_path)
+    face = hb.Face(blob)
+    hb_font = hb.Font(face)
+    hb_font.scale = (face.upem, face.upem)
+    ft_face = freetype.Face(font_path)
+    ft_face.set_char_size(fontsize * 64)
+    scale = fontsize / face.upem
+    # Bold face for **…** spans: shaped through HarfBuzz in ttb direction as well
+    # so vertical variants (、。ー) are applied just like regular text.
+    bold_font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD)
+    bold_blob = hb.Blob.from_file_path(bold_font_path)
+    bold_face = hb.Face(bold_blob)
+    hb_font_bold = hb.Font(bold_face)
+    hb_font_bold.scale = (bold_face.upem, bold_face.upem)
+    ft_face_bold = freetype.Face(bold_font_path)
+    ft_face_bold.set_char_size(fontsize * 64)
+    scale_bold = fontsize / bold_face.upem
+
+    aois = []
+    all_words: list[str] = []
+    aoi_idx = 0
+    col_idx = 0
+
+    # Margin overlay for review
+    if getattr(image_config, 'DEBUG_MARGIN', False):
+        m = image_config
+        # paint margins as semi transparent, draw border lines
+        draw.rectangle([0, 0, m.MIN_MARGIN_LEFT_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([m.IMAGE_WIDTH_PX - m.MIN_MARGIN_RIGHT_PX, 0, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([0, 0, m.IMAGE_WIDTH_PX, m.MIN_MARGIN_TOP_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+        draw.rectangle([0, m.IMAGE_HEIGHT_PX - m.MIN_MARGIN_BOTTOM_PX, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+
+    # Green genkoyoshi grid colors
+    grid_light = (183, 216, 176)
+    grid_mid = (150, 190, 150)
+    grid_dark = (110, 160, 110)
+
+    # If image was extended for overflow, draw page margin guides (standard page is rightmost IMAGE_WIDTH_PX)
+    if image.width > image_config.IMAGE_WIDTH_PX and getattr(image_config, 'DEBUG_MARGIN', False):
+        off = image.width - image_config.IMAGE_WIDTH_PX
+        guide_x_left = off + image_config.MIN_MARGIN_LEFT_PX
+        guide_x_right = off + image_config.IMAGE_WIDTH_PX - image_config.MIN_MARGIN_RIGHT_PX
+        # Draw margin bands for standard page
+        draw.rectangle([off, 0, guide_x_left, image.height], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([guide_x_right, 0, off + image_config.IMAGE_WIDTH_PX, image.height], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([off, 0, off + image_config.IMAGE_WIDTH_PX, image_config.MIN_MARGIN_TOP_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+        draw.rectangle([off, image_config.IMAGE_HEIGHT_PX - image_config.MIN_MARGIN_BOTTOM_PX, off + image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+        # Vertical boundary lines at page edges
+        draw.line([guide_x_left, 0, guide_x_left, image.height], fill=(255, 0, 0), width=2)
+        draw.line([guide_x_right, 0, guide_x_right, image.height], fill=(255, 0, 0), width=2)
+
+    # Centering offsets for box-constrained TTB (e.g. answer fields)
+    center_offset_x = 0
+    if center_in_box and script_direction == 'ttb' and text_width_px is not None and text_height_px is not None and cols:
+        total_width = (len(cols) - 1) * col_advance + fontsize if cols else 0
+        center_offset_x = (text_width_px - total_width) // 2
+        # clamp to not shift outside box
+        if center_offset_x < 0:
+            center_offset_x = 0
+
+    for col_idx, col in enumerate(cols):
+        # Pen for this column: top-right anchor moving left per column
+        # When centered, shift anchor left by center_offset_x so columns are centered horizontally in box
+        # Vertical stays top-aligned (user request: only horizontal centering)
+        pen_x_center = anchor_x_px - center_offset_x - fontsize // 2 - col_idx * col_advance
+        pen_y_top = anchor_y_px
+
+        # For single-char cells we shape each character in its own ttb run. Shaping
+        # them as one concatenated run lets the font compose/ligate across cell
+        # boundaries (e.g. Noto CJK turns '——' into a single glyph via ccmp), which
+        # desynchronises the glyph list from the cells that consume it.
+        # Latin, digits and %/dash are rendered via PIL, exclude them from this run.
+        # Spaces are rendered as empty boxes (no glyph), so they must also be excluded to
+        # keep the shaped-run indices aligned with the cells that consume single_idx.
+        # Bold cells are rendered separately with the bold font, so exclude them too.
+        single_chars = [cell[0] for cell, b in zip(col, col_bold[col_idx]) if len(cell) == 1 and cell[0] != ' ' and not b and not _is_latin_rotated(cell[0]) and not _is_halfwidth_digit(cell[0]) and not _is_punct_via_pil(cell[0])]
+        single_text = ''.join(single_chars)
+        # Shape singles
+        if single_chars:
+            single_infos = []
+            single_positions = []
+            for single_char in single_chars:
+                buf = hb.Buffer()
+                buf.add_str(single_char)
+                buf.direction = 'ttb'
+                buf.language = image_config.LANGUAGE
+                buf.guess_segment_properties()
+                buf.direction = 'ttb'
+                hb.shape(hb_font, buf)
+                single_infos.extend(buf.glyph_infos)
+                single_positions.extend(buf.glyph_positions)
+        else:
+            single_infos = []
+            single_positions = []
+        single_idx = 0
+        y_px = 0
+        row_idx = 0
+
+        for cell, is_bold, cell_h_px in zip(col, col_bold[col_idx], col_h[col_idx]):
+            if cell == [' ']:
+                mono_w = cell_h_px
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = mono_w
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + mono_w
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + mono_w // 2, x1, y0 + mono_w // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                aois.append([aoi_idx, ' ', aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(' ')
+                aoi_idx += 1
+                y_px += mono_w
+                row_idx += 1
+                continue
+            if len(cell) == 1 and _is_latin_alpha(cell[0]):
+                # A standalone single Latin letter (e.g. the D in ビタミンD, or an
+                # initial like R・ガルザ) is set upright in its own square rather
+                # than rotated, so it matches the upright digits next to it. Words
+                # of two or more Latin characters still rotate (see below).
+                ch = cell[0]
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = fontsize
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + fontsize
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                single_font_path = (
+                    str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD) if is_bold
+                    else (latin_font_path or font_path)
+                )
+                pil_font_single = ImageFont.truetype(single_font_path, fontsize)
+                draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch,
+                          fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
+                aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(ch)
+                aoi_idx += 1
+                y_px += fontsize
+            elif cell and all(_is_latin_rotated(c) for c in cell):
+                # Western word (monospaced): AOIs per character, rendering differs by box
+                word = ''.join(cell)
+                lfp = latin_font_path or font_path
+                pil_font_latin = ImageFont.truetype(lfp, fontsize)
+                w_per_char = pil_font_latin.font.getsize(cell[0])[0][0]
+                w_word = pil_font_latin.font.getsize(word)[0][0]
+                if latin_box == 'tight':
+                    aoi_h_per_char = max(1, w_per_char)
+                else:
+                    aoi_h_per_char = fontsize
+                total_aoi_h = len(cell) * aoi_h_per_char
+                aoi_x_word = pen_x_center - fontsize // 2
+                aoi_y_word = pen_y_top + y_px
+                # Create per-character AOIs at fixed intervals
+                for idx_ch, ch in enumerate(cell):
+                    aoi_y = aoi_y_word + idx_ch * aoi_h_per_char
+                    aoi_w = fontsize
+                    aoi_h = aoi_h_per_char
+                    if getattr(image_config, 'DEBUG_GRID', False):
+                        y0 = aoi_y
+                        y1 = aoi_y + aoi_h
+                        x0 = aoi_x_word
+                        x1 = aoi_x_word + fontsize
+                        draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                        draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                        draw.line([x0, y0 + aoi_h // 2, x1, y0 + aoi_h // 2], fill=grid_mid, width=1)
+                        draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                    if draw_aoi:
+                        draw.rectangle([aoi_x_word, aoi_y, aoi_x_word + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                    aois.append([aoi_idx, ch, aoi_x_word, aoi_y, aoi_w, aoi_h, row_idx + idx_ch, col_idx, image_short_name, aoi_idx, col_idx])
+                    all_words.append(ch)
+                    aoi_idx += 1
+                if latin_box == 'square':
+                    # A: square AOI - each letter centered in its own square (not pulled together)
+                    for idx_ch, ch in enumerate(cell):
+                        aoi_y = aoi_y_word + idx_ch * aoi_h_per_char
+                        w_ch = pil_font_latin.font.getsize(ch)[0][0]
+                        pad = fontsize // 2
+                        tmp_w = w_ch + pad * 2
+                        tmp_h = fontsize + pad * 2
+                        tmp_img = Image.new('L', (tmp_w, tmp_h), 0)
+                        tmp_draw = ImageDraw.Draw(tmp_img)
+                        tmp_draw.text((pad, pad), ch, fill=255, font=pil_font_latin)
+                        rot = tmp_img.rotate(-90, expand=True, resample=Image.BICUBIC)
+                        bbox = rot.getbbox()
+                        if bbox:
+                            rot_c = rot.crop(bbox)
+                            rw, rh = rot_c.size
+                            gx = aoi_x_word + (fontsize - rw) // 2
+                            gy = aoi_y + (aoi_h_per_char - rh) // 2
+                            image.paste(Image.new('RGB', (rw, rh), image_config.TEXT_COLOR), (gx, gy), rot_c)
+                else:
+                    # B/C: tight - whole word rendered together, correctly spaced, centered in tight AOIs
+                    pad = fontsize // 2
+                    tmp_w = w_word + pad * 2
+                    tmp_h = fontsize + pad * 2
+                    tmp_img = Image.new('L', (tmp_w, tmp_h), 0)
+                    tmp_draw = ImageDraw.Draw(tmp_img)
+                    tmp_draw.text((pad, pad), word, fill=255, font=pil_font_latin)
+                    rot = tmp_img.rotate(-90, expand=True, resample=Image.BICUBIC)
+                    bbox = rot.getbbox()
+                    if bbox:
+                        rot_c = rot.crop(bbox)
+                        rw, rh = rot_c.size
+                        gx = aoi_x_word + (fontsize - rw) // 2
+                        gy = aoi_y_word + (total_aoi_h - rh) // 2
+                        image.paste(Image.new('RGB', (rw, rh), image_config.TEXT_COLOR), (gx, gy), rot_c)
+                y_px += total_aoi_h
+                # row_idx counts as one row per word for grid purposes, but AOIs are per char
+                row_idx += len(cell) - 1
+            elif len(cell) > 1 and all(_is_halfwidth_digit(c) or c in ('%', '％') for c in cell) and any(_is_halfwidth_digit(c) for c in cell):
+                # Atomic number run (e.g. 2011, 7,000%, 20%): each digit upright,
+                # but the whole run stays together so it is not split across columns.
+                pil_font_single = ImageFont.truetype(
+                    str(image_config.REPO_ROOT / (image_config.FONT_TYPE_BOLD if is_bold else image_config.FONT_TYPE)),
+                    fontsize,
+                )
+                for k, ch in enumerate(cell):
+                    aoi_x = pen_x_center - fontsize // 2
+                    aoi_y = pen_y_top + y_px + k * fontsize
+                    aoi_w = fontsize
+                    aoi_h = fontsize
+                    if getattr(image_config, 'DEBUG_GRID', False):
+                        y0 = aoi_y
+                        y1 = aoi_y + fontsize
+                        x0 = aoi_x
+                        x1 = aoi_x + fontsize
+                        draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                        draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                        draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                        draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                    if draw_aoi:
+                        draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                    draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
+                    aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx + k, col_idx, image_short_name, aoi_idx, col_idx])
+                    all_words.append(ch)
+                    aoi_idx += 1
+                y_px += fontsize * len(cell)
+                row_idx += len(cell) - 1
+            elif len(cell) == 1 and (_is_halfwidth_digit(cell[0]) or _is_punct_via_pil(cell[0])):
+                # Single halfwidth digit or %/dash: render centered via PIL; dash is turned (rotated 90° for vertical)
+                ch = cell[0]
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = fontsize
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + fontsize
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                pil_font_single = ImageFont.truetype(
+                    str(image_config.REPO_ROOT / (image_config.FONT_TYPE_BOLD if is_bold else image_config.FONT_TYPE)),
+                    fontsize,
+                )
+                draw.text((aoi_x + fontsize // 2, aoi_y + fontsize // 2), ch, fill=image_config.TEXT_COLOR, font=pil_font_single, anchor='mm')
+                aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(ch)
+                aoi_idx += 1
+                y_px += fontsize
+            elif len(cell) == 1 and is_bold:
+                # Bold char (from a **…** span): shape with the bold font in ttb
+                # direction so vertical variants (、。ー) are applied, exactly like
+                # the regular single-char path.
+                ch = cell[0]
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = fontsize
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + fontsize
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+                bbuf = hb.Buffer()
+                bbuf.add_str(ch)
+                bbuf.direction = 'ttb'
+                bbuf.language = image_config.LANGUAGE
+                bbuf.guess_segment_properties()
+                bbuf.direction = 'ttb'
+                hb.shape(hb_font_bold, bbuf)
+                binfo = bbuf.glyph_infos[0]
+                bpos = bbuf.glyph_positions[0]
+                gid = binfo.codepoint
+                x_off_px = bpos.x_offset * scale_bold
+                y_off_px = -bpos.y_offset * scale_bold
+                ft_face_bold.load_glyph(gid, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_NORMAL)
+                bitmap = ft_face_bold.glyph.bitmap
+                w, h = bitmap.width, bitmap.rows
+                left = ft_face_bold.glyph.bitmap_left
+                top = ft_face_bold.glyph.bitmap_top
+                glyph_x = int(pen_x_center + x_off_px + left)
+                glyph_y = int(pen_y_top + y_px + y_off_px - top)
+                if w > 0 and h > 0:
+                    glyph_img = Image.frombytes('L', (w, h), bytes(bitmap.buffer))
+                    image.paste(Image.new('RGB', (w, h), image_config.TEXT_COLOR), (glyph_x, glyph_y), glyph_img)
+                aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(ch)
+                aoi_idx += 1
+                y_px += fontsize
+            else:
+                ch = cell[0]
+                info = single_infos[single_idx]
+                pos = single_positions[single_idx]
+                single_idx += 1
+                aoi_x = pen_x_center - fontsize // 2
+                aoi_y = pen_y_top + y_px
+                aoi_w = fontsize
+                aoi_h = fontsize
+
+                if getattr(image_config, 'DEBUG_GRID', False):
+                    y0 = aoi_y
+                    y1 = aoi_y + fontsize
+                    x0 = aoi_x
+                    x1 = aoi_x + fontsize
+                    draw.rectangle([x0, y0, x1, y1], fill=(235, 245, 235), outline=grid_light, width=1)
+                    draw.line([x0 + fontsize // 2, y0, x0 + fontsize // 2, y1], fill=grid_mid, width=1)
+                    draw.line([x0, y0 + fontsize // 2, x1, y0 + fontsize // 2], fill=grid_mid, width=1)
+                    draw.rectangle([x0, y0, x1, y1], outline=grid_dark, width=1)
+
+                if draw_aoi:
+                    draw.rectangle([aoi_x, aoi_y, aoi_x + aoi_w, aoi_y + aoi_h], outline='red', width=1)
+
+                gid = info.codepoint
+                x_off_px = pos.x_offset * scale
+                y_off_px = -pos.y_offset * scale
+                ft_face.load_glyph(gid, freetype.FT_LOAD_RENDER | freetype.FT_LOAD_TARGET_NORMAL)
+                bitmap = ft_face.glyph.bitmap
+                w, h = bitmap.width, bitmap.rows
+                left = ft_face.glyph.bitmap_left
+                top = ft_face.glyph.bitmap_top
+                pen_x = pen_x_center
+                pen_y = pen_y_top + y_px
+                glyph_x = int(pen_x + x_off_px + left)
+                glyph_y = int(pen_y + y_off_px - top)
+                if w > 0 and h > 0:
+                    glyph_img = Image.frombytes('L', (w, h), bytes(bitmap.buffer))
+                    image.paste(Image.new('RGB', (w, h), image_config.TEXT_COLOR), (glyph_x, glyph_y), glyph_img)
+
+                aois.append([aoi_idx, ch, aoi_x, aoi_y, aoi_w, aoi_h, row_idx, col_idx, image_short_name, aoi_idx, col_idx])
+                all_words.append(ch)
+                aoi_idx += 1
+                y_px += fontsize
+            row_idx += 1
+
+        col_idx += 1
+
+    # Fixation dot: single hollow end dot, matching Arabic horizontal
+    # When image was extended for overflow, keep dot at original page left margin
+    r = image_config.FIX_DOT_RADIUS_PX
+    fix_x = image_config.POS_BOTTOM_DOT_X_PX
+    if image.width > image_config.IMAGE_WIDTH_PX:
+        fix_x += image.width - image_config.IMAGE_WIDTH_PX
+    fix_y = image_config.POS_BOTTOM_DOT_Y_PX
+    draw.ellipse((fix_x - r, fix_y - r, fix_x + r, fix_y + r), fill=None, outline=image_config.TEXT_COLOR, width=image_config.FIX_DOT_WIDTH_PX)
+
+    return aois, all_words
 
 
 def create_images(
@@ -188,7 +905,7 @@ def create_images(
                     snippet_no = question_row['snippet_no']
                     condition_no = question_row['condition_no']
                     question_no = question_row['question_no']
-                    question_id = str(stimulus_id) + str(snippet_no) + str(condition_no) + str(question_no)
+                    question_id = str(int(stimulus_id)) + str(int(snippet_no)) + str(int(condition_no)) + str(int(question_no))
                     if len(question_id) == 4:
                         question_id = '0' + question_id
 
@@ -212,10 +929,10 @@ def create_images(
                     question_identifier = f'question_{question_id}_stimulus_{stimulus_id}'
 
                     answer_options = OrderedDict(
-                        {'target': question_row['target'],
-                         'distractor_a': question_row['distractor_a'],
-                         'distractor_b': question_row['distractor_b'],
-                         'distractor_c': question_row['distractor_c']}
+                        {'target': clean_option(question_row['target']),
+                         'distractor_a': clean_option(question_row['distractor_a']),
+                         'distractor_b': clean_option(question_row['distractor_b']),
+                         'distractor_c': clean_option(question_row['distractor_c'])}
                     )
 
                     question_image = Image.new(
@@ -235,8 +952,52 @@ def create_images(
                     all_words.extend(words)
                     question_image_versions.extend([session_id for _ in range(len(aois))])
 
+                    # vertical ttb: same dims as before but squeezed left for 2-col question, up/down taller
+                    if image_config.SCRIPT_DIRECTION == 'ttb':
+                        col_w = image_config.COLUMN_ADVANCE_PX or int(image_config.FONT_SIZE_PX * image_config.LINE_SPACING)
+                        question_w = 2 * col_w
+                        available_w = image_config.TEXT_WIDTH_PX - question_w - int(col_w * 0.5)
+                        available_w = max(available_w, image_config.TEXT_WIDTH_PX // 2)
+                        # keep original proportions but fit in available_w: up/down 0.7W, left/right split remaining
+                        up_w = int(image_config.IMAGE_WIDTH_PX * 0.7)
+                        up_w = min(up_w, available_w)
+                        left_w = int((available_w - 109) // 2)
+                        left_w = min(left_w, int(image_config.IMAGE_WIDTH_PX * 0.41))
+                        right_w = left_w
+                        # squeeze left: center up/down in available area, left at margin, right after gap
+                        up_x = image_config.MIN_MARGIN_LEFT_PX + (available_w - up_w) // 2
+                        left_x = image_config.MIN_MARGIN_LEFT_PX
+                        right_x = left_x + left_w + 109
+                        # enlarge = 0.22-0.17 = 0.05H, shift up 3x, middle 2x, down 1x to avoid overlap
+                        delta_h = int(image_config.IMAGE_HEIGHT_PX * 0.05)
+                        option_keys = {
+                            'left': {
+                                'x_px': int(left_x),
+                                'y_px': int(image_config.IMAGE_HEIGHT_PX * 0.44 - delta_h * 2),
+                                'text_width_px': int(left_w),
+                                'text_height_px': int(image_config.IMAGE_HEIGHT_PX * 0.28),
+                            },
+                            'up': {
+                                'x_px': int(up_x),
+                                'y_px': int(image_config.IMAGE_HEIGHT_PX * 0.25 - int(delta_h * 3)),
+                                'text_width_px': int(up_w),
+                                'text_height_px': int(image_config.IMAGE_HEIGHT_PX * 0.22),
+                            },
+                            'right': {
+                                'x_px': int(right_x),
+                                'y_px': int(image_config.IMAGE_HEIGHT_PX * 0.44 - delta_h * 2),
+                                'text_width_px': int(right_w),
+                                'text_height_px': int(image_config.IMAGE_HEIGHT_PX * 0.28),
+                            },
+                            'down': {
+                                'x_px': int(up_x),
+                                'y_px': int(image_config.IMAGE_HEIGHT_PX * 0.71 - delta_h),
+                                'text_width_px': int(up_w),
+                                'text_height_px': int(image_config.IMAGE_HEIGHT_PX * 0.22),
+                            }
+                        }
                     # greenlandic needs a different layout as it has very long words and the boxes are too small
-                    if image_config.LANGUAGE == 'kl':
+                    elif image_config.LANGUAGE == 'kl':
                         option_keys = {
                             'left': {
                                 'x_px': image_config.MIN_MARGIN_LEFT_PX,
@@ -335,12 +1096,14 @@ def create_images(
                             image_short_name=f'{stimulus_name}_{stimulus_id}_question_{question_id}_{option}',
                             draw_aoi=draw_aoi,
                             anchor_x_px=(option_keys[distractor_key]['x_px'] + option_keys[distractor_key]['text_width_px']
-                                         if image_config.SCRIPT_DIRECTION == 'rtl'
+                                         if image_config.SCRIPT_DIRECTION in ('rtl', 'ttb')
                                          else option_keys[distractor_key]['x_px']),
                             anchor_y_px=option_keys[distractor_key]['y_px'],
                             text_width_px=option_keys[distractor_key]['text_width_px'],
+                            text_height_px=option_keys[distractor_key]['text_height_px'],
                             question_option_type=distractor_key,
                             word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+                            center_in_box=(image_config.SCRIPT_DIRECTION == 'ttb'),
                         )
 
                         draw = ImageDraw.Draw(question_image)
@@ -349,12 +1112,21 @@ def create_images(
                         # otherwise it is too close to the letters
                         new_x = option_keys[distractor_key]['x_px'] - image_config.MIN_MARGIN_LEFT_PX * 0.1
                         new_width = option_keys[distractor_key]['text_width_px'] + image_config.MIN_MARGIN_LEFT_PX * 0.15
+                        box_top = option_keys[distractor_key]['y_px']
+                        box_bottom = box_top + option_keys[distractor_key]['text_height_px']
+                        if image_config.SCRIPT_DIRECTION == 'ttb':
+                            # TTB: grow the answer box a few px above and below so the drawn
+                            # border (and the box handed to the experiment) clears the text
+                            # symbols. Only the box geometry changes here; the text is still
+                            # laid out from option_keys, so its bounding box/overflow (and the
+                            # AOIs/CSVs) are unchanged.
+                            box_top -= image_config.TTB_ANSWER_BOX_PAD_PX
+                            box_bottom += image_config.TTB_ANSWER_BOX_PAD_PX
                         box_coordinates = (
                             new_x,
-                            option_keys[distractor_key]['y_px'],
+                            box_top,
                             new_x + new_width,
-                            option_keys[distractor_key]['y_px'] + option_keys[distractor_key][
-                                'text_height_px'])
+                            box_bottom)
 
                         draw.rectangle(box_coordinates, outline='black', width=1)
 
@@ -471,6 +1243,19 @@ def create_images(
                     draw_aoi=draw_aoi,
                     word_split_criterion=image_config.WORD_SPLIT_CRITERION,
                 )
+                # For ttb overflow, extend image so all columns fit with margin guides
+                if image_config.SCRIPT_DIRECTION == 'ttb' and aois:
+                    min_x = min(a[2] for a in aois)
+                    if min_x < image_config.MIN_MARGIN_LEFT_PX:
+                        extend = image_config.MIN_MARGIN_LEFT_PX - min_x
+                        new_w = image_config.IMAGE_WIDTH_PX + extend
+                        final_image = Image.new('RGB', (new_w, image_config.IMAGE_HEIGHT_PX), color=image_config.BACKGROUND_COLOR)
+                        aois, words = draw_text(
+                            text, final_image, image_config.FONT_SIZE_PX,
+                            spacing=image_config.LINE_SPACING, image_short_name=column_name,
+                            draw_aoi=draw_aoi,
+                            word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+                        )
 
                 filename = f"{stimulus_name.lower()}_id{stimulus_id}_{column_name}_{image_config.LANGUAGE}" \
                            f"{'_aoi' if draw_aoi else ''}.png"
@@ -686,13 +1471,16 @@ def create_stimuli_images():
 
 def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
               spacing: int = image_config.LINE_SPACING, image_short_name: str = None,
-              anchor_x_px: int = image_config.ANCHOR_POINT_X_PX,
-              anchor_y_px: int = image_config.ANCHOR_POINT_Y_PX,
+              anchor_x_px: int = None,
+              anchor_y_px: int = None,
               text_width_px: int = None,
+              text_height_px: int = None,
               script_direction: str = image_config.SCRIPT_DIRECTION,
               question_option_type: str | None = None,
               word_split_criterion: str = ' ',
-              line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None) -> (list[list], list):
+line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
+               latin_font_path: str = None, latin_box: str = None,
+               center_in_box: bool = False) -> (list[list], list):
     """
     Draws text on an image and creates aoi boxes for each letter
     :param text: str
@@ -730,8 +1518,31 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
         the second list contains all words in text order as many times as there are characters in the word
     """
     script_direction = script_direction.lower()
-    if script_direction not in ['ltr', 'rtl']:
-        raise ValueError(f'Script direction must be either "ltr" or "rtl", not {script_direction}')
+    if script_direction not in ['ltr', 'rtl', 'ttb']:
+        raise ValueError(f'Script direction must be one of ltr, rtl, ttb, not {script_direction}')
+
+    # Anchor default depends on the requested script direction, not on the
+    # lab config (which may describe a different direction in tests).
+    if anchor_x_px is None:
+        anchor_x_px = (
+            image.width - image_config.MIN_MARGIN_RIGHT_PX if script_direction == 'ttb'
+            else image_config.ANCHOR_POINT_X_PX
+        )
+    if anchor_y_px is None:
+        anchor_y_px = image_config.ANCHOR_POINT_Y_PX
+
+    if script_direction == 'ttb':
+        if not _HAS_VERTICAL:
+            raise RuntimeError('ttb rendering requires uharfbuzz and freetype-py')
+        return _draw_text_ttb(
+            text=text, image=image, fontsize=fontsize, draw_aoi=draw_aoi,
+            spacing=spacing, image_short_name=image_short_name,
+            anchor_x_px=anchor_x_px, anchor_y_px=anchor_y_px,
+            text_width_px=text_width_px, text_height_px=text_height_px, script_direction=script_direction,
+            word_split_criterion=word_split_criterion, line_limit=line_limit,
+            latin_font_path=latin_font_path, latin_box=latin_box,
+            center_in_box=center_in_box,
+        )
 
     if not text_width_px and not character_limit:
         character_limit = image_config.MAX_CHARS_PER_LINE
@@ -740,6 +1551,12 @@ def draw_text(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
 
     # Create a drawing object on the given image
     draw = ImageDraw.Draw(image)
+    if getattr(image_config, 'DEBUG_MARGIN', False):
+        m = image_config
+        draw.rectangle([0, 0, m.MIN_MARGIN_LEFT_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([m.IMAGE_WIDTH_PX - m.MIN_MARGIN_RIGHT_PX, 0, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(255, 220, 220), outline=(255, 0, 0), width=1)
+        draw.rectangle([0, 0, m.IMAGE_WIDTH_PX, m.MIN_MARGIN_TOP_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
+        draw.rectangle([0, m.IMAGE_HEIGHT_PX - m.MIN_MARGIN_BOTTOM_PX, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
 
@@ -1328,44 +2145,148 @@ def create_rating_screens(image: Image, text: str, title: str):
     draw_text(question, image, image_config.FONT_SIZE_PX, draw_aoi=False, line_limit=12,
               word_split_criterion=image_config.WORD_SPLIT_CRITERION, )
 
-    option_y_px = 3.1 * image_config.MIN_MARGIN_TOP_PX
-
-    option_width = image_config.IMAGE_WIDTH_PX * 0.4
-    if image_config.SCRIPT_DIRECTION == 'rtl':
-        # Anchor is the right edge of the text area; box extends leftward
-        option_x_px = image_config.IMAGE_WIDTH_PX - 1.2 * image_config.MIN_MARGIN_RIGHT_PX
-    else:
-        option_x_px = 1.2 * image_config.MIN_MARGIN_LEFT_PX
-
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), image_config.FONT_SIZE_PX)
 
+    if image_config.SCRIPT_DIRECTION == 'ttb':
+        # Vertical: question at top right, answers 1..5 each as a column right-to-left, spaced a bit more than usual
+        col_advance = int(image_config.FONT_SIZE_PX * image_config.LINE_SPACING)
+        gap = int(col_advance * 1.35)  # a bit more than usual
+        valid_options = [o for o in options if not (o.isspace() or o == '')]
+        n = len(valid_options)
+        # Options are laid out as columns from a FIXED right edge, so option_1
+        # (rightmost) sits at the same x on every rating screen, whatever the
+        # number of options. The experiment highlights the chosen option from a
+        # single shared RATING_QUESTION_BOXES set (option_1..option_5), so a
+        # screen with fewer options must occupy the rightmost columns instead of
+        # being re-centred (otherwise its highlight is shifted).
+        ref_n = max(5, n)
+        ref_width = ref_n * image_config.FONT_SIZE_PX + (ref_n - 1) * gap if ref_n else 0
+        block_right = image_config.MIN_MARGIN_LEFT_PX + (image_config.TEXT_WIDTH_PX - ref_width) // 2 + ref_width
+        total_width = n * image_config.FONT_SIZE_PX + (n - 1) * gap if n else 0
+        block_left = block_right - total_width
+        option_y_px = image_config.MIN_MARGIN_TOP_PX
+        avail_h = image_config.IMAGE_HEIGHT_PX - option_y_px - image_config.MIN_MARGIN_BOTTOM_PX
+        option_width = image_config.FONT_SIZE_PX  # single column width
+        option_height = avail_h
+        y_step = None
+    else:
+        option_width = image_config.IMAGE_WIDTH_PX * 0.4
+        if image_config.SCRIPT_DIRECTION == 'rtl':
+            # Anchor is the right edge of the text area; box extends leftward
+            option_x_px = image_config.IMAGE_WIDTH_PX - 1.2 * image_config.MIN_MARGIN_RIGHT_PX
+        else:
+            option_x_px = 1.2 * image_config.MIN_MARGIN_LEFT_PX
+        option_y_px = 3.1 * image_config.MIN_MARGIN_TOP_PX
+        y_step = image_config.MIN_MARGIN_TOP_PX
+
     option_idx = 1
+    ttb_col_idx = 0
     for option in options:
         # empty lines and spaces only are excluded
         if option.isspace() or option == '':
             continue
-        draw_text(
-            option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
-            anchor_x_px=option_x_px, anchor_y_px=option_y_px, text_width_px=option_width,
-            line_limit=12, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
-        )
-
-        draw = ImageDraw.Draw(image)
-        text_height = font.getmetrics()[0] + font.getmetrics()[1]
-
-        if image_config.SCRIPT_DIRECTION == 'rtl':
-            box_x0 = option_x_px - option_width
-            box_x1 = option_x_px + image_config.MIN_MARGIN_RIGHT_PX * 0.1
+        if image_config.SCRIPT_DIRECTION == 'ttb':
+            col_left = block_right - (ttb_col_idx + 1) * image_config.FONT_SIZE_PX - ttb_col_idx * gap
+            col_anchor = col_left + image_config.FONT_SIZE_PX  # right edge for ttb
+            # Rating options are "1 – 0%" (prefix, dash, suffix). The prefix digit is set
+            # upright. the numeric/percentage suffix (0%, 25%, 100%) is set horizontally.
+            # The dash comes from the input file and is rendered as-is (its optimal form in
+            # vertical text is still under discussion).
+            m = re.search(f"[{re.escape('–—-')}]", option)
+            if m and title in ("familiarity_rating_screen_1", "familiarity_rating_screen_2", "subject_difficulty_screen"):
+                dash_idx = m.start()
+                dash_char = option[dash_idx]
+                prefix = option[:dash_idx].strip()
+                suffix = option[dash_idx + 1:].strip()
+                pen_y = option_y_px
+                font_path = str(image_config.REPO_ROOT / image_config.FONT_TYPE)
+                pil_font = ImageFont.truetype(font_path, image_config.FONT_SIZE_PX)
+                draw = ImageDraw.Draw(image)
+                # prefix (e.g. "1") upright, one cell per character
+                for ch in prefix:
+                    if ch == ' ':
+                        pen_y += image_config.FONT_SIZE_PX // 3
+                        continue
+                    draw.text((col_left + image_config.FONT_SIZE_PX // 2, pen_y + image_config.FONT_SIZE_PX // 2),
+                              ch, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
+                    pen_y += image_config.FONT_SIZE_PX
+                # dash as in the input file, rendered vertically (rotated 90 degrees)
+                if dash_char:
+                    tmp_w = image_config.FONT_SIZE_PX + 10
+                    tmp_h = image_config.FONT_SIZE_PX + 10
+                    tmp_img = Image.new('L', (tmp_w, tmp_h), 0)
+                    tmp_draw = ImageDraw.Draw(tmp_img)
+                    tmp_draw.text((tmp_w // 2, tmp_h // 2), dash_char, fill=255, font=pil_font, anchor='mm')
+                    rot = tmp_img.rotate(90, expand=True, resample=Image.BICUBIC)
+                    bbox = rot.getbbox()
+                    if bbox:
+                        rot_c = rot.crop(bbox)
+                        rw, rh = rot_c.size
+                        gx = col_left + (image_config.FONT_SIZE_PX - rw) // 2
+                        gy = pen_y + (image_config.FONT_SIZE_PX - rh) // 2
+                        image.paste(Image.new('RGB', (rw, rh), image_config.TEXT_COLOR), (gx, gy), rot_c)
+                    pen_y += image_config.FONT_SIZE_PX
+                # suffix: numeric/percentage -> horizontal; otherwise vertical Japanese
+                if suffix:
+                    is_numeric_suffix = bool(re.fullmatch(r"[0-9%％\s]+", suffix)) and any(c.isdigit() for c in suffix)
+                    if is_numeric_suffix:
+                        w = pil_font.getlength(suffix)
+                        x0 = col_left + (image_config.FONT_SIZE_PX - w) / 2
+                        y0 = pen_y + image_config.FONT_SIZE_PX // 2
+                        draw.text((x0 + w / 2, y0), suffix, fill=image_config.TEXT_COLOR, font=pil_font, anchor='mm')
+                    else:
+                        remaining_h = avail_h - (pen_y - option_y_px)
+                        if remaining_h > 0:
+                            draw_text(
+                                suffix, image, image_config.FONT_SIZE_PX, draw_aoi=False,
+                                anchor_x_px=col_anchor, anchor_y_px=pen_y,
+                                text_width_px=image_config.FONT_SIZE_PX, text_height_px=remaining_h,
+                                line_limit=1, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+                                center_in_box=False,
+                            )
+            else:
+                draw_text(
+                    option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
+                    anchor_x_px=col_anchor, anchor_y_px=option_y_px,
+                    text_width_px=image_config.FONT_SIZE_PX, text_height_px=avail_h,
+                    line_limit=1, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+                    center_in_box=False,
+                )
+            box_top = option_y_px
+            box_bottom = option_y_px + avail_h
+            if image_config.SCRIPT_DIRECTION == 'ttb':
+                # Same ttb padding as the comprehension question boxes: grow the
+                # rating box above and below so the experiment highlight clears the
+                # option text. Layout of the options is unchanged.
+                box_top -= image_config.TTB_ANSWER_BOX_PAD_PX
+                box_bottom += image_config.TTB_ANSWER_BOX_PAD_PX
+            box_coordinates = (
+                col_left - image_config.MIN_MARGIN_LEFT_PX * 0.1,
+                box_top,
+                col_left + image_config.FONT_SIZE_PX + image_config.MIN_MARGIN_LEFT_PX * 0.1,
+                box_bottom
+            )
+            ttb_col_idx += 1
         else:
-            box_x0 = option_x_px - image_config.MIN_MARGIN_LEFT_PX * 0.1
-            box_x1 = option_x_px + option_width
-
-        box_coordinates = (
-            box_x0,
-            option_y_px,
-            box_x1,
-            option_y_px + text_height
-        )
+            draw_text(
+                option, image, image_config.FONT_SIZE_PX, draw_aoi=False,
+                anchor_x_px=option_x_px, anchor_y_px=option_y_px, text_width_px=option_width,
+                line_limit=12, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
+            )
+            draw = ImageDraw.Draw(image)
+            text_height = font.getmetrics()[0] + font.getmetrics()[1]
+            if image_config.SCRIPT_DIRECTION == 'rtl':
+                box_x0 = option_x_px - option_width
+                box_x1 = option_x_px + image_config.MIN_MARGIN_RIGHT_PX * 0.1
+            else:
+                box_x0 = option_x_px - image_config.MIN_MARGIN_LEFT_PX * 0.1
+                box_x1 = option_x_px + option_width
+            box_coordinates = (
+                box_x0,
+                option_y_px,
+                box_x1,
+                option_y_px + text_height
+            )
 
         # draw.rectangle(box_coordinates, outline='black', width=1)
 
@@ -1373,7 +2294,8 @@ def create_rating_screens(image: Image, text: str, title: str):
 
         option_idx += 1
 
-        option_y_px += image_config.MIN_MARGIN_TOP_PX
+        if image_config.SCRIPT_DIRECTION != 'ttb':
+            option_y_px += y_step
 
 
 def write_final_image_config() -> None:
@@ -1407,6 +2329,10 @@ def write_final_image_config() -> None:
             'MAX_CHARS_PER_LINE': image_config.MAX_CHARS_PER_LINE,
             'POS_BOTTOM_DOT_X_PX': image_config.POS_BOTTOM_DOT_X_PX,
             'POS_BOTTOM_DOT_Y_PX': image_config.POS_BOTTOM_DOT_Y_PX,
+            'SCRIPT_DIRECTION': image_config.SCRIPT_DIRECTION,
+            'COLUMN_ADVANCE_PX': getattr(image_config, 'COLUMN_ADVANCE_PX', None),
+            'LATIN_FONT_TYPE': getattr(image_config, 'LATIN_FONT_TYPE', None),
+            'LATIN_BOX_TYPE': getattr(image_config, 'LATIN_BOX_TYPE', None),
         }
     )
 
@@ -1493,7 +2419,7 @@ def create_other_screens(draw_aoi=False):
             else:
                 spacing = image_config.LINE_SPACING_INSTRUCTION
 
-            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=spacing, draw_aoi=False,
+            draw_text(text, final_image, image_config.FONT_SIZE_PX - 2, spacing=spacing, draw_aoi=draw_aoi,
                       line_limit=image_config.NUM_LINES_PER_INSTRUCTION_PAGE,
                       word_split_criterion=image_config.WORD_SPLIT_CRITERION, text_width_px=image_config.TEXT_WIDTH_PX,
                       image_short_name=title)

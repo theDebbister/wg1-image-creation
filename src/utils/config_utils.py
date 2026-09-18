@@ -102,7 +102,7 @@ def calculate_font_size(lang: str):
     size = 0
     if lang in ('ar', 'fa'):
         char = 'د'
-    elif lang in ('zh', 'yu', 'ja'):
+    elif lang in ('zh', 'yu', 'ja', 'tc'):
         warnings.warn('Please be aware that for Japanese, Cantonese and Mandarin the font size may need to be decided manually '
                       'as the characters are very different from other languages. '
                       'Check if the size is good.')

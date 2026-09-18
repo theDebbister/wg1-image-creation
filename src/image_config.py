@@ -1,6 +1,6 @@
-LANGUAGE = 'ja'
-COUNTRY_CODE = 'de'
-CITY = 'Potsdam'
+LANGUAGE = 'tc'
+COUNTRY_CODE = 'tw'
+CITY = 'Taipei'
 YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
@@ -25,10 +25,14 @@ WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
-elif LANGUAGE in ('zh', 'yu', 'ja'):
+elif LANGUAGE in ('zh', 'yu', 'ja', 'tc'):
     if LANGUAGE == 'ja':
         FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
         FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
+        WORD_SPLIT_CRITERION = ''
+    elif LANGUAGE == 'tc':
+        FONT_TYPE = "fonts/NotoSansTC-Regular.ttf"
+        FONT_TYPE_BOLD = 'fonts/NotoSansTC-Bold.ttf'
         WORD_SPLIT_CRITERION = ''
     else:
         # Use static instance to avoid Pillow variable font boxes with X
@@ -189,6 +193,12 @@ else:
     LATIN_FONT_TYPE = None
     LATIN_BOX_TYPE = "square"
     LATIN_SPACE_WIDTH_PX = None
+
+# Per-side vertical padding for ttb answer boxes (comprehension question options
+# and rating options). The drawn border and the box written to the experiment
+# config are grown by this many pixels above and below so the border is not
+# confused with the text symbols. Text layout/bounding box/overflow are unchanged.
+TTB_ANSWER_BOX_PAD_PX = 4
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)

@@ -1,4 +1,4 @@
-"""Tests for vertical ttb support and CJK font sizing, parametrized for ja, yu, zh."""
+"""Tests for vertical ttb support and CJK font sizing, parametrized for ja, yu, zh, tc."""
 
 from pathlib import Path
 
@@ -15,6 +15,7 @@ class TestFontSizeReferenceChar:
         ("zh", "大"),
         ("yu", "大"),
         ("ja", "大"),
+        ("tc", "大"),
         ("ar", "د"),
         ("fa", "د"),
         ("he", "ה"),
@@ -22,11 +23,11 @@ class TestFontSizeReferenceChar:
     ])
     def test_reference_char_for_lang(self, lang, expected_char):
         content = CONFIG_UTILS_PATH.read_text()
-        if lang in ("zh", "yu", "ja"):
-            assert "elif lang in ('zh', 'yu', 'ja')" in content
+        if lang in ("zh", "yu", "ja", "tc"):
+            assert "elif lang in ('zh', 'yu', 'ja', 'tc')" in content
             assert "char = '大'" in content
 
-    @pytest.mark.parametrize("lang", ["zh", "yu", "ja"])
+    @pytest.mark.parametrize("lang", ["zh", "yu", "ja", "tc"])
     def test_ja_uses_same_reference_as_zh(self, lang):
         content = CONFIG_UTILS_PATH.read_text()
         assert "char = '大'" in content
@@ -35,7 +36,7 @@ class TestFontSizeReferenceChar:
 class TestTTBConfig:
     def test_image_config_handles_ttb(self):
         content = IMAGE_CONFIG_PATH.read_text()
-        assert "elif LANGUAGE in ('zh', 'yu', 'ja')" in content
+        assert "elif LANGUAGE in ('zh', 'yu', 'ja', 'tc')" in content
         assert "'ttb'" in content
 
     @pytest.mark.parametrize("bad_value", ["diagonal", "vertical", "tbt"])
@@ -48,10 +49,11 @@ class TestDrawTextTTB:
         ("ja", ""),
         ("yu", ""),
         ("zh", ""),
+        ("tc", ""),
     ])
     def test_word_split_empty_for_cjk(self, lang, word_split):
         content = IMAGE_CONFIG_PATH.read_text()
-        assert "elif LANGUAGE in ('zh', 'yu', 'ja')" in content
+        assert "elif LANGUAGE in ('zh', 'yu', 'ja', 'tc')" in content
 
     def _ensure_real_languages(self):
         import sys, importlib

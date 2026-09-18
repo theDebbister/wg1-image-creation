@@ -426,8 +426,11 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         pen_x_center = anchor_x_px - center_offset_x - fontsize // 2 - col_idx * col_advance
         pen_y_top = anchor_y_px
 
-        # For single-char cells we can shape the column as one ttb run for efficiency
-        # Latin, digits and %/dash are rendered via PIL, exclude them from the ttb run.
+        # For single-char cells we shape each character in its own ttb run. Shaping
+        # them as one concatenated run lets the font compose/ligate across cell
+        # boundaries (e.g. Noto CJK turns '——' into a single glyph via ccmp), which
+        # desynchronises the glyph list from the cells that consume it.
+        # Latin, digits and %/dash are rendered via PIL, exclude them from this run.
         # Spaces are rendered as empty boxes (no glyph), so they must also be excluded to
         # keep the shaped-run indices aligned with the cells that consume single_idx.
         # Bold cells are rendered separately with the bold font, so exclude them too.
@@ -435,15 +438,18 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
         single_text = ''.join(single_chars)
         # Shape singles
         if single_chars:
-            buf = hb.Buffer()
-            buf.add_str(single_text)
-            buf.direction = 'ttb'
-            buf.language = image_config.LANGUAGE
-            buf.guess_segment_properties()
-            buf.direction = 'ttb'
-            hb.shape(hb_font, buf)
-            single_infos = list(buf.glyph_infos)
-            single_positions = list(buf.glyph_positions)
+            single_infos = []
+            single_positions = []
+            for single_char in single_chars:
+                buf = hb.Buffer()
+                buf.add_str(single_char)
+                buf.direction = 'ttb'
+                buf.language = image_config.LANGUAGE
+                buf.guess_segment_properties()
+                buf.direction = 'ttb'
+                hb.shape(hb_font, buf)
+                single_infos.extend(buf.glyph_infos)
+                single_positions.extend(buf.glyph_positions)
         else:
             single_infos = []
             single_positions = []
@@ -1106,12 +1112,21 @@ def create_images(
                         # otherwise it is too close to the letters
                         new_x = option_keys[distractor_key]['x_px'] - image_config.MIN_MARGIN_LEFT_PX * 0.1
                         new_width = option_keys[distractor_key]['text_width_px'] + image_config.MIN_MARGIN_LEFT_PX * 0.15
+                        box_top = option_keys[distractor_key]['y_px']
+                        box_bottom = box_top + option_keys[distractor_key]['text_height_px']
+                        if image_config.SCRIPT_DIRECTION == 'ttb':
+                            # TTB: grow the answer box a few px above and below so the drawn
+                            # border (and the box handed to the experiment) clears the text
+                            # symbols. Only the box geometry changes here; the text is still
+                            # laid out from option_keys, so its bounding box/overflow (and the
+                            # AOIs/CSVs) are unchanged.
+                            box_top -= image_config.TTB_ANSWER_BOX_PAD_PX
+                            box_bottom += image_config.TTB_ANSWER_BOX_PAD_PX
                         box_coordinates = (
                             new_x,
-                            option_keys[distractor_key]['y_px'],
+                            box_top,
                             new_x + new_width,
-                            option_keys[distractor_key]['y_px'] + option_keys[distractor_key][
-                                'text_height_px'])
+                            box_bottom)
 
                         draw.rectangle(box_coordinates, outline='black', width=1)
 
@@ -2237,11 +2252,19 @@ def create_rating_screens(image: Image, text: str, title: str):
                     line_limit=1, word_split_criterion=image_config.WORD_SPLIT_CRITERION,
                     center_in_box=False,
                 )
+            box_top = option_y_px
+            box_bottom = option_y_px + avail_h
+            if image_config.SCRIPT_DIRECTION == 'ttb':
+                # Same ttb padding as the comprehension question boxes: grow the
+                # rating box above and below so the experiment highlight clears the
+                # option text. Layout of the options is unchanged.
+                box_top -= image_config.TTB_ANSWER_BOX_PAD_PX
+                box_bottom += image_config.TTB_ANSWER_BOX_PAD_PX
             box_coordinates = (
                 col_left - image_config.MIN_MARGIN_LEFT_PX * 0.1,
-                option_y_px,
+                box_top,
                 col_left + image_config.FONT_SIZE_PX + image_config.MIN_MARGIN_LEFT_PX * 0.1,
-                option_y_px + avail_h
+                box_bottom
             )
             ttb_col_idx += 1
         else:

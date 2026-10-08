@@ -1162,6 +1162,9 @@ def create_images(
                 question_sub_csv_copy['distractor_c_key'] = temp_distractor_c_keys
                 new_session_question_df = pd.concat([new_session_question_df, question_sub_csv_copy], axis=0)
 
+                for id_col in ['stimulus_id', 'snippet_no', 'condition_no', 'question_no']:
+                    new_session_question_df[id_col] = new_session_question_df[id_col].astype(int)
+
                 new_session_question_df.to_csv(
                     full_path_root_question_df,
                     sep=',',

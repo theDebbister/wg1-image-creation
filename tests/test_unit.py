@@ -361,3 +361,92 @@ class TestGetOptionSpanIndices:
         # "טקסט" is at indices 4,5,6,7
         assert all(v == i for i, v in enumerate(target[4:8]))
         assert target[0] == 'x'
+
+
+# ---------------------------------------------------------------------------
+# cast_question_id_columns_to_int
+# ---------------------------------------------------------------------------
+
+def _import_cast_question_id_columns_to_int():
+    """Import the id-cast helper with stubbed image_config deps."""
+    _import_normalize_render_text()  # sets up the fake modules text_to_picture needs
+    from text_to_picture import cast_question_id_columns_to_int
+    return cast_question_id_columns_to_int
+
+
+ID_COLUMNS = ["stimulus_id", "snippet_no", "condition_no", "question_no"]
+
+
+class TestCastQuestionIdColumnsToInt:
+    cast = staticmethod(_import_cast_question_id_columns_to_int())
+
+    @staticmethod
+    def _float_frame():
+        import pandas as pd
+        # id columns as pandas reads them when the question excel has a stray
+        # non-empty bottom row (see test_stray_excel_row_upcasts_ids_to_float)
+        return pd.DataFrame({
+            "item_id": [
+                "MPRC_PopSci_MultiplEYE_en_01111",
+                "MPRC_Arg_PISACowsMilk_en_10121",
+            ],
+            "stimulus_id": [1.0, 10.0],
+            "snippet_no": [1.0, 1.0],
+            "condition_no": [1.0, 2.0],
+            "question_no": [1.0, 1.0],
+        })
+
+    @staticmethod
+    def _reconstruct(row):
+        # mirrors the experiment implementation (utils/data_utils.py:215)
+        return (
+            str(row["stimulus_id"])
+            + str(row["snippet_no"])
+            + str(row["condition_no"])
+            + str(row["question_no"])
+        )
+
+    def test_float_columns_are_cast_to_int(self):
+        out = self.cast(self._float_frame())
+        for col in ID_COLUMNS:
+            assert out[col].dtype == "int64"
+
+    def test_reconstructed_id_has_no_float_artifacts(self):
+        raw = self._float_frame()
+        # regression: the un-cast float frame produces ids like "1.01.01.0"
+        assert "." in self._reconstruct(raw.iloc[0])
+
+        out = self.cast(raw)
+        for _, row in out.iterrows():
+            reconstructed = self._reconstruct(row)
+            assert "." not in reconstructed
+            assert reconstructed.isdigit()
+            # the experiment accepts question.id or question.id[1:]
+            item_id = row["item_id"].split("_")[-1]
+            assert reconstructed in (item_id, item_id[1:])
+
+    def test_already_int_columns_are_unchanged(self):
+        frame = self._float_frame().astype({c: "int64" for c in ID_COLUMNS})
+        out = self.cast(frame)
+        for col in ID_COLUMNS:
+            assert out[col].dtype == "int64"
+
+    def test_stray_excel_row_upcasts_ids_to_float(self, tmp_path):
+        import openpyxl
+        import pandas as pd
+
+        path = tmp_path / "questions.xlsx"
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.append(["item_id", "stimulus_id", "snippet_no", "condition_no", "question_no"])
+        ws.append(["MPRC_PopSci_MultiplEYE_en_01111", 1, 1, 1, 1])
+        ws.append(["MPRC_PopSci_MultiplEYE_en_01112", 1, 1, 1, 2])
+        ws.append(["MPRC___"])  # stray row: only the item_id cell is filled
+        wb.save(path)
+
+        raw = pd.read_excel(path).dropna(subset=["stimulus_id"])
+        # the stray row keeps the numeric columns as float
+        assert raw["snippet_no"].dtype == "float64"
+
+        out = self.cast(raw)
+        assert all(out[col].dtype == "int64" for col in ID_COLUMNS)

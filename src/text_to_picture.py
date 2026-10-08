@@ -745,6 +745,22 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     return aois, all_words
 
 
+QUESTION_ID_COLUMNS = ['stimulus_id', 'snippet_no', 'condition_no', 'question_no']
+
+
+def cast_question_id_columns_to_int(question_df: pd.DataFrame) -> pd.DataFrame:
+    """Force the id columns to integers before writing the version CSV.
+
+    The question excel can contain a stray non-empty bottom row which makes
+    pandas read these columns as floats. If they are written as floats the
+    experiment rebuilds the page number with str() and produces ids like
+    "8.0111" instead of "80111".
+    """
+    for id_col in QUESTION_ID_COLUMNS:
+        question_df[id_col] = question_df[id_col].astype(int)
+    return question_df
+
+
 def create_images(
         stimuli_xlsx_file_name: str,
         question_xlsx_file_name: str,
@@ -1161,9 +1177,7 @@ def create_images(
                 question_sub_csv_copy['distractor_b_key'] = temp_distractor_b_keys
                 question_sub_csv_copy['distractor_c_key'] = temp_distractor_c_keys
                 new_session_question_df = pd.concat([new_session_question_df, question_sub_csv_copy], axis=0)
-
-                for id_col in ['stimulus_id', 'snippet_no', 'condition_no', 'question_no']:
-                    new_session_question_df[id_col] = new_session_question_df[id_col].astype(int)
+                new_session_question_df = cast_question_id_columns_to_int(new_session_question_df)
 
                 new_session_question_df.to_csv(
                     full_path_root_question_df,

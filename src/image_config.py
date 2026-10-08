@@ -1,6 +1,6 @@
-LANGUAGE = 'ja'
-COUNTRY_CODE = 'de'
-CITY = 'Potsdam'
+LANGUAGE = 'tc'
+COUNTRY_CODE = 'tw'
+CITY = 'Taipei'
 YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
@@ -25,10 +25,20 @@ WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
-elif LANGUAGE in  ('zh', 'yu'):
-    FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
-    FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
-    WORD_SPLIT_CRITERION = ''
+elif LANGUAGE in ('zh', 'yu', 'ja', 'tc'):
+    if LANGUAGE == 'ja':
+        FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+        FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
+        WORD_SPLIT_CRITERION = ''
+    elif LANGUAGE == 'tc':
+        FONT_TYPE = "fonts/NotoSansTC-Regular.ttf"
+        FONT_TYPE_BOLD = 'fonts/NotoSansTC-Bold.ttf'
+        WORD_SPLIT_CRITERION = ''
+    else:
+        # Use static instance to avoid Pillow variable font boxes with X
+        FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
+        FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
+        WORD_SPLIT_CRITERION = ''
 elif LANGUAGE == 'fa':
     FONT_TYPE = 'fonts/KawkabMono-Regular.ttf'
     FONT_TYPE_BOLD = 'fonts/KawkabMono-Bold.ttf'
@@ -38,9 +48,6 @@ elif LANGUAGE == 'ar':
 elif LANGUAGE == 'ha':
     FONT_TYPE = "fonts/NotoSansMono-Regular.ttf"
     FONT_TYPE_BOLD = 'fonts/NotoSansMono-Bold.ttf'
-elif LANGUAGE == 'ja':
-    FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
-    FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
 else:
     FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     FONT_TYPE_BOLD = "fonts/JetBrainsMono-ExtraBold.ttf"
@@ -102,7 +109,10 @@ if len(SCREEN_SIZE_CM) != 2:
                      'Please check the lab configuration file.')
 
 DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
-SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION'].lower()
+# already lowercased in config_utils, keep lower for safety
+SCRIPT_DIRECTION = str(LAB_CONFIGURATION['SCRIPT_DIRECTION']).lower()
+if SCRIPT_DIRECTION not in ('ltr', 'rtl', 'ttb'):
+    raise ValueError(f'SCRIPT_DIRECTION must be one of ltr, rtl, ttb, not {SCRIPT_DIRECTION!r}')
 MULTIPLE_DEVICES = LAB_CONFIGURATION['MULTIPLE_DEVICES']
 if MULTIPLE_DEVICES and not TESTING_IMAGES:
     print('The experiment will be split on two devices. Please contact multipleye@cl.uzh.ch for further '
@@ -111,6 +121,8 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
 IMAGE_SIZE_CM = (37, 28)
 
 MAX_CHARS_PER_LINE =  82
+# For vertical ttb, chars per column instead of per line, height is the constraint
+MAX_CHARS_PER_COLUMN = 28
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 IMAGE_WIDTH_PX = IMAGE_WIDTH_PX if IMAGE_WIDTH_PX % 2 == 0 else IMAGE_WIDTH_PX + 1  # make sure it is even
@@ -130,25 +142,63 @@ MIN_MARGIN_RIGHT_PX = int(MARGIN_RIGHT_CM * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 MIN_MARGIN_TOP_PX = int(MARGIN_TOP_CM * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 MIN_MARGIN_BOTTOM_PX = int(MARGIN_BOTTOM_CM * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 
-ANCHOR_POINT_X_PX = MIN_MARGIN_LEFT_PX if SCRIPT_DIRECTION == 'ltr' else IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
+# Geometry for vertical ttb: anchor top-right, char advance +y, column advance -x
+# Dots: start top-right, end bottom-left like Arabic per decisions, respects w3.org/TR/jlreq
+if SCRIPT_DIRECTION == 'ltr':
+    ANCHOR_POINT_X_PX = MIN_MARGIN_LEFT_PX
+    POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
+    POS_TOP_DOT_X_PX = 0.75 * MIN_MARGIN_RIGHT_PX
+elif SCRIPT_DIRECTION in ('rtl', 'ttb'):
+    ANCHOR_POINT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
+    POS_BOTTOM_DOT_X_PX = MIN_MARGIN_LEFT_PX
+    POS_TOP_DOT_X_PX = IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_RIGHT_PX
 ANCHOR_POINT_Y_PX = MIN_MARGIN_TOP_PX
 
 MARGIN_LEFT_CM_RTL, MARGIN_RIGHT_CM_RTL = MARGIN_RIGHT_CM, MARGIN_LEFT_CM
 MIN_MARGIN_LEFT_PX_RTL, MIN_MARGIN_RIGHT_PX_RTL = MIN_MARGIN_RIGHT_PX, MIN_MARGIN_LEFT_PX
 
 TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
-POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else MIN_MARGIN_LEFT_PX
+TEXT_HEIGHT_PX = IMAGE_HEIGHT_PX - MIN_MARGIN_TOP_PX - MIN_MARGIN_BOTTOM_PX
 POS_BOTTOM_DOT_Y_PX = int(IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1])
-POS_TOP_DOT_X_PX = 0.75 * MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_RIGHT_PX
 POS_TOP_DOT_Y_PX = 1.25 * MIN_MARGIN_TOP_PX
+# Debug overlays for lab review, optional and not in final stimuli
+DEBUG_GRID = False
+DEBUG_MARGIN = False
 FIX_DOT_RADIUS_PX = int(0.1 * MIN_MARGIN_LEFT_PX) if int(0.1 * MIN_MARGIN_LEFT_PX) > 7 else 7  # original values is 7
 FIX_DOT_WIDTH_PX = int(FIX_DOT_RADIUS_PX * 5 // 7)   # original value is 5
 
 FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
+# For ttb, column advance reuses LINE_SPACING as gap factor: column gap = unit * spacing
+# Decision: LINE_SPACING 2.9 is horizontal-specific, for vertical we reuse it so
+# columns are spaced like lines, giving ~28 cols per page at 20px. Tight grid
+# would be unit (20px) giving 82 cols per page, too dense. Gap is configurable
+# via COLUMN_GAP_FACTOR if colleagues want widening of Japanese square.
+COLUMN_GAP_FACTOR = LINE_SPACING
+COLUMN_ADVANCE_PX = int(FONT_SIZE_PX * COLUMN_GAP_FACTOR) if SCRIPT_DIRECTION == 'ttb' else None
 
 if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
     FONT_SIZE_PX = sum(font_metrics.getmetrics())  # ascent + descent
+
+# Latin handling for vertical writing: JetBrains Mono tight
+# tight = per-char AOI 39x~23, whole word pulled together
+if SCRIPT_DIRECTION == 'ttb':
+    LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    LATIN_BOX_TYPE = "tight"
+    # Width of the mono half-space AOI placed around Latin words. None = use the
+    # Latin letter advance (current default); a lab can set a tighter half-width
+    # (e.g. FONT_SIZE_PX // 2) here.
+    LATIN_SPACE_WIDTH_PX = None
+else:
+    LATIN_FONT_TYPE = None
+    LATIN_BOX_TYPE = "square"
+    LATIN_SPACE_WIDTH_PX = None
+
+# Per-side vertical padding for ttb answer boxes (comprehension question options
+# and rating options). The drawn border and the box written to the experiment
+# config are grown by this many pixels above and below so the border is not
+# confused with the text symbols. Text layout/bounding box/overflow are unchanged.
+TTB_ANSWER_BOX_PAD_PX = 4
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)

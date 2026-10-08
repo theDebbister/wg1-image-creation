@@ -110,6 +110,7 @@ def toy_image_config():
         "POS_BOTTOM_DOT_X_PX", "POS_BOTTOM_DOT_Y_PX",
         "POS_TOP_DOT_X_PX", "POS_TOP_DOT_Y_PX",
         "FIX_DOT_RADIUS_PX", "FIX_DOT_WIDTH_PX",
+        "DEBUG_GRID", "DEBUG_MARGIN",
     ]
     orig = {k: getattr(ic, k) for k in _PATCH_KEYS if hasattr(ic, k)}
 
@@ -209,6 +210,11 @@ def toy_image_config():
     ic.POS_TOP_DOT_Y_PX = 1.25 * ic.MIN_MARGIN_TOP_PX
     ic.FIX_DOT_RADIUS_PX = int(0.1 * ic.MIN_MARGIN_LEFT_PX) if int(0.1 * ic.MIN_MARGIN_LEFT_PX) > 7 else 7
     ic.FIX_DOT_WIDTH_PX = int(ic.FIX_DOT_RADIUS_PX * 5 // 7)
+
+    # Debug overlays must not leak between tests (some tests toggle them and
+    # pytest.skip can bypass their cleanup), so always start clean.
+    ic.DEBUG_GRID = False
+    ic.DEBUG_MARGIN = False
 
     # Reload text_to_picture so its import-time defaults (draw_text signature)
     # capture the patched image_config values, not stale ones from unit tests

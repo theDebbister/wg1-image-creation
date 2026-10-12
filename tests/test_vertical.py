@@ -1,4 +1,4 @@
-"""Tests for vertical ttb support and CJK font sizing, parametrized for ja, yu, zh, tc."""
+"""Tests for vertical ttb support and CJK font sizing, parametrized for ja, yu, zh, zt."""
 
 from pathlib import Path
 
@@ -15,7 +15,7 @@ class TestFontSizeReferenceChar:
         ("zh", "大"),
         ("yu", "大"),
         ("ja", "大"),
-        ("tc", "大"),
+        ("zt", "大"),
         ("ar", "د"),
         ("fa", "د"),
         ("he", "ה"),
@@ -49,7 +49,7 @@ class TestDrawTextTTB:
         ("ja", ""),
         ("yu", ""),
         ("zh", ""),
-        ("tc", ""),
+        ("zt", ""),
     ])
     def test_word_split_empty_for_cjk(self, lang, word_split):
         content = IMAGE_CONFIG_PATH.read_text()

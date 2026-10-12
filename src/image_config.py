@@ -1,6 +1,6 @@
-LANGUAGE = 'tc'
-COUNTRY_CODE = 'tw'
-CITY = 'Taipei'
+LANGUAGE = 'zt'
+COUNTRY_CODE = 'ch'
+CITY = 'Zurich'
 YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
@@ -25,12 +25,12 @@ WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
-elif LANGUAGE in ('zh', 'yu', 'ja', 'tc'):
+elif LANGUAGE in ('zh', 'yu', 'ja', 'zt'):
     if LANGUAGE == 'ja':
         FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
         FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
         WORD_SPLIT_CRITERION = ''
-    elif LANGUAGE == 'tc':
+    elif LANGUAGE == 'zt':
         FONT_TYPE = "fonts/NotoSansTC-Regular.ttf"
         FONT_TYPE_BOLD = 'fonts/NotoSansTC-Bold.ttf'
         WORD_SPLIT_CRITERION = ''

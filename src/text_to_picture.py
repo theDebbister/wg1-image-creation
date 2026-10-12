@@ -35,6 +35,18 @@ pd.options.mode.chained_assignment = None  # default='warn'
 CONFIG = {}
 
 
+# Characters that flow per-cell in CJK/Japanese horizontal text: Han, CJK
+# punctuation, full-width forms, digits and the em dash -- plus kana, which are
+# required for Japanese. Kana (3040-30ff, includes the prolonged sound mark) are
+# full-width and must be laid out per character; without them a kana run is
+# treated as one "Latin" word, which breaks line wrapping and AOIs.
+_CJK_FLOW_RE = re.compile(r'[\u3040-\u30ff\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]')
+
+
+def _is_cjk_flow_char(char: str) -> bool:
+    return bool(_CJK_FLOW_RE.match(char))
+
+
 def normalize_render_text(text: str) -> str:
     """Expand ligatures that the configured font may not contain, and replace
     control whitespace that has no glyph in the fonts (it would otherwise be
@@ -1626,9 +1638,8 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                 # chinese is a special case
                 if image_config.LANGUAGE in ('zh', 'ja'):
                     # for chinese a word is a single character, if it is not a chinese character but a latin one,
-                    # we will treat it differently
-                    if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
-                        # if not re.match(r'[\u4e00-\u9fff|\u3000-\u303f|0-9|\u2014]', word):
+                    # we will treat it differently (see _is_cjk_flow_char for the kana handling)
+                    if not _is_cjk_flow_char(word):
                         in_latin_word = True
                         if word == '':
                             latin_word += ' '

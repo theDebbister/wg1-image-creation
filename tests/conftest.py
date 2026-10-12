@@ -103,7 +103,7 @@ def toy_image_config():
         "IMAGE_WIDTH_PX", "IMAGE_HEIGHT_PX",
         "MIN_MARGIN_LEFT_PX", "MIN_MARGIN_RIGHT_PX",
         "MIN_MARGIN_TOP_PX", "MIN_MARGIN_BOTTOM_PX",
-        "ANCHOR_POINT_X_PX", "ANCHOR_POINT_Y_PX", "TEXT_WIDTH_PX",
+        "ANCHOR_POINT_X_PX", "ANCHOR_POINT_Y_PX", "TEXT_WIDTH_PX", "TEXT_HEIGHT_PX",
         "FONT_TYPE", "FONT_TYPE_BOLD", "WORD_SPLIT_CRITERION",
         "NUM_PERMUTATIONS", "VERSION_START", "FONT_SIZE_PX",
         "NUM_LINES_PER_PAGE", "NUM_LINES_PER_INSTRUCTION_PAGE",
@@ -175,6 +175,7 @@ def toy_image_config():
     ic.ANCHOR_POINT_Y_PX = ic.MIN_MARGIN_TOP_PX
 
     ic.TEXT_WIDTH_PX = ic.IMAGE_WIDTH_PX - (ic.MIN_MARGIN_RIGHT_PX + ic.MIN_MARGIN_LEFT_PX)
+    ic.TEXT_HEIGHT_PX = ic.IMAGE_HEIGHT_PX - (ic.MIN_MARGIN_TOP_PX + ic.MIN_MARGIN_BOTTOM_PX)
 
     # Font: for 'toy' use the default font (JetBrains Mono) if it exists,
     # otherwise fall back to NotoSansJP (which is guaranteed present in the

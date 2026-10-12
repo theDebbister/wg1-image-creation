@@ -263,3 +263,63 @@ class TestTTBBoldAndSpaces:
         a = aois[[x[1] for x in aois].index("I")]
         iw, ih = self._ink_bbox(img, a)
         assert iw >= ih, f"rotated 'II' should read sideways, got ink {iw}x{ih}"
+
+
+class TestJapaneseLTRParity:
+    """Japanese must keep the same pixel font size horizontally and vertically,
+    and kana must flow per character in the horizontal (ltr) path."""
+
+    def test_kana_is_cjk_flow_char(self, toy_image_config):
+        from text_to_picture import _is_cjk_flow_char
+        for ch in ("あ", "ア", "ー", "漢", "。"):
+            assert _is_cjk_flow_char(ch), ch
+        for ch in ("A", "a", " ", "-"):
+            assert not _is_cjk_flow_char(ch), ch
+
+    def test_ja_font_size_identical_for_ltr_and_ttb(self, toy_image_config):
+        import image_config
+        from utils.config_utils import calculate_font_size
+
+        orig_dir = image_config.SCRIPT_DIRECTION
+        orig_font = image_config.FONT_TYPE
+        try:
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            image_config.SCRIPT_DIRECTION = "ltr"
+            ltr = calculate_font_size("ja")
+            image_config.SCRIPT_DIRECTION = "ttb"
+            ttb = calculate_font_size("ja")
+        finally:
+            image_config.SCRIPT_DIRECTION = orig_dir
+            image_config.FONT_TYPE = orig_font
+
+        assert ltr > 0
+        assert ltr == ttb
+
+    def test_ja_ltr_kana_wraps_within_text_margin(self, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+
+        orig_lang = image_config.LANGUAGE
+        orig_font = image_config.FONT_TYPE
+        try:
+            image_config.LANGUAGE = "ja"
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            img = Image.new(
+                "RGB",
+                (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                color=image_config.BACKGROUND_COLOR,
+            )
+            aois, _ = draw_text(
+                "あ" * 200, img, image_config.FONT_SIZE_PX, draw_aoi=True,
+                script_direction="ltr", word_split_criterion="",
+                text_width_px=image_config.TEXT_WIDTH_PX,
+            )
+        finally:
+            image_config.LANGUAGE = orig_lang
+            image_config.FONT_TYPE = orig_font
+
+        assert len(aois) > 0
+        right_limit = image_config.ANCHOR_POINT_X_PX + image_config.TEXT_WIDTH_PX
+        for aoi in aois:
+            _, char, x, y, w, h = aoi[:6]
+            assert x + w <= right_limit + 1, f"kana '{char}' overflowed the text margin"

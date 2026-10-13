@@ -18,7 +18,7 @@ try:
 except ImportError:
     from subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
-from languages import arabic_farsi, hebrew
+from languages import arabic_farsi, hebrew, japanese
 from languages.arabic_farsi import rtl_draw_kwargs
 
 try:
@@ -62,9 +62,22 @@ def clean_option(text):
     return text.strip() if isinstance(text, str) else text
 
 
-# Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi
-_TTB_CANNOT_START = set('、。，．・：；！？…‥」』）］｝〕〉》】〙〗〞”“’」』〜ー々ヽヾゞっゃゅょゎぁぃぅぇぉヵヶァィゥェォッャュョヮヷヸヹヺ\u30fd\u30fe')
-_TTB_CANNOT_END = set('「『（［｛〔〈《【〘〖〝‘“「『（')
+# Minimal kinsoku sets (shared for horizontal and vertical) live in
+# languages/japanese.py as CANNOT_START / CANNOT_END.
+
+
+def _apply_horizontal_kinsoku(lines: list[str]) -> list[str]:
+    """Carry Japanese characters across line breaks per the shared kinsoku rule
+    (japanese.kinsoku_carry_count). Only Japanese characters are in the sets, so
+    Latin words are untouched."""
+    lines = list(lines)
+    for i in range(1, len(lines)):
+        prev = lines[i - 1]
+        moved = japanese.kinsoku_carry_count(list(prev), lines[i][0] if lines[i] else None)
+        if moved:
+            lines[i] = prev[-moved:] + lines[i]
+            lines[i - 1] = prev[:-moved]
+    return lines
 
 
 def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
@@ -318,19 +331,10 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
             carry: list[list[str]] = []
             carry_bold: list[bool] = []
             carry_heights: list[int] = []
-            # If the next cell cannot start a line, carry trailing cells down so
-            # the next column starts with a char allowed to start a line.
-            if cell[0] in _TTB_CANNOT_START:
-                while cur and (not carry or carry[0][0] in _TTB_CANNOT_START):
-                    moved = cur.pop()
-                    mb = cur_bold.pop()
-                    mh = cur_heights.pop()
-                    cur_h -= mh
-                    carry.insert(0, moved)
-                    carry_bold.insert(0, mb)
-                    carry_heights.insert(0, mh)
-            # Do not end a column with an opening bracket.
-            if cur and cur[-1][0] in _TTB_CANNOT_END:
+            # Shared kinsoku rule: carry trailing cells so the next column does
+            # not start with a cannot-start char and this one does not end with
+            # a cannot-end char.
+            for _ in range(japanese.kinsoku_carry_count([c[0] for c in cur], cell[0])):
                 moved = cur.pop()
                 mb = cur_bold.pop()
                 mh = cur_heights.pop()
@@ -1687,6 +1691,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         if latin_word:
             line += latin_word
         lines.append(line.strip())
+        lines = _apply_horizontal_kinsoku(lines)
 
         for line in lines:
 

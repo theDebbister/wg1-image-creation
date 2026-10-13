@@ -197,8 +197,10 @@ if SCRIPT_DIRECTION == 'ttb':
     # (e.g. FONT_SIZE_PX // 2) here.
     LATIN_SPACE_WIDTH_PX = None
 elif LANGUAGE == 'ja':
+    # horizontal Japanese: monospaced Latin like the vertical renderer, but the
+    # glyphs are upright and get monospaced (not full-width) AOIs
     LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
-    LATIN_BOX_TYPE = "square"
+    LATIN_BOX_TYPE = "tight"
     LATIN_SPACE_WIDTH_PX = None
 else:
     LATIN_FONT_TYPE = None

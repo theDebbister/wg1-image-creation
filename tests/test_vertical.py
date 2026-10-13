@@ -326,43 +326,42 @@ class TestJapaneseLTRParity:
 
 
 class TestHorizontalKinsoku:
-    """Shared JLREQ line-break rules applied to horizontal Japanese lines."""
+    """Shared JLREQ carry rule used at horizontal line breaks."""
 
     @staticmethod
-    def _apply():
-        from text_to_picture import _apply_horizontal_kinsoku
-        return _apply_horizontal_kinsoku
+    def _count():
+        from languages import japanese
+        return japanese.kinsoku_carry_count
 
-    def test_pushes_out_line_start_punctuation(self, toy_image_config):
-        out = self._apply()(["あい", "。うえ"])
-        assert "".join(out) == "あい。うえ"
-        assert all(not ln or ln[0] not in "、。" for ln in out)
+    def test_carries_for_line_start_punctuation(self, toy_image_config):
+        # next line would start with 。 -> carry the previous trailing char down
+        assert self._count()(["あ", "い"], "。") == 1
+        assert self._count()(["あ"], "。") == 1
 
-    def test_pulls_opening_bracket_off_line_end(self, toy_image_config):
-        out = self._apply()(["あい「", "うえ"])
-        assert "".join(out) == "あい「うえ"
-        assert not out[0].endswith("「")
+    def test_carries_opening_bracket_off_line_end(self, toy_image_config):
+        assert self._count()(["あ", "「"], "い") == 1
 
-    def test_leaves_clean_lines_unchanged(self, toy_image_config):
-        original = ["あいうえ", "おかきく"]
-        assert self._apply()(original) == original
+    def test_no_carry_when_clean(self, toy_image_config):
+        assert self._count()(["あ", "い"], "う") == 0
 
 
 class TestJapaneseLatinMonospace:
-    """Horizontal Japanese renders Latin letters with the monospaced font and
-    gives them uniform (monospaced) AOI boxes, while CJK stays full-width."""
+    """Horizontal Japanese renders Latin letters with the monospaced font, so
+    they get uniform (monospaced) AOIs that are narrower than full-width CJK."""
 
     def test_latin_aois_are_monospaced(self, toy_image_config):
         from text_to_picture import draw_text
         import image_config
 
         orig = (image_config.LANGUAGE, image_config.FONT_TYPE,
-                image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE)
+                image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE,
+                image_config.LATIN_BOX_TYPE)
         try:
             image_config.LANGUAGE = "ja"
             image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
             image_config.FONT_TYPE_BOLD = "fonts/NotoSansJP-Bold.ttf"
             image_config.LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+            image_config.LATIN_BOX_TYPE = "tight"
             img = Image.new(
                 "RGB",
                 (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
@@ -375,14 +374,15 @@ class TestJapaneseLatinMonospace:
             )
         finally:
             (image_config.LANGUAGE, image_config.FONT_TYPE,
-             image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE) = orig
+             image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE,
+             image_config.LATIN_BOX_TYPE) = orig
 
         width = {aoi[1]: aoi[4] for aoi in aois}
         assert width.get("A", 0) > 0
-        # Latin letters share one (monospaced) advance ...
+        # Latin letters share one monospaced advance ...
         assert width["A"] == width["b"]
-        # ... which differs from the full-width CJK cell.
-        assert width["A"] != width["あ"] == width["い"]
+        # ... which is narrower than the full-width CJK cell.
+        assert width["A"] < width["あ"] == width["い"]
 
 
 class TestConfigPathNormalisation:

@@ -94,6 +94,7 @@ def _import_normalize_render_text():
             sys.modules[mod_name] = types.ModuleType(mod_name)
     # text_to_picture calls rtl_draw_kwargs() at module level
     sys.modules["languages.arabic_farsi"].rtl_draw_kwargs = lambda: {}
+    sys.modules["languages.arabic_farsi"].BIDI_MIRROR = {}
 
     from text_to_picture import normalize_render_text
     return normalize_render_text

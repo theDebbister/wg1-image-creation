@@ -78,11 +78,16 @@ def read_image_configuration(config_path: Path | str) -> dict:
         if key not in config_content:
             raise ValueError(f'Key "{key}" is missing in the configuration file.')
 
+    # normalize and validate Script_direction, extend with ttb for vertical Japanese
+    script_direction = str(config_content['Script_direction']).lower()
+    if script_direction not in ('ltr', 'rtl', 'ttb'):
+        raise ValueError(f'Script_direction must be one of ltr, rtl, ttb, not {script_direction!r}')
+
     # the distance is only in the config if it is NOT 60 cm otherwise the field is empty
     lab_image_config = {
         'RESOLUTION': eval(config_content['Monitor_resolution_in_px']),
         'SCREEN_SIZE_CM': eval(config_content['Screen_size_in_cm']),
-        'SCRIPT_DIRECTION': config_content['Script_direction'],
+        'SCRIPT_DIRECTION': script_direction,
         'MULTIPLE_DEVICES': parse_true_false(config_content['Use_of_multiple_devices']),
         'DISTANCE_CM': 60 if not config_content['Distance_in_cm'] else int(config_content['Distance_in_cm']),
     }
@@ -92,11 +97,13 @@ def read_image_configuration(config_path: Path | str) -> dict:
 
 def calculate_font_size(lang: str):
     # one line on the image should fit approximately 82 latin characters
+    # JA unit square must equal zh unit square per decisions, same reference char for visual angle
+    # For ttb, use TEXT_HEIGHT_PX with MAX_CHARS_PER_COLUMN instead of width
     size = 0
     if lang in ('ar', 'fa'):
         char = 'د'
-    elif lang in ('zh', 'yu'):
-        warnings.warn('Please be aware that for Cantonese and Mandarin the font size may need to be decided manually '
+    elif lang in ('zh', 'yu', 'ja', 'tc'):
+        warnings.warn('Please be aware that for Japanese, Cantonese and Mandarin the font size may need to be decided manually '
                       'as the characters are very different from other languages. '
                       'Check if the size is good.')
         char = '大'
@@ -104,6 +111,19 @@ def calculate_font_size(lang: str):
         char = 'ה'
     else:
         char = 'a'
+    # Vertical ttb uses height as constraint
+    if getattr(image_config, 'SCRIPT_DIRECTION', 'ltr') == 'ttb':
+        target = getattr(image_config, 'MAX_CHARS_PER_COLUMN', 28)
+        text = char * target
+        text_width = 0
+        while text_width < image_config.TEXT_HEIGHT_PX:
+            size += 1
+            font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), size)
+            text_width = font.font.getsize(text)[0][0]
+            if text_width >= image_config.TEXT_HEIGHT_PX:
+                size -= 1
+                break
+        return size
     text = char * image_config.MAX_CHARS_PER_LINE
     text_width = 0
 

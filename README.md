@@ -1,6 +1,6 @@
 # Image creation
 
-This repository contains the code to create the images for the MultiplEYE experiment. The folder `stimuli_toy` contains
+This repository contains the code to create the images for the MultiplEYE experiment. The folder `data/stimuli_MultiplEYE_TOY_X_x_1_1` contains
 examples of all input files that are necessary and the output files that will eventually be generated. You can always
 refer to these as an examples.
 
@@ -34,7 +34,7 @@ For example: "stimuli_MultiplEYE_DE_CH_Zurich_1_2025".
 on top of the file to the language you want to create the images for (the same values as in the preregistration form).
 8. If the images are created for testing purposes, set the variable `TESTING_IMAGES` to `True`. This is the case, when 
 you create the images for the first time and people are checking for typos etc.
-9. Run `text_to_picture.py`
+9. Run `text_to_picture.py` (from the `src/` directory: `cd src && python text_to_picture.py`, or `uv run python src/text_to_picture.py`).
 10. Upload the stimuli folder to the SwitchDrive folder of the respective language.
 11. Repeat the generation if necessary (i.e. if there are typos etc.). Make sure to upload a new folder each time and 
 put the other one in an archive folder on the Drive.
@@ -72,6 +72,38 @@ Once you have the environment you can install the necessary packages using the `
 
 In order to create images for right-to-left scripts, it is necessary to install more dependencies.
 
+For **vertical (top-to-bottom, `ttb`) writing** the renderer uses `uharfbuzz` + `freetype-py` directly (already in
+`requirements.txt`); no additional system library (e.g. `libraqm`) is needed. Vertical rendering is enabled per lab by
+setting `"Script_direction": "ttb"` in the lab configuration JSON.
+
+## Vertical (tategaki) support
+
+Japanese and Traditional Chinese (`ttb`) images are laid out as tategaki: characters run top-to-bottom, columns run right-to-left. Current choices:
+
+- **Fonts.** Japanese text uses `Noto Sans JP` (`fonts/NotoSansJP-Regular.ttf` / `-Bold.ttf`). Traditional Chinese (`tc`) uses
+  `Noto Sans TC` (`fonts/NotoSansTC-Regular.ttf` / `-Bold.ttf`), the static Regular/Bold instances extracted from the
+  upstream variable font `NotoSansTC[wght].ttf` (Google Fonts) with `fontTools.varLib.instancer` (`wght=400`/`700`).
+  Simplified Chinese uses `Noto Sans Mono CJK SC` / `Noto Sans SC`. All are OFL 1.1 licensed (see `fonts/OFL-NotoSansJP.txt` and
+  `fonts/OFL-NotoSansTC.txt`). Latin words use `JetBrains Mono` rendered "tight": each letter is its own AOI, the whole
+  word pulled together.
+- **Spaces.** Only the spaces present in the input are rendered (none are inserted automatically). A space between two
+  Japanese characters is one full Japanese cell wide; a space that touches Latin text (or digits/symbols) keeps the
+  monospaced half-width. Every space is its own AOI.
+- **Bold.** `**…**` marks a bold span (as in Markdown); the markers are stripped and the enclosed text is drawn with the
+  bold font, shaped vertically so `ー` and `、。` keep their vertical forms.
+- **Numbers.** Each digit is its own upright cell (no tate-chū-yoko). On rating screens the numeric suffix (e.g. `0%`,
+  `100%`) is set horizontally.
+- **Single Latin letters.** A lone Latin letter (e.g. the `D` in ビタミンD, or an initial like `R・ガルザ`) is set
+  upright in its own square so it matches the upright digits; Latin words of two or more characters are still rotated.
+- **Punctuation.** Vertical forms come from the font; a minimal kinsoku rule prevents columns starting with `、。」』）`
+  etc. and ending with `「『（`.
+- **Question/answer pages.** The question sits in the rightmost two columns; the four answer options are up/left/right/down
+  and their text is centred horizontally in the box.
+- **Rating screens.** Options start at the same height as the question and are single columns ordered right-to-left.
+- **Fixation dot.** End-of-text dot is bottom-left, matching the RTL (Arabic) setup.
+- Font size for `ttb` is derived from `MAX_CHARS_PER_COLUMN` (chars per column) against the text height; see
+  `calculate_font_size` in `src/utils/config_utils.py`.
+
 
 ## Text length requirements
 
@@ -89,6 +121,10 @@ limit (>82 chars) and this word will then be the first word of the new line.
 
 The maximum number of characters can be specified in the `image_config.py` file using the variable MAX_CHARS_PER_LINE.
 Changing this might cause the text to overflow the page!!
+
+For **vertical (`ttb`)** the constraint is per **column**, not per line: `MAX_CHARS_PER_COLUMN` (chars per column) with
+columns advancing leftwards by `COLUMN_ADVANCE_PX`. If a page's text is too long it wraps into a new column; if it still
+exceeds the page width the image is extended to the left and a warning is raised so the lab can insert a manual line break.
 
 > NOTE: this is different for the participant instructions screens, where more characters per line and lines are allowed.
 > It has not been a problem so far for any language that it would not fit. If it does not fit, one of the instructions screens

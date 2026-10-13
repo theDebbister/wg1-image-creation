@@ -348,6 +348,43 @@ class TestHorizontalKinsoku:
         assert self._apply()(original) == original
 
 
+class TestJapaneseLatinMonospace:
+    """Horizontal Japanese renders Latin letters with the monospaced font and
+    gives them uniform (monospaced) AOI boxes, while CJK stays full-width."""
+
+    def test_latin_aois_are_monospaced(self, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+
+        orig = (image_config.LANGUAGE, image_config.FONT_TYPE,
+                image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE)
+        try:
+            image_config.LANGUAGE = "ja"
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            image_config.FONT_TYPE_BOLD = "fonts/NotoSansJP-Bold.ttf"
+            image_config.LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+            img = Image.new(
+                "RGB",
+                (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                color=image_config.BACKGROUND_COLOR,
+            )
+            aois, _ = draw_text(
+                "Abあい", img, image_config.FONT_SIZE_PX, draw_aoi=True,
+                script_direction="ltr", word_split_criterion="",
+                text_width_px=image_config.TEXT_WIDTH_PX,
+            )
+        finally:
+            (image_config.LANGUAGE, image_config.FONT_TYPE,
+             image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE) = orig
+
+        width = {aoi[1]: aoi[4] for aoi in aois}
+        assert width.get("A", 0) > 0
+        # Latin letters share one (monospaced) advance ...
+        assert width["A"] == width["b"]
+        # ... which differs from the full-width CJK cell.
+        assert width["A"] != width["あ"] == width["い"]
+
+
 class TestConfigPathNormalisation:
     """Windows path separators must not leak into the generated config."""
 

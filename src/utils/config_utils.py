@@ -29,7 +29,9 @@ def write_final_config(
 
             for key, value in configuration.items():
                 if isinstance(value, str):
-                    configfile.write(f'{key} = "{value}"\n')
+                    # normalise Windows separators (paths built with os.path.join)
+                    # so the written config has no invalid escape sequences
+                    configfile.write(f'{key} = "{value.replace(chr(92), "/")}"\n')
                 else:
                     configfile.write(f'{key} = {value}\n')
 

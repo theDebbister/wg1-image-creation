@@ -1576,6 +1576,17 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
 
+    # Optional monospaced font for Latin characters (Japanese uses this in both
+    # directions so Latin runs are monospaced and get monospaced AOIs).
+    latin_font = None
+    latin_advance = None
+    _latin_fp = latin_font_path or getattr(image_config, 'LATIN_FONT_TYPE', None)
+    if _latin_fp:
+        if not os.path.isabs(_latin_fp):
+            _latin_fp = str(image_config.REPO_ROOT / _latin_fp)
+        latin_font = ImageFont.truetype(_latin_fp, fontsize)
+        latin_advance = latin_font.font.getsize('M')[0][0]
+
     text = normalize_render_text(text)
 
     try:
@@ -1820,7 +1831,11 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                                 )
                             continue
 
-                        _, _, letter_width, _ = char_font.getbbox(char, anchor='la')
+                        if latin_font is not None and char.isascii():
+                            char_font = latin_font
+                            letter_width = latin_advance
+                        else:
+                            _, _, letter_width, _ = char_font.getbbox(char, anchor='la')
                         if script_direction == 'rtl':
                             aoi_x = top_left_corner_x_letter - letter_width
                         else:

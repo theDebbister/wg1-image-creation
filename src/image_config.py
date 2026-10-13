@@ -186,14 +186,19 @@ if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
     FONT_SIZE_PX = sum(font_metrics.getmetrics())  # ascent + descent
 
-# Latin handling for vertical writing: JetBrains Mono tight
-# tight = per-char AOI 39x~23, whole word pulled together
+# Latin handling: JetBrains Mono for vertical writing (tight) and for
+# horizontal Japanese, so Latin letters are monospaced in both directions.
+# tight = per-char AOI, whole word pulled together (vertical).
 if SCRIPT_DIRECTION == 'ttb':
     LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     LATIN_BOX_TYPE = "tight"
     # Width of the mono half-space AOI placed around Latin words. None = use the
     # Latin letter advance (current default); a lab can set a tighter half-width
     # (e.g. FONT_SIZE_PX // 2) here.
+    LATIN_SPACE_WIDTH_PX = None
+elif LANGUAGE == 'ja':
+    LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    LATIN_BOX_TYPE = "square"
     LATIN_SPACE_WIDTH_PX = None
 else:
     LATIN_FONT_TYPE = None

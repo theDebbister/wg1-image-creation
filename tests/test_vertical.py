@@ -323,3 +323,38 @@ class TestJapaneseLTRParity:
         for aoi in aois:
             _, char, x, y, w, h = aoi[:6]
             assert x + w <= right_limit + 1, f"kana '{char}' overflowed the text margin"
+
+
+class TestHorizontalKinsoku:
+    """Shared JLREQ line-break rules applied to horizontal Japanese lines."""
+
+    @staticmethod
+    def _apply():
+        from text_to_picture import _apply_horizontal_kinsoku
+        return _apply_horizontal_kinsoku
+
+    def test_pushes_out_line_start_punctuation(self, toy_image_config):
+        out = self._apply()(["あい", "。うえ"])
+        assert "".join(out) == "あい。うえ"
+        assert all(not ln or ln[0] not in "、。" for ln in out)
+
+    def test_pulls_opening_bracket_off_line_end(self, toy_image_config):
+        out = self._apply()(["あい「", "うえ"])
+        assert "".join(out) == "あい「うえ"
+        assert not out[0].endswith("「")
+
+    def test_leaves_clean_lines_unchanged(self, toy_image_config):
+        original = ["あいうえ", "おかきく"]
+        assert self._apply()(original) == original
+
+
+class TestConfigPathNormalisation:
+    """Windows path separators must not leak into the generated config."""
+
+    def test_backslashes_are_written_as_slashes(self, toy_image_config, tmp_path):
+        from utils.config_utils import write_final_config
+        target = tmp_path / "config_normalisation.py"
+        write_final_config(str(target), {"PATHS": {"some_csv": "data\\stimuli_x\\file.csv"}})
+        content = target.read_text(encoding="utf8")
+        assert 'some_csv = "data/stimuli_x/file.csv"' in content
+        assert "\\" not in content

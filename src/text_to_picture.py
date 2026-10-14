@@ -1619,6 +1619,14 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
     # really crosses into the bottom margin, instead of predicting from a line count.
     text_start_y_px = anchor_y_px
     line_height = sum(font.getmetrics())
+    # Horizontal Japanese uses a homogenised CJK cell height and line pitch so it
+    # matches the Chinese stimuli; glyphs are centred vertically in that cell.
+    cjk_cell_h = getattr(image_config, 'CJK_CELL_HEIGHT_PX', None) if script_direction != 'ttb' else None
+    if cjk_cell_h:
+        line_height = cjk_cell_h
+        line_advance = image_config.CJK_LINE_ADVANCE_PX
+    else:
+        line_advance = line_height * spacing
     last_line_bottom_px = text_start_y_px
 
     for paragraph in paragraphs:
@@ -1729,7 +1737,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
             x_word = anchor_x_px
 
             # get metrics returns the ascent and descent of the font from the baseline
-            line_height = font.getmetrics()[0] + font.getmetrics()[1]
+            line_height = cjk_cell_h if cjk_cell_h else (font.getmetrics()[0] + font.getmetrics()[1])
             # calculate aoi boxes for each letter
             top_left_corner_x_letter = anchor_x_px
             words = []
@@ -1877,8 +1885,19 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                         char_idx_in_line += 1
                         aoi_idx += 1
 
-                        if is_latin_char:
-                            # centre the Latin glyph in its square cell, like CJK
+                        if cjk_cell_h:
+                            # Centre the glyph ink inside the homogenised CJK cell
+                            # so no character extends outside its AOI box.
+                            gl, gt, gr, gb = char_font.getbbox(glyph, anchor='la')
+                            ink_w, ink_h = gr - gl, gb - gt
+                            draw.text(
+                                (aoi_x - gl + (letter_width - ink_w) / 2,
+                                 aoi_y - gt + (cjk_cell_h - ink_h) / 2),
+                                glyph, fill=image_config.TEXT_COLOR,
+                                font=char_font, anchor='la'
+                            )
+                        elif is_latin_char:
+                            # centre the Latin glyph in its (monospaced) cell
                             _, _, glyph_w, _ = char_font.getbbox(glyph, anchor='la')
                             draw.text(
                                 (aoi_x + (letter_width - glyph_w) / 2,
@@ -1919,7 +1938,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
 
             all_words.extend(words)
             last_line_bottom_px = anchor_y_px + line_height
-            anchor_y_px += line_height * spacing
+            anchor_y_px += line_advance
             line_idx += 1
 
     # line_limit lines means (line_limit - 1) full line pitches between lines, plus the

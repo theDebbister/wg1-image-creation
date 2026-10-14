@@ -207,6 +207,24 @@ else:
     LATIN_BOX_TYPE = "square"
     LATIN_SPACE_WIDTH_PX = None
 
+# Horizontal Japanese: homogenise cell height and line pitch with the Chinese
+# reference stimuli (NotoSansMonoCJKsc metrics) so the two languages share the
+# same cell size and line spacing. Only horizontal Japanese; zh/tc and vertical
+# Japanese are unchanged.
+if LANGUAGE == 'ja' and SCRIPT_DIRECTION != 'ttb':
+    _cjk_ref = ImageFont.truetype(str(REPO_ROOT / "fonts/NotoSansMonoCJKsc-VF.ttf"), FONT_SIZE_PX)
+    # Cell height = Chinese reference ascent+descent (34 px at size 28).
+    CJK_CELL_HEIGHT_PX = sum(_cjk_ref.getmetrics())
+    # Chinese line pitch = cell * LINE_SPACING = 98.6 px, but the longest Japanese
+    # pages have 9 lines and 8*98.6 + 34 overflows the bottom margin by ~13 px.
+    # Use the largest pitch that fits the longest pages (9 lines); it stays as
+    # close as possible to the Chinese pitch so the languages remain comparable.
+    CJK_MAX_LINES = 9
+    CJK_LINE_ADVANCE_PX = (TEXT_HEIGHT_PX - CJK_CELL_HEIGHT_PX) // (CJK_MAX_LINES - 1)
+else:
+    CJK_CELL_HEIGHT_PX = None
+    CJK_LINE_ADVANCE_PX = None
+
 # Per-side vertical padding for ttb answer boxes (comprehension question options
 # and rating options). The drawn border and the box written to the experiment
 # config are grown by this many pixels above and below so the border is not

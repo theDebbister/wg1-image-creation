@@ -1886,15 +1886,16 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                         aoi_idx += 1
 
                         if cjk_cell_h:
-                            # Centre the glyph ink inside the homogenised CJK cell
-                            # so no character extends outside its AOI box.
-                            gl, gt, gr, gb = char_font.getbbox(glyph, anchor='la')
-                            ink_w, ink_h = gr - gl, gb - gt
+                            # Baseline-align to the Chinese reference: the baseline
+                            # sits at the reference ascent within the cell, so
+                            # punctuation (。、) stays low and nothing leaves the cell.
+                            gl, gt, gr, gb = char_font.getbbox(glyph, anchor='ls')
+                            ink_w = gr - gl
                             draw.text(
                                 (aoi_x - gl + (letter_width - ink_w) / 2,
-                                 aoi_y - gt + (cjk_cell_h - ink_h) / 2),
+                                 aoi_y + image_config.CJK_BASELINE_Y_PX),
                                 glyph, fill=image_config.TEXT_COLOR,
-                                font=char_font, anchor='la'
+                                font=char_font, anchor='ls'
                             )
                         elif is_latin_char:
                             # centre the Latin glyph in its (monospaced) cell

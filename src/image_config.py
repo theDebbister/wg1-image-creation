@@ -215,6 +215,10 @@ if LANGUAGE == 'ja' and SCRIPT_DIRECTION != 'ttb':
     _cjk_ref = ImageFont.truetype(str(REPO_ROOT / "fonts/NotoSansMonoCJKsc-VF.ttf"), FONT_SIZE_PX)
     # Cell height = Chinese reference ascent+descent (34 px at size 28).
     CJK_CELL_HEIGHT_PX = sum(_cjk_ref.getmetrics())
+    # Baseline within the cell = Chinese reference ascent (28 px). Glyphs are
+    # drawn baseline-aligned to this so punctuation (。、) sits low, as in Chinese,
+    # and no glyph leaves the cell.
+    CJK_BASELINE_Y_PX = _cjk_ref.getmetrics()[0]
     # Chinese line pitch = cell * LINE_SPACING = 98.6 px, but the longest Japanese
     # pages have 9 lines and 8*98.6 + 34 overflows the bottom margin by ~13 px.
     # Use the largest pitch that fits the longest pages (9 lines); it stays as
@@ -224,6 +228,7 @@ if LANGUAGE == 'ja' and SCRIPT_DIRECTION != 'ttb':
 else:
     CJK_CELL_HEIGHT_PX = None
     CJK_LINE_ADVANCE_PX = None
+    CJK_BASELINE_Y_PX = None
 
 # Per-side vertical padding for ttb answer boxes (comprehension question options
 # and rating options). The drawn border and the box written to the experiment

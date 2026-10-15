@@ -1722,10 +1722,36 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
             line += latin_word
         lines.append(line.strip())
 
+        cjk_in_bold = False
         for line in lines:
 
             if len(line) == 0:
                 continue
+
+            # For Chinese/Japanese the whole line is drawn as a single run, so
+            # resolve the **…** bold spans here: strip the markers, record which
+            # characters are bold, and carry the open/closed state into the next
+            # line so a span may wrap. The word-level logic below only inspects a
+            # token's edges and would otherwise leave inner markers in the output.
+            cjk_bold_chars = None
+            if image_config.LANGUAGE in ('zh', 'ja'):
+                clean_chars = []
+                bold_flags = []
+                k = 0
+                while k < len(line):
+                    ch = line[k]
+                    if ch == '*':
+                        if k + 1 < len(line) and line[k + 1] == '*':
+                            cjk_in_bold = not cjk_in_bold
+                            k += 2
+                            continue
+                        k += 1
+                        continue
+                    clean_chars.append(ch)
+                    bold_flags.append(cjk_in_bold)
+                    k += 1
+                line = ''.join(clean_chars)
+                cjk_bold_chars = bold_flags
 
             all_lines.append(line)
 
@@ -1805,7 +1831,15 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                 else:
                     chars_to_render = list(word)
 
-                    if mid_bold_split is not None:
+                    if cjk_bold_chars is not None:
+                        bold_font = ImageFont.truetype(
+                            str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize
+                        )
+                        char_fonts = [
+                            bold_font if is_bold else font
+                            for is_bold in cjk_bold_chars
+                        ]
+                    elif mid_bold_split is not None:
                         bold_font = ImageFont.truetype(
                             str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize
                         )

@@ -29,21 +29,15 @@ def write_final_config(
 
             for key, value in configuration.items():
                 if isinstance(value, str):
-                    # normalise Windows separators (paths built with os.path.join)
-                    # so the written config has no invalid escape sequences
-                    value = value.replace(chr(92), "/")
-                    # The on-disk package may carry an OUTPUT_SUFFIX (e.g. _LTR),
-                    # but the config consumed by the experiment must point at the
-                    # canonical folder name, which is what labs install.
-                    value = value.replace(
-                        image_config.OUTPUT_TOP_DIR,
-                        getattr(
-                            image_config,
-                            'OUTPUT_TOP_DIR_CANONICAL',
-                            image_config.OUTPUT_TOP_DIR,
-                        ),
+                    # Normalise Windows separators (paths built with os.path.join)
+                    # so the written config has no invalid escape sequences, and
+                    # strip the on-disk OUTPUT_SUFFIX: the config consumed by the
+                    # experiment must point at the canonical folder name, which
+                    # is what labs install.
+                    to_canonical = getattr(
+                        image_config, 'to_canonical_path', lambda p: str(p).replace(chr(92), "/")
                     )
-                    configfile.write(f'{key} = "{value}"\n')
+                    configfile.write(f'{key} = "{to_canonical(value)}"\n')
                 else:
                     configfile.write(f'{key} = {value}\n')
 

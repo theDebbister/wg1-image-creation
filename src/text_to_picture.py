@@ -1150,7 +1150,7 @@ def create_images(
 
                     question_image_path = question_aoi_dir if draw_aoi else question_dir
                     question_image_path = Path(question_image_path) / session_id / question_image_file
-                    question_image_path = str(question_image_path).replace('\\', '/')
+                    question_image_path = image_config.to_canonical_path(question_image_path)
 
                     temp_paths.append(question_image_path)
                     temp_files_names.append(question_image_file)
@@ -1269,7 +1269,7 @@ def create_images(
                 img_path = os.path.join(img_path, filename)
                 final_image.save(img_path_root)
 
-                stimulus_images[new_col_name_path].append(img_path)
+                stimulus_images[new_col_name_path].append(image_config.to_canonical_path(img_path))
                 stimulus_images[new_col_name_file].append(filename)
 
                 all_aois.extend(aois)
@@ -2531,7 +2531,7 @@ def create_other_screens(draw_aoi=False):
                       image_short_name=title)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
-        file_path = image_config.OTHER_SCREENS_DIR + file_name
+        file_path = image_config.to_canonical_path(image_config.OTHER_SCREENS_DIR + file_name)
         file_names.append(file_name)
         file_paths.append(file_path)
 

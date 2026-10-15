@@ -83,6 +83,18 @@ OUTPUT_TOP_DIR_CANONICAL = _CANONICAL_TOP_DIR + '/'
 # On-disk output folder: carries the optional suffix so alternative packages
 # (e.g. LTR/TTB) can be generated side by side.
 OUTPUT_TOP_DIR = _CANONICAL_TOP_DIR + OUTPUT_SUFFIX + '/'
+
+
+def to_canonical_path(path) -> str:
+    """Strip the on-disk OUTPUT_SUFFIX from an experiment-facing path.
+
+    Files are written under OUTPUT_TOP_DIR (which may carry a suffix such as
+    '_LTR'), but every path stored for the experiment (config_*.py and the
+    *_with_img_paths.csv values) must reference the canonical folder name,
+    because the lab installs the package under that name.
+    """
+    normalized = str(path).replace('\\', '/')
+    return normalized.replace(OUTPUT_TOP_DIR, OUTPUT_TOP_DIR_CANONICAL)
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'

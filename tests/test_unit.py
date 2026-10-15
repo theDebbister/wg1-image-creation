@@ -34,6 +34,8 @@ def _import_normalize_render_text():
     fake_ic.AOI_QUESTION_DIR = "dummy/"
     fake_ic.AOI_IMG_DIR = "dummy/"
     fake_ic.OUTPUT_TOP_DIR = "dummy/"
+    fake_ic.OUTPUT_TOP_DIR_CANONICAL = "dummy/"
+    fake_ic.to_canonical_path = lambda path: str(path).replace('\\', '/')
     fake_ic.BLOCK_CONFIG_PATH = "dummy/"
     fake_ic.STIMULI_FILE_PATH = "dummy/"
     fake_ic.QUESTION_FILE_PATH = "dummy/"

@@ -76,7 +76,13 @@ print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
 # suffix is for addressing an alternative (e.g. horizontal) package.
 OUTPUT_SUFFIX = ''
 
-OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}{OUTPUT_SUFFIX}/'
+_CANONICAL_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
+# Canonical folder (no suffix): this is what the generated experiment config must
+# reference, because the lab installs/renames the package to the canonical name.
+OUTPUT_TOP_DIR_CANONICAL = _CANONICAL_TOP_DIR + '/'
+# On-disk output folder: carries the optional suffix so alternative packages
+# (e.g. LTR/TTB) can be generated side by side.
+OUTPUT_TOP_DIR = _CANONICAL_TOP_DIR + OUTPUT_SUFFIX + '/'
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'

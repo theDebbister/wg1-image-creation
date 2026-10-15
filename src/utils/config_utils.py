@@ -31,7 +31,19 @@ def write_final_config(
                 if isinstance(value, str):
                     # normalise Windows separators (paths built with os.path.join)
                     # so the written config has no invalid escape sequences
-                    configfile.write(f'{key} = "{value.replace(chr(92), "/")}"\n')
+                    value = value.replace(chr(92), "/")
+                    # The on-disk package may carry an OUTPUT_SUFFIX (e.g. _LTR),
+                    # but the config consumed by the experiment must point at the
+                    # canonical folder name, which is what labs install.
+                    value = value.replace(
+                        image_config.OUTPUT_TOP_DIR,
+                        getattr(
+                            image_config,
+                            'OUTPUT_TOP_DIR_CANONICAL',
+                            image_config.OUTPUT_TOP_DIR,
+                        ),
+                    )
+                    configfile.write(f'{key} = "{value}"\n')
                 else:
                     configfile.write(f'{key} = {value}\n')
 

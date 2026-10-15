@@ -378,7 +378,11 @@ ID_COLUMNS = ["stimulus_id", "snippet_no", "condition_no", "question_no"]
 
 
 class TestCastQuestionIdColumnsToInt:
-    cast = staticmethod(_import_cast_question_id_columns_to_int())
+    # Resolved lazily so collecting this module does not require the helper to
+    # exist in text_to_picture (the CI baseline step runs against main's copy).
+    @staticmethod
+    def _cast():
+        return _import_cast_question_id_columns_to_int()
 
     @staticmethod
     def _float_frame():
@@ -407,7 +411,7 @@ class TestCastQuestionIdColumnsToInt:
         )
 
     def test_float_columns_are_cast_to_int(self):
-        out = self.cast(self._float_frame())
+        out = self._cast()(self._float_frame())
         for col in ID_COLUMNS:
             assert out[col].dtype == "int64"
 
@@ -416,7 +420,7 @@ class TestCastQuestionIdColumnsToInt:
         # regression: the un-cast float frame produces ids like "1.01.01.0"
         assert "." in self._reconstruct(raw.iloc[0])
 
-        out = self.cast(raw)
+        out = self._cast()(raw)
         for _, row in out.iterrows():
             reconstructed = self._reconstruct(row)
             assert "." not in reconstructed
@@ -427,7 +431,7 @@ class TestCastQuestionIdColumnsToInt:
 
     def test_already_int_columns_are_unchanged(self):
         frame = self._float_frame().astype({c: "int64" for c in ID_COLUMNS})
-        out = self.cast(frame)
+        out = self._cast()(frame)
         for col in ID_COLUMNS:
             assert out[col].dtype == "int64"
 
@@ -448,5 +452,5 @@ class TestCastQuestionIdColumnsToInt:
         # the stray row keeps the numeric columns as float
         assert raw["snippet_no"].dtype == "float64"
 
-        out = self.cast(raw)
+        out = self._cast()(raw)
         assert all(out[col].dtype == "int64" for col in ID_COLUMNS)

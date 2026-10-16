@@ -70,7 +70,31 @@ VERSION_START = 1
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
       f'{"For testing purposes only (not for piloting or running real experiments!!)." if TESTING_IMAGES else ""}\n\n')
 
-OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
+# Optional suffix for the top-level output folder only, e.g. '_LTR' or '_vs2'.
+# Subfolder names and the lab-config filename stay unchanged. Labs keep the
+# canonical folder installed in the experiment and swap folders by hand; this
+# suffix is for addressing an alternative (e.g. horizontal) package.
+OUTPUT_SUFFIX = ''
+
+_CANONICAL_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
+# Canonical folder (no suffix): this is what the generated experiment config must
+# reference, because the lab installs/renames the package to the canonical name.
+OUTPUT_TOP_DIR_CANONICAL = _CANONICAL_TOP_DIR + '/'
+# On-disk output folder: carries the optional suffix so alternative packages
+# (e.g. LTR/TTB) can be generated side by side.
+OUTPUT_TOP_DIR = _CANONICAL_TOP_DIR + OUTPUT_SUFFIX + '/'
+
+
+def to_canonical_path(path) -> str:
+    """Strip the on-disk OUTPUT_SUFFIX from an experiment-facing path.
+
+    Files are written under OUTPUT_TOP_DIR (which may carry a suffix such as
+    '_LTR'), but every path stored for the experiment (config_*.py and the
+    *_with_img_paths.csv values) must reference the canonical folder name,
+    because the lab installs the package under that name.
+    """
+    normalized = str(path).replace('\\', '/')
+    return normalized.replace(OUTPUT_TOP_DIR, OUTPUT_TOP_DIR_CANONICAL)
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
@@ -180,8 +204,9 @@ if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
     FONT_SIZE_PX = sum(font_metrics.getmetrics())  # ascent + descent
 
-# Latin handling for vertical writing: JetBrains Mono tight
-# tight = per-char AOI 39x~23, whole word pulled together
+# Latin handling: JetBrains Mono for vertical writing (tight) and for
+# horizontal Japanese, so Latin letters are monospaced in both directions.
+# tight = per-char AOI, whole word pulled together (vertical).
 if SCRIPT_DIRECTION == 'ttb':
     LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
     LATIN_BOX_TYPE = "tight"
@@ -189,10 +214,39 @@ if SCRIPT_DIRECTION == 'ttb':
     # Latin letter advance (current default); a lab can set a tighter half-width
     # (e.g. FONT_SIZE_PX // 2) here.
     LATIN_SPACE_WIDTH_PX = None
+elif LANGUAGE == 'ja':
+    # horizontal Japanese: monospaced Latin like the vertical renderer, but the
+    # glyphs are upright and get monospaced (not full-width) AOIs
+    LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    LATIN_BOX_TYPE = "tight"
+    LATIN_SPACE_WIDTH_PX = None
 else:
     LATIN_FONT_TYPE = None
     LATIN_BOX_TYPE = "square"
     LATIN_SPACE_WIDTH_PX = None
+
+# Horizontal Japanese: homogenise cell height and line pitch with the Chinese
+# reference stimuli (NotoSansMonoCJKsc metrics) so the two languages share the
+# same cell size and line spacing. Only horizontal Japanese; zh/tc and vertical
+# Japanese are unchanged.
+if LANGUAGE == 'ja' and SCRIPT_DIRECTION != 'ttb':
+    _cjk_ref = ImageFont.truetype(str(REPO_ROOT / "fonts/NotoSansMonoCJKsc-VF.ttf"), FONT_SIZE_PX)
+    # Cell height = Chinese reference ascent+descent (34 px at size 28).
+    CJK_CELL_HEIGHT_PX = sum(_cjk_ref.getmetrics())
+    # Baseline within the cell = Chinese reference ascent (28 px). Glyphs are
+    # drawn baseline-aligned to this so punctuation (。、) sits low, as in Chinese,
+    # and no glyph leaves the cell.
+    CJK_BASELINE_Y_PX = _cjk_ref.getmetrics()[0]
+    # Chinese line pitch = cell * LINE_SPACING = 98.6 px, but the longest Japanese
+    # pages have 9 lines and 8*98.6 + 34 overflows the bottom margin by ~13 px.
+    # Use the largest pitch that fits the longest pages (9 lines); it stays as
+    # close as possible to the Chinese pitch so the languages remain comparable.
+    CJK_MAX_LINES = 9
+    CJK_LINE_ADVANCE_PX = (TEXT_HEIGHT_PX - CJK_CELL_HEIGHT_PX) // (CJK_MAX_LINES - 1)
+else:
+    CJK_CELL_HEIGHT_PX = None
+    CJK_LINE_ADVANCE_PX = None
+    CJK_BASELINE_Y_PX = None
 
 # Per-side vertical padding for ttb answer boxes (comprehension question options
 # and rating options). The drawn border and the box written to the experiment

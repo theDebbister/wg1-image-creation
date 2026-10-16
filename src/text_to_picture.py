@@ -18,7 +18,7 @@ try:
 except ImportError:
     from subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
-from languages import arabic_farsi, hebrew
+from languages import arabic_farsi, hebrew, japanese
 from languages.arabic_farsi import rtl_draw_kwargs
 
 try:
@@ -33,6 +33,18 @@ except Exception:
 pd.options.mode.chained_assignment = None  # default='warn'
 
 CONFIG = {}
+
+
+# Characters that flow per-cell in CJK/Japanese horizontal text: Han, CJK
+# punctuation, full-width forms, digits and the em dash -- plus kana, which are
+# required for Japanese. Kana (3040-30ff, includes the prolonged sound mark) are
+# full-width and must be laid out per character; without them a kana run is
+# treated as one "Latin" word, which breaks line wrapping and AOIs.
+_CJK_FLOW_RE = re.compile(r'[\u3040-\u30ff\u4e00-\u9fff|\uFF00-\uFFEF|\u3000-\u303f|0-9|\u2014]')
+
+
+def _is_cjk_flow_char(char: str) -> bool:
+    return bool(_CJK_FLOW_RE.match(char))
 
 
 def normalize_render_text(text: str) -> str:
@@ -50,9 +62,8 @@ def clean_option(text):
     return text.strip() if isinstance(text, str) else text
 
 
-# Minimal kinsoku sets for vertical ttb, per W3C JLREQ and genkoyoshi
-_TTB_CANNOT_START = set('、。，．・：；！？…‥」』）］｝〕〉》】〙〗〞”“’」』〜ー々ヽヾゞっゃゅょゎぁぃぅぇぉヵヶァィゥェォッャュョヮヷヸヹヺ\u30fd\u30fe')
-_TTB_CANNOT_END = set('「『（［｛〔〈《【〘〖〝‘“「『（')
+# Minimal kinsoku sets (shared for horizontal and vertical) and the carry rule
+# live in languages/japanese.py (CANNOT_START / CANNOT_END / kinsoku_carry_count).
 
 
 def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
@@ -306,19 +317,10 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
             carry: list[list[str]] = []
             carry_bold: list[bool] = []
             carry_heights: list[int] = []
-            # If the next cell cannot start a line, carry trailing cells down so
-            # the next column starts with a char allowed to start a line.
-            if cell[0] in _TTB_CANNOT_START:
-                while cur and (not carry or carry[0][0] in _TTB_CANNOT_START):
-                    moved = cur.pop()
-                    mb = cur_bold.pop()
-                    mh = cur_heights.pop()
-                    cur_h -= mh
-                    carry.insert(0, moved)
-                    carry_bold.insert(0, mb)
-                    carry_heights.insert(0, mh)
-            # Do not end a column with an opening bracket.
-            if cur and cur[-1][0] in _TTB_CANNOT_END:
+            # Shared kinsoku rule: carry trailing cells so the next column does
+            # not start with a cannot-start char and this one does not end with
+            # a cannot-end char.
+            for _ in range(japanese.kinsoku_carry_count([c[0] for c in cur], cell[0])):
                 moved = cur.pop()
                 mb = cur_bold.pop()
                 mh = cur_heights.pop()
@@ -1164,7 +1166,7 @@ def create_images(
 
                     question_image_path = question_aoi_dir if draw_aoi else question_dir
                     question_image_path = Path(question_image_path) / session_id / question_image_file
-                    question_image_path = str(question_image_path).replace('\\', '/')
+                    question_image_path = image_config.to_canonical_path(question_image_path)
 
                     temp_paths.append(question_image_path)
                     temp_files_names.append(question_image_file)
@@ -1284,7 +1286,7 @@ def create_images(
                 img_path = os.path.join(img_path, filename)
                 final_image.save(img_path_root)
 
-                stimulus_images[new_col_name_path].append(img_path)
+                stimulus_images[new_col_name_path].append(image_config.to_canonical_path(img_path))
                 stimulus_images[new_col_name_file].append(filename)
 
                 all_aois.extend(aois)
@@ -1562,7 +1564,12 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         )
 
     if not text_width_px and not character_limit:
-        character_limit = image_config.MAX_CHARS_PER_LINE
+        if image_config.LANGUAGE in ('zh', 'yu', 'ja', 'tc'):
+            # CJK glyphs are full-width; MAX_CHARS_PER_LINE (82) is a Latin count
+            # and would let far too many characters past the margin. Wrap by width.
+            text_width_px = image_config.TEXT_WIDTH_PX
+        else:
+            character_limit = image_config.MAX_CHARS_PER_LINE
     elif text_width_px and character_limit:
         raise ValueError('Only one of text_width_px and character_limit can be set')
 
@@ -1576,6 +1583,37 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         draw.rectangle([0, m.IMAGE_HEIGHT_PX - m.MIN_MARGIN_BOTTOM_PX, m.IMAGE_WIDTH_PX, m.IMAGE_HEIGHT_PX], fill=(220, 220, 255), outline=(0, 0, 255), width=1)
 
     font = ImageFont.truetype(str(image_config.REPO_ROOT / image_config.FONT_TYPE), fontsize)
+
+    # Optional monospaced font for Latin characters (Japanese uses this in both
+    # directions so Latin runs are monospaced and get monospaced AOIs).
+    latin_font = None
+    latin_advance = None
+    _latin_fp = latin_font_path or getattr(image_config, 'LATIN_FONT_TYPE', None)
+    if _latin_fp:
+        if not os.path.isabs(_latin_fp):
+            _latin_fp = str(image_config.REPO_ROOT / _latin_fp)
+        latin_font = ImageFont.truetype(_latin_fp, fontsize)
+        latin_advance = latin_font.font.getsize('M')[0][0]
+    if latin_box is None:
+        latin_box = getattr(image_config, 'LATIN_BOX_TYPE', 'square')
+
+    def _latin_cell_width() -> int:
+        # 'square' = full-width cell like a CJK glyph; 'tight' = mono advance
+        return fontsize if latin_box == 'square' else latin_advance
+
+    def _char_advance(char: str) -> int:
+        if latin_font is not None and char.isascii():
+            return _latin_cell_width()
+        _, _, w, _ = font.getbbox(char, anchor='la')
+        return w
+
+    def _measure(text: str) -> int:
+        # Latin is rendered in monospaced/full-width cells, so measure per
+        # character instead of with the CJK font (which would under-measure)
+        if latin_font is None:
+            l, _, r, _ = draw.multiline_textbbox((0, 0), text, font=font)
+            return r - l
+        return sum(_char_advance(c) for c in text)
 
     text = normalize_render_text(text)
 
@@ -1598,6 +1636,14 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
     # really crosses into the bottom margin, instead of predicting from a line count.
     text_start_y_px = anchor_y_px
     line_height = sum(font.getmetrics())
+    # Horizontal Japanese uses a homogenised CJK cell height and line pitch so it
+    # matches the Chinese stimuli; glyphs are centred vertically in that cell.
+    cjk_cell_h = getattr(image_config, 'CJK_CELL_HEIGHT_PX', None) if script_direction != 'ttb' else None
+    if cjk_cell_h:
+        line_height = cjk_cell_h
+        line_advance = image_config.CJK_LINE_ADVANCE_PX
+    else:
+        line_advance = line_height * spacing
     last_line_bottom_px = text_start_y_px
 
     for paragraph in paragraphs:
@@ -1628,10 +1674,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         # create lines based on image margins
         for word in words_in_paragraph:
 
-            left, top, right, bottom = draw.multiline_textbbox(
-                (0, 0), line + word, font=font
-            )
-            text_width = right - left
+            text_width = _measure(line + word)
 
             if character_limit:
                 if len(line) + len(word) > character_limit:
@@ -1643,9 +1686,8 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                 # chinese is a special case
                 if image_config.LANGUAGE in ('zh', 'ja'):
                     # for chinese a word is a single character, if it is not a chinese character but a latin one,
-                    # we will treat it differently
-                    if not re.match(r'[\u4e00-\u9fff|\uFF1F|\u3000-\u303f|0-9|\u2014]', word):
-                        # if not re.match(r'[\u4e00-\u9fff|\u3000-\u303f|0-9|\u2014]', word):
+                    # we will treat it differently (see _is_cjk_flow_char for the kana handling)
+                    if not _is_cjk_flow_char(word):
                         in_latin_word = True
                         if word == '':
                             latin_word += ' '
@@ -1658,10 +1700,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                     # semicolons or quotation marks
                     if len(latin_word) > 1:
                         # check whether we can append the latin word to the line
-                        left, top, right, bottom = draw.multiline_textbbox(
-                            (0, 0), line + latin_word, font=font
-                        )
-                        text_width = right - left
+                        text_width = _measure(line + latin_word)
 
                         if text_width < text_width_px:
                             line += latin_word
@@ -1676,17 +1715,23 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                         latin_word = ''
                         in_latin_word = False
                     # check whether the current word can be appended
-                    left, top, right, bottom = draw.multiline_textbbox(
-                        (0, 0), line + latin_word, font=font
-                    )
-                    text_width = right - left
+                    text_width = _measure(line + word)
 
                 if text_width < text_width_px:
                     # if there is a latin word before the word latin word will be a space which is added after it
                     line += latin_word + word.strip() + word_split_criterion
                 else:
-                    lines.append(line.strip())
-                    line = word + word_split_criterion
+                    # JLREQ kinsoku at the break: carry trailing Japanese cells
+                    # into the new line so it does not start with a cannot-start
+                    # char and the broken line does not end with a cannot-end
+                    # char. Done here (not post-hoc) so the margin is respected.
+                    carry = japanese.kinsoku_carry_count(list(line), word[0] if word else None)
+                    if carry and len(line) > carry:
+                        lines.append(line[:-carry].strip())
+                        line = line[-carry:] + word + word_split_criterion
+                    else:
+                        lines.append(line.strip())
+                        line = word + word_split_criterion
 
                 latin_word = ''
 
@@ -1694,10 +1739,36 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
             line += latin_word
         lines.append(line.strip())
 
+        cjk_in_bold = False
         for line in lines:
 
             if len(line) == 0:
                 continue
+
+            # For Chinese/Japanese the whole line is drawn as a single run, so
+            # resolve the **…** bold spans here: strip the markers, record which
+            # characters are bold, and carry the open/closed state into the next
+            # line so a span may wrap. The word-level logic below only inspects a
+            # token's edges and would otherwise leave inner markers in the output.
+            cjk_bold_chars = None
+            if image_config.LANGUAGE in ('zh', 'ja'):
+                clean_chars = []
+                bold_flags = []
+                k = 0
+                while k < len(line):
+                    ch = line[k]
+                    if ch == '*':
+                        if k + 1 < len(line) and line[k + 1] == '*':
+                            cjk_in_bold = not cjk_in_bold
+                            k += 2
+                            continue
+                        k += 1
+                        continue
+                    clean_chars.append(ch)
+                    bold_flags.append(cjk_in_bold)
+                    k += 1
+                line = ''.join(clean_chars)
+                cjk_bold_chars = bold_flags
 
             all_lines.append(line)
 
@@ -1709,7 +1780,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
             x_word = anchor_x_px
 
             # get metrics returns the ascent and descent of the font from the baseline
-            line_height = font.getmetrics()[0] + font.getmetrics()[1]
+            line_height = cjk_cell_h if cjk_cell_h else (font.getmetrics()[0] + font.getmetrics()[1])
             # calculate aoi boxes for each letter
             top_left_corner_x_letter = anchor_x_px
             words = []
@@ -1777,7 +1848,15 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                 else:
                     chars_to_render = list(word)
 
-                    if mid_bold_split is not None:
+                    if cjk_bold_chars is not None:
+                        bold_font = ImageFont.truetype(
+                            str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize
+                        )
+                        char_fonts = [
+                            bold_font if is_bold else font
+                            for is_bold in cjk_bold_chars
+                        ]
+                    elif mid_bold_split is not None:
                         bold_font = ImageFont.truetype(
                             str(image_config.REPO_ROOT / image_config.FONT_TYPE_BOLD), fontsize
                         )
@@ -1821,7 +1900,12 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                                 )
                             continue
 
-                        _, _, letter_width, _ = char_font.getbbox(char, anchor='la')
+                        is_latin_char = latin_font is not None and char.isascii()
+                        if is_latin_char:
+                            char_font = latin_font
+                            letter_width = _latin_cell_width()
+                        else:
+                            _, _, letter_width, _ = char_font.getbbox(char, anchor='la')
                         if script_direction == 'rtl':
                             aoi_x = top_left_corner_x_letter - letter_width
                         else:
@@ -1852,10 +1936,32 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                         char_idx_in_line += 1
                         aoi_idx += 1
 
-                        draw.text(
-                            (aoi_x, aoi_y), glyph, fill=image_config.TEXT_COLOR,
-                            font=char_font, anchor='la'
-                        )
+                        if cjk_cell_h:
+                            # Baseline-align to the Chinese reference: the baseline
+                            # sits at the reference ascent within the cell, so
+                            # punctuation (。、) stays low and nothing leaves the cell.
+                            gl, gt, gr, gb = char_font.getbbox(glyph, anchor='ls')
+                            ink_w = gr - gl
+                            draw.text(
+                                (aoi_x - gl + (letter_width - ink_w) / 2,
+                                 aoi_y + image_config.CJK_BASELINE_Y_PX),
+                                glyph, fill=image_config.TEXT_COLOR,
+                                font=char_font, anchor='ls'
+                            )
+                        elif is_latin_char:
+                            # centre the Latin glyph in its (monospaced) cell
+                            _, _, glyph_w, _ = char_font.getbbox(glyph, anchor='la')
+                            draw.text(
+                                (aoi_x + (letter_width - glyph_w) / 2,
+                                 aoi_y + line_height / 2),
+                                glyph, fill=image_config.TEXT_COLOR,
+                                font=char_font, anchor='lm'
+                            )
+                        else:
+                            draw.text(
+                                (aoi_x, aoi_y), glyph, fill=image_config.TEXT_COLOR,
+                                font=char_font, anchor='la'
+                            )
                         if image_config.LANGUAGE == 'he':
                             prev_base_char, prev_base_x, prev_base_y, prev_base_font = (
                                 glyph, aoi_x, aoi_y, char_font
@@ -1884,7 +1990,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
 
             all_words.extend(words)
             last_line_bottom_px = anchor_y_px + line_height
-            anchor_y_px += line_height * spacing
+            anchor_y_px += line_advance
             line_idx += 1
 
     # line_limit lines means (line_limit - 1) full line pitches between lines, plus the
@@ -2442,7 +2548,7 @@ def create_other_screens(draw_aoi=False):
                       image_short_name=title)
 
         file_name = f'{title}_{image_config.LANGUAGE}.png'
-        file_path = image_config.OTHER_SCREENS_DIR + file_name
+        file_path = image_config.to_canonical_path(image_config.OTHER_SCREENS_DIR + file_name)
         file_names.append(file_name)
         file_paths.append(file_path)
 

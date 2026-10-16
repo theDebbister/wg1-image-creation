@@ -34,6 +34,8 @@ def _import_normalize_render_text():
     fake_ic.AOI_QUESTION_DIR = "dummy/"
     fake_ic.AOI_IMG_DIR = "dummy/"
     fake_ic.OUTPUT_TOP_DIR = "dummy/"
+    fake_ic.OUTPUT_TOP_DIR_CANONICAL = "dummy/"
+    fake_ic.to_canonical_path = lambda path: str(path).replace('\\', '/')
     fake_ic.BLOCK_CONFIG_PATH = "dummy/"
     fake_ic.STIMULI_FILE_PATH = "dummy/"
     fake_ic.QUESTION_FILE_PATH = "dummy/"
@@ -88,8 +90,15 @@ def _import_normalize_render_text():
     sys.modules.setdefault("src.subcorpus", types.ModuleType("src.subcorpus"))
     sys.modules.setdefault("src.subcorpus.aging", fake_aging)
 
-    # text_to_picture also imports languages.*, stub those
-    for mod_name in ("languages", "languages.arabic_farsi", "languages.hebrew"):
+    # text_to_picture imports languages.*; stub the heavy ones but let the real
+    # japanese module import (it only defines the shared kinsoku rule/constants)
+    lang_pkg = sys.modules.get("languages")
+    if lang_pkg is None:
+        lang_pkg = types.ModuleType("languages")
+        sys.modules["languages"] = lang_pkg
+    if not hasattr(lang_pkg, "__path__"):
+        lang_pkg.__path__ = [str(REPO_ROOT / "src" / "languages")]
+    for mod_name in ("languages.arabic_farsi", "languages.hebrew"):
         if mod_name not in sys.modules:
             sys.modules[mod_name] = types.ModuleType(mod_name)
     # text_to_picture calls rtl_draw_kwargs() at module level
@@ -129,6 +138,8 @@ def _import_get_option_span_indices():
                  "languages", "languages.arabic_farsi", "languages.hebrew"):
         if name not in sys.modules:
             sys.modules[name] = types.ModuleType(name)
+    if not hasattr(sys.modules["languages"], "__path__"):
+        sys.modules["languages"].__path__ = [str(REPO_ROOT / "src" / "languages")]
     ic = sys.modules["image_config"]
     if not hasattr(ic, "LANGUAGE"):
         ic.LANGUAGE = "en"

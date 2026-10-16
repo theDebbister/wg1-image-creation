@@ -263,3 +263,200 @@ class TestTTBBoldAndSpaces:
         a = aois[[x[1] for x in aois].index("I")]
         iw, ih = self._ink_bbox(img, a)
         assert iw >= ih, f"rotated 'II' should read sideways, got ink {iw}x{ih}"
+
+
+class TestJapaneseLTRParity:
+    """Japanese must keep the same pixel font size horizontally and vertically,
+    and kana must flow per character in the horizontal (ltr) path."""
+
+    def test_kana_is_cjk_flow_char(self, toy_image_config):
+        from text_to_picture import _is_cjk_flow_char
+        for ch in ("あ", "ア", "ー", "漢", "。"):
+            assert _is_cjk_flow_char(ch), ch
+        for ch in ("A", "a", " ", "-"):
+            assert not _is_cjk_flow_char(ch), ch
+
+    def test_ja_font_size_identical_for_ltr_and_ttb(self, toy_image_config):
+        import image_config
+        from utils.config_utils import calculate_font_size
+
+        orig_dir = image_config.SCRIPT_DIRECTION
+        orig_font = image_config.FONT_TYPE
+        try:
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            image_config.SCRIPT_DIRECTION = "ltr"
+            ltr = calculate_font_size("ja")
+            image_config.SCRIPT_DIRECTION = "ttb"
+            ttb = calculate_font_size("ja")
+        finally:
+            image_config.SCRIPT_DIRECTION = orig_dir
+            image_config.FONT_TYPE = orig_font
+
+        assert ltr > 0
+        assert ltr == ttb
+
+    def test_ja_ltr_kana_wraps_within_text_margin(self, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+
+        orig_lang = image_config.LANGUAGE
+        orig_font = image_config.FONT_TYPE
+        try:
+            image_config.LANGUAGE = "ja"
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            img = Image.new(
+                "RGB",
+                (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                color=image_config.BACKGROUND_COLOR,
+            )
+            aois, _ = draw_text(
+                "あ" * 200, img, image_config.FONT_SIZE_PX, draw_aoi=True,
+                script_direction="ltr", word_split_criterion="",
+                text_width_px=image_config.TEXT_WIDTH_PX,
+            )
+        finally:
+            image_config.LANGUAGE = orig_lang
+            image_config.FONT_TYPE = orig_font
+
+        assert len(aois) > 0
+        right_limit = image_config.ANCHOR_POINT_X_PX + image_config.TEXT_WIDTH_PX
+        for aoi in aois:
+            _, char, x, y, w, h = aoi[:6]
+            assert x + w <= right_limit + 1, f"kana '{char}' overflowed the text margin"
+
+
+class TestCJKLTRBold:
+    """The horizontal (ltr) CJK path must resolve **…** bold spans per line:
+    consume the markers, embolden only the marked run, and not leak bold into
+    later lines."""
+
+    @staticmethod
+    def _draw(text, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+
+        orig_lang = image_config.LANGUAGE
+        orig_font = image_config.FONT_TYPE
+        orig_bold = image_config.FONT_TYPE_BOLD
+        try:
+            image_config.LANGUAGE = "ja"
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            image_config.FONT_TYPE_BOLD = "fonts/NotoSansJP-Bold.ttf"
+            img = Image.new(
+                "RGB",
+                (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                color=image_config.BACKGROUND_COLOR,
+            )
+            aois, _ = draw_text(
+                text, img, image_config.FONT_SIZE_PX, draw_aoi=True,
+                script_direction="ltr", word_split_criterion="",
+                text_width_px=image_config.TEXT_WIDTH_PX,
+                line_limit=image_config.NUM_LINES_PER_PAGE,
+                image_short_name="ltr_bold",
+            )
+        finally:
+            image_config.LANGUAGE = orig_lang
+            image_config.FONT_TYPE = orig_font
+            image_config.FONT_TYPE_BOLD = orig_bold
+        return img, aois
+
+    @staticmethod
+    def _ink(img, aoi):
+        import numpy as np
+        _, _, x, y, w, h = aoi[:6]
+        crop = np.array(img.crop((int(x), int(y), int(x + w), int(y + h))).convert("L"))
+        return int((crop < 128).sum())
+
+    def test_markers_are_consumed(self, toy_image_config):
+        _, aois = self._draw("あ**黒い点**い。", toy_image_config)
+        chars = [a[1] for a in aois]
+        assert "*" not in chars
+        assert "黒" in chars and "。" in chars
+
+    def test_bold_run_renders_heavier_than_regular(self, toy_image_config):
+        plain_img, plain = self._draw("あ黒い", toy_image_config)
+        bold_img, bold = self._draw("あ**黒**い", toy_image_config)
+        p = next(a for a in plain if a[1] == "黒")
+        b = next(a for a in bold if a[1] == "黒")
+        # markers are stripped, so the glyph keeps the same position
+        assert p[2] == b[2] and p[3] == b[3]
+        assert self._ink(bold_img, b) > self._ink(plain_img, p)
+
+    def test_bold_does_not_leak_into_next_line(self, toy_image_config):
+        leak_img, leak = self._draw("あ**い**\nう", toy_image_config)
+        plain_img, plain = self._draw("あ\nう", toy_image_config)
+        u_leak = next(a for a in leak if a[1] == "う")
+        u_plain = next(a for a in plain if a[1] == "う")
+        assert self._ink(leak_img, u_leak) == self._ink(plain_img, u_plain)
+
+
+class TestHorizontalKinsoku:
+    """Shared JLREQ carry rule used at horizontal line breaks."""
+
+    @staticmethod
+    def _count():
+        from languages import japanese
+        return japanese.kinsoku_carry_count
+
+    def test_carries_for_line_start_punctuation(self, toy_image_config):
+        # next line would start with 。 -> carry the previous trailing char down
+        assert self._count()(["あ", "い"], "。") == 1
+        assert self._count()(["あ"], "。") == 1
+
+    def test_carries_opening_bracket_off_line_end(self, toy_image_config):
+        assert self._count()(["あ", "「"], "い") == 1
+
+    def test_no_carry_when_clean(self, toy_image_config):
+        assert self._count()(["あ", "い"], "う") == 0
+
+
+class TestJapaneseLatinMonospace:
+    """Horizontal Japanese renders Latin letters with the monospaced font, so
+    they get uniform (monospaced) AOIs that are narrower than full-width CJK."""
+
+    def test_latin_aois_are_monospaced(self, toy_image_config):
+        from text_to_picture import draw_text
+        import image_config
+
+        orig = (image_config.LANGUAGE, image_config.FONT_TYPE,
+                image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE,
+                image_config.LATIN_BOX_TYPE)
+        try:
+            image_config.LANGUAGE = "ja"
+            image_config.FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+            image_config.FONT_TYPE_BOLD = "fonts/NotoSansJP-Bold.ttf"
+            image_config.LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+            image_config.LATIN_BOX_TYPE = "tight"
+            img = Image.new(
+                "RGB",
+                (image_config.IMAGE_WIDTH_PX, image_config.IMAGE_HEIGHT_PX),
+                color=image_config.BACKGROUND_COLOR,
+            )
+            aois, _ = draw_text(
+                "Abあい", img, image_config.FONT_SIZE_PX, draw_aoi=True,
+                script_direction="ltr", word_split_criterion="",
+                text_width_px=image_config.TEXT_WIDTH_PX,
+            )
+        finally:
+            (image_config.LANGUAGE, image_config.FONT_TYPE,
+             image_config.FONT_TYPE_BOLD, image_config.LATIN_FONT_TYPE,
+             image_config.LATIN_BOX_TYPE) = orig
+
+        width = {aoi[1]: aoi[4] for aoi in aois}
+        assert width.get("A", 0) > 0
+        # Latin letters share one monospaced advance ...
+        assert width["A"] == width["b"]
+        # ... which is narrower than the full-width CJK cell.
+        assert width["A"] < width["あ"] == width["い"]
+
+
+class TestConfigPathNormalisation:
+    """Windows path separators must not leak into the generated config."""
+
+    def test_backslashes_are_written_as_slashes(self, toy_image_config, tmp_path):
+        from utils.config_utils import write_final_config
+        target = tmp_path / "config_normalisation.py"
+        write_final_config(str(target), {"PATHS": {"some_csv": "data\\stimuli_x\\file.csv"}})
+        content = target.read_text(encoding="utf8")
+        assert 'some_csv = "data/stimuli_x/file.csv"' in content
+        assert "\\" not in content

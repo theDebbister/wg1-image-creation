@@ -29,7 +29,15 @@ def write_final_config(
 
             for key, value in configuration.items():
                 if isinstance(value, str):
-                    configfile.write(f'{key} = "{value}"\n')
+                    # Normalise Windows separators (paths built with os.path.join)
+                    # so the written config has no invalid escape sequences, and
+                    # strip the on-disk OUTPUT_SUFFIX: the config consumed by the
+                    # experiment must point at the canonical folder name, which
+                    # is what labs install.
+                    to_canonical = getattr(
+                        image_config, 'to_canonical_path', lambda p: str(p).replace(chr(92), "/")
+                    )
+                    configfile.write(f'{key} = "{to_canonical(value)}"\n')
                 else:
                     configfile.write(f'{key} = {value}\n')
 
@@ -111,8 +119,17 @@ def calculate_font_size(lang: str):
         char = 'ה'
     else:
         char = 'a'
-    # Vertical ttb uses height as constraint
-    if getattr(image_config, 'SCRIPT_DIRECTION', 'ltr') == 'ttb':
+    # Vertical ttb uses height as constraint.
+    # Japanese must keep the *same* unit square, and therefore the same pixel font
+    # size, horizontally and vertically. So for ja the horizontal size is derived
+    # from the same height/column reference the vertical renderer uses, instead of
+    # the width/Max-chars-per-line fit (which yields roughly half the size because
+    # full-width CJK glyphs are ~2x as wide as the Latin reference). zh/tc keep
+    # their existing horizontal behaviour for now.
+    use_column_reference = (
+        getattr(image_config, 'SCRIPT_DIRECTION', 'ltr') == 'ttb' or lang == 'ja'
+    )
+    if use_column_reference:
         target = getattr(image_config, 'MAX_CHARS_PER_COLUMN', 28)
         text = char * target
         text_width = 0

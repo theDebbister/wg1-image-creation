@@ -1,4 +1,4 @@
-"""Tests for vertical ttb support and CJK font sizing, parametrized for ja, yu, zh, tc."""
+"""Tests for vertical ttb support and CJK font sizing, parametrized for ja, yu, zh, zt."""
 
 from pathlib import Path
 
@@ -15,7 +15,7 @@ class TestFontSizeReferenceChar:
         ("zh", "大"),
         ("yu", "大"),
         ("ja", "大"),
-        ("tc", "大"),
+        ("zt", "大"),
         ("ar", "د"),
         ("fa", "د"),
         ("he", "ה"),
@@ -23,11 +23,11 @@ class TestFontSizeReferenceChar:
     ])
     def test_reference_char_for_lang(self, lang, expected_char):
         content = CONFIG_UTILS_PATH.read_text()
-        if lang in ("zh", "yu", "ja", "tc"):
-            assert "elif lang in ('zh', 'yu', 'ja', 'tc')" in content
+        if lang in ("zh", "yu", "ja", "zt"):
+            assert "elif lang in ('zh', 'yu', 'ja', 'zt')" in content
             assert "char = '大'" in content
 
-    @pytest.mark.parametrize("lang", ["zh", "yu", "ja", "tc"])
+    @pytest.mark.parametrize("lang", ["zh", "yu", "ja", "zt"])
     def test_ja_uses_same_reference_as_zh(self, lang):
         content = CONFIG_UTILS_PATH.read_text()
         assert "char = '大'" in content
@@ -36,7 +36,7 @@ class TestFontSizeReferenceChar:
 class TestTTBConfig:
     def test_image_config_handles_ttb(self):
         content = IMAGE_CONFIG_PATH.read_text()
-        assert "elif LANGUAGE in ('zh', 'yu', 'ja', 'tc')" in content
+        assert "elif LANGUAGE in ('zh', 'yu', 'ja', 'zt')" in content
         assert "'ttb'" in content
 
     @pytest.mark.parametrize("bad_value", ["diagonal", "vertical", "tbt"])
@@ -49,11 +49,11 @@ class TestDrawTextTTB:
         ("ja", ""),
         ("yu", ""),
         ("zh", ""),
-        ("tc", ""),
+        ("zt", ""),
     ])
     def test_word_split_empty_for_cjk(self, lang, word_split):
         content = IMAGE_CONFIG_PATH.read_text()
-        assert "elif LANGUAGE in ('zh', 'yu', 'ja', 'tc')" in content
+        assert "elif LANGUAGE in ('zh', 'yu', 'ja', 'zt')" in content
 
     def _ensure_real_languages(self):
         import sys, importlib
@@ -408,6 +408,29 @@ class TestHorizontalKinsoku:
 
     def test_no_carry_when_clean(self, toy_image_config):
         assert self._count()(["あ", "い"], "う") == 0
+
+
+class TestCJKKinsoku:
+    """Kinsoku rules are selected per language (languages.cjk), not hardcoded JA."""
+
+    def test_common_punctuation_shared_across_cjk(self):
+        from languages import cjk
+        for lang in ("ja", "zh", "zt", "yu"):
+            cannot_start, cannot_end = cjk.rules_for(lang)
+            assert "。" in cannot_start and "「" in cannot_end
+
+    def test_japanese_extras_only_for_japanese(self):
+        from languages import cjk
+        ja_start, _ = cjk.rules_for("ja")
+        zt_start, _ = cjk.rules_for("zt")
+        assert "っ" in ja_start and "ー" in ja_start
+        assert "っ" not in zt_start and "ー" not in zt_start
+
+    def test_cjk_language_predicate_includes_zt(self):
+        from languages import cjk
+        assert cjk.is_cjk_language("zt")
+        assert cjk.is_cjk_language("ja")
+        assert not cjk.is_cjk_language("en")
 
 
 class TestJapaneseLatinMonospace:

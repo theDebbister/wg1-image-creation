@@ -18,7 +18,7 @@ try:
 except ImportError:
     from subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
-from languages import arabic_farsi, hebrew, japanese
+from languages import arabic_farsi, hebrew, cjk
 from languages.arabic_farsi import rtl_draw_kwargs
 
 try:
@@ -63,7 +63,7 @@ def clean_option(text):
 
 
 # Minimal kinsoku sets (shared for horizontal and vertical) and the carry rule
-# live in languages/japanese.py (CANNOT_START / CANNOT_END / kinsoku_carry_count).
+# live in languages/cjk.py, selected per language via cjk.rules_for().
 
 
 def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = False,
@@ -298,6 +298,7 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
     cur_h = 0
     i = 0
     n = len(cell_seq)
+    kinsoku_rules = cjk.rules_for(image_config.LANGUAGE)
     while i < n:
         cell = cell_seq[i]
         bold = cell_bold[i]
@@ -320,7 +321,7 @@ def _draw_text_ttb(text: str, image: Image, fontsize: int, draw_aoi: bool = Fals
             # Shared kinsoku rule: carry trailing cells so the next column does
             # not start with a cannot-start char and this one does not end with
             # a cannot-end char.
-            for _ in range(japanese.kinsoku_carry_count([c[0] for c in cur], cell[0])):
+            for _ in range(cjk.kinsoku_carry_count([c[0] for c in cur], cell[0], kinsoku_rules)):
                 moved = cur.pop()
                 mb = cur_bold.pop()
                 mh = cur_heights.pop()
@@ -1564,7 +1565,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         )
 
     if not text_width_px and not character_limit:
-        if image_config.LANGUAGE in ('zh', 'yu', 'ja', 'tc'):
+        if cjk.is_cjk_language(image_config.LANGUAGE):
             # CJK glyphs are full-width; MAX_CHARS_PER_LINE (82) is a Latin count
             # and would let far too many characters past the margin. Wrap by width.
             text_width_px = image_config.TEXT_WIDTH_PX
@@ -1616,6 +1617,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         return sum(_char_advance(c) for c in text)
 
     text = normalize_render_text(text)
+    kinsoku_rules = cjk.rules_for(image_config.LANGUAGE)
 
     try:
         paragraphs = re.split(r'\n+', text.strip())
@@ -1684,7 +1686,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                     line += word.strip() + word_split_criterion
             else:
                 # chinese is a special case
-                if image_config.LANGUAGE in ('zh', 'ja'):
+                if cjk.is_cjk_language(image_config.LANGUAGE):
                     # for chinese a word is a single character, if it is not a chinese character but a latin one,
                     # we will treat it differently (see _is_cjk_flow_char for the kana handling)
                     if not _is_cjk_flow_char(word):
@@ -1725,7 +1727,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
                     # into the new line so it does not start with a cannot-start
                     # char and the broken line does not end with a cannot-end
                     # char. Done here (not post-hoc) so the margin is respected.
-                    carry = japanese.kinsoku_carry_count(list(line), word[0] if word else None)
+                    carry = cjk.kinsoku_carry_count(list(line), word[0] if word else None, kinsoku_rules)
                     if carry and len(line) > carry:
                         lines.append(line[:-carry].strip())
                         line = line[-carry:] + word + word_split_criterion
@@ -1751,7 +1753,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
             # line so a span may wrap. The word-level logic below only inspects a
             # token's edges and would otherwise leave inner markers in the output.
             cjk_bold_chars = None
-            if image_config.LANGUAGE in ('zh', 'ja'):
+            if cjk.is_cjk_language(image_config.LANGUAGE):
                 clean_chars = []
                 bold_flags = []
                 k = 0
@@ -1773,7 +1775,7 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
             all_lines.append(line)
 
             # for chinese we need to split the line into chars later and do not want to split at spaces
-            if image_config.LANGUAGE in ('zh', 'ja'):
+            if cjk.is_cjk_language(image_config.LANGUAGE):
                 words_in_line = [line]
             else:
                 words_in_line = line.split()

@@ -1,4 +1,4 @@
-LANGUAGE = 'tc'
+LANGUAGE = 'zt'
 COUNTRY_CODE = 'tw'
 CITY = 'Taipei'
 YEAR = 2026
@@ -25,12 +25,12 @@ WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
-elif LANGUAGE in ('zh', 'yu', 'ja', 'tc'):
+elif LANGUAGE in ('zh', 'yu', 'ja', 'zt'):
     if LANGUAGE == 'ja':
         FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
         FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
         WORD_SPLIT_CRITERION = ''
-    elif LANGUAGE == 'tc':
+    elif LANGUAGE == 'zt':
         FONT_TYPE = "fonts/NotoSansTC-Regular.ttf"
         FONT_TYPE_BOLD = 'fonts/NotoSansTC-Bold.ttf'
         WORD_SPLIT_CRITERION = ''
@@ -227,7 +227,7 @@ else:
 
 # Horizontal Japanese: homogenise cell height and line pitch with the Chinese
 # reference stimuli (NotoSansMonoCJKsc metrics) so the two languages share the
-# same cell size and line spacing. Only horizontal Japanese; zh/tc and vertical
+# same cell size and line spacing. Only horizontal Japanese; zh/zt and vertical
 # Japanese are unchanged.
 if LANGUAGE == 'ja' and SCRIPT_DIRECTION != 'ttb':
     _cjk_ref = ImageFont.truetype(str(REPO_ROOT / "fonts/NotoSansMonoCJKsc-VF.ttf"), FONT_SIZE_PX)

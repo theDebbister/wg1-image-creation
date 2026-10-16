@@ -110,7 +110,7 @@ def calculate_font_size(lang: str):
     size = 0
     if lang in ('ar', 'fa'):
         char = 'د'
-    elif lang in ('zh', 'yu', 'ja', 'tc'):
+    elif lang in ('zh', 'yu', 'ja', 'zt'):
         warnings.warn('Please be aware that for Japanese, Cantonese and Mandarin the font size may need to be decided manually '
                       'as the characters are very different from other languages. '
                       'Check if the size is good.')
@@ -124,7 +124,7 @@ def calculate_font_size(lang: str):
     # size, horizontally and vertically. So for ja the horizontal size is derived
     # from the same height/column reference the vertical renderer uses, instead of
     # the width/Max-chars-per-line fit (which yields roughly half the size because
-    # full-width CJK glyphs are ~2x as wide as the Latin reference). zh/tc keep
+    # full-width CJK glyphs are ~2x as wide as the Latin reference). zh/zt keep
     # their existing horizontal behaviour for now.
     use_column_reference = (
         getattr(image_config, 'SCRIPT_DIRECTION', 'ltr') == 'ttb' or lang == 'ja'

@@ -80,7 +80,7 @@ setting `"Script_direction": "ttb"` in the lab configuration JSON.
 
 Japanese and Traditional Chinese (`ttb`) images are laid out as tategaki: characters run top-to-bottom, columns run right-to-left. Current choices:
 
-- **Fonts.** Japanese text uses `Noto Sans JP` (`fonts/NotoSansJP-Regular.ttf` / `-Bold.ttf`). Traditional Chinese (`tc`) uses
+- **Fonts.** Japanese text uses `Noto Sans JP` (`fonts/NotoSansJP-Regular.ttf` / `-Bold.ttf`). Traditional Chinese (`zt`) uses
   `Noto Sans TC` (`fonts/NotoSansTC-Regular.ttf` / `-Bold.ttf`), the static Regular/Bold instances extracted from the
   upstream variable font `NotoSansTC[wght].ttf` (Google Fonts) with `fontTools.varLib.instancer` (`wght=400`/`700`).
   Simplified Chinese uses `Noto Sans Mono CJK SC` / `Noto Sans SC`. All are OFL 1.1 licensed (see `fonts/OFL-NotoSansJP.txt` and

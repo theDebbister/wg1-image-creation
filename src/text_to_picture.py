@@ -1612,8 +1612,14 @@ line_limit: int = image_config.NUM_LINES_PER_PAGE, character_limit: int = None,
         # Latin is rendered in monospaced/full-width cells, so measure per
         # character instead of with the CJK font (which would under-measure)
         if latin_font is None:
-            l, _, r, _ = draw.multiline_textbbox((0, 0), text, font=font)
-            return r - l
+            if (image_config.LANGUAGE in ('fa', 'ar', 'he')
+                    or cjk.is_cjk_language(image_config.LANGUAGE)):
+                # special scripts keep the old whole-string measurement
+                l, _, r, _ = draw.multiline_textbbox((0, 0), text, font=font)
+                return r - l
+            # normal languages: measure exactly as the characters are drawn
+            # (one by one, each with its own integer bbox width)
+            return sum(_char_advance(c) for c in text.replace('**', ''))
         return sum(_char_advance(c) for c in text)
 
     text = normalize_render_text(text)

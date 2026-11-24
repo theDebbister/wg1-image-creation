@@ -1,13 +1,13 @@
-LANGUAGE = 'ja'
-COUNTRY_CODE = 'ja'
-CITY = 'Tokyo'
-YEAR = 2026
+LANGUAGE = 'he'
+COUNTRY_CODE = 'il'
+CITY = 'Haifa'
+YEAR = 2024
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
 # e.g., 'aging'
 SUBCORPUS = ''
 
-TESTING_IMAGES = True
+TESTING_IMAGES = False
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############

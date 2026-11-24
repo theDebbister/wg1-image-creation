@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw, ImageFont
 from tqdm import tqdm
 
 import image_config
-from src.subcorpus.aging import get_stimulus_randomization_orders
+from subcorpus.aging import get_stimulus_randomization_orders
 from utils import config_utils, checks
 from languages import arabic_farsi, hebrew
 from languages.arabic_farsi import rtl_draw_kwargs
@@ -451,6 +451,15 @@ def create_images(
                 if (image_config.LANGUAGE == 'he' and stimulus_id == 1
                         and column_name == 'page_1' and image_config.CITY == 'Haifa'):
                     text = text.replace('(eye-tracking). MultiplEYE', '(eye-tracking).\nMultiplEYE')
+
+                    # Same page, same class of bug: 'תוכניות COST (Cooperation in Science
+                    # and Technology)' is a 6-word reversed run (see hebrew.fix_cost_parens)
+                    # that's short enough to fit on one line (52 chars, well under the
+                    # 82-char limit) on its own, but was sharing a line with the end of the
+                    # previous sentence and getting split mid-run across the wrap, scrambling
+                    # it the same way '(eye-tracking). MultiplEYE' was. Forcing a break before
+                    # it gives it room to render as one intact line.
+                    text = text.replace('האירופי. תוכניות COST', 'האירופי.\nתוכניות COST')
 
                 # Hardcoded fix for Arg_PISACowsMilk (stimulus_id 10) page_11 in Hebrew only:
                 # same 'ה-British' issue as the question_10212 fix above (see that comment for

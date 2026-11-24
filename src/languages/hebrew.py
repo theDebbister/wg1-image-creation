@@ -154,6 +154,17 @@ _MARK_ABOVE_LEFT = {'ׂ'}  # sin dot
 _QAMATS_QATAN = 'ׇ'
 _QAMATS = 'ָ'
 
+# פ's dagesh (_MARK_INSIDE): the letter's ink is a small hook on the left ending
+# roughly at the glyph's overall bbox center, plus a large open bowl to its right.
+# The generic _MARK_INSIDE rule below centers the mark on the whole ink bbox, which
+# lands the dot almost on top of the hook's tip instead of in the open bowl --
+# verified by rendering the letter alone and marking that point (it sits right on
+# the stroke). These fractions instead target the middle of the bowl, measured by
+# scanning the rendered glyph for the actual open area clear of ink on all sides.
+_PE = 'פ'
+_PE_DAGESH_FX = 0.71  # fraction of base bbox width, from the left edge
+_PE_DAGESH_FY = 0.52  # fraction of base bbox height, from the top edge
+
 _GAP_PX_FRACTION = 0.04  # small visual gap between a mark and the letter it attaches to
 
 _ink_bbox_cache: dict[tuple[int, str], tuple[int, int, int, int] | None] = {}
@@ -233,7 +244,10 @@ def draw_mark(draw, mark: str, base_char: str, base_x: int, base_y: int, font, f
     m_w = m_right - m_left
     m_h = m_bottom - m_top
 
-    if draw_mark_char in _MARK_INSIDE:
+    if draw_mark_char in _MARK_INSIDE and base_char == _PE:
+        target_x = base_left + _PE_DAGESH_FX * (base_right - base_left) - m_w / 2
+        target_y = base_top + _PE_DAGESH_FY * (base_bottom - base_top) - m_h / 2
+    elif draw_mark_char in _MARK_INSIDE:
         target_x = base_cx - m_w / 2
         target_y = (base_top + base_bottom) / 2 - m_h / 2
     elif draw_mark_char in _MARK_ABOVE:
@@ -279,20 +293,23 @@ def fix_cost_parens(words: list) -> list:
     """Hardcoded fix for 'COST (Cooperation in Science and Technology)' (PopSci_MultiplEYE
     page_1, Hebrew only).
 
-    reorder_ltr_runs treats 'COST (Cooperation in Science and Technology)' as one run led
-    by the plain word 'COST'. The closing ')' is stripped from the run's last word
-    ('Technology)') before the run's word order is reversed, then reattached to whatever
-    word ends up last afterwards -- which, after reversal, is 'COST' (the run's original
-    first word), not 'Technology'. This exactly matches the reference implementation of
-    the Unicode Bidi Algorithm (verified against python-bidi), so it isn't a bug in the
-    reordering logic -- but it renders as '(COST) Cooperation in Science and Technology'
-    instead of the intended 'COST (Cooperation in Science and Technology)', which
-    reviewers flagged as wrong-looking and asked to have corrected by hand.
+    reorder_ltr_runs treats the whole 6-word phrase as one LTR run and reverses its word
+    order along with everyone else's, which is standard bidi behaviour but is not what
+    reviewers want here: they want 'COST' to read immediately after the preceding Hebrew
+    word, with the parenthetical following it (i.e. right-to-left: Hebrew word, COST,
+    '(Cooperation in Science and Technology)'). This detaches 'COST' from the run and
+    keeps it un-reordered (a single LTR word next to the Hebrew word never needs word-order
+    reversal, only its own characters do), then re-runs the normal reorder_ltr_runs logic
+    on just the parenthetical so that sub-phrase still reads correctly on its own.
 
-    'TSOC)' / 'ygolonhceT' (COST / Technology, reversed) only ever appear together as a
-    result of that one run, so swapping the ')' between them can't affect anything else.
+    This exact 6-word reversed sequence only ever occurs as a result of that one run, so
+    this can't affect anything else.
     """
-    if 'TSOC)' in words and 'ygolonhceT' in words:
-        words[words.index('TSOC)')] = 'TSOC'
-        words[words.index('ygolonhceT')] = 'ygolonhceT)'
+    run = ['ygolonhceT', 'dna', 'ecneicS', 'ni', 'noitarepooC(', 'TSOC)']
+    if all(w in words for w in run):
+        start = words.index('ygolonhceT')
+        if words[start:start + len(run)] == run:
+            paren_phrase = ['(Cooperation', 'in', 'Science', 'and', 'Technology)']
+            reorder_ltr_runs(paren_phrase)
+            words[start:start + len(run)] = ['TSOC'] + paren_phrase
     return words

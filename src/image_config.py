@@ -204,6 +204,9 @@ if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
     LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
 
+else:
+    LINE_HEIGHT = FONT_SIZE_PX
+
 # Latin handling: JetBrains Mono for vertical writing (tight) and for
 # horizontal Japanese, so Latin letters are monospaced in both directions.
 # tight = per-char AOI, whole word pulled together (vertical).
@@ -256,8 +259,8 @@ TTB_ANSWER_BOX_PAD_PX = 4
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)
-NUM_LINES_PER_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING), 0)
+NUM_LINES_PER_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING), 0)
 
-NUM_LINES_PER_INSTRUCTION_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING_INSTRUCTION), 0)
+NUM_LINES_PER_INSTRUCTION_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING_INSTRUCTION), 0)
 
 ####################################################################

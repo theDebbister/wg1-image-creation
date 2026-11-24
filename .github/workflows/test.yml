@@ -1,0 +1,73 @@
+name: Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: uv sync --group dev
+
+      - name: Run unit tests
+        run: .venv/bin/python -m pytest tests/ -v -m "not integration and not visual" --tb=short
+
+      - name: Run integration tests
+        run: .venv/bin/python -m pytest tests/ -v -m integration --tb=short
+        continue-on-error: true
+
+      - name: Generate baselines from main
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin main
+          git show origin/main:src/text_to_picture.py > /tmp/text_to_picture_main.py
+          cp src/text_to_picture.py /tmp/text_to_picture_pr.py
+          cp /tmp/text_to_picture_main.py src/text_to_picture.py
+          .venv/bin/python -m pytest tests/ -v -m visual --update-baselines --tb=short
+          cp /tmp/text_to_picture_pr.py src/text_to_picture.py
+
+      - name: Run visual regression tests
+        if: github.event_name == 'pull_request'
+        run: .venv/bin/python -m pytest tests/ -v -m visual --tb=short
+
+      - name: Comment on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const run_url = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## Visual Regression Failed\n\nImages differ from main. Download the **visual-diffs** artifact from the [workflow run](${run_url}) to inspect (available 30 days).`
+            });
+
+      - name: Upload visual diffs
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v5
+        with:
+          name: visual-diffs
+          path: data/_visual_diffs/
+          retention-days: 30

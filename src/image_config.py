@@ -1,13 +1,13 @@
-LANGUAGE = 'he'
-COUNTRY_CODE = 'il'
-CITY = 'Haifa'
-YEAR = 2024
+LANGUAGE = 'ja'
+COUNTRY_CODE = 'ja'
+CITY = 'Tokyo'
+YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
 # e.g., 'aging'
 SUBCORPUS = ''
 
-TESTING_IMAGES = False
+TESTING_IMAGES = True
 
 ################################################################
 # PLEASE DO NOT CHANGE ANYTHING BELOW THIS LINE ##############
@@ -25,10 +25,20 @@ WORD_SPLIT_CRITERION = ' '
 if LANGUAGE == 'he':
     FONT_TYPE = "fonts/FreeMono.ttf"
     FONT_TYPE_BOLD = "fonts/FreeMonoBold.ttf"
-elif LANGUAGE in  ('zh', 'yu'):
-    FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
-    FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
-    WORD_SPLIT_CRITERION = ''
+elif LANGUAGE in ('zh', 'yu', 'ja', 'zt'):
+    if LANGUAGE == 'ja':
+        FONT_TYPE = "fonts/NotoSansJP-Regular.ttf"
+        FONT_TYPE_BOLD = 'fonts/NotoSansJP-Bold.ttf'
+        WORD_SPLIT_CRITERION = ''
+    elif LANGUAGE == 'zt':
+        FONT_TYPE = "fonts/NotoSansTC-Regular.ttf"
+        FONT_TYPE_BOLD = 'fonts/NotoSansTC-Bold.ttf'
+        WORD_SPLIT_CRITERION = ''
+    else:
+        # Use static instance to avoid Pillow variable font boxes with X
+        FONT_TYPE = "fonts/NotoSansMonoCJKsc-VF.ttf"
+        FONT_TYPE_BOLD = "fonts/NotoSansSC-Bold.ttf"
+        WORD_SPLIT_CRITERION = ''
 elif LANGUAGE == 'fa':
     FONT_TYPE = 'fonts/KawkabMono-Regular.ttf'
     FONT_TYPE_BOLD = 'fonts/KawkabMono-Bold.ttf'
@@ -60,7 +70,31 @@ VERSION_START = 1
 print(f'\n\nCreating images for {NUM_PERMUTATIONS} versions. '
       f'{"For testing purposes only (not for piloting or running real experiments!!)." if TESTING_IMAGES else ""}\n\n')
 
-OUTPUT_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}/'
+# Optional suffix for the top-level output folder only, e.g. '_LTR' or '_vs2'.
+# Subfolder names and the lab-config filename stay unchanged. Labs keep the
+# canonical folder installed in the experiment and swap folders by hand; this
+# suffix is for addressing an alternative (e.g. horizontal) package.
+OUTPUT_SUFFIX = ''
+
+_CANONICAL_TOP_DIR = f'data/stimuli_MultiplEYE_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE.upper()}_{COUNTRY_CODE.upper()}_{CITY}_{LAB_NUMBER}_{YEAR}'
+# Canonical folder (no suffix): this is what the generated experiment config must
+# reference, because the lab installs/renames the package to the canonical name.
+OUTPUT_TOP_DIR_CANONICAL = _CANONICAL_TOP_DIR + '/'
+# On-disk output folder: carries the optional suffix so alternative packages
+# (e.g. LTR/TTB) can be generated side by side.
+OUTPUT_TOP_DIR = _CANONICAL_TOP_DIR + OUTPUT_SUFFIX + '/'
+
+
+def to_canonical_path(path) -> str:
+    """Strip the on-disk OUTPUT_SUFFIX from an experiment-facing path.
+
+    Files are written under OUTPUT_TOP_DIR (which may carry a suffix such as
+    '_LTR'), but every path stored for the experiment (config_*.py and the
+    *_with_img_paths.csv values) must reference the canonical folder name,
+    because the lab installs the package under that name.
+    """
+    normalized = str(path).replace('\\', '/')
+    return normalized.replace(OUTPUT_TOP_DIR, OUTPUT_TOP_DIR_CANONICAL)
 IMAGE_DIR = OUTPUT_TOP_DIR + f'stimuli_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 QUESTION_IMAGE_DIR = OUTPUT_TOP_DIR + f'question_images_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
 AOI_DIR = OUTPUT_TOP_DIR + f'aoi_stimuli_{SUBCORPUS + "_" if SUBCORPUS else ""}{LANGUAGE}_{COUNTRY_CODE}_{LAB_NUMBER}/'
@@ -99,7 +133,10 @@ if len(SCREEN_SIZE_CM) != 2:
                      'Please check the lab configuration file.')
 
 DISTANCE_CM = LAB_CONFIGURATION['DISTANCE_CM']
-SCRIPT_DIRECTION = LAB_CONFIGURATION['SCRIPT_DIRECTION'].lower()
+# already lowercased in config_utils, keep lower for safety
+SCRIPT_DIRECTION = str(LAB_CONFIGURATION['SCRIPT_DIRECTION']).lower()
+if SCRIPT_DIRECTION not in ('ltr', 'rtl', 'ttb'):
+    raise ValueError(f'SCRIPT_DIRECTION must be one of ltr, rtl, ttb, not {SCRIPT_DIRECTION!r}')
 MULTIPLE_DEVICES = LAB_CONFIGURATION['MULTIPLE_DEVICES']
 if MULTIPLE_DEVICES and not TESTING_IMAGES:
     print('The experiment will be split on two devices. Please contact multipleye@cl.uzh.ch for further '
@@ -108,6 +145,8 @@ if MULTIPLE_DEVICES and not TESTING_IMAGES:
 IMAGE_SIZE_CM = (37, 28)
 
 MAX_CHARS_PER_LINE =  82
+# For vertical ttb, chars per column instead of per line, height is the constraint
+MAX_CHARS_PER_COLUMN = 28
 
 IMAGE_WIDTH_PX = int(IMAGE_SIZE_CM[0] * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 IMAGE_WIDTH_PX = IMAGE_WIDTH_PX if IMAGE_WIDTH_PX % 2 == 0 else IMAGE_WIDTH_PX + 1  # make sure it is even
@@ -127,37 +166,98 @@ MIN_MARGIN_RIGHT_PX = int(MARGIN_RIGHT_CM * RESOLUTION[0] / SCREEN_SIZE_CM[0])
 MIN_MARGIN_TOP_PX = int(MARGIN_TOP_CM * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 MIN_MARGIN_BOTTOM_PX = int(MARGIN_BOTTOM_CM * RESOLUTION[1] / SCREEN_SIZE_CM[1])
 
-ANCHOR_POINT_X_PX = MIN_MARGIN_LEFT_PX if SCRIPT_DIRECTION == 'ltr' else IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
+# Geometry for vertical ttb: anchor top-right, char advance +y, column advance -x
+# Dots: start top-right, end bottom-left like Arabic per decisions, respects w3.org/TR/jlreq
+if SCRIPT_DIRECTION == 'ltr':
+    ANCHOR_POINT_X_PX = MIN_MARGIN_LEFT_PX
+    POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
+    POS_TOP_DOT_X_PX = 0.75 * MIN_MARGIN_RIGHT_PX
+elif SCRIPT_DIRECTION in ('rtl', 'ttb'):
+    ANCHOR_POINT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX
+    POS_BOTTOM_DOT_X_PX = MIN_MARGIN_LEFT_PX
+    POS_TOP_DOT_X_PX = IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_RIGHT_PX
 ANCHOR_POINT_Y_PX = MIN_MARGIN_TOP_PX
 
 MARGIN_LEFT_CM_RTL, MARGIN_RIGHT_CM_RTL = MARGIN_RIGHT_CM, MARGIN_LEFT_CM
 MIN_MARGIN_LEFT_PX_RTL, MIN_MARGIN_RIGHT_PX_RTL = MIN_MARGIN_RIGHT_PX, MIN_MARGIN_LEFT_PX
 
 TEXT_WIDTH_PX = IMAGE_WIDTH_PX - (MIN_MARGIN_RIGHT_PX + MIN_MARGIN_LEFT_PX)
-POS_BOTTOM_DOT_X_PX = IMAGE_WIDTH_PX - MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else MIN_MARGIN_LEFT_PX
+TEXT_HEIGHT_PX = IMAGE_HEIGHT_PX - MIN_MARGIN_TOP_PX - MIN_MARGIN_BOTTOM_PX
 POS_BOTTOM_DOT_Y_PX = int(IMAGE_HEIGHT_PX - 2 * RESOLUTION[1] / SCREEN_SIZE_CM[1])
-POS_TOP_DOT_X_PX = 0.75 * MIN_MARGIN_RIGHT_PX if SCRIPT_DIRECTION == 'ltr' else IMAGE_WIDTH_PX - 0.75 * MIN_MARGIN_RIGHT_PX
 POS_TOP_DOT_Y_PX = 1.25 * MIN_MARGIN_TOP_PX
+# Debug overlays for lab review, optional and not in final stimuli
+DEBUG_GRID = False
+DEBUG_MARGIN = False
 FIX_DOT_RADIUS_PX = int(0.1 * MIN_MARGIN_LEFT_PX) if int(0.1 * MIN_MARGIN_LEFT_PX) > 7 else 7  # original values is 7
 FIX_DOT_WIDTH_PX = int(FIX_DOT_RADIUS_PX * 5 // 7)   # original value is 5
 
 FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
+# For ttb, column advance reuses LINE_SPACING as gap factor: column gap = unit * spacing
+# Decision: LINE_SPACING 2.9 is horizontal-specific, for vertical we reuse it so
+# columns are spaced like lines, giving ~28 cols per page at 20px. Tight grid
+# would be unit (20px) giving 82 cols per page, too dense. Gap is configurable
+# via COLUMN_GAP_FACTOR if colleagues want widening of Japanese square.
+COLUMN_GAP_FACTOR = LINE_SPACING
+COLUMN_ADVANCE_PX = int(FONT_SIZE_PX * COLUMN_GAP_FACTOR) if SCRIPT_DIRECTION == 'ttb' else None
 
 if LANGUAGE in ('fa', 'ar'):
     font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
     LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
 
+# Latin handling: JetBrains Mono for vertical writing (tight) and for
+# horizontal Japanese, so Latin letters are monospaced in both directions.
+# tight = per-char AOI, whole word pulled together (vertical).
+if SCRIPT_DIRECTION == 'ttb':
+    LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    LATIN_BOX_TYPE = "tight"
+    # Width of the mono half-space AOI placed around Latin words. None = use the
+    # Latin letter advance (current default); a lab can set a tighter half-width
+    # (e.g. FONT_SIZE_PX // 2) here.
+    LATIN_SPACE_WIDTH_PX = None
+elif LANGUAGE == 'ja':
+    # horizontal Japanese: monospaced Latin like the vertical renderer, but the
+    # glyphs are upright and get monospaced (not full-width) AOIs
+    LATIN_FONT_TYPE = "fonts/JetBrainsMono-Regular.ttf"
+    LATIN_BOX_TYPE = "tight"
+    LATIN_SPACE_WIDTH_PX = None
 else:
-    LINE_HEIGHT = FONT_SIZE_PX
+    LATIN_FONT_TYPE = None
+    LATIN_BOX_TYPE = "square"
+    LATIN_SPACE_WIDTH_PX = None
+
+# Horizontal Japanese: homogenise cell height and line pitch with the Chinese
+# reference stimuli (NotoSansMonoCJKsc metrics) so the two languages share the
+# same cell size and line spacing. Only horizontal Japanese; zh/zt and vertical
+# Japanese are unchanged.
+if LANGUAGE == 'ja' and SCRIPT_DIRECTION != 'ttb':
+    _cjk_ref = ImageFont.truetype(str(REPO_ROOT / "fonts/NotoSansMonoCJKsc-VF.ttf"), FONT_SIZE_PX)
+    # Cell height = Chinese reference ascent+descent (34 px at size 28).
+    CJK_CELL_HEIGHT_PX = sum(_cjk_ref.getmetrics())
+    # Baseline within the cell = Chinese reference ascent (28 px). Glyphs are
+    # drawn baseline-aligned to this so punctuation (。、) sits low, as in Chinese,
+    # and no glyph leaves the cell.
+    CJK_BASELINE_Y_PX = _cjk_ref.getmetrics()[0]
+    # Chinese line pitch = cell * LINE_SPACING = 98.6 px, but the longest Japanese
+    # pages have 9 lines and 8*98.6 + 34 overflows the bottom margin by ~13 px.
+    # Use the largest pitch that fits the longest pages (9 lines); it stays as
+    # close as possible to the Chinese pitch so the languages remain comparable.
+    CJK_MAX_LINES = 9
+    CJK_LINE_ADVANCE_PX = (TEXT_HEIGHT_PX - CJK_CELL_HEIGHT_PX) // (CJK_MAX_LINES - 1)
+else:
+    CJK_CELL_HEIGHT_PX = None
+    CJK_LINE_ADVANCE_PX = None
+    CJK_BASELINE_Y_PX = None
+
+# Per-side vertical padding for ttb answer boxes (comprehension question options
+# and rating options). The drawn border and the box written to the experiment
+# config are grown by this many pixels above and below so the border is not
+# confused with the text symbols. Text layout/bounding box/overflow are unchanged.
+TTB_ANSWER_BOX_PAD_PX = 4
 
 # the number of lines per stimulus page need to be determined based on the font size
 # (i.e., based on the resolution and the screen size)
-# A page needs (N - 1) full line pitches between lines plus one final line's height, not N
-# full pitches -- the latter reserves a trailing gap after the last line that is never drawn,
-# undercounting capacity by nearly one line.
-_AVAILABLE_TEXT_HEIGHT_PX = IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX
-NUM_LINES_PER_PAGE = int((_AVAILABLE_TEXT_HEIGHT_PX - LINE_HEIGHT) / (LINE_HEIGHT * LINE_SPACING)) + 1
+NUM_LINES_PER_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING), 0)
 
-NUM_LINES_PER_INSTRUCTION_PAGE = int((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING_INSTRUCTION))
+NUM_LINES_PER_INSTRUCTION_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (FONT_SIZE_PX * LINE_SPACING_INSTRUCTION), 0)
 
 ####################################################################

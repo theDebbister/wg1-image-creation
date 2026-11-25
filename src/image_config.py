@@ -200,12 +200,11 @@ FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
 COLUMN_GAP_FACTOR = LINE_SPACING
 COLUMN_ADVANCE_PX = int(FONT_SIZE_PX * COLUMN_GAP_FACTOR) if SCRIPT_DIRECTION == 'ttb' else None
 
-if LANGUAGE in ('fa', 'ar'):
-    font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
-    LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
-
-else:
-    LINE_HEIGHT = FONT_SIZE_PX
+# Must match draw_text(): rendered line pitch = (ascent + descent) * spacing.
+# Only used to compute NUM_LINES_PER_PAGE / NUM_LINES_PER_INSTRUCTION_PAGE
+# (the overflow-warning limit); it does not affect how images are drawn.
+font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
+LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
 
 # Latin handling: JetBrains Mono for vertical writing (tight) and for
 # horizontal Japanese, so Latin letters are monospaced in both directions.

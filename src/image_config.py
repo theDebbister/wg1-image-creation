@@ -1,6 +1,6 @@
-LANGUAGE = 'ja'
-COUNTRY_CODE = 'ja'
-CITY = 'Tokyo'
+LANGUAGE = 'el'
+COUNTRY_CODE = 'ch'
+CITY = 'Zurich'
 YEAR = 2026
 LAB_NUMBER = 1
 # if the data collection is part of a special add-on MultiplEYE dataset, add the tag here. Otherwise, leave empty.
@@ -200,11 +200,12 @@ FONT_SIZE_PX = calculate_font_size(lang=LANGUAGE)
 COLUMN_GAP_FACTOR = LINE_SPACING
 COLUMN_ADVANCE_PX = int(FONT_SIZE_PX * COLUMN_GAP_FACTOR) if SCRIPT_DIRECTION == 'ttb' else None
 
-# Must match draw_text(): rendered line pitch = (ascent + descent) * spacing.
-# Only used to compute NUM_LINES_PER_PAGE / NUM_LINES_PER_INSTRUCTION_PAGE
-# (the overflow-warning limit); it does not affect how images are drawn.
-font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
-LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
+if LANGUAGE in ('fa', 'ar'):
+    font_metrics = ImageFont.truetype(str(REPO_ROOT / FONT_TYPE), FONT_SIZE_PX)
+    LINE_HEIGHT = sum(font_metrics.getmetrics())  # ascent + descent
+
+else:
+    LINE_HEIGHT = FONT_SIZE_PX
 
 # Latin handling: JetBrains Mono for vertical writing (tight) and for
 # horizontal Japanese, so Latin letters are monospaced in both directions.
@@ -262,4 +263,7 @@ NUM_LINES_PER_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_
 
 NUM_LINES_PER_INSTRUCTION_PAGE = round((IMAGE_HEIGHT_PX - MIN_MARGIN_BOTTOM_PX - MIN_MARGIN_TOP_PX) / (LINE_HEIGHT * LINE_SPACING_INSTRUCTION), 0)
 
+# Greek: exception since it has too much lined
+if LANGUAGE == 'el':
+    NUM_LINES_PER_PAGE = 9
 ####################################################################
